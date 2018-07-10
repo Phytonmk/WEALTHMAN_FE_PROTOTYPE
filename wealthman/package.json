@@ -1,0 +1,19 @@
+{
+  "name": "wealthman",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "parcel-bundler": "^1.9.4",
+    "react": ">=15",
+    "react-dom": "^16.4.1",
+    "react-loadable": "^5.4.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "redux": "^2.0.0 || ^3.0.0 || ^4.0.0-0"
+  },
+  "scripts": {
+    "start": "parcel public/index.html",
+    "build": "parcel build public/index.html"
+  }
+}
