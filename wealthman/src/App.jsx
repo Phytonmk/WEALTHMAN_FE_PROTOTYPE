@@ -26,6 +26,8 @@ import ManagerRegPage from './components/pages/ManagerRegPage';
 import ManagerDetailingPage from './components/pages/ManagerDetailingPage';
 import ManagersPage from './components/pages/ManagersPage';
 import ManagerPage from './components/pages/ManagerPage';
+import KYCPage from './components/pages/KYCPage';
+import RequestsPage from './components/pages/RequestsPage';
 
 
 class App extends Component {
@@ -140,10 +142,11 @@ class App extends Component {
       </div>
     );
   }
+          // <Route exact path="/" render={() => (this.state.user == -1 ? this.renderManagersPage() : this.renderPortfoliosPage())}/>
   renderPage() {
     return (
         <Switch>
-          <Route exact path="/" render={() => (this.state.user == -1 ? this.renderManagersPage() : this.renderPortfoliosPage())}/>
+          <Route exact path="/" component={ManagersPage}/>
           <Route path="/login" component={loginPage}/>
           <Route path="/totallydifferentlogin"  component={login2Page}/>
           <Route path="/account" render={() => this.renderAccountPage()}/>
@@ -165,7 +168,7 @@ class App extends Component {
           <Route path="/portfolios" render={() => this.renderPortfoliosPage()}/>
           <Route path="/managers" component={ManagersPage}/>
           <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
-          <Route path="/requests" render={() => this.renderRequestsPage()}/>
+          <Route path="/requests" component={RequestsPage}/>
 
           <Route path="/static form" render={() => this.renderStaticFormPage()}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
@@ -1206,7 +1209,7 @@ class App extends Component {
   }
 
   renderManagerFormPage() {
-    if (this.state.algorythms[this.state.currentAlgorythm]) {
+    // if (this.state.algorythms[this.state.currentAlgorythm]) {
 
       var manager = this.state.managers.find(manager => manager.id == this.state.algorythms[this.state.currentAlgorythm].creator);
       var form = this.state.managerQuestions.map((question, i) =>
@@ -1246,9 +1249,9 @@ class App extends Component {
           </div>
         </div>
       );
-    } else {
-      return this.renderKYCPage();
-    }
+    // } else {
+    //   return this.renderKYCPage();
+    // }
   }
 
   renderThanksPage() {
@@ -1348,30 +1351,30 @@ class App extends Component {
   //   );
   // }
 
-  renderKYCPage() {
-    return(
-      <div>
-        {/* {this.renderBackButton()} */}
-        {this.renderProgressBar()}
-        <div className="container">
-          <div className="box">
-            <h2>Know Your Criminals</h2>
-            <div className="row-padding">
-              <p>by clicking send, u send this data to manager</p>
-            </div>
-            <div className="row-padding">
-              <Link to={"/manager form"}>
-                <button className="back" onClick={() => this.prevousPage()}>Back</button>
-              </Link>
-              <Link to={"/thanks2"}>
-                <button className="continue" onClick={() => this.setPage("thanks2")}>Send to manager</button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // renderKYCPage() {
+  //   return(
+  //     <div>
+  //       {/* {this.renderBackButton()} */}
+  //       {this.renderProgressBar()}
+  //       <div className="container">
+  //         <div className="box">
+  //           <h2>Know Your Criminals</h2>
+  //           <div className="row-padding">
+  //             <p>by clicking send, u send this data to manager</p>
+  //           </div>
+  //           <div className="row-padding">
+  //             <Link to={"/manager form"}>
+  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
+  //             </Link>
+  //             <Link to={"/thanks2"}>
+  //               <button className="continue" onClick={() => this.setPage("thanks2")}>Send to manager</button>
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   renderAcceptPage() {
     var portfolio = this.state.portfolios.find(p => p.id == this.state.currentPortfolio);
@@ -1567,57 +1570,57 @@ class App extends Component {
     );
   }
 
-  renderRequestsPage() {
-    var requests = this.state.requests.slice().map((request, index) => {
-      var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
-      var date = new myDate(request.date);
-      var registered;
-      var daysInSystem;
-      if (this.state.user == 1) {
-        registered = new myDate(investor.registered);
-        daysInSystem = registered.pastMonths();
-      }
+  // renderRequestsPage() {
+  //   var requests = this.state.requests.slice().map((request, index) => {
+  //     var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
+  //     var date = new myDate(request.date);
+  //     var registered;
+  //     var daysInSystem;
+  //     if (this.state.user == 1) {
+  //       registered = new myDate(investor.registered);
+  //       daysInSystem = registered.pastMonths();
+  //     }
 
-      return {
-        type: "request",
-        id: request.id,
-        number: "",
-        img: (this.state.user == 1 ? "investor/" : "manager/") + investor.img,
-        // id_shown: "1000" + investor.id,
-        name: investor.name + " " + investor.surname,
-        date: date.getTime(),
-        // type_shown: daysInSystem >= 6 ? "old" : "new",
-        // days: registered,
-        // kyc: investor.kyc ? "yes" : "no",
-        // value: (request.value * this.state.currentCurrencyPrices[request.currency]).toFixed(1) + " " + this.state.currentCurrency,
-        status: request.status,
-      };
-    });
+  //     return {
+  //       type: "request",
+  //       id: request.id,
+  //       number: "",
+  //       img: (this.state.user == 1 ? "investor/" : "manager/") + (investor.img || ''),
+  //       // id_shown: "1000" + investor.id,
+  //       name: investor.name + " " + investor.surname,
+  //       date: date.getTime(),
+  //       // type_shown: daysInSystem >= 6 ? "old" : "new",
+  //       // days: registered,
+  //       // kyc: investor.kyc ? "yes" : "no",
+  //       // value: (request.value * this.state.currentCurrencyPrices[request.currency]).toFixed(1) + " " + this.state.currentCurrency,
+  //       status: request.status,
+  //     };
+  //   });
 
-    return (
-      <div>
-        <div className="long-header"></div>
-        <div className="container">
-          <div className="box">
-            <h2 className="text-center">My requests</h2>
-            <Sortable
-              listings={requests}
-              setPage={this.setPage.bind(this)}
-              currencySelector={
-                <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                  {
-                    this.state.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  //   return (
+  //     <div>
+  //       <div className="long-header"></div>
+  //       <div className="container">
+  //         <div className="box">
+  //           <h2 className="text-center">My requests</h2>
+  //           <Sortable
+  //             listings={requests}
+  //             setPage={this.setPage.bind(this)}
+  //             currencySelector={
+  //               <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
+  //                 {
+  //                   this.state.currentCurrencyPrices.map((c, i) =>
+  //                     <option key={i} value={c.name}>{c.name}</option>
+  //                   )
+  //                 }
+  //               </select>
+  //             }
+  //           />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   renderRequestPage(match) {
     var request = this.state.requests.find(r => r.id == match.params.id);
     var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);

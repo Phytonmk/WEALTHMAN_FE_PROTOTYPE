@@ -128,4 +128,16 @@ const setCurrency = (event) => {
   });
 }
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency};
+const prevousPage = () => {
+  var prevousPages = store.getState().prevousPages.slice();
+  if (prevousPages.length == 0)
+    return;
+  var currentPage = prevousPages.pop();
+
+  setReduxState({
+    currentPage: currentPage,
+    prevousPages: prevousPages
+  })
+}
+
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, prevousPage};
