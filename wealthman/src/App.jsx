@@ -28,6 +28,7 @@ import ManagersPage from './components/pages/ManagersPage';
 import ManagerPage from './components/pages/ManagerPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
+import RequestPage from './components/pages/RequestPage';
 
 
 class App extends Component {
@@ -163,7 +164,7 @@ class App extends Component {
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" render={({match}) => this.renderPortfolioPage(match)}/>
-          <Route path="/request/:id" render={({match}) => this.renderRequestPage(match)}/>
+          <Route path="/request/:id" component={ManagerPage}/>
 
           <Route path="/portfolios" render={() => this.renderPortfoliosPage()}/>
           <Route path="/managers" component={ManagersPage}/>
@@ -1621,136 +1622,136 @@ class App extends Component {
   //     </div>
   //   );
   // }
-  renderRequestPage(match) {
-    var request = this.state.requests.find(r => r.id == match.params.id);
-    var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
-    var name;
-    var age;
-    if (investor.kyc == "yes") {
-      name = <h4>{investor.name} {investor.surname}</h4>;
-      age = <p>{investor.age} years old</p>;
-    }
-    else {
-      name = <h4>{investor.email}</h4>;
-      age = <p>KYC unfullfilled</p>;
-    }
+  // renderRequestPage(match) {
+  //   var request = this.state.requests.find(r => r.id == match.params.id);
+  //   var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
+  //   var name;
+  //   var age;
+  //   if (investor.kyc == "yes") {
+  //     name = <h4>{investor.name} {investor.surname}</h4>;
+  //     age = <p>{investor.age} years old</p>;
+  //   }
+  //   else {
+  //     name = <h4>{investor.email}</h4>;
+  //     age = <p>KYC unfullfilled</p>;
+  //   }
 
-    var buttons = request.status == "accepted" ?
-      (
-        <div className="row-padding">
-          <Link to={"/accept"} onClick={() => this.setPage("accept")}>
-            <button className="continue right">Portfolio preview</button>
-          </Link>
-        </div>
-      ) : "";
-    if (this.state.user == 0)
-      return (
-        <div>
-          <div className="container">
-            <div className="first-tab">
-              <div className="box">
-                <div className="circle left">
-                  <img src={("../manager/") + investor.img} className="avatar" />
-                </div>
-                <div className="third">
-                  <h4>{investor.name} {investor.surname}</h4>
-                </div>
-                <div className="third text-right">
-                  <p>request number {this.state.currentRequest}</p>
-                  <p>{request.date}</p>
-                  <p className={request.status}>{request.status}</p>
-                </div>
-                <div className="row-padding">
-                  <Link to={"/chat"}>
-                    <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-                  </Link>
-                </div>
-                {buttons}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    return (
-      <div>
-        {/* {this.renderBackButton()} */}
-        <div className="container">
-          <div className="first-tab">
-            <div className="box">
-              <div className="circle left">
-                <img src={("../investor/") + investor.img} className="avatar" />
-              </div>
-              <div className="third">
-                {name}
-                <p>New client. 1   days on platform</p>
-                {age}
-                <p>client id 50{investor.id}00{investor.id}</p>
-              </div>
-              <div className="third text-right">
-                <p>request number {this.state.currentRequest}</p>
-                <p>{request.date}</p>
-              </div>
-              <div className="row-padding">
-                <Link to={"/chat"}>
-                  <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-                </Link>
-              </div>
-              <p>Target value: {request.value}{request.currency}</p>
-              <p>Term 4 month</p>
-              <p>Risk profile: 25%</p>
-              <p>Target earning rate</p>
-              <div className="row-padding">
-                <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
-                  <button className="continue right">Accept</button>
-                </Link>
-                <Link to={"/decline"} onClick={() => this.setPage("decline")}>
-                  <button className="back right">Decline</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          {/* {this.renderBackButton()} */}
-          <div className="container">
-            <div className="first-tab">
-              <div className="box">
-                <div className="circle left">
-                  <img src={("../investor/") + investor.img} className="avatar" />
-                </div>
-                <div className="third">
-                  {name}
-                  <p>New client. 1   days on platform</p>
-                  {age}
-                  <p>client id 50{investor.id}00{investor.id}</p>
-                </div>
-                <div className="third text-right">
-                  <p>request number {this.state.currentRequest}</p>
-                  <p>{request.date}</p>
-                </div>
-                <div className="row-padding">
-                  <Link to={"/chat"}>
-                    <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-                  </Link>
-                </div>
-                <p>Target value: {request.value}{request.currency}</p>
-                <p>Term 4 month</p>
-                <p>Risk profile: 25%</p>
-                <p>Target earning rate</p>
-                <div className="row-padding">
-                  <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
-                    <button className="continue right">Accept</button>
-                  </Link>
-                  <Link to={"/decline"} onClick={() => this.setPage("decline")}>
-                    <button className="back right">Decline</button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>      </div>
-    );
-  }
+  //   var buttons = request.status == "accepted" ?
+  //     (
+  //       <div className="row-padding">
+  //         <Link to={"/accept"} onClick={() => this.setPage("accept")}>
+  //           <button className="continue right">Portfolio preview</button>
+  //         </Link>
+  //       </div>
+  //     ) : "";
+  //   if (this.state.user == 0)
+  //     return (
+  //       <div>
+  //         <div className="container">
+  //           <div className="first-tab">
+  //             <div className="box">
+  //               <div className="circle left">
+  //                 <img src={("../manager/") + investor.img} className="avatar" />
+  //               </div>
+  //               <div className="third">
+  //                 <h4>{investor.name} {investor.surname}</h4>
+  //               </div>
+  //               <div className="third text-right">
+  //                 <p>request number {this.state.currentRequest}</p>
+  //                 <p>{request.date}</p>
+  //                 <p className={request.status}>{request.status}</p>
+  //               </div>
+  //               <div className="row-padding">
+  //                 <Link to={"/chat"}>
+  //                   <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+  //                 </Link>
+  //               </div>
+  //               {buttons}
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   return (
+  //     <div>
+  //       {/* {this.renderBackButton()} */}
+  //       <div className="container">
+  //         <div className="first-tab">
+  //           <div className="box">
+  //             <div className="circle left">
+  //               <img src={("../investor/") + investor.img} className="avatar" />
+  //             </div>
+  //             <div className="third">
+  //               {name}
+  //               <p>New client. 1   days on platform</p>
+  //               {age}
+  //               <p>client id 50{investor.id}00{investor.id}</p>
+  //             </div>
+  //             <div className="third text-right">
+  //               <p>request number {this.state.currentRequest}</p>
+  //               <p>{request.date}</p>
+  //             </div>
+  //             <div className="row-padding">
+  //               <Link to={"/chat"}>
+  //                 <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+  //               </Link>
+  //             </div>
+  //             <p>Target value: {request.value}{request.currency}</p>
+  //             <p>Term 4 month</p>
+  //             <p>Risk profile: 25%</p>
+  //             <p>Target earning rate</p>
+  //             <div className="row-padding">
+  //               <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
+  //                 <button className="continue right">Accept</button>
+  //               </Link>
+  //               <Link to={"/decline"} onClick={() => this.setPage("decline")}>
+  //                 <button className="back right">Decline</button>
+  //               </Link>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <div>
+  //         {/* {this.renderBackButton()} */}
+  //         <div className="container">
+  //           <div className="first-tab">
+  //             <div className="box">
+  //               <div className="circle left">
+  //                 <img src={("../investor/") + investor.img} className="avatar" />
+  //               </div>
+  //               <div className="third">
+  //                 {name}
+  //                 <p>New client. 1   days on platform</p>
+  //                 {age}
+  //                 <p>client id 50{investor.id}00{investor.id}</p>
+  //               </div>
+  //               <div className="third text-right">
+  //                 <p>request number {this.state.currentRequest}</p>
+  //                 <p>{request.date}</p>
+  //               </div>
+  //               <div className="row-padding">
+  //                 <Link to={"/chat"}>
+  //                   <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+  //                 </Link>
+  //               </div>
+  //               <p>Target value: {request.value}{request.currency}</p>
+  //               <p>Term 4 month</p>
+  //               <p>Risk profile: 25%</p>
+  //               <p>Target earning rate</p>
+  //               <div className="row-padding">
+  //                 <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
+  //                   <button className="continue right">Accept</button>
+  //                 </Link>
+  //                 <Link to={"/decline"} onClick={() => this.setPage("decline")}>
+  //                   <button className="back right">Decline</button>
+  //                 </Link>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>      </div>
+  //   );
+  // }
   renderPortfolioPage(match) {
     var portfolio = this.state.portfolios.find(p => p.id == match.params.id);
     var investor = this.state.investors.find(i => i.id == portfolio.investor);

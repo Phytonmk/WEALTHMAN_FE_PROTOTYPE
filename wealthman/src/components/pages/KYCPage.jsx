@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Sortable from '../Sortable.jsx';
 import { api, setPage, setCurrency, prevousPage } from '../helpers';
 
 class KYCPage extends Component {
   constructor(props) {
     super(props);
-  
     this.state = {};
   }
   send() {

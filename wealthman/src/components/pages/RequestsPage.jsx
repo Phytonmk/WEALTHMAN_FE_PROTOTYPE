@@ -13,11 +13,13 @@ class RequestsPage extends Component {
     this.state = {};
   }
   componentWillMount() {
-    api.get('requests')
+    api.post('requests')
       .then((res) => {
+        console.log('+++');
+        console.log(res.data);
         setReduxState({requests: res.data});
       })
-      .catch(console.log);
+      .catch(e => console.log(e));
   }
   render() {
     var requests = this.props.requests.slice().map((request, index) => {
