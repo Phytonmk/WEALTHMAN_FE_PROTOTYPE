@@ -11,48 +11,12 @@ import auth from '../auth.js';
 class ManagerDetailingPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      register: '',
-      // for manager
-      name : '',
-      surname: '',
-      company_name: '',
-      company_link: '',
-      methodology: '',
-      exit_fee: '',
-      managment_fee: '',
-      font_fee: '',
-      performance_fee: '',
-      tweeter: '',
-      fb: '',
-      linkedin: '',
-      about: '',
-      company: '',
-      company_name: '',
-      company_link: '',
-      founded: '',
-      company_size: '',
-      headqueartet: '',
-      methodology: '',
-      fees: '',
-      tweeter: '',
-      fb: '',
-      linkedin: '',
-      about: '',
-      // for campony
-      name : '',
-      surname: '',
-      tweeter: '',
-      fb: '',
-      linkedin: '',
-      offers: '',
-      methodology: '',
-      exit_fee: '',
-      managment_fee: '',
-      font_fee: '',
-      performance_fee: '',
-      min_investment: ''
-    }
+    const state = {register: ''};
+    for (let q of questions.manager)
+      state[q] = ''
+    for (let q of questions.company)
+      state[q] = ''
+    this.state = state;
   }
   saveData() {
     api.post(this.state.register + '/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
@@ -105,7 +69,7 @@ export default connect(a => a)(ManagerDetailingPage)
 
 const questions = {
   manager: [
-    'name ',
+    'name',
     'surname',
     'company_name',
     'company_link',
@@ -118,6 +82,7 @@ const questions = {
     'fb',
     'linkedin',
     'about',
+    'wallet_address'
   ],
   company: [
     'company',

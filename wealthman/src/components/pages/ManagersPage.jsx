@@ -98,7 +98,6 @@ class ManagersPage extends Component {
         name: manager.name + " " + manager.surname,
         rating: manager.rating,
         clients: manager.clients,
-
         // aum: <img src="graph.png" className="graph" />,
         // assets: <img src="graph.png" className="graph" />,
         // profit: <img src="graph.png" className="graph" />,

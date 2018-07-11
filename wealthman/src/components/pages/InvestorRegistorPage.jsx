@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import { api, getCookie, setPage } from '../helpers';
 
+// const Eth = require('web3-eth');
+
 class InvestorRegistorPage extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +20,20 @@ class InvestorRegistorPage extends Component {
       address: '',
       wallet_address: ''
     }
+  }
+  createWallet() {
+    if (typeof web3 === 'undefined') {
+      alert('Install Metamusk');
+    } else {
+      const provider = web3.currentProvider;
+      web3.eth.personal.newAccount('pasword')
+        .then(res => console.log(res));
+      // const account = web3.eth.accounts.create();
+      console.log(account);
+    }
+    // console.log(Eth);
+    // const eth = new Eth(Eth.givenProvider);
+    // console.log(eth);
   }
   saveData() {
     api.post('investor/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
@@ -82,7 +98,7 @@ class InvestorRegistorPage extends Component {
             </div>
             <div className="row">
               <br />
-              <button className="back">Create Ethereum Wallet</button>
+              <button onClick={() => this.createWallet()} className="back">Create Ethereum Wallet</button>
             </div>
             <br />
             <br />

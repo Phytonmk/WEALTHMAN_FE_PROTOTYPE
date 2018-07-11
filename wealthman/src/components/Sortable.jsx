@@ -112,7 +112,7 @@ class Sortable extends Component {
     });
     return (
       <li>
-        <Link to={("/" + listing.type + "/" + listing.id)} className="no-margin" onClick={() => this.props.setPage(listing.type, listing.id)}>
+        <Link to={!listing.noLink ? ("/" + listing.type + "/" + listing.id) : '#'} className="no-margin" onClick={!listing.onClick ? () => this.props.setPage(listing.type, listing.id) : (event) => listing.onClick(event, listing)}>
           {data}
         </Link>
       </li>
@@ -269,6 +269,8 @@ class Sortable extends Component {
   }
 
   render() {
+    if (this.props.listings === undefined || this.props.listings.length === 0)
+      return  <p style={{textAlign: 'center'}}> Empty set </p>
     var listings = this.props.listings
     .filter(listing => {
       if (listing.hasOwnProperty("name"))

@@ -1107,3 +1107,7 @@ img.graph {
 .capitalize {
   text-transform: capitalize;
 }
+
+.stocks-sortable .titles div, .stocks-sortable div {
+  width: 180px !important
+}

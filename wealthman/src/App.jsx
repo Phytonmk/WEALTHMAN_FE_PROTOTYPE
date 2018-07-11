@@ -29,7 +29,11 @@ import ManagerPage from './components/pages/ManagerPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
 import RequestPage from './components/pages/RequestPage';
+import PortfolioCreationPage from './components/pages/PortfolioCreationPage';
+import SignAgreementPage from './components/pages/SignAgreementPage';
+import MoneyPage from './components/pages/MoneyPage';
 
+// 
 
 class App extends Component {
   constructor(props) {
@@ -42,28 +46,7 @@ class App extends Component {
     auth();
   }
 
-  tryLogin(login, password) {
-    if (typeof login === "undefined") {
-      login = this.state.login;
-      password = this.state.password;
-    }
-
-    if (password == "123" && login == "investor")
-      setReduxState({
-        user: 0,
-        currentPage: "portfolios"
-      });
-    if (password == "123" && login == "manager")
-      setReduxState({
-        user: 1,
-        currentPage: "requests"
-      });
-    if (password == "123" && login == "supplier")
-      setReduxState({
-        user: 2,
-        currentPage: "managers"
-      });
-  }
+  
   logout() {
     document.cookie = '';
     document.location.href = '#';
@@ -164,7 +147,7 @@ class App extends Component {
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" render={({match}) => this.renderPortfolioPage(match)}/>
-          <Route path="/request/:id" component={ManagerPage}/>
+          <Route path="/request/:id" component={RequestPage}/>
 
           <Route path="/portfolios" render={() => this.renderPortfoliosPage()}/>
           <Route path="/managers" component={ManagersPage}/>
@@ -174,11 +157,12 @@ class App extends Component {
           <Route path="/static form" render={() => this.renderStaticFormPage()}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
           <Route path="/agreement" component={AgreementPage}/>
+          <Route path="/signagreement/:id" component={SignAgreementPage}/>
           <Route path="/manager form" render={() => this.renderManagerFormPage()}/>
           <Route path="/thanks" render={() => this.renderThanksPage()}/>
           <Route path="/thanks2" render={() => this.renderThanks2Page()}/>
           <Route path="/register" component={RegisterPage}/>
-          <Route path="/money" render={() => this.renderMoneyPage()}/>
+          <Route path="/money/:id" component={MoneyPage}/>
           <Route path="/kyc" component={KYCPage}/>
           <Route path="/investor register" component={InvestorRegistorPage}/>
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
@@ -194,7 +178,7 @@ class App extends Component {
           <Route path="/email" render={() => this.renderEmailPage()}/>
           <Route path="/logout" component={ManagersPage}/>
 
-          <Route path="/portfoliocreation" render={() => this.renderPortfolioCreationPage()}/>
+          <Route path="/portfoliocreation/:id" component={PortfolioCreationPage}/>
           <Route path="/signagreement" component={AgreementPage}/>
           <Route path="/supported-browsers" render={() => this.renderSupportedBrowsersPage()}/>
 
@@ -204,54 +188,7 @@ class App extends Component {
     );
   }
 
-  // renderLoginPage() {
-  //   return (
-  //     <div className="container">
-  //       <LoginForm title="" tryLogin={(login, password) => this.tryLogin(login, password)} setPage={(page, id) => this.setPage(page, id)}/>
-  //       {/* <LoginForm title="Log in as Manager" tryLogin={(login, password) => this.tryLogin(login, password)} />
-  //       <LoginForm title="Log in as Data Supplier" tryLogin={(login, password) => this.tryLogin(login, password)} /> */}
-  //     </div>
-  //   );
-  //   return (
-  //     <div className="login-box">
-  //       <h3>Welcome back</h3>
-  //       <b>Email</b>
-  //       <input type="text" value={this.state.login} onChange={(event) => setReduxState({ login: event.target.value })} placeholder="me@example.com" />
-  //       <b>Password</b>
-  //       <input type="password" value={this.state.password} onChange={(event) => setReduxState({ password: event.target.value })} placeholder="password" />
-  //       {/* <h3>Choose your role</h3>
-  //       <select>
-  //         <option onClick={() => setReduxState({ login: "investor", password: "123" })}>investor</option>
-  //         <option onClick={() => setReduxState({ login: "manager", password: "123" })}>manager</option>
-  //       </select> */}
-  //       <button className="login" onClick={() => this.tryLogin()}>Log in</button>
-  //     </div>
-  //   );
-  // }
-  // renderLogin2Page() {
-  //   return (
-  //     <div>
-  //       <LoginForm title="Login for Wealth Managers" tryLogin={(login, password) => this.tryLogin(login, password)} setPage={(page, id) => this.setPage(page, id)} />
-  //       {/* <LoginForm title="Log in as Manager" tryLogin={(login, password) => this.tryLogin(login, password)} />
-  //       <LoginForm title="Log in as Data Supplier" tryLogin={(login, password) => this.tryLogin(login, password)} /> */}
-  //     </div>
-  //   );
-  //   return (
-  //     <div className="login-box">
-  //       <h3>Welcome back</h3>
-  //       <b>Email</b>
-  //       <input type="text" value={this.state.login} onChange={(event) => setReduxState({ login: event.target.value })} placeholder="me@example.com" />
-  //       <b>Password</b>
-  //       <input type="password" value={this.state.password} onChange={(event) => setReduxState({ password: event.target.value })} placeholder="password" />
-  //       {/* <h3>Choose your role</h3>
-  //       <select>
-  //         <option onClick={() => setReduxState({ login: "investor", password: "123" })}>investor</option>
-  //         <option onClick={() => setReduxState({ login: "manager", password: "123" })}>manager</option>
-  //       </select> */}
-  //       <button className="login" onClick={() => this.tryLogin()}>Log in</button>
-  //     </div>
-  //   );
-  // }
+
 
   renderPortfoliosPage() {
     var currentPage;
@@ -486,172 +423,7 @@ class App extends Component {
     );
   }
 
-  // renderManagersPage() {
-  //   var titles = [
-  //     {
-  //       title: "#",
-  //       tooltip: "number",
-  //       class: "number",
-  //     },
-  //     {
-  //       title: "",
-  //       tooltip: "",
-  //       class: "none",
-  //     },
-  //     {
-  //       title: "Name",
-  //       tooltip: "manager name",
-  //       class: "name",
-  //     },
-  //     {
-  //       title: "Success rate",
-  //       tooltip: "rating",
-  //       class: "rating",
-  //     },
-  //     {
-  //       title: "number of clients",
-  //       tooltip: "number of clients",
-  //       class: "clients",
-  //     },
-
-  //     {
-  //       title: "AUM",
-  //       tooltip: "AUM",
-  //       class: "aum",
-  //     },
-  //     {
-  //       title: "% of Net Assets",
-  //       tooltip: "% of Net Assets",
-  //       class: "assets",
-  //       upper: "Expense ratio",
-  //     },
-  //     {
-  //       title: "% of Perfomance",
-  //       tooltip: "% of Perfomance",
-  //       class: "profit",
-  //       upper: "Expense ratio",
-  //     },
-  //     {
-  //       title: "% Front fee",
-  //       tooltip: "% Front fee",
-  //       class: "initial",
-  //       upper: "Expense ratio",
-  //     },
-  //     {
-  //       title: "% exit Fee",
-  //       tooltip: "% Exit fee",
-  //       class: "output",
-  //       upper: "Expense ratio",
-  //     },
-  //     {
-  //       title: "minimum investment",
-  //       tooltip: "minimum investment",
-  //       class: "annual",
-  //     },
-  //     {
-  //       title: "6M AUM Graph",
-  //       tooltip: "6M AUM Graph",
-  //       class: "aum6",
-  //     },
-  //     {
-  //       title: "",
-  //       tooltip: "",
-  //       class: "none",
-  //     },
-  //   ];
-  //   var managers = this.state.managers.map(manager => {
-  //     return {
-  //       type: "manager",
-  //       id: manager.id,
-  //       number: "",
-  //       img: "manager/" + manager.img,
-  //       name: manager.name + " " + manager.surname,
-  //       rating: manager.rating,
-  //       clients: manager.clients,
-
-  //       // aum: <img src="graph.png" className="graph" />,
-  //       // assets: <img src="graph.png" className="graph" />,
-  //       // profit: <img src="graph.png" className="graph" />,
-  //       aum: 10,
-  //       assets: 10,
-  //       profit: 10,
-  //       initial: manager.initial,
-  //       output: manager.output,
-  //       annual: manager.annual,
-  //       aum6: <img src="graph.png" className="graph" />,
-  //       cart: <img src="cart.png" className="graph" />,
-  //     };
-  //   });
-
-  //   var filters = [
-  //     {
-  //       link: "Robo-advisor",
-  //       description: "Invest on Autopilot",
-  //     },
-  //     {
-  //       link: "Discretionary",
-  //       description: "Get The Right Investment Manager For Your Wealth",
-  //     },
-  //     {
-  //       link: "Advisory",
-  //       description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
-  //     }
-  //   ];
-  //   var filtersMapped = filters.map((filter, i) =>
-  //     <button key={i} className={"blue-link left" + (this.state.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
-  //       {filter.link}
-  //     </button>
-  //   );
-
-  //   return (
-  //     <div>
-  //       <div className="long-header"></div>
-  //       <div className="container">
-  //         <div className="box">
-  //           <h3>Marketplace</h3>
-  //           <div className="row">
-  //             <div className="column center">
-  //               {filtersMapped}
-  //             </div>
-  //           </div>
-  //           <div className="row-padding">
-  //             {filters.find(filter => filter.link == this.state.managersFilter).description}
-  //             <Link to="faq" className="grey-link" onClick={() => {this.setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.state.managersFilter).link})}}>
-  //               Learn more
-  //             </Link>
-  //           </div>
-  //           <div className="row-padding">
-  //             <div className="fourth">
-  //               Total investors: 3
-  //             </div>
-  //             <div className="fourth">
-  //               Total managers: 3
-  //             </div>
-  //             <div className="fourth">
-  //               Total AUM: 3 mln $
-  //             </div>
-  //           </div>
-  //           <div className="row-padding">
-  //             <Sortable
-  //               titles={titles}
-  //               listings={managers}
-  //               setPage={this.setPage.bind(this)}
-  //               currencySelector={
-  //                 <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-  //                   {
-  //                     this.state.currentCurrencyPrices.map((c, i) =>
-  //                       <option key={i} value={c.name}>{c.name}</option>
-  //                     )
-  //                   }
-  //                 </select>
-  //               }
-  //             />
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+ 
 
   renderAccountPage() {
     var changed = false;
@@ -893,129 +665,7 @@ class App extends Component {
     );
   }
 
-  // renderManagerPage(match) {
-  //   var manager = this.state.managers.find(manager => manager.id == match.params.id);
-  //   var company = this.state.companies.find(company => company.id == manager.company);
-  //   var companies;
-  //   var algs = this.state.algorythms.filter(alg => {
-  //     return alg.creator == manager.id;
-  //   });
-  //   if (this.state.currentManager !== manager.id) 
-  //     setReduxState({
-  //       currentManager: manager.id,
-  //       currentAlgorythm: this.state.algorythms.find(algorythm => algorythm.creator === manager.id).id
-  //     });
-  //   console.log(`currentAlgorythm set as ${this.state.currentAlgorythm}`);
-  //   // }).map(alg =>
-  //   //   <div className="manager-listing" onClick={() => this.setPage("algorythm", alg.id)}>
-  //   //     <h4>{alg.name}</h4>
-  //   //     <p className="grey">rating {alg.rating}/10</p>
-  //   //   </div>
-  //   // );
-
-  //   return (
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       <div className="container">
-  //         <div className="first-tab">
-  //           <div className="manager-box">
-  //             <div className="cover"></div>
-  //             <div className="info">
-  //               <div className="circle">
-  //                 <img src={"manager/" + manager.img} className="avatar" />
-  //               </div>
-  //               <h2 className="text-center">{manager.name} {manager.surname}</h2>
-  //               <h4 className="text-center">Age {manager.age}</h4>
-  //               <div className="row-padding">
-  //                 <div className="column center">
-  //                   {/* {this.state.user !== -1 ? (<button className="back">Contact</button>) : ""} */}
-  //                   <Link to={"/contact"} onClick={() => this.setPage("contact")}>
-  //                     <button className="back">Contact</button>
-  //                   </Link>
-  //                   <Link to="/register" onClick={() => this.setPage("register")}>
-  //                     <button className="continue">Apply now</button>
-  //                   </Link>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //           </div>
-
-  //             <div className="box">
-  //               <h4>Fees</h4>
-  //               {/* <p>Manager will ask you to agree with</p>
-  //               <ul>
-  //                 <li>Condition 1</li>
-  //                 <li>Condition 2</li>
-  //                 <li>Condition 3</li>
-  //                 <li>Condition 4</li>
-  //               </ul>
-  //               <p>and also</p>
-  //               <ul>
-  //                 <li>Condition 1</li>
-  //                 <li>Condition 2</li>
-  //                 <li>Condition 3</li>
-  //                 <li>Condition 4</li>
-  //               </ul> */}
-  //               {manager.terms}
-  //             </div>
-
-  //             <div className="box margin-right row">
-  //               <div className="third">
-  //                 <p className="blue">Social networks:</p>
-  //                 <button className="facebook"></button>
-  //                 <button className="twitter"></button>
-  //                 <button className="linkedin"></button>
-  //               </div>
-  //               <div className="two-third">
-  //                 <p className="blue">Biography:</p><p> {manager.biography}</p>
-  //               </div>
-  //             </div>
-  //             {/* <div className="half-box">
-  //               <div className="circle left">
-  //                 <img src={"companies/" + company.img} className="avatar" />
-  //               </div>
-  //               <div className="half">
-  //                 <p className="blue">Company</p>
-  //                 <h3>{company.name}</h3>
-  //                 <a>{company.site}</a>
-  //               </div>
-  //               <div className="row">
-  //                 <p className="blue">Social networks:</p>
-  //                 <button className="facebook"></button>
-  //                 <button className="twitter"></button>
-  //                 <button className="linkedin"></button>
-  //               </div>
-  //             </div>            */}
-
-  //         </div>
-  //         <div className="second-tab">
-  //           <div className="box">
-  //             <div className="circle left">
-  //               <img src={"manager/companies/" + company.img} className="avatar" />
-  //             </div>
-  //             <div className="row">
-  //               <p className="blue">Company</p>
-  //               <h3>{company.name}</h3>
-  //               <div className="row tridot">
-  //                 <a>{company.site}</a>
-  //               </div>
-  //             </div>
-  //             <div className="row">
-  //               <p className="blue">Social networks:</p>
-  //               <button className="facebook"></button>
-  //               <button className="twitter"></button>
-  //               <button className="linkedin"></button>
-  //             </div>
-  //           </div>
-  //           <div className="box">
-  //             <p className="blue">Methodology:</p><p> {manager.methodology}</p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
+ 
   renderAlgorythmPage(match) {
     var alg = this.state.algorythms.find(algorytm => algorytm.id == match.params.id);
     var manager = this.state.managers.find(manager => manager.id == alg.manager);
@@ -1129,85 +779,42 @@ class App extends Component {
     );
   }
 
-  // renderAgreementPage() {
+
+  // renderSignAgreementPage() {
   //   return (
   //     <div>
-  //       {/* {this.renderBackButton()} */}
   //       {this.renderProgressBar()}
   //       <div className="container">
   //         <div className="box">
-  //           <h1 className="text-center">Agreement</h1>
-  //           {/* <p>U agree with that by the way</p>
-  //           <ul>
-  //             <li>Condition 1</li>
-  //             <li>Condition 2</li>
-  //             <li>Condition 3</li>
-  //             <li>Condition 4</li>
-  //           </ul>
-  //           <p>U agree with that too</p>
-  //           <ul>
-  //             <li>Condition 1</li>
-  //             <li>Condition 2</li>
-  //             <li>Condition 3</li>
-  //             <li>Condition 4</li>
-  //           </ul>
-  //           <p>U agree with that also</p>
-  //           <ul>
-  //             <li>Condition 1</li>
-  //             <li>Condition 2</li>
-  //             <li>Condition 3</li>
-  //             <li>Condition 4</li>
-  //           </ul> */}
-  //           {newLines(this.state.agreement)}
-  //           <div className="row-padding">
-  //             <Link to={"/email"}>
-  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
-  //             </Link>
-  //             <Link to={"/static form"}>
-  //               <button className="continue" onClick={() => { this.setPage("static form"); setReduxState({ user: 0 }); }}>Agree</button>
-  //             </Link>
+  //           <div className="container">
+  //             <h2>Sign Agreement</h2>
+  //             <p>Please download and fill this form. Then scan and upload it back to the site.</p>
+  //             <div className="document-box">
+  //               <h3 className="text-center">Agreement form</h3>
+  //               <div className="row">
+  //                 <button className="continue">DOWNLOAD FILE</button>
+  //               </div>
+  //             </div>
+  //             <div className="document-box">
+  //               <h3 className="text-center">Filled Agreement form</h3>
+  //               <div className="row">
+  //                 <button className="continue">UPLOAD FILE</button>
+  //               </div>
+  //             </div>
+  //             <div className="row-padding">
+  //               <Link to={"/accept"}>
+  //                 <button className="back" onClick={() => this.prevousPage()}>Back</button>
+  //               </Link>
+  //               <Link to={"/money"}>
+  //                 <button className="continue" onClick={() => this.setPage("KYC")}>Continue</button>
+  //               </Link>
+  //             </div>
   //           </div>
   //         </div>
   //       </div>
   //     </div>
   //   );
   // }
-
-  renderSignAgreementPage() {
-    return (
-      <div>
-        {this.renderProgressBar()}
-        <div className="container">
-          <div className="box">
-            <div className="container">
-              <h2>Sign Agreement</h2>
-              <p>Please download and fill this form. Then scan and upload it back to the site.</p>
-              <div className="document-box">
-                <h3 className="text-center">Agreement form</h3>
-                <div className="row">
-                  <button className="continue">DOWNLOAD FILE</button>
-                </div>
-              </div>
-              <div className="document-box">
-                <h3 className="text-center">Filled Agreement form</h3>
-                <div className="row">
-                  <button className="continue">UPLOAD FILE</button>
-                </div>
-              </div>
-              <div className="row-padding">
-                <Link to={"/accept"}>
-                  <button className="back" onClick={() => this.prevousPage()}>Back</button>
-                </Link>
-                <Link to={"/money"}>
-                  <button className="continue" onClick={() => this.setPage("KYC")}>Continue</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   renderManagerFormPage() {
     // if (this.state.algorythms[this.state.currentAlgorythm]) {
@@ -1295,87 +902,6 @@ class App extends Component {
       </div>
     );
   }
-
-  // renderRegisterPage() {
-  //   return(
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       {this.renderProgressBar()}
-  //       <div className="container">
-  //         <div className="box">
-  //           <h2>Registration page</h2>
-  //           {/* <div className="row-padding">
-  //             <b>Name</b>
-  //             <div className="row">
-  //               <input type="text" placeholder="John" />
-  //             </div>
-  //             <b>Surname</b>
-  //             <div className="row">
-  //               <input type="text" placeholder="Appleseed" />
-  //             </div>
-  //             <b>Email</b>
-  //             <div className="row">
-  //               <input type="text" placeholder="me@example.com" />
-  //             </div>
-  //             <b>Password</b>
-  //             <div className="row">
-  //               <input type="password" placeholder="password" />
-  //             </div>
-  //             <b>Repeat password</b>
-  //             <div className="row">
-  //               <input type="password" placeholder="repeat password" />
-  //             </div>
-  //           </div> */}
-  //             <div className="row">
-  //               <b>Email</b>
-  //             </div>
-  //             <div className="row">
-  //               <input type="text" value={this.state.login} onChange={(event) => setReduxState({ login: event.target.value })} placeholder="me@example.com" />
-  //             </div>
-  //             <div className="row">
-  //               <b>Password</b>
-  //             </div>
-  //             <div className="row">
-  //               <input type="password" value={this.state.password} onChange={(event) => setReduxState({ password: event.target.value })} placeholder="password" />
-  //             </div>
-  //             <div className="row-padding">
-  //             <Link to={("/manager" + this.state.currentManager)}>
-  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
-  //             </Link>
-  //             <Link to={"/email"}>
-  //               <button className="continue" onClick={() => this.setPage("agreement")}>Register</button>
-  //             </Link>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // renderKYCPage() {
-  //   return(
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       {this.renderProgressBar()}
-  //       <div className="container">
-  //         <div className="box">
-  //           <h2>Know Your Criminals</h2>
-  //           <div className="row-padding">
-  //             <p>by clicking send, u send this data to manager</p>
-  //           </div>
-  //           <div className="row-padding">
-  //             <Link to={"/manager form"}>
-  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
-  //             </Link>
-  //             <Link to={"/thanks2"}>
-  //               <button className="continue" onClick={() => this.setPage("thanks2")}>Send to manager</button>
-  //             </Link>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   renderAcceptPage() {
     var portfolio = this.state.portfolios.find(p => p.id == this.state.currentPortfolio);
@@ -1510,55 +1036,55 @@ class App extends Component {
     );
   }
 
-  renderMoneyPage() {
-    return (
-      <div>
-        {/* {this.renderBackButton()} */}
-        {this.renderProgressBar()}
-        <div className="container">
-          <div className="box">
-            <h2>Send Money</h2>
-            <div className="row">
-              <button className="show-code" onClick={() => setReduxState({showCode: !this.state.showCode})}>{this.state.showCode ? "Hide" : "Show"} Smart-contract code</button>
-              <div className={"code-container " + (this.state.showCode ? "show" : "hide")}>
-                {newLines(this.state.code)}
-              </div>
-            </div>
-            <div className="row">
-              <ol type="1">
-                <li>
-                  Please choose your Ethereum wallet
-                </li>
-                <li>
-                  Check that you have enough money on it to invest
-                </li>
-                <li>
-                  Copy this address of smart-contract <b className="eth-address">0x3a8b4013eb7bb370d2fd4e2edbdaf6fd8af6a862</b>
-                </li>
-                <li>
-                  Go to your Ethereum wallet and paste the address of smart-contract as destination address
-                </li>
-                <li>
-                  Submit the money transfer
-                </li>
-              </ol>
-            </div>
-            <div className="row-padding">
-              As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
-            </div>
-            <div className="row-padding">
-              <Link to="/signagreement">
-                <button className="back" onClick={() => this.prevousPage()}>Back</button>
-              </Link>
-              <Link to="/portfolios">
-                <button className="continue" onClick={() => this.setPage("portfolios")}>Finish</button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // renderMoneyPage() {
+  //   return (
+  //     <div>
+  //       {/* {this.renderBackButton()} */}
+  //       {this.renderProgressBar()}
+  //       <div className="container">
+  //         <div className="box">
+  //           <h2>Send Money</h2>
+  //           <div className="row">
+  //             <button className="show-code" onClick={() => setReduxState({showCode: !this.state.showCode})}>{this.state.showCode ? "Hide" : "Show"} Smart-contract code</button>
+  //             <div className={"code-container " + (this.state.showCode ? "show" : "hide")}>
+  //               {newLines(this.state.code)}
+  //             </div>
+  //           </div>
+  //           <div className="row">
+  //             <ol type="1">
+  //               <li>
+  //                 Please choose your Ethereum wallet
+  //               </li>
+  //               <li>
+  //                 Check that you have enough money on it to invest
+  //               </li>
+  //               <li>
+  //                 Copy this address of smart-contract <b className="eth-address">0x3a8b4013eb7bb370d2fd4e2edbdaf6fd8af6a862</b>
+  //               </li>
+  //               <li>
+  //                 Go to your Ethereum wallet and paste the address of smart-contract as destination address
+  //               </li>
+  //               <li>
+  //                 Submit the money transfer
+  //               </li>
+  //             </ol>
+  //           </div>
+  //           <div className="row-padding">
+  //             As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
+  //           </div>
+  //           <div className="row-padding">
+  //             <Link to="/signagreement">
+  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
+  //             </Link>
+  //             <Link to="/portfolios">
+  //               <button className="continue" onClick={() => this.setPage("portfolios")}>Finish</button>
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   renderManagerControlPanelPage() {
     return (
@@ -1571,187 +1097,7 @@ class App extends Component {
     );
   }
 
-  // renderRequestsPage() {
-  //   var requests = this.state.requests.slice().map((request, index) => {
-  //     var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
-  //     var date = new myDate(request.date);
-  //     var registered;
-  //     var daysInSystem;
-  //     if (this.state.user == 1) {
-  //       registered = new myDate(investor.registered);
-  //       daysInSystem = registered.pastMonths();
-  //     }
-
-  //     return {
-  //       type: "request",
-  //       id: request.id,
-  //       number: "",
-  //       img: (this.state.user == 1 ? "investor/" : "manager/") + (investor.img || ''),
-  //       // id_shown: "1000" + investor.id,
-  //       name: investor.name + " " + investor.surname,
-  //       date: date.getTime(),
-  //       // type_shown: daysInSystem >= 6 ? "old" : "new",
-  //       // days: registered,
-  //       // kyc: investor.kyc ? "yes" : "no",
-  //       // value: (request.value * this.state.currentCurrencyPrices[request.currency]).toFixed(1) + " " + this.state.currentCurrency,
-  //       status: request.status,
-  //     };
-  //   });
-
-  //   return (
-  //     <div>
-  //       <div className="long-header"></div>
-  //       <div className="container">
-  //         <div className="box">
-  //           <h2 className="text-center">My requests</h2>
-  //           <Sortable
-  //             listings={requests}
-  //             setPage={this.setPage.bind(this)}
-  //             currencySelector={
-  //               <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-  //                 {
-  //                   this.state.currentCurrencyPrices.map((c, i) =>
-  //                     <option key={i} value={c.name}>{c.name}</option>
-  //                   )
-  //                 }
-  //               </select>
-  //             }
-  //           />
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-  // renderRequestPage(match) {
-  //   var request = this.state.requests.find(r => r.id == match.params.id);
-  //   var investor = this.state.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager);
-  //   var name;
-  //   var age;
-  //   if (investor.kyc == "yes") {
-  //     name = <h4>{investor.name} {investor.surname}</h4>;
-  //     age = <p>{investor.age} years old</p>;
-  //   }
-  //   else {
-  //     name = <h4>{investor.email}</h4>;
-  //     age = <p>KYC unfullfilled</p>;
-  //   }
-
-  //   var buttons = request.status == "accepted" ?
-  //     (
-  //       <div className="row-padding">
-  //         <Link to={"/accept"} onClick={() => this.setPage("accept")}>
-  //           <button className="continue right">Portfolio preview</button>
-  //         </Link>
-  //       </div>
-  //     ) : "";
-  //   if (this.state.user == 0)
-  //     return (
-  //       <div>
-  //         <div className="container">
-  //           <div className="first-tab">
-  //             <div className="box">
-  //               <div className="circle left">
-  //                 <img src={("../manager/") + investor.img} className="avatar" />
-  //               </div>
-  //               <div className="third">
-  //                 <h4>{investor.name} {investor.surname}</h4>
-  //               </div>
-  //               <div className="third text-right">
-  //                 <p>request number {this.state.currentRequest}</p>
-  //                 <p>{request.date}</p>
-  //                 <p className={request.status}>{request.status}</p>
-  //               </div>
-  //               <div className="row-padding">
-  //                 <Link to={"/chat"}>
-  //                   <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-  //                 </Link>
-  //               </div>
-  //               {buttons}
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     );
-  //   return (
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       <div className="container">
-  //         <div className="first-tab">
-  //           <div className="box">
-  //             <div className="circle left">
-  //               <img src={("../investor/") + investor.img} className="avatar" />
-  //             </div>
-  //             <div className="third">
-  //               {name}
-  //               <p>New client. 1   days on platform</p>
-  //               {age}
-  //               <p>client id 50{investor.id}00{investor.id}</p>
-  //             </div>
-  //             <div className="third text-right">
-  //               <p>request number {this.state.currentRequest}</p>
-  //               <p>{request.date}</p>
-  //             </div>
-  //             <div className="row-padding">
-  //               <Link to={"/chat"}>
-  //                 <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-  //               </Link>
-  //             </div>
-  //             <p>Target value: {request.value}{request.currency}</p>
-  //             <p>Term 4 month</p>
-  //             <p>Risk profile: 25%</p>
-  //             <p>Target earning rate</p>
-  //             <div className="row-padding">
-  //               <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
-  //                 <button className="continue right">Accept</button>
-  //               </Link>
-  //               <Link to={"/decline"} onClick={() => this.setPage("decline")}>
-  //                 <button className="back right">Decline</button>
-  //               </Link>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <div>
-  //         {/* {this.renderBackButton()} */}
-  //         <div className="container">
-  //           <div className="first-tab">
-  //             <div className="box">
-  //               <div className="circle left">
-  //                 <img src={("../investor/") + investor.img} className="avatar" />
-  //               </div>
-  //               <div className="third">
-  //                 {name}
-  //                 <p>New client. 1   days on platform</p>
-  //                 {age}
-  //                 <p>client id 50{investor.id}00{investor.id}</p>
-  //               </div>
-  //               <div className="third text-right">
-  //                 <p>request number {this.state.currentRequest}</p>
-  //                 <p>{request.date}</p>
-  //               </div>
-  //               <div className="row-padding">
-  //                 <Link to={"/chat"}>
-  //                   <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-  //                 </Link>
-  //               </div>
-  //               <p>Target value: {request.value}{request.currency}</p>
-  //               <p>Term 4 month</p>
-  //               <p>Risk profile: 25%</p>
-  //               <p>Target earning rate</p>
-  //               <div className="row-padding">
-  //                 <Link to={"/portfoliocreation"} onClick={() => this.setPage("portfoliocreation")}>
-  //                   <button className="continue right">Accept</button>
-  //                 </Link>
-  //                 <Link to={"/decline"} onClick={() => this.setPage("decline")}>
-  //                   <button className="back right">Decline</button>
-  //                 </Link>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>      </div>
-  //   );
-  // }
+ 
   renderPortfolioPage(match) {
     var portfolio = this.state.portfolios.find(p => p.id == match.params.id);
     var investor = this.state.investors.find(i => i.id == portfolio.investor);
@@ -2112,151 +1458,6 @@ class App extends Component {
     );
   }
 
-  renderPortfolioCreationPage() {
-    var set = "USD";
-    var tokens = this.state.tokens.map((token, index) =>
-      <li key={index}>
-        <div className="number">
-          {index + 1}
-        </div>
-        <div className="check">
-          <input type="checkbox"></input>
-        </div>
-        <div className="currency">
-          {token.name}
-        </div>
-        <div className="percent">
-          <input type="number"></input>
-        </div>
-        <div className="amount">
-          0
-        </div>
-        <div className="value">
-          {set}
-        </div>
-        <div className="comments last">
-          <input type="text"></input>
-        </div>
-        <div className="analysis last">
-          <input type="text"></input>
-        </div>
-      </li>
-    );
-    var request = this.state.requests.find(r => r.id == this.state.currentRequest);
-    var investor = this.state.investors.find(i => i.id == request.investor);
-    var name;
-    var age;
-    if (investor.kyc == "yes") {
-      name = <h4>{investor.name} {investor.surname}</h4>;
-      age = <p>{investor.age} years old</p>;
-    }
-    else {
-      name = <h4>{investor.email}</h4>;
-      age = <p>KYC unfullfilled</p>;
-    }
-
-    return (
-      <div>
-        <div className="container">
-          <div className="box">
-            <h3>Portfolio Creation</h3>
-
-            <div className="circle left">
-              <img src={"../investor/" + investor.img} className="avatar" />
-            </div>
-            <div className="third">
-              {name}
-              <p>New client. 1   days on platform</p>
-              {age}
-              <p>client id 50{investor.id}00{investor.id}</p>
-            </div>
-            <div className="third text-right">
-              <p>request number {this.state.currentRequest}</p>
-              <p>{request.date}</p>
-            </div>
-            <div className="row-padding">
-              <Link to={"/chat"}>
-                <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
-              </Link>
-            </div>
-            <p>Target value: {request.value}{request.currency}</p>
-            <p>Term 4 month</p>
-            <p>Risk profile: 25%</p>
-            <p>Target earning rate</p>
-
-            <ul className="token-listings">
-              <li className="titles">
-                <div className="number">
-                  #
-                </div>
-                <div className="check">
-                  Include
-                </div>
-                <div className="currency">
-                  Currency
-                </div>
-                <div className="percent">
-                  % in portfolio
-                </div>
-                <div className="amount">
-                  Amount
-                </div>
-                <div className="value">
-                  Value in set currency
-                </div>
-                <div className="comments last">
-                  Comments
-                </div>
-                <div className="analysis last">
-                  Analysis
-                </div>
-              </li>
-              {tokens}
-            </ul>
-          </div>
-          <div className="box">
-            <div className="row">
-              <div className="half">
-                <h4>Fee</h4>
-                <ul>
-                  <div className="row">
-                    <input type="checkbox" />
-                      С прибыли
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      С объема
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      За вход
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      За выход
-                  </div>
-                </ul>
-              </div>
-              <div className="half">
-                <h4>Frequency for recalculation</h4>
-                <input placeholder="no more than"></input>
-              </div>
-            </div>
-            <div className="row">
-              <input placeholder="Comments"></input>
-            </div>
-            <div className="row-padding">
-              <Link to="/portfolios" onClick={() => this.setPage("portfolios")}>
-                <button className="continue right margin">Send</button>
-              </Link>
-              <button className="continue right margin">Save</button>
-              <button className="continue right margin">Load Saved form</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   renderSupportedBrowsersPage() {
     return <div className="container">
@@ -2411,63 +1612,6 @@ class App extends Component {
   }
 }
 
-class LoginForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      login: "",
-      password: "",
-    }
-  }
-
-  render() {
-    return (
-      <div className="login-box">
-        <div className="row">
-          <img src={logoBlue} className="logo"/>
-        </div>
-        <h3>{this.state.title}</h3>
-        <b>Email Address:</b>
-        {/* <input type="text" value={this.state.login} onChange={(event) => this.setState({ login: event.target.value })} placeholder="me@example.com" /> */}
-        <input type="text" value={this.state.login} onChange={(event) => this.setState({ login: event.target.value })} placeholder="Enter email" />
-        <b>Password:</b>
-        {/* <input type="password" value={this.state.password} onChange={(event) => this.setState({ password: event.target.value })} placeholder="password" /> */}
-        <input type="password" value={this.state.password} onChange={(event) => this.setState({ password: event.target.value })} placeholder="Enter password" />
-        {/* <b>Or via</b>
-        <div className="row">
-          <button className="facebook"></button>
-          <button className="google"></button>
-        </div> */}
-        <Link to={"/portfolios"}>
-          <button className="login" onClick={() => this.state.tryLogin(this.state.login, this.state.password)}>Log in</button>
-        </Link>
-        <div className="row-padding">
-          <label htmlFor="remember">
-            <input type="checkbox" id="remember" />
-            Remember me
-          </label>
-        </div>
-        <div className="row-padding">
-          <span className="blue-text">Forgot password?</span>
-        </div>
-        <Link to={"/register"} onClick={() => this.state.setPage("register")}>
-          <button className="register">Register</button>
-        </Link>
-        <div className="row text-center">
-          <Link to="/supported-browsers" onClick={() => this.state.setPage("supported-browsers")}>
-            <span className="blue-text">
-              supported browsers
-            </span>
-          </Link>
-        </div>
-        {/* <div className="row-padding">
-          <small>Not registered yet?</small>
-          <Link to={"/register"}>Register</Link>
-        </div> */}
-      </div>
-    );
-  }
-}
 
 function capitalize(string) {
   if (string.toLowerCase() === "id")
