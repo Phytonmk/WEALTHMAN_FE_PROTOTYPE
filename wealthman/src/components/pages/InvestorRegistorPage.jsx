@@ -4,21 +4,24 @@ import { connect } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 
+import auth from '../auth.js';
 import { api, getCookie, setPage } from '../helpers';
 
 // const Eth = require('web3-eth');
+let uploadFile;
 
 class InvestorRegistorPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      first_name: '',
-      last_name: '',
+      name: '',
+      surname: '',
       age: '',
       phone_number: '',
       country: '',
       address: '',
-      wallet_address: ''
+      wallet_address: '',
+      photo_uploaded: ''
     }
   }
   createWallet() {
@@ -35,9 +38,19 @@ class InvestorRegistorPage extends Component {
     // const eth = new Eth(Eth.givenProvider);
     // console.log(eth);
   }
+  uploadPhoto() {
+    api.upload(this.state.register, uploadFile)
+      .then((url) => {
+        this.setState({photo_uploaded: url});
+      })
+      .catch(console.log)
+  }
   saveData() {
     api.post('investor/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
-      .then(() => {setPage('account')})
+      .then(() => {
+        auth();
+        setPage('account')
+      })
       .catch(console.log);
   }
   render() {
@@ -49,13 +62,13 @@ class InvestorRegistorPage extends Component {
               First name
             </div>
             <div className="row">
-               <input type="text" value={this.state.first_name} onChange={(event) => {this.setState({first_name: event.target.value})}} placeholder="First name" />
+               <input type="text" value={this.state.name} onChange={(event) => {this.setState({name: event.target.value})}} placeholder="First name" />
             </div> 
             <div className="row">
               Last name
             </div>
             <div className="row">
-               <input type="text" value={this.state.last_name} onChange={(event) => {this.setState({last_name: event.target.value})}} placeholder="Last name" />
+               <input type="text" value={this.state.surname} onChange={(event) => {this.setState({surname: event.target.value})}} placeholder="Last name" />
             </div> 
             <div className="row">
               Age
@@ -64,11 +77,22 @@ class InvestorRegistorPage extends Component {
                <input type="number" value={this.state.age} onChange={(event) => {this.setState({age: event.target.value})}} placeholder="Age" />
             </div> 
             <div className="row">
-              Upload photo
+              {this.state.photo_uploaded === '' ? 'Upload photo' : 'Uploaded photo'}
             </div>
-            <div className="row">
-               <input type={"text" /*"file"*/} value="" />
-            </div>
+            {this.state.photo_uploaded === '' ?
+              <div>
+                <div className="row">
+                  <input type="file" name="file" onChange={(event) => uploadFile = event.target.files[0]}/>
+                  <br />
+                  <button className="back" onClick={() => this.uploadPhoto()}>Upload</button>
+                  <br />
+                  <br />
+                </div>
+              </div> :
+              <div className="row">
+                <img src={this.state.photo_uploaded} />
+              </div>
+            }
             <div className="row">
               Phone number
             </div>

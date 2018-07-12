@@ -5,14 +5,17 @@ const port = 8080;
 const app = express();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const fileUpload = require('express-fileupload');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(fileUpload());
+app.use('/api/img', express.static('img'));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   // res.setHeader("Access-Control-Allow-Credentials", "true");
   // res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
   next();
 })
 app.use((req, res, next) => {

@@ -6,24 +6,55 @@ import Sortable from '../Sortable.jsx';
 import myDate from '../myDate.jsx';
 import { api, setPage, setCurrency, prevousPage } from '../helpers';
 
+const requests = [
+    {
+      type: "request",
+      id: 0,
+      investor: 0,
+      manager: 6,
+      date: "15:16 12-11-2017",
+      value: 1,
+      currency: "ETH",
+      status: "cancelled",
+    }
+  ]
+
 class RequestsPage extends Component {
   constructor(props) {
     super(props);
   
-    this.state = {};
+    this.state = {requests, managers: [], investors: []};
   }
   componentWillMount() {
+    // console.log('componentWillMount');
+    const component = this;
     api.post('requests')
       .then((res) => {
-        console.log('+++');
-        console.log(res.data);
-        setReduxState({requests: res.data});
+        component.setState({requests: res.data, managers: [], investors: []});
+        for (let request of component.state.requests) {
+          api.get('manager/' + request.manager)
+            .then((res) => {
+              const managers = [...component.state.managers];
+              managers.push(res.data);
+              component.setState({managers});
+            })
+            .catch(console.log);
+          api.get('investor/' + request.investor)
+            .then((res) => {
+              const investors = [...component.state.investors];
+              investors.push(res.data);
+              console.log('data');
+              component.setState({investors});
+            })
+            .catch(console.log);
+        }
       })
-      .catch(e => console.log(e));
+      .catch(console.log);
   }
   render() {
-    var requests = this.props.requests.slice().map((request, index) => {
-      var investor = (this.props.user == 1 ? this.props.investors.find(i => i.id == request.investor) : this.props.managers.find(i => i.id == request.manager)) || {};
+    console.log('render');
+    var requests = this.state.requests.slice().map((request, index) => {
+      var investor = (this.props.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager)) || {};
       var date = new myDate(request.date);
       var registered;
       var daysInSystem;
@@ -31,14 +62,13 @@ class RequestsPage extends Component {
         registered = new myDate(investor.registered);
         daysInSystem = registered.pastMonths();
       }
-
       return {
         type: "request",
         id: request.id,
-        number: "",
-        img: (this.props.user == 1 ? "investor/" : "manager/") + investor.img,
+        number: index,
+        img: '',//(this.props.user == 1 ? "investor/" : "manager/") + investor.img,
         // id_shown: "1000" + investor.id,
-        name: investor.name + " " + investor.surname,
+        name: (investor.name || '-') + ' ' + (investor.surname || ''),
         date: date.getTime(),
         // type_shown: daysInSystem >= 6 ? "old" : "new",
         // days: registered,
@@ -47,7 +77,6 @@ class RequestsPage extends Component {
         status: request.status,
       };
     });
-
     return (
       <div>
         <div className="long-header"></div>

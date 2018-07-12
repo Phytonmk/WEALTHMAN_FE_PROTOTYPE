@@ -21,7 +21,6 @@ class MoneyPage extends Component {
     }
     api.post('get-smart-contract-data', {request: this.props.match.params.id})
       .then(res => {
-        console.log(res.data);
         const _owner = res.data.investor;
         const _manager = res.data.manager;
         const _endTime = 1538784000;

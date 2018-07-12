@@ -11,7 +11,7 @@ const auth = () => {
           setReduxState({user: res.data.usertype});
       })
       .catch((e) => {
-        if (e.code === 403) {
+        if (e.response.status === 403) {
           setCookie('accessToken', '');
           document.location.href = '#';
         } else {

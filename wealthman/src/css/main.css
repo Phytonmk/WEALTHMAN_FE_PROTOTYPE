@@ -986,6 +986,7 @@ ul.token-listings li * {
   line-height: 25px;
   overflow-y: auto;
   float: left;
+  display: inline-block;
   margin-left: 13px;
 }
 ul.token-listings li.titles * {
@@ -993,7 +994,7 @@ ul.token-listings li.titles * {
   color: #48a8da;
 }
 ul.token-listings li .number {
-  width: 20px;
+  width: 25px;
 }
 ul.token-listings li .check {
   width: 60px;
@@ -1108,6 +1109,6 @@ img.graph {
   text-transform: capitalize;
 }
 
-.stocks-sortable .titles div, .stocks-sortable div {
+.stocks-sortable .titles div, .stocks-sortable li div {
   width: 180px !important
 }

@@ -18,8 +18,10 @@ class loginPage extends Component {
       password = this.props.password;
     }
 
+    console.log('try login', login, password)
     api.post('login', {login, password})
       .then((res) =>{
+        console.log(res.data);
         setCookie('accessToken', res.data.accessToken);
         setCookie('usertype', res.data.usertype);
         if (res.data.usertype == 0) {

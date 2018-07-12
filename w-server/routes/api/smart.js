@@ -2,6 +2,7 @@ const Token = require('../../models/accessToken');
 const Investor = require('../../models/Investor');
 const Manager = require('../../models/Manager');
 const Request = require('../../models/Request');
+const Portfolio = require('../../models/Portfolio');
 
 module.exports = (app) => {
   app.post('/api/get-smart-contract-data', async (req, res) => {
@@ -17,7 +18,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({investor: investor.id, id: req.params.id});
+    const request = await Request.findOne({investor: investor.id, id: req.body.request});
     if (request === null) {
       res.status(403);
       res.end('');
@@ -29,6 +30,14 @@ module.exports = (app) => {
       res.end('');
       return;
     }
+    const portfolio = await Portfolio.findOne({request: request.id});
+    if (portfolio === null) {
+      res.status(500);
+      res.end('');
+      return;
+    }
+    portfolio.set({status: 'active'});
+    await portfolio.save();
     console.log(manager, manager.wallet_address);
     res.send({
       manager: manager.wallet_address || 'empty_wallet_address',

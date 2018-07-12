@@ -4,6 +4,12 @@ const PortfolioScheme = mongoose.Schema({
   id: Number,
   request: Number,
   manager: Number,
+  smart_contract: String,
+  instrument: String,
+  fees: Number,
+  value: Number,
+  status: {type: String, default: 'proposed'},
+  cost: Number, 
   currencies: [{
     currency: String,
     percent: Number,

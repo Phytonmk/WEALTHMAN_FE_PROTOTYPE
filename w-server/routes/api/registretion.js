@@ -4,6 +4,7 @@ const Token = require('../../models/accessToken');
 const Investor = require('../../models/Investor');
 const Manager = require('../../models/Manager');
 const Company = require('../../models/Company');
+const fs = require('fs-extra');
 
 const salt = 'super salt';
 
@@ -127,10 +128,92 @@ module.exports = (app) => {
     user.set({type: 1});
     await user.save();
     const managerID = await Manager.countDocuments({});
-    const manager = new Manager(Object.assign(req.body, {user: user.id, id: managerID}));
-    await manager.save();
+    const foundManager = await Manager.findOne({user: user.id});
+    if (foundManager === null) {
+      const manager = new Manager(Object.assign(req.body, {user: user.id, id: managerID}));
+      await manager.save();
+    } else {
+      await Manager.findOneAndUpdate({user: user.id}, req.body);
+    }
     res.status(200);
     res.end();
+  });
+  app.post('/api/photo/investor', async (req, res, next) => {
+    console.log(req.headers);
+    const token = await Token.findOne({token: req.headers.accesstoken});
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    const investor = await Investor.findOne({user: token.user});
+    if (!req.files)
+      return res.status(400).send('No files were uploaded.');
+    const file = req.files.file;
+    await fs.ensureDir(__dirname+ '/../../img/investors/');
+    req.files.file.mv(__dirname+ '/../../img/investors/' + investor.id + '.png', async (err) => {
+      if (err)
+        return res.status(500).send(err);
+      res.send('investors/' + investor.id + '.png');
+      res.status(200);
+      investor.set({img: 'investors/' + investor.id + '.png'});
+      await investor.save();
+      res.end();
+    });
+  });
+  app.post('/api/photo/manager', async (req, res, next) => {
+    console.log(req.headers);
+    const token = await Token.findOne({token: req.headers.accesstoken});
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    let manager = await Manager.findOne({user: token.user});
+    if (manager === null) {
+      const managerID = await Manager.countDocuments({});
+      manager = new Manager(Object.assign(req.body, {user: token.user, id: managerID}));
+    }
+    if (!req.files)
+      return res.status(400).send('No files were uploaded.');
+    const file = req.files.file;
+    await fs.ensureDir(__dirname+ '/../../img/managers/');
+    req.files.file.mv(__dirname+ '/../../img/managers/' + manager.id + '.png', async (err) => {
+      if (err)
+        return res.status(500).send(err);
+      res.send('managers/' + manager.id + '.png');
+      res.status(200);
+      manager.set({img: 'managers/' + manager.id + '.png'});
+      await manager.save();
+      res.end();
+    });
+  });
+  app.post('/api/photo/company', async (req, res, next) => {
+    console.log(req.headers);
+    const token = await Token.findOne({token: req.headers.accesstoken});
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    let company = await Company.findOne({user: token.user});
+    if (company === null) {
+      const companyID = await Company.countDocuments({});
+      const company = new Company(Object.assign(req.body, {user: token.user, id: companyID}));
+    }
+    if (!req.files)
+      return res.status(400).send('No files were uploaded.');
+    const file = req.files.file;
+    await fs.ensureDir(__dirname+ '/../../img/companies/');
+    req.files.file.mv(__dirname+ '/../../img/companies/' + company.id + '.png', async (err) => {
+      if (err)
+        return res.status(500).send(err);
+      res.send('companies/' + company.id + '.png');
+      res.status(200);
+      company.set({img: 'companies/' + company.id + '.png'});
+      await company.save();
+      res.end();
+    });
   });
   app.post('/api/company/data', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -148,8 +231,13 @@ module.exports = (app) => {
     user.set({type: 1});
     await user.save();
     const companyID = await Company.countDocuments({});
-    const company = new Company(Object.assign(req.body, {user: user.id, id: companyID}));
-    await company.save();
+    const foundCompany = await Company.findOne({user: user.id});
+    if (foundCompany === null) {
+      const company = new Company(Object.assign(req.body, {user: user.id, id: companyID}));
+      await company.save();
+    } else {
+      await Company.findOneAndUpdate({user: user.id}, req.body);
+    }
     res.status(200);
     res.end();
   });
@@ -163,8 +251,21 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const token = await Token.findOne({user: user.id});
-    res.send({accessToken: token.token, usertype: user.type});
+    const tokenID = await Token.countDocuments({});
+    const token = genToken(user);
+    const accessToken = new Token({
+      id: tokenID,
+      user: user.id,
+      token
+    });
+    await accessToken.save();
+    console.log('login ok');
+    res.send({accessToken: accessToken.token, usertype: user.type});
+    res.status(200);
+    res.end();
+  });
+  app.post('/api/logout', async (req, res, next) => {
+    await Token.findOneAndRemove({token: req.body.accessToken});
     res.status(200);
     res.end();
   });

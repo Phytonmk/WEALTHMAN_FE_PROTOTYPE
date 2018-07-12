@@ -204,12 +204,14 @@ ul.sortable li p {
 p.cancelled,
 p.declined,
 p.accepted,
+p.waiting,
 p.pending {
   float: right !important;
 }
 p.cancelled::after,
 p.declined::after,
 p.accepted::after,
+p.waiting::after,
 p.pending::after {
   width: 9px;
   height: 9px;
@@ -228,6 +230,9 @@ p.accepted::after {
   background-color: #7eab55;
 }
 p.pending::after {
+  background-color: #f6c143;
+}
+p.waiting::after {
   background-color: #f6c143;
 }
 

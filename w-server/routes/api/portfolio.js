@@ -59,7 +59,6 @@ module.exports = (app) => {
       user = 'investor';
       userID = investor.id;
     }
-    console.log({[user]: userID, id: req.body.request});
     const request = await Request.findOne({id: req.body.request, [user]: userID});
     if (request === null) {
       res.status(404);
@@ -68,11 +67,10 @@ module.exports = (app) => {
     }
     const portfolio = await Portfolio.findOne({request: request.id});
     if (portfolio === null) {
-      res.status(404);
-      res.end('');
-      return;
+      res.send({exists: false})
+    } else {
+      res.send({exists: true, portfolio});
     }
-    res.send(portfolio);
     res.status(200);
     res.end();
   });

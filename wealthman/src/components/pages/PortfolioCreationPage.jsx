@@ -33,7 +33,11 @@ class PortfolioCreationPage extends Component {
       .catch(console.log)
     api.post('get-request/' + this.props.match.params.id)
       .then((res) => {
-        setReduxState({requests: [res.data]});
+        setReduxState({
+          requests: [res.data.request],
+          investor: [res.data.investor],
+          manager: [res.data.manager]
+        });
       })
       .catch(console.log);
     api.post('portfolio/load', {
@@ -42,19 +46,19 @@ class PortfolioCreationPage extends Component {
       .then((res) => {
         stockTableCacheIsOld = true;
         const selectedTokens = [];
-        for (let token of res.data.currencies) {
-          selectedTokens.push(token.currency);
-          this.setState({
-            [token.currency + '-percent']: token.percent,
-            [token.currency + '-amount']: token.amount,
-            [token.currency + '-analysis']: token.analysis,
-            [token.currency + '-comments']: token.comments,
-          })
-        }
-        console.log(this.state);
+        if (res.data.exists)
+          for (let token of res.data.portfolio.currencies) {
+            selectedTokens.push(token.currency);
+            this.setState({
+              [token.currency + '-percent']: token.percent,
+              [token.currency + '-amount']: token.amount,
+              [token.currency + '-analysis']: token.analysis,
+              [token.currency + '-comments']: token.comments,
+            })
+          }
         this.setState({selectedTokens});
       })
-      .catch(e => {e.response.status.code !== 404 && console.log(e)});
+      .catch(console.log);
   }
   removeFromList(name) {
     stockTableCacheIsOld = true;
@@ -141,7 +145,6 @@ class PortfolioCreationPage extends Component {
     if (stockTableCacheIsOld) {
       if (this.state.stocks.length > 0) {
         stockTableCacheIsOld = false;
-        console.log('rebuild');
         stocks = this.state.stocks.map((stock, i) => { return {
           number: i,
           token: stock.title,
@@ -190,6 +193,8 @@ class PortfolioCreationPage extends Component {
         </div>
       </li>
     );
+
+    console.log(this.props.requests);
     var request = this.props.requests.find(r => r.id == this.props.match.params.id);
     if (request === undefined)
       return <p> Loading... </p>

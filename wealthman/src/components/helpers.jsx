@@ -7,7 +7,21 @@ const apiUrl = 'http://localhost:8080/api/';
 
 const api = {
   post: (url, data={}, options) => axios.post(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options),
-  get: (url, data={}, options) => axios.get(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options)
+  get: (url, data={}, options) => axios.get(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options),
+  upload: (url, file) => new Promise((resolve, reject) => {
+    const uploadUrl = apiUrl + 'photo/' + url;
+    const formData = new FormData();
+    formData.append('file', file)
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'accessToken': getCookie('accessToken')
+      }
+    }
+    axios.post(uploadUrl, formData, config)
+      .then((res) => resolve(apiUrl + 'img/' + res.data))
+      .catch(reject);
+  })
 };
 
 const setCookie = (name, value, options) => {

@@ -8,15 +8,23 @@ import { api, getCookie, setPage } from '../helpers';
 
 import auth from '../auth.js';
 
+let uploadFile;
 class ManagerDetailingPage extends Component {
   constructor(props) {
     super(props);
-    const state = {register: ''};
+    const state = {register: '', photo_uploaded: ''};
     for (let q of questions.manager)
       state[q] = ''
     for (let q of questions.company)
       state[q] = ''
     this.state = state;
+  }
+  uploadPhoto() {
+    api.upload(this.state.register, uploadFile)
+      .then((url) => {
+        this.setState({photo_uploaded: url});
+      })
+      .catch(console.log)
   }
   saveData() {
     api.post(this.state.register + '/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
@@ -43,7 +51,7 @@ class ManagerDetailingPage extends Component {
                 <br />
               </div>
               :
-              <div>
+              <div> 
                 {questions[this.state.register].map((question, i) => <div key={i}>
                   <div className="row capitalize">
                     {question.replace(/\_/g, ' ')}
@@ -52,6 +60,20 @@ class ManagerDetailingPage extends Component {
                     <input type="text" value={this.state[question]} onChange={(event) => {this.setState({[question]: event.target.value})}} placeholder={question.replace(/\_/g, ' ')} />
                   </div> 
                 </div>)}
+                {this.state.photo_uploaded === '' ?
+                  <div>
+                    <div className="row">
+                      <input type="file" name="file" onChange={(event) => uploadFile = event.target.files[0]}/>
+                      <br />
+                      <button className="back" onClick={() => this.uploadPhoto()}>Upload</button>
+                      <br />
+                      <br />
+                    </div>
+                  </div> :
+                  <div className="row">
+                    <img src={this.state.photo_uploaded} />
+                  </div>
+                }
                 <div className="row">
                   <button className="back" onClick={() => this.setState({register: ''})}>Back</button>
                   <button className="continue" onClick={() => this.saveData()}>Save data</button>

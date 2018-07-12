@@ -29,7 +29,7 @@ class RequestPage extends Component {
       .catch(console.log);
     api.post('portfolio/load', {request: this.props.match.params.id})
       .then((res) => {
-        const portfolios = res.data.currencies.map(((portfolio, i) => { return {
+        const portfolios = res.data.portfolio.currencies.map(((portfolio, i) => { return {
           number: i,
           currency: portfolio.currency,
           percent: portfolio.percent,
@@ -85,6 +85,7 @@ class RequestPage extends Component {
         class: "comments",
       },
     ]
+    console.log(this.state.portfolios);
     var request = this.props.requests.find(r => r.id == this.props.match.params.id);
     if (request === undefined)
       return <p> Loading... </p>
