@@ -142,6 +142,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
+    console.log('-')
     const  manager = await Manager.findOne({user: token.user});
     if (manager === null) {
       res.status(403);
@@ -153,7 +154,8 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({manager: manager.id, id: req.params.id});
+    console.log('-')
+    const portfolio = await Portfolio.findOne({manager: manager.id, request: req.params.id});
     if (portfolio === null) {
       res.status(403);
       res.end('');

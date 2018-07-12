@@ -25,33 +25,35 @@ class InvestorRegistorPage extends Component {
     }
   }
   createWallet() {
-    if (typeof web3 === 'undefined') {
-      alert('Install Metamusk');
-    } else {
-      const provider = web3.currentProvider;
-      web3.eth.personal.newAccount('pasword')
-        .then(res => console.log(res));
-      // const account = web3.eth.accounts.create();
-      console.log(account);
-    }
-    // console.log(Eth);
-    // const eth = new Eth(Eth.givenProvider);
-    // console.log(eth);
+    api.get('create-wallet')
+      .then(res => {
+        this.setState({
+          wallet_address: res.data.address,
+          privateKey: res.data.privateKey
+        })
+      })
+      .catch(console.log);
   }
   uploadPhoto() {
-    api.upload(this.state.register, uploadFile)
+    api.upload('investor', uploadFile)
       .then((url) => {
         this.setState({photo_uploaded: url});
       })
       .catch(console.log)
   }
   saveData() {
-    api.post('investor/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
-      .then(() => {
-        auth();
-        setPage('account')
-      })
-      .catch(console.log);
+    if (this.state.wallet_address === '')
+      alert('Wallet address field is empty')
+    else
+      api.post('investor/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
+        .then(() => {
+          auth();
+          if (this.props.currentManager === -1)
+            setPage('account');
+          else
+            setPage('kyc');
+        })
+        .catch(console.log);
   }
   render() {
     return (
@@ -90,7 +92,7 @@ class InvestorRegistorPage extends Component {
                 </div>
               </div> :
               <div className="row">
-                <img src={this.state.photo_uploaded} />
+                <img className="uploaded-photo" src={this.state.photo_uploaded} />
               </div>
             }
             <div className="row">
@@ -116,11 +118,17 @@ class InvestorRegistorPage extends Component {
             </div>
             <div className="row">
                <input type="text" value={this.state.wallet_address} onChange={(event) => {this.setState({wallet_address: event.target.value})}} placeholder="Wallet address" />
+            </div>
+            <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+              Your private key, save it to safe place
             </div> 
-            <div className="row">
+            <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+               <input type="text" value={this.state.privateKey}   />
+            </div> 
+            <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
                In case you have not got Ethereum Wallet push the button below
             </div>
-            <div className="row">
+            <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
               <br />
               <button onClick={() => this.createWallet()} className="back">Create Ethereum Wallet</button>
             </div>

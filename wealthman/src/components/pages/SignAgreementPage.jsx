@@ -7,6 +7,11 @@ import ProgressBar from '../ProgressBar.jsx'
 import { api, getCookie, setCookie, newLines, setPage, prevousPage } from '../helpers';
 
 class SignAgreementPage extends Component {
+  constructor(props) {
+    super(props);
+  
+    this.state = {};
+  }
   render() {
     return (
       <div>

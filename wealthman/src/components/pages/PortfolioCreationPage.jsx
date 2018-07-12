@@ -23,8 +23,8 @@ class PortfolioCreationPage extends Component {
       .then((res) => {
         this.setState({stocks: res.data});
         setReduxState({tokens: res.data.map(token => { return {
-          name: token.title,
-          symbol: token.title,
+          name: token.name,
+          symbol: token.name,
           price_usd: 1,
           price_btc: token.volume,
           market_cap_usd: 1
@@ -86,7 +86,8 @@ class PortfolioCreationPage extends Component {
       .then(() => {
         if (typeof callback === 'function')
           callback();
-        setPage('requests');
+        else
+          setPage('requests');
       })
       .catch(console.log);
 
@@ -94,17 +95,18 @@ class PortfolioCreationPage extends Component {
   send() {
     this.save(() => {
       api.post('pending-request/' + this.props.match.params.id)
+        .then(() => setPage('requests'))
         .catch(console.log);
     })
   }
   render() {
     var set = "USD";
     var titles = [
-      {
-        title: "#",
-        tooltip: "number",
-        class: "number",
-      },
+      // {
+      //   title: "#",
+      //   tooltip: "number",
+      //   class: "number",
+      // },
       {
         title: "Token",
         tooltip: "Token",
@@ -125,11 +127,11 @@ class PortfolioCreationPage extends Component {
         tooltip: "Dayli high price, BTC",
         class: "dhp",
       },
-      {
-        title: "DLP",
-        tooltip: "Dayli low price, BTC",
-        class: "dlpp",
-      },
+      // {
+      //   title: "DLP",
+      //   tooltip: "Dayli low price, BTC",
+      //   class: "dlpp",
+      // },
       {
         title: "Volume",
         tooltip: "Volume, BTC",
@@ -141,19 +143,19 @@ class PortfolioCreationPage extends Component {
         class: "add",
       },
     ];
-
     if (stockTableCacheIsOld) {
       if (this.state.stocks.length > 0) {
         stockTableCacheIsOld = false;
+        console.log(this.state.selectedTokens);
         stocks = this.state.stocks.map((stock, i) => { return {
-          number: i,
-          token: stock.title,
+          // number: i,
+          token: stock.name,
           lastprice: stock.last_price,
           change24: stock.change_percnt,
           dhp: stock.high_price,
-          dlpp: stock.low_price,
+          // dlp: stock.low_price,
           volume: stock.volume,
-          add: this.state.selectedTokens.includes(stock.title) ? 'added' : 'add',
+          add: this.state.selectedTokens.includes(stock.name) ? 'added' : 'add',
           noLink: true,
           onClick: (event, listings) => {
             if (event.target.textContent === 'add') {
@@ -166,6 +168,7 @@ class PortfolioCreationPage extends Component {
         }});
       }
     }
+  console.log(this.props.tokens);
   var tokens = this.props.tokens.map((token, index) => <li key={index} style={this.state.selectedTokens.includes(token.name) ? {display: 'block'} : {display: 'none'}}>
         <div className="number">
           {index + 1}
@@ -233,7 +236,7 @@ class PortfolioCreationPage extends Component {
             </div>
             <div className="row-padding">
               <Link to={"/chat"}>
-                <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+                <button className="continue" onClick={() => setPage("chat")}>Start chat</button>
               </Link>
             </div>
             <p>Target value: {request.value}{request.currency}</p>
@@ -310,7 +313,7 @@ class PortfolioCreationPage extends Component {
               {/*<button className="continue right margin">Load Saved form</button>*/}
             </div>
           </div>
-          <div className="box">
+          <div className="box" style={{maxHeight: 500, overflowY: 'auto'}}>
             {this.state.stocks.length > 0 && <div className="stocks-sortable"><Sortable
               titles={titles}
               listings={stocks}

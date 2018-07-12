@@ -35,6 +35,11 @@ import PortfolioCreationPage from './components/pages/PortfolioCreationPage';
 import SignAgreementPage from './components/pages/SignAgreementPage';
 import MoneyPage from './components/pages/MoneyPage';
 import AccountPage from './components/pages/AccountPage';
+import StaticFormPage from './components/pages/StaticFormPage';
+import DashboardPage from './components/pages/DashboardPage';
+import PortfoliosPage from './components/pages/PortfoliosPage';
+import PortfolioPage from './components/pages/PortfolioPage';
+import WithdrawPage from './components/pages/WithdrawPage';
 
 // 
 
@@ -140,6 +145,7 @@ class App extends Component {
   renderPage() {
     return (
         <Switch>
+
           <Route exact path="/" component={ManagersPage}/>
           <Route path="/login" component={loginPage}/>
           <Route path="/totallydifferentlogin"  component={login2Page}/>
@@ -147,6 +153,7 @@ class App extends Component {
           <Route path="/about" render={() => this.renderAboutUsPage()}/>
           <Route path="/origin" render={() => this.renderOriginPage()}/>
           <Route path="/invest" render={() => this.renderInvestPage()}/>
+          <Route path="/dashboard" component={DashboardPage}/>
 
           <Route path="/legal" render={() => this.renderLegalPage()}/>
           <Route path="/methodology" render={() => this.renderMethodologyPage()}/>
@@ -156,15 +163,15 @@ class App extends Component {
 
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
-          <Route path="/portfolio/:id" render={({match}) => this.renderPortfolioPage(match)}/>
+          <Route path="/portfolio/:id" component={PortfolioPage}/>
           <Route path="/request/:id" component={RequestPage}/>
 
-          <Route path="/portfolios" render={() => this.renderPortfoliosPage()}/>
+          <Route path="/portfolios" component={PortfoliosPage}/>
           <Route path="/managers" component={ManagersPage}/>
           <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
           <Route path="/requests" component={RequestsPage}/>
 
-          <Route path="/static form" render={() => this.renderStaticFormPage()}/>
+          <Route path="/static form" component={StaticFormPage}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
           <Route path="/agreement" component={AgreementPage}/>
           <Route path="/signagreement/:id" component={SignAgreementPage}/>
@@ -194,374 +201,11 @@ class App extends Component {
 
           <Route path="/manager-reg" component={ManagerRegPage}/>
           <Route path="/manager-detailing" component={ManagerDetailingPage}/>
+          <Route path="/withdraw" component={WithdrawPage}/>
         </Switch>
     );
   }
 
-
-
-  renderPortfoliosPage() {
-    var currentPage;
-    var currencies = this.state.currentCurrencyPrices.map((c, i) =>
-      <option key={i} value={c.name}>{c.name}</option>
-    );
-    var currentCurrency = this.state.currentCurrencyPrices.find(c => c.name == this.state.currentCurrency);
-    var totalValue = this.state.portfolios
-      .map(p => {
-        var price = this.state.currentCurrencyPrices.find(c => c.name == p.currency).price;
-        // return (p.value - p.cost) * price;
-        return p.value * price;
-      })
-      .reduce((a, b) => a + b);
-
-    var titles = [
-      {
-        title: "#",
-        tooltip: "number",
-        class: "number",
-      },
-      {
-        title: "portfolio",
-        tooltip: "number of portfolio",
-        class: "number-portfolio",
-      },
-      {
-        title: "smart-cntract",
-         tooltip: "number of smart contract",
-        class: "number-smart",
-      },
-      {
-        title: "instrument",
-        tooltip: "name of algorythm",
-        class: "instrument",
-      },
-      {
-        title: "profit",
-        tooltip: "current profit",
-        class: "profit",
-      },
-      {
-        title: "value",
-        tooltip: "value of portfolio",
-        class: "value",
-      },
-      {
-        title: "status",
-        tooltip: "status of portfolio",
-        class: "status",
-      },
-      {
-        title: "cost",
-        tooltip: "commision",
-        class: "cost",
-      },
-    ];
-    var portfolios = this.state.portfolios.map(portfolio => {
-      var investor = this.state.investors.find(inv => inv.id == portfolio.investor);
-      var manager = this.state.managers.find(m => m.id == portfolio.manager);
-      var alg = this.state.algorythms.find(alg => alg.id == portfolio.alg);
-      var price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
-
-      return {
-        type: "portfolio",
-        id: portfolio.id,
-        number: "",
-        number_portfolio: "1000" + portfolio.id,
-        number_smart: "23" + (portfolio.id + 3) + (portfolio.id * 2) + "7" + ((portfolio.id + 1) * 7),
-        instrument: alg.name,
-        profit: "тут будет график",//portfolio.profit,
-        // currency: portfolio.currency,
-        // percent_portfolio: (portfolio.value * price / totalValue * 100).toFixed(1),
-        // amount: portfolio.value,
-        value: (portfolio.value * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        status: portfolio.status,
-        cost: "тут будет график",//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        // analysis: "link.com",
-        // comments: "comment",
-      };
-    });
-
-    var statistics;
-
-    switch (this.state.currentPortfoliosPage) {
-      case "active":
-        currentPage = (
-          <div className="box">
-            <h4>Active Portfolios</h4>
-            <Sortable
-              titles={titles}
-              listings={portfolios}
-              setPage={this.setPage.bind(this)}
-              currencySelector={
-                <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                  {
-                    this.state.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            />
-          </div>
-        );
-        break;
-      case "archived":
-        currentPage = (
-          <div className="box">
-            <h4>Archived Portfolios</h4>
-            <Sortable
-              titles={titles}
-              listings={portfolios}
-              setPage={this.setPage.bind(this)}
-              currencySelector={
-                <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                  {
-                    this.state.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            />
-          </div>
-        );
-        break;
-      case "statistics":
-        currentPage = (
-          <div className="box">
-            <h4>Statistics</h4>
-            {statistics}
-          </div>
-        );
-        break;
-      /* NEW ONES */
-      case "proposed":
-        currentPage = (
-          <div className="box">
-            <h4>Proposed Portfolios</h4>
-            <Sortable
-              titles={titles}
-              listings={portfolios}
-              setPage={this.setPage.bind(this)}
-              currencySelector={
-                <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                  {
-                    this.state.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            />
-          </div>
-        );
-        break;
-        case "revision":
-          currentPage = (
-            <div className="box">
-              <h4>Portfolios on revision</h4>
-              <Sortable
-                titles={titles}
-                listings={portfolios}
-                setPage={this.setPage.bind(this)}
-                currencySelector={
-                  <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                    {
-                      this.state.currentCurrencyPrices.map((c, i) =>
-                        <option key={i} value={c.name}>{c.name}</option>
-                      )
-                    }
-                  </select>
-                }
-              />
-            </div>
-          );
-          break;
-          case "recalculated":
-            currentPage = (
-              <div className="box">
-                <h4>Recalculated Portfolios</h4>
-                <Sortable
-                  titles={titles}
-                  listings={portfolios}
-                  setPage={this.setPage.bind(this)}
-                  currencySelector={
-                    <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                      {
-                        this.state.currentCurrencyPrices.map((c, i) =>
-                          <option key={i} value={c.name}>{c.name}</option>
-                        )
-                      }
-                    </select>
-                  }
-                />
-              </div>
-            );
-            break;
-    }
-
-    return (
-      <div>
-        <div className="second-header">
-          <div className="container">
-            <div className="title">
-              <h2>My Portfolios</h2>
-              <p className="grey">Total value</p>
-            </div>
-            <div className="description">
-              <h2>{(totalValue / currentCurrency.price).toFixed(3) + " " + currentCurrency.name}</h2>
-              <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                {currencies}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="container">
-          <div className="upper-tab">
-            <div className="box">
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "proposed" })}>Proposed (Initial)</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "active" })}>Active</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "revision" })}>Revision</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "recalculated" })}>Recalculated</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "archived" })}>Archived</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "statistics" })}>Statistics</button>
-            </div>
-          </div>
-          {currentPage}
-        </div>
-      </div>
-    );
-  }
-
- 
-
-  // renderAccountPage() {
-  //   var changed = false;
-  //   var accountPage;
-  //   switch (this.state.currentAccountPage) {
-  //     case "personal":
-  //       accountPage = (
-  //         <div className="box">
-  //           {/* <div className="half padding-side">
-  //             <h3 className="high">Personal Info</h3>
-  //             <input type="text" placeholder="First Name"/>
-  //             <input type="text" placeholder="Last Name"/>
-  //             <input type="text" placeholder="day of birth"/>
-  //             <input type="text" placeholder="month"/>
-  //             <input type="text" placeholder="year"/>
-  //             <input type="text" placeholder="nationality"/>
-  //           </div> */}
-  //           <div className="half padding-side">
-  //             <h3 className="high">Contact information</h3>
-  //             <input type="text" placeholder="email"/>
-  //             <input type="text" placeholder="phone number"/>
-  //             <h3 className="high">Change password</h3>
-  //             <input type="password" placeholder="old password"/>
-  //             <input type="password" placeholder="new password"/>
-  //             <input type="password" placeholder="repeat new password"/>
-  //           </div>
-  //           <div className="row-padding">
-  //             <button className={changed ? "continue" : "continue"}>Save changes</button>
-  //           </div>
-  //         </div>
-  //       );
-  //       break;
-  //       case "kyc":
-  //         accountPage = (
-  //           <div className="box">
-  //             <div className="half padding-side">
-  //               <h3 className="high">Personal Info</h3>
-  //               <input type="text" placeholder="First Name"/>
-  //               <input type="text" placeholder="Last Name"/>
-  //               <input type="text" placeholder="phone number"/>
-  //               <input type="text" placeholder="day of birth"/>
-  //               <input type="text" placeholder="month"/>
-  //               <input type="text" placeholder="year"/>
-  //               <input type="text" placeholder="nationality"/>
-  //             </div>
-  //             <div className="half padding-side">
-  //               <h3 className="high">Address Information</h3>
-  //               <input type="text" placeholder="Street Address"/>
-  //               <input type="text" placeholder="Postal Code"/>
-  //               <input type="text" placeholder="City"/>
-  //               <input type="text" placeholder="State"/>
-  //               <input type="text" placeholder="Country"/>
-  //             </div>
-  //             {/* <div className="row-padding">
-  //               <button className={changed ? "continue" : "continue"}>Save changes</button>
-  //             </div> */}
-  //               <div className="row padding-side">
-  //                 <h3 className="high">ID or Passport</h3>
-  //                 <p>Please upload a photo or a scan of the following:</p>
-  //                 <div className="document-box">
-  //                   <h3 className="text-center">ID or Passport</h3>
-  //                   <div className="row">
-  //                     <button className="continue">UPLOAD DOCUMENT</button>
-  //                   </div>
-  //                 </div>
-  //                 <div className="document-box">
-  //                   <h3 className="text-center">Selfie holding ID or Passport</h3>
-  //                   <div className="row">
-  //                     <button className="continue">UPLOAD DOCUMENT</button>
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //           </div>
-  //         );
-  //         break;
-  //     case "risk":
-  //       accountPage = (
-  //         <div className="box">
-  //           <h3>Risk Tollerance Profile</h3>
-  //           Your tisk profile: 25%;
-  //           <div className="row-padding">
-  //             <button className="continue">Change results</button>
-  //           </div>
-  //         </div>
-  //       );
-  //       break;
-  //     case "inv":
-  //       accountPage = (
-  //         <div className="box">
-  //           <h3>Investment goals and strategy aims</h3>
-  //           You are investing for:
-  //           <ul>
-  //             <li>living</li>
-  //             <li>journeys</li>
-  //           </ul>
-  //           <div className="row-padding">
-  //             <button className="continue">Change results</button>
-  //           </div>
-  //         </div>
-  //       );
-  //       break;
-  //   }
-  //   return (
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       <div className="container">
-  //         <h1>Account</h1>
-  //         <div className="first-tab">
-  //           {accountPage}
-  //         </div>
-  //         <div className="second-tab">
-  //           <div className="box">
-  //             {/* <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "personal" })}>Personal Info</button>
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "address" })}>Address details</button>
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "ID" })}>ID confirmation</button>
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "residency" })}>Residency</button>
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "forms" })}>Fill forms</button>
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "kyc" })}>Know Your Criminals</button> */}
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "personal" })}>Account Information</button>
-  //             {this.state.user == 1 ? "" : <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "risk" })}>Risk Tollerance Profile</button>}
-  //             {this.state.user == 1 ? "" : <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "inv" })}>Investment goals and strategy aims</button>}
-  //             <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "kyc" })}>Detailed information (kyc)</button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   renderManagerAccountPage() {
     this.setPage("account");
@@ -710,45 +354,6 @@ class App extends Component {
     )
   }
 
-  renderStaticFormPage() {
-    var form = this.state.staticQuestions.map((question, i) =>
-      <div key={i} className="form-question">
-        <h4>{question.question}</h4>
-        {
-          question.answers.map((answer, i) =>
-          <div key={i} className="answer">
-            <input type="radio" id={answer} onChange={() => formAnswers[question] = answer} />
-            <label htmlFor={answer}>{answer}</label>
-          </div>
-        )
-      }
-      </div>
-    );
-
-    return (
-      <div>
-        {/* {this.renderBackButton()} */}
-        {this.renderProgressBar()}
-        <div className="container">
-          <div className="box">
-            <div className="container">
-              <h2>Risk Tolerance Profile Questions</h2>
-              <h4 className="grey">Asked once</h4>
-              {form}
-              <div className="row-padding">
-                <Link to={"/agreement"}>
-                  <button className="back" onClick={() => this.prevousPage()}>Back</button>
-                </Link>
-                <Link to={"/dynamic form"}>
-                  <button className="continue" onClick={() => this.setPage("dynamic form")}>Continue</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   renderDynamicFormPage() {
     var form = this.state.dynamicQuestions.map((question, i) =>
       <div key={i} className="form-question">
@@ -796,41 +401,6 @@ class App extends Component {
   }
 
 
-  // renderSignAgreementPage() {
-  //   return (
-  //     <div>
-  //       {this.renderProgressBar()}
-  //       <div className="container">
-  //         <div className="box">
-  //           <div className="container">
-  //             <h2>Sign Agreement</h2>
-  //             <p>Please download and fill this form. Then scan and upload it back to the site.</p>
-  //             <div className="document-box">
-  //               <h3 className="text-center">Agreement form</h3>
-  //               <div className="row">
-  //                 <button className="continue">DOWNLOAD FILE</button>
-  //               </div>
-  //             </div>
-  //             <div className="document-box">
-  //               <h3 className="text-center">Filled Agreement form</h3>
-  //               <div className="row">
-  //                 <button className="continue">UPLOAD FILE</button>
-  //               </div>
-  //             </div>
-  //             <div className="row-padding">
-  //               <Link to={"/accept"}>
-  //                 <button className="back" onClick={() => this.prevousPage()}>Back</button>
-  //               </Link>
-  //               <Link to={"/money"}>
-  //                 <button className="continue" onClick={() => this.setPage("KYC")}>Continue</button>
-  //               </Link>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   renderManagerFormPage() {
     // if (this.state.algorythms[this.state.currentAlgorythm]) {
@@ -1052,56 +622,6 @@ class App extends Component {
     );
   }
 
-  // renderMoneyPage() {
-  //   return (
-  //     <div>
-  //       {/* {this.renderBackButton()} */}
-  //       {this.renderProgressBar()}
-  //       <div className="container">
-  //         <div className="box">
-  //           <h2>Send Money</h2>
-  //           <div className="row">
-  //             <button className="show-code" onClick={() => setReduxState({showCode: !this.state.showCode})}>{this.state.showCode ? "Hide" : "Show"} Smart-contract code</button>
-  //             <div className={"code-container " + (this.state.showCode ? "show" : "hide")}>
-  //               {newLines(this.state.code)}
-  //             </div>
-  //           </div>
-  //           <div className="row">
-  //             <ol type="1">
-  //               <li>
-  //                 Please choose your Ethereum wallet
-  //               </li>
-  //               <li>
-  //                 Check that you have enough money on it to invest
-  //               </li>
-  //               <li>
-  //                 Copy this address of smart-contract <b className="eth-address">0x3a8b4013eb7bb370d2fd4e2edbdaf6fd8af6a862</b>
-  //               </li>
-  //               <li>
-  //                 Go to your Ethereum wallet and paste the address of smart-contract as destination address
-  //               </li>
-  //               <li>
-  //                 Submit the money transfer
-  //               </li>
-  //             </ol>
-  //           </div>
-  //           <div className="row-padding">
-  //             As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
-  //           </div>
-  //           <div className="row-padding">
-  //             <Link to="/signagreement">
-  //               <button className="back" onClick={() => this.prevousPage()}>Back</button>
-  //             </Link>
-  //             <Link to="/portfolios">
-  //               <button className="continue" onClick={() => this.setPage("portfolios")}>Finish</button>
-  //             </Link>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   renderManagerControlPanelPage() {
     return (
       <div className="container">
@@ -1114,110 +634,7 @@ class App extends Component {
   }
 
  
-  renderPortfolioPage(match) {
-    var portfolio = this.state.portfolios.find(p => p.id == match.params.id);
-    var investor = this.state.investors.find(i => i.id == portfolio.investor);
-    var manager = this.state.managers.find(m => m.id == portfolio.manager);
-    var image = this.state.user == 0 ? <img src={"../manager/" + manager.img} className="avatar" /> : <img src={"../investor/" + investor.img} className="avatar" />;
-    var info;
-    if (this.state.user == 0)
-      info = (
-        <div>
-          <h3>Manager</h3>
-          <h4>{manager.name} {manager.surname}</h4>
-          {/* <p>New client. 1   days on platform</p> */}
-          <p>{manager.age} years old</p>
-          <p>manager id 50{manager.id}00{manager.id}</p>
-        </div>
-      );
-    else
-    info = (
-      <div>
-        <h3>Investor</h3>
-        <h4>{investor.name} {investor.surname}</h4>
-        <p>New client. 1   days on platform</p>
-        <p>{investor.age} years old</p>
-        <p>client id 50{investor.id}00{investor.id}</p>
-      </div>
-    );
-
-    var totalValue = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price * portfolio.value;
-    var currentCurrency = this.state.currentCurrencyPrices.find(c => c.name == this.state.currentCurrency);
-    var currencies = this.state.currentCurrencyPrices.map((c, i) =>
-      <option key={i} value={c.name}>{c.name}</option>
-    );
-    var currenciesList = this.state.portfolioCurrencies.map(currency => {
-      var price = this.state.currentCurrencyPrices.find(c => c.name == currency.currency).price;
-
-      return {
-        id: currency.id,
-        type: currency.type,
-        number: "",
-        currency: currency.currency,
-        percent_portfolio: currency.percent,
-        amount: (currency.percent / 100 * totalValue / price).toFixed(3),
-        value: (currency.percent / 100 * totalValue / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        analysis: currency.analysis,
-        comments: currency.comments,
-      };
-    });
-
-    return (
-      <div>
-        <div className="second-header">
-          <div className="container">
-            <div className="title">
-              <h2>Porfolio</h2>
-              <p className="grey">Total value</p>
-            </div>
-            <div className="description">
-              <h2>{(totalValue / currentCurrency.price).toFixed(3) + " " + currentCurrency.name}</h2>
-              <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                {currencies}
-              </select>
-            </div>
-          </div>
-        </div>
-        {/* {this.renderBackButton()} */}
-        <div className="container">
-          <div className="box">
-            <div className="circle left">
-              {image}
-            </div>
-            <div className="third">
-              {info}
-            </div>
-            <div className="row-padding">
-              <button className="continue">Start chat</button>
-            </div>
-            <p>Target value: {portfolio.value}{portfolio.currency}</p>
-            <p>Term 4 month</p>
-            <p>Risk profile: 25%</p>
-            <p>Target earning rate</p>
-            {/* <img className="portfolio" src="../portfolio.jpg" />
-            <div className="row-padding">
-              <button className="back right" onClick={() => this.prevousPage()}>Delete</button>
-            </div> */}
-          </div>
-          <div className="box">
-            <Sortable
-              listings={currenciesList}
-              setPage={this.setPage.bind(this)}
-              currencySelector={
-                <select value={this.state.currentCurrency} onChange={this.setCurrency.bind(this)}>
-                  {
-                    this.state.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  
   renderAlgorythmsPage() {
     var currentPage;
     switch(this.state.currentAlgorythmsPage) {

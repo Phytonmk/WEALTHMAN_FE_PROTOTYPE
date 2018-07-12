@@ -118,7 +118,7 @@ class RequestPage extends Component {
           <div className="first-tab">
             <div className="box">
               <div className="circle left">
-                <img src={("../manager/") + investor.img} className="avatar" />
+                <img src={''} className="avatar" />
               </div>
               <div className="third">
                 <h4>{investor.name} {investor.surname}</h4>
@@ -184,10 +184,10 @@ class RequestPage extends Component {
                 <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
               </Link>
             </div>
-            <p>Target value: {request.value}{request.currency}</p>
-            <p>Term 4 month</p>
-            <p>Risk profile: 25%</p>
-            <p>Target earning rate</p>
+            {/*<p>Target value: {request.value}{request.currency}</p>
+              <p>Term 4 month</p>
+              <p>Risk profile: 25%</p>
+              <p>Target earning rate</p>*/}
             <div className="row-padding">
               <Link to={"/portfoliocreation/" + this.props.match.params.id} onClick={() => this.setPage("portfoliocreation")}>
                 <button className="continue right">Create portfolio</button>

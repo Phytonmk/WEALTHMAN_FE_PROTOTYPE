@@ -94,7 +94,7 @@ class ManagersPage extends Component {
         type: "manager",
         id: manager.id,
         number: "",
-        img: "manager/" + manager.img,
+        img: manager.img ? api.imgUrl(manager.img) : '',
         name: manager.name + " " + manager.surname,
         rating: manager.rating,
         clients: manager.clients,

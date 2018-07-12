@@ -6,17 +6,18 @@ import ProgressBar from '../ProgressBar.jsx'
 
 import { api, getCookie, setCookie, newLines, setPage, prevousPage } from '../helpers';
 
-import { bytecode, contract, _exchanger, _admin } from '../smart-contract-data';
+import { abi, bytecode, contract, _exchanger, _admin } from '../smart-contract-data';
 
 class MoneyPage extends Component {
   constructor(props) {
     super(props);
-  
-    this.state = {};
+    this.state = {
+      status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected
+      contractAddress: ''
+    };
   }
-  componentWillMount() {
+  openMetamask() {
     if (typeof web3 === 'undefined') {
-      alert('Metamask not found');
       return;
     }
     api.post('get-smart-contract-data', {request: this.props.match.params.id})
@@ -50,15 +51,87 @@ class MoneyPage extends Component {
           data: bytecode,
           gas: '4700000'
          },
-         (e, contract) => {
-           if (typeof contract.address !== 'undefined') {
-             console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-           }
+         (error, contract) => {
+            if (error) {
+              console.log(error);
+              this.setState({status: 3});
+            } else if (typeof contract.address !== 'undefined') {
+              console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+              this.setState({status: 2, contractAddress: contract.address});
+              api.post('set-smart-contract', {contractAddress: contract.address, request: this.props.match.params.id})
+                .then(() => console.log('ok'))
+                .catch(console.log);
+            } else {
+              console.log(`contract: ${contract.address}`);
+              this.setState({status: 1});
+            }
          }
         )
       }).catch(console.log);
   }
+  finish() {
+    // api.post('portfolio-formating', {request: this.props.match.params.id})
+    //   .then(() => {setPage('portfolios')})
+    //   .catch(console.log);
+    web3 = new Web3(web3.currentProvider);
+    var contract = web3.eth.contract(abi);
+    var contractInstance = contract.at('0x38C937dF579406C9F2725d846e50b91880575A65');
+    var a =contractInstance.trade(['0x0'], ["0xD626F6CdF102b18fc9FF16013443428490EC4E53"], ['1000'],function(err, transactionHash) {
+      if (err)
+        console.log(err);
+      else
+        setPage('portfolios')
+    })
+  
+  }
   render() {
+    if (this.state.status === 0) {
+      return <div className="container">
+            <div className="box">
+              <h2> Contract deploying </h2>
+              <div className="row">
+                <ol type="1">
+                  <li>
+                    To deploy smart contract install MetaMask in your current browser
+                  </li>
+                  <li>
+                    Be sure that you are logged in MetaMask
+                  </li>
+                  <li>
+                    Be sure that you have enough Ethereum to pay commission
+                  </li>
+                  <li>
+                    Push the button below
+                  </li>
+                </ol>
+                <div className="row">
+                  <button className="continue" onClick={() => this.openMetamask()}>Open MetaMask</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    }
+    if (this.state.status === 1) {
+      if (typeof web3 === 'undefined')
+        return  <div className="container">
+            <div className="box">
+              <h2> Install MetaMask and reload page </h2>
+            </div>
+          </div>
+      else
+        return <div className="container">
+            <div className="box">
+              <h2> Waiting... </h2>
+            </div>
+          </div>
+    }
+    if (this.state.status === 3) {
+      return <div className="container">
+            <div className="box">
+              <h2> Error occured, maybe you rejected contract </h2>
+            </div>
+          </div>
+    }
     return (
       <div>
         {/* {this.renderBackButton()} */}
@@ -80,7 +153,7 @@ class MoneyPage extends Component {
                   Check that you have enough money on it to invest
                 </li>
                 <li>
-                  Copy this address of smart-contract <b className="eth-address">0x3a8b4013eb7bb370d2fd4e2edbdaf6fd8af6a862</b>
+                  Copy this address of smart-contract <b className="eth-address">{this.state.contractAddress}</b>
                 </li>
                 <li>
                   Go to your Ethereum wallet and paste the address of smart-contract as destination address
@@ -94,12 +167,8 @@ class MoneyPage extends Component {
               As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
             </div>
             <div className="row-padding">
-              <Link to="/signagreement">
-                <button className="back" onClick={() => this.prevousPage()}>Back</button>
-              </Link>
-              <Link to="/portfolios">
-                <button className="continue" onClick={() => this.setPage("portfolios")}>Finish</button>
-              </Link>
+              <button className="back" onClick={() => prevousPage()}>Back</button>
+              <button className="continue" onClick={() => this.finish()}>Finish</button>
             </div>
           </div>
         </div>

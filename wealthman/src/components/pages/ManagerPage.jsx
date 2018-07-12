@@ -53,7 +53,7 @@ class ManagerPage extends Component {
               <div className="cover"></div>
               <div className="info">
                 <div className="circle">
-                  <img src={"manager/" + manager.img} className="avatar" />
+                  <img src={manager.img ? api.imgUrl(manager.img) : ''} className="avatar" />
                 </div>
                 <h2 className="text-center">{manager.name} {manager.surname}</h2>
                 <h4 className="text-center">Age {manager.age}</h4>

@@ -12,12 +12,22 @@ let uploadFile;
 class ManagerDetailingPage extends Component {
   constructor(props) {
     super(props);
-    const state = {register: '', photo_uploaded: ''};
+    const state = {register: '', photo_uploaded: '', privateKey: '', wallet_address: ''};
     for (let q of questions.manager)
       state[q] = ''
     for (let q of questions.company)
       state[q] = ''
     this.state = state;
+  }
+  createWallet() {
+    api.get('create-wallet')
+      .then(res => {
+        this.setState({
+          wallet_address: res.data.address,
+          privateKey: res.data.privateKey
+        })
+      })
+      .catch(console.log);
   }
   uploadPhoto() {
     api.upload(this.state.register, uploadFile)
@@ -27,9 +37,12 @@ class ManagerDetailingPage extends Component {
       .catch(console.log)
   }
   saveData() {
-    api.post(this.state.register + '/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
-      .then(() => {setPage('requests'); auth()})
-      .catch(console.log);
+    if (this.state.wallet_address === '' && this.state.register === 'manager')
+      alert('Wallet address field is empty')
+    else
+      api.post(this.state.register + '/data', Object.assign({accessToken: getCookie('accessToken')}, this.state))
+        .then(() => {setPage('requests'); auth()})
+        .catch(console.log);
   }
   render() {
     console.log(this.state.register);
@@ -71,8 +84,33 @@ class ManagerDetailingPage extends Component {
                     </div>
                   </div> :
                   <div className="row">
-                    <img src={this.state.photo_uploaded} />
+                    <img className="uploaded-photo" src={this.state.photo_uploaded} />
                   </div>
+                }
+                {this.state.register === 'manager' ?
+                <div>
+                  <div className="row">
+                    Wallet address
+                  </div>
+                  <div className="row">
+                     <input type="text" value={this.state.wallet_address} onChange={(event) => {this.setState({wallet_address: event.target.value})}} placeholder="Wallet address" />
+                  </div>
+                  <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+                    Your private key, save it to safe place
+                  </div> 
+                  <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+                     <input type="text" value={this.state.privateKey}   />
+                  </div> 
+                  <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
+                     In case you have not got Ethereum Wallet push the button below
+                  </div>
+                  <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
+                    <br />
+                    <button onClick={() => this.createWallet()} className="back">Create Ethereum Wallet</button>
+                    <br />
+                    <br />
+                  </div> 
+                </div>: ''
                 }
                 <div className="row">
                   <button className="back" onClick={() => this.setState({register: ''})}>Back</button>
@@ -103,8 +141,7 @@ const questions = {
     'tweeter',
     'fb',
     'linkedin',
-    'about',
-    'wallet_address'
+    'about'
   ],
   company: [
     'company',

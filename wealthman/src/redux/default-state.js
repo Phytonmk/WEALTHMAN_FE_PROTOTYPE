@@ -271,6 +271,9 @@ contract Portfolio {
 
   loggedInvestorLinks: [
     {
+      label: "dashboard",
+      link: "dashboard"
+    }, {
       label: "my requests",
       link: "requests"
     }, {
@@ -289,6 +292,9 @@ contract Portfolio {
   ],
   loggedManagerLinks: [
     {
+      label: "dashboard",
+      link: "dashboard"
+    }, {
       label: "my requests",
       link: "requests"
     }, {

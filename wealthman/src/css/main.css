@@ -32,7 +32,7 @@
   src: url("../fonts/Gilroy/GilroyExtraBold.woff");
 }
 
-* {
+body, html {
   box-sizing: border-box;
   font-family: "Gilroy", "Calibre", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -197,7 +197,7 @@ article.page {
 .box input[type="password"],
 .login-box input[type="password"] {
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   height: 40px;
   padding: 8px 12px;
   border: 1px solid #b7b7c0;
@@ -513,12 +513,13 @@ header.header a.invest:hover {
 
 .form-question {
   width: 100%;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   margin: 20px;
 }
 .form-question .answer {
   width: calc(100% - 40px);
-  height: 50px;
+  height: auto;
+  min-height: 50px;
   padding-left: 10px;
   padding-top: 10px;
   border-top: 1px solid #e3e3e3;
@@ -700,11 +701,11 @@ p.grey {
 .progress-bar {
   width: 100%;
   height: 5px;
-  background-color: #f6f6f6;
+  background-color: #5ad77d;
 }
 .progress-bar .progress {
   height: 5px;
-  background-color: #8ec4ae;
+  background-color: #5ad77d;
 }
 
 .company {
@@ -1111,4 +1112,18 @@ img.graph {
 
 .stocks-sortable .titles div, .stocks-sortable li div {
   width: 180px !important
+}
+
+.uploaded-photo {
+  max-height: 200px;
+  max-width: 200px;
+}
+
+.token-listings input[type=number] {
+  max-width: 40px !important;
+  vertical-align: top;
+}
+.token-listings input[type=text] {
+  max-width: 150px !important;
+  vertical-align: top;
 }

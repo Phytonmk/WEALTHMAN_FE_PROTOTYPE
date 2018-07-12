@@ -23,12 +23,14 @@ const genToken = (user) => {
   return token;
 }
 
+const password_hash = (password) => crypto.createHash('md5').update(salt + password + salt).digest("hex")
+
 module.exports = (app) => {
   app.post('/api/register', async (req, res, next) => {
     console.log(req.cookies);
     console.log(req.body);
     if (!req.body.login || !req.body.password) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -36,7 +38,7 @@ module.exports = (app) => {
     const user = new User({
       id: userID,
       login: req.body.login,
-      password_hash: crypto.createHash('md5').update(salt + req.body.password + salt).digest("hex"),
+      password_hash: password_hash(req.body.password),
     });
     await user.save();
     const tokenID = await Token.countDocuments({});
@@ -48,19 +50,18 @@ module.exports = (app) => {
     });
     await accessToken.save();
     res.send(token);
-    res.status(200);
     res.end();
   });
   app.post('/api/investor/agree', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return
     }
     const user = await User.findOne({id: token.user});
     if (user === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -69,19 +70,19 @@ module.exports = (app) => {
     const investorID = await Investor.countDocuments({});
     const investor = new Investor({user: user.id, id: investorID});
     await investor.save();
-    res.status(200);
+    res.sendStatus(200);
     res.end();
   });
   app.post('/api/investor/risk', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return
     }
     const investor = await Investor.findOne({user: token.user});
     if (investor === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -89,39 +90,41 @@ module.exports = (app) => {
     // HANDLING
     const riskprofile = Math.ceil(Math.random() * 10);
 
+    console.log('riskprofile', riskprofile)
+
     investor.set({riskprofile});
     await investor.save();
-    res.status(200);
+    res.send(riskprofile.toString());
     res.end();
   });
   app.post('/api/investor/data', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return
     }
     const investor = await Investor.findOne({user: token.user});
     if (investor === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
     investor.set(req.body);
     await investor.save();
-    res.status(200);
+    res.sendStatus(200);
     res.end();
   });
   app.post('/api/manager/data', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return;
     }
     const user = await User.findOne({id: token.user});
     if (user === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -135,27 +138,26 @@ module.exports = (app) => {
     } else {
       await Manager.findOneAndUpdate({user: user.id}, req.body);
     }
-    res.status(200);
+    res.sendStatus(200);
     res.end();
   });
   app.post('/api/photo/investor', async (req, res, next) => {
     console.log(req.headers);
     const token = await Token.findOne({token: req.headers.accesstoken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return;
     }
     const investor = await Investor.findOne({user: token.user});
     if (!req.files)
-      return res.status(400).send('No files were uploaded.');
+      return res.sendStatus(400).send('No files were uploaded.');
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/investors/');
     req.files.file.mv(__dirname+ '/../../img/investors/' + investor.id + '.png', async (err) => {
       if (err)
-        return res.status(500).send(err);
+        return res.sendStatus(500).send(err);
       res.send('investors/' + investor.id + '.png');
-      res.status(200);
       investor.set({img: 'investors/' + investor.id + '.png'});
       await investor.save();
       res.end();
@@ -165,7 +167,7 @@ module.exports = (app) => {
     console.log(req.headers);
     const token = await Token.findOne({token: req.headers.accesstoken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return;
     }
@@ -175,14 +177,14 @@ module.exports = (app) => {
       manager = new Manager(Object.assign(req.body, {user: token.user, id: managerID}));
     }
     if (!req.files)
-      return res.status(400).send('No files were uploaded.');
+      return res.sendStatus(400).send('No files were uploaded.');
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/managers/');
     req.files.file.mv(__dirname+ '/../../img/managers/' + manager.id + '.png', async (err) => {
       if (err)
-        return res.status(500).send(err);
+        return res.sendStatus(500).send(err);
       res.send('managers/' + manager.id + '.png');
-      res.status(200);
+      res.sendStatus(200);
       manager.set({img: 'managers/' + manager.id + '.png'});
       await manager.save();
       res.end();
@@ -192,7 +194,7 @@ module.exports = (app) => {
     console.log(req.headers);
     const token = await Token.findOne({token: req.headers.accesstoken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return;
     }
@@ -202,14 +204,13 @@ module.exports = (app) => {
       const company = new Company(Object.assign(req.body, {user: token.user, id: companyID}));
     }
     if (!req.files)
-      return res.status(400).send('No files were uploaded.');
+      return res.sendStatus(400).send('No files were uploaded.');
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/companies/');
     req.files.file.mv(__dirname+ '/../../img/companies/' + company.id + '.png', async (err) => {
       if (err)
-        return res.status(500).send(err);
+        return res.sendStatus(500).send(err);
       res.send('companies/' + company.id + '.png');
-      res.status(200);
       company.set({img: 'companies/' + company.id + '.png'});
       await company.save();
       res.end();
@@ -218,13 +219,13 @@ module.exports = (app) => {
   app.post('/api/company/data', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return;
     }
     const user = await User.findOne({id: token.user});
     if (user === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -238,7 +239,7 @@ module.exports = (app) => {
     } else {
       await Company.findOneAndUpdate({user: user.id}, req.body);
     }
-    res.status(200);
+    res.sendStatus(200);
     res.end();
   });
   app.post('/api/login', async (req, res, next) => {
@@ -247,7 +248,7 @@ module.exports = (app) => {
       password_hash: crypto.createHash('md5').update(salt + req.body.password + salt).digest("hex")
     });
     if (user === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end();
       return;
     }
@@ -259,26 +260,24 @@ module.exports = (app) => {
       token
     });
     await accessToken.save();
-    console.log('login ok');
     res.send({accessToken: accessToken.token, usertype: user.type});
-    res.status(200);
     res.end();
   });
   app.post('/api/logout', async (req, res, next) => {
     await Token.findOneAndRemove({token: req.body.accessToken});
-    res.status(200);
+    res.sendStatus(200);
     res.end();
   });
   app.post('/api/getme', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
-      res.status(403);
+      res.sendStatus(403);
       res.end('');
       return
     }
     const user = await User.findOne({id: token.user});
     if (user === null) {
-      res.status(500);
+      res.sendStatus(500);
       res.end();
       return;
     }
@@ -289,7 +288,26 @@ module.exports = (app) => {
         break;
     }
     res.send({usertype: user.type, userData});
-    res.status(200);
+    res.end();
+  });
+  app.post('/api/changepassword', async (req, res, next) => {
+    const token = await Token.findOne({token: req.body.accessToken});
+    if (token === null) {
+      res.sendStatus(403);
+      res.end('');
+      return
+    }
+    const user = await User.findOne({id: token.user, password_hash: password_hash(req.body.old_password)});
+    if (user === null) {
+      res.sendStatus(403);
+      res.end();
+      return;
+    }
+    if (req.body.new_password1 === req.body.new_password2) {
+      user.set({password: req.body.new_password1});
+      await user.save();
+    }
+    res.sendStatus(200);
     res.end();
   });
 }

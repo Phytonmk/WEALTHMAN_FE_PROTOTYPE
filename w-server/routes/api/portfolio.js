@@ -28,7 +28,8 @@ module.exports = (app) => {
     const portfolio = new Portfolio({
       id: portfolioID,
       request: request.id,
-      manager: manager.id,
+      manager: request.manager,
+      investor: request.investor,
       currencies: req.body.currencies
     });
     await portfolio.save();
@@ -37,7 +38,6 @@ module.exports = (app) => {
   });
   app.post('/api/portfolio/load', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
-    console.log('-');
     if (token === null) {
       res.status(403);
       res.end('');
@@ -70,6 +70,39 @@ module.exports = (app) => {
       res.send({exists: false})
     } else {
       res.send({exists: true, portfolio});
+    }
+    res.status(200);
+    res.end();
+  });
+  app.post('/api/portfolios/load', async (req, res, next) => {
+    const token = await Token.findOne({token: req.body.accessToken});
+    console.log('-');
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    let manager;
+    const investor = await Investor.findOne({user: token.user});
+    if (investor === null) {
+      manager = await Manager.findOne({user: token.user});
+      if (manager === null) {
+        res.status(403);
+        res.end('');
+        return;
+      } else {
+        user = 'manager';
+        userID = manager.id;
+      }
+    } else {
+      user = 'investor';
+      userID = investor.id;
+    }
+    const portfolios = await Portfolio.find({[user]: userID});
+    if (portfolios === null) {
+      res.send({exists: false})
+    } else {
+      res.send({exists: true, portfolios});
     }
     res.status(200);
     res.end();
