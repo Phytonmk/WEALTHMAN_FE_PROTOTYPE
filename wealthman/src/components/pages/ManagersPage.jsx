@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Sortable from '../Sortable.jsx';
+// import Sortable from '../Sortable.jsx';
+import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
 
 class ManagersPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      searchName: ""
+    }
   }
   componentWillMount() {
     api.get('managers')
@@ -17,98 +21,90 @@ class ManagersPage extends Component {
       .catch(console.log);
   }
   render() {
-    var titles = [
+    let sortableHeader = [
       {
-        title: "#",
-        tooltip: "number",
-        class: "number",
-      },
-      {
+        property: "img",
         title: "",
-        tooltip: "",
-        class: "none",
+        width: "41px",
+        type: "unsortable",
       },
       {
-        title: "Name",
-        tooltip: "manager name",
-        class: "name",
+        property: "name",
+        title: "Manager name",
+        width: "206px",
       },
       {
+        property: "rating",
         title: "Success rate",
-        tooltip: "rating",
-        class: "rating",
+        // width: "55px",
+        width: "85px",
+        type: "number",
       },
       {
-        title: "number of clients",
-        tooltip: "number of clients",
-        class: "clients",
-      },
-
-      {
-        title: "AUM",
-        tooltip: "AUM",
-        class: "aum",
+        property: "min",
+        title: "min. investment",
+        // width: "64px",
+        width: "104px",
+        type: "number",
       },
       {
-        title: "% of Net Assets",
-        tooltip: "% of Net Assets",
-        class: "assets",
-        upper: "Expense ratio",
+        property: "aum",
+        title: "AUM, mln $",
+        // width: "32px",
+        width: "82px",
+        type: "number",
+        tooltip: "Assets Under Management in millions of $"
       },
       {
-        title: "% of Perfomance",
-        tooltip: "% of Perfomance",
-        class: "profit",
-        upper: "Expense ratio",
+        property: "perfomance",
+        title: "% of perfomance",
+        // width: "73px",
+        width: "103px",
+        type: "number",
       },
       {
-        title: "% Front fee",
-        tooltip: "% Front fee",
-        class: "initial",
-        upper: "Expense ratio",
+        property: "clients",
+        title: "Number of clients",
+        // width: "52px",
+        width: "82px",
       },
       {
-        title: "% exit Fee",
-        tooltip: "% Exit fee",
-        class: "output",
-        upper: "Expense ratio",
+        property: "aum6",
+        title: "6m aum graph",
+        width: "100px",
+        type: "unsortable",
+        tooltip: "Assets Under Management in the last 6 month"
       },
       {
-        title: "minimum investment",
-        tooltip: "minimum investment",
-        class: "annual",
-      },
-      {
-        title: "6M AUM Graph",
-        tooltip: "6M AUM Graph",
-        class: "aum6",
-      },
-      {
-        title: "",
-        tooltip: "",
-        class: "none",
+        property: "apply",
+        width: "135px",
+        type: "unsortable",
       },
     ];
-    var managers = this.props.managers.map(manager => {
+    let sortableManagers = this.props.managers.map(manager => {
       return {
-        type: "manager",
         id: manager.id,
-        number: "",
-        img: manager.img ? api.imgUrl(manager.img) : '',
+        img: <img src={"/manager/" + manager.img} className="user-icon" />,
         name: manager.name + " " + manager.surname,
-        rating: manager.rating,
+        rating: {
+          render: <div className="rating">{manager.rating}</div>,
+          sortBy: manager.rating
+        },
+        //rename this variable everywhere !!!
+        min: manager.annual,
+        aum: {
+          render: manager.aum + "$",
+          sortBy: manager.aum
+        },
+        //rename this variable everywhere !!!
+        perfomance: manager.profit,
         clients: manager.clients,
-        // aum: <img src="graph.png" className="graph" />,
-        // assets: <img src="graph.png" className="graph" />,
-        // profit: <img src="graph.png" className="graph" />,
-        aum: 10,
-        assets: 10,
-        profit: 10,
-        initial: manager.initial,
-        output: manager.output,
-        annual: manager.annual,
         aum6: <img src="graph.png" className="graph" />,
-        cart: <img src="cart.png" className="graph" />,
+        apply: <Link to={"/manager/" + manager.id} className="no-margin">
+            <button className="big-blue-button">
+              APPLY NOW
+            </button>
+          </Link>
       };
     });
 
@@ -126,57 +122,60 @@ class ManagersPage extends Component {
         description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
       }
     ];
-    var filtersMapped = filters.map((filter, i) =>
-      <button key={i} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
+    // var filtersMapped = filters.map((filter, i) =>
+    //   <button key={i} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
+    //     {filter.link}
+    //   </button>
+    // );
+    let filtersMapped = filters.map(filter =>
+      <button key={filter.link} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
         {filter.link}
       </button>
     );
 
     return (
       <div>
-        <div className="long-header"></div>
-        <div className="container">
-          <div className="box">
-            <h3>Marketplace</h3>
-            <div className="row">
-              <div className="column center">
-                {filtersMapped}
-              </div>
-            </div>
-            <div className="row-padding">
-              {filters.find(filter => filter.link == this.props.managersFilter).description}
-              <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
-                Learn more
-              </Link>
-            </div>
-            <div className="row-padding">
-              <div className="fourth">
-                Total investors: 3
-              </div>
-              <div className="fourth">
-                Total managers: 3
-              </div>
-              <div className="fourth">
-                Total AUM: 3 mln $
-              </div>
-            </div>
-            <div className="row-padding">
-              <Sortable
-                titles={titles}
-                listings={managers}
-                setPage={setPage.bind(this)}
-                currencySelector={
-                  <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-                    {
-                      this.props.currentCurrencyPrices.map((c, i) =>
-                        <option key={i} value={c.name}>{c.name}</option>
-                      )
-                    }
-                  </select>
-                }
-              />
-            </div>
+        <article className="long-text-input">
+          <div className="container">
+            <button className="search" />
+            <button className="cancel" onClick={() => this.setState({searchName: ""})} />
+            <input type="text" value={this.state.searchName} onChange={(event) => this.setState({ searchName: event.target.value })} placeholder="Search..." />
           </div>
+        </article>
+        <div className="container">
+            <div className="row">
+              <div className="advisors">
+                <div className="row">
+                  <span>Sort by</span>
+                  {filtersMapped}
+                </div>
+                <div className="row margin">
+                  <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
+                    Invest on Autopilot
+                  </Link>
+                </div>
+              </div>
+              <div className="card-3">
+                <div className="img" />
+                <span>Total AUM, min $</span>
+                <h4>3$</h4>
+              </div>
+              <div className="card-2">
+                <div className="img" />
+                <span>Total managers</span>
+                <h4>15</h4>
+              </div>
+              <div className="card-1">
+                <div className="img" />
+                <span>Total investors</span>
+                <h4>8</h4>
+              </div>
+            </div>
+            <Sortable2
+              filter={row => row.name.toLowerCase().includes(this.state.searchName.toLowerCase())}
+              columns={sortableHeader}
+              data={sortableManagers}
+            />
         </div>
       </div>
     );
