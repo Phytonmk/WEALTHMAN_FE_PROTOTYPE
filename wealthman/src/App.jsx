@@ -146,7 +146,7 @@ class App extends Component {
     return (
         <Switch>
 
-          <Route exact path="/" component={ManagersPage}/>
+          <Route exact path="/" component={this.state.user === -1 || this.state.user === 0 ? ManagersPage : RequestsPage}/>
           <Route path="/login" component={loginPage}/>
           <Route path="/totallydifferentlogin"  component={login2Page}/>
           <Route path="/account" component={AccountPage}/>
@@ -954,7 +954,7 @@ class App extends Component {
           {capitalize("login")}
         </Link>
       );
-
+    console.log(this.state.currentPage, document.location.href);
     var footer = this.state.currentPage == "login" ?
     <div className="footer-white">
       <div className="row border-bottom">

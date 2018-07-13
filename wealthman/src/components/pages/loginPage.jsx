@@ -18,7 +18,6 @@ class loginPage extends Component {
       password = this.props.password;
     }
 
-    console.log('try login', login, password)
     api.post('login', {login, password})
       .then((res) =>{
         console.log(res.data);
@@ -37,7 +36,11 @@ class loginPage extends Component {
           setPage('managers');
         }
       })
-      .catch(console.log);
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 403)
+          alert('Wrong login or password');
+      });
   }
   render() {
     return (

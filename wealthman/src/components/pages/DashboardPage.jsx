@@ -69,7 +69,7 @@ class DashboardPage extends Component {
     );
     const currentCurrency = this.props.portfolioCurrencies[0];
     var currenciesList = this.props.portfolioCurrencies.map(currency => {
-      var price = this.props.currentCurrencyPrices.find(c => c.name == currency.currency).price;
+      var price = (this.props.currentCurrencyPrices.find(c => c.name == currency.currency) || {price: 0}).price;
 
       return {
         id: currency.id,
@@ -92,7 +92,6 @@ class DashboardPage extends Component {
             axes
             xTicks={5}
             yTicks={3}
-            dataPoints
             areaColors={['#2ED155', '#2EA2D1', '#D5544B', 'yellow']}
             noAreaGradient
             tickTimeDisplayFormat={'%d %m'}

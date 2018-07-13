@@ -328,9 +328,9 @@ contract Portfolio {
       label: "team",
       link: "team"
     }, {
-      label: "contact us",
-      link: "contact"
-    }, {
+    //   label: "contact us",
+    //   link: "contact"
+    // }, {
       label: "wealthman",
       link: "https://wealthman.io/"
     }, {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { store, setReduxState } from '../redux';
 
-const apiUrl = 'http://localhost:8080/api/';
+const apiUrl = 'http://159.89.17.248:8080/api/';
 
 const api = {
   post: (url, data={}, options) => axios.post(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options),
@@ -66,7 +66,7 @@ const tryLogin = (login, password) => {
     login = this.props.login;
     password = this.props.password;
   }
-  axios.post('http:\/\/localhost:8080/api/investor/login', {login, password})
+  axios.post(apiUrl + 'investor/login', {login, password})
     .then((res) =>{
       setCookie('accessToken', res.data.accessToken);
       setCookie('usertype', res.data.usertype);
