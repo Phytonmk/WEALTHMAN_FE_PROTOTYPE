@@ -954,7 +954,6 @@ class App extends Component {
           {capitalize("login")}
         </Link>
       );
-    console.log(this.state.currentPage, document.location.href);
     var footer = this.state.currentPage == "login" ?
     <div className="footer-white">
       <div className="row border-bottom">
