@@ -11,6 +11,7 @@ import myDate from './components/myDate.jsx';
 import logoWhite from './img/logo.svg';
 import logoBlue from './img/logo_blue.svg';
 import './css/main.css';
+import './css/design.css';
 
 import { api, setPage } from './components/helpers';
 
@@ -28,6 +29,7 @@ import ManagerRegPage from './components/pages/ManagerRegPage';
 import ManagerDetailingPage from './components/pages/ManagerDetailingPage';
 import ManagersPage from './components/pages/ManagersPage';
 import ManagerPage from './components/pages/ManagerPage';
+import CompanyPage from './components/pages/CompanyPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
 import RequestPage from './components/pages/RequestPage';
@@ -41,7 +43,7 @@ import PortfoliosPage from './components/pages/PortfoliosPage';
 import PortfolioPage from './components/pages/PortfolioPage';
 import WithdrawPage from './components/pages/WithdrawPage';
 
-// 
+//
 
 const formAnswers = [];
 
@@ -56,12 +58,12 @@ class App extends Component {
     auth();
   }
 
-  
+
   logout() {
     api.post('logout')
       .then(() => {
         auth();
-        window.location.reload(false); 
+        window.location.reload(false);
       });
     // document.cookie = '';
     // document.location.href = '#';
@@ -162,6 +164,7 @@ class App extends Component {
           <Route path="/blog" render={() => this.renderBlogPage()}/>
 
           <Route path="/manager/:id" component={ManagerPage}/>
+          <Route path="/company/:id" component={CompanyPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" component={PortfolioPage}/>
           <Route path="/request/:id" component={RequestPage}/>
@@ -319,7 +322,7 @@ class App extends Component {
     );
   }
 
- 
+
   renderAlgorythmPage(match) {
     var alg = this.state.algorythms.find(algorytm => algorytm.id == match.params.id);
     var manager = this.state.managers.find(manager => manager.id == alg.manager);
@@ -633,8 +636,8 @@ class App extends Component {
     );
   }
 
- 
-  
+
+
   renderAlgorythmsPage() {
     var currentPage;
     switch(this.state.currentAlgorythmsPage) {
@@ -933,7 +936,7 @@ class App extends Component {
         );
       return (
         <li key={i} className="link" onClick={() => this.setPage(link.link)}>
-          <Link to={"/" + link.link} className={link.link == "login" || link.link == "register" ? "login" : "link"} onClick={() => {(link.link == "logout" ? this.logout() : "")}}>
+          <Link to={"/" + link.link} className={link.link == "login" || link.link == "register" ? "big-blue-button" : "link"} onClick={() => {(link.link == "logout" ? this.logout() : "")}}>
             {capitalize(link.label)}
           </Link>
         </li>
@@ -1025,20 +1028,45 @@ class App extends Component {
     return (
       <Router>
         <article className="page">
-          <header className={(this.state.user == -1 ? "header transparent" : "header") + (this.state.currentPage == "login" ? " invisible" : '')}>
-            <div className="container">
-              <Link to={(this.state.user == -1 ? "/managers" : "/portfolios")} onClick={() => this.setPage(this.state.user == -1 ? "managers" : "portfolios")}>
-                <img src={logo} className="logo"/>
-              </Link>
-              <ul className="links right">
-                {headerLinks}
-              </ul>
+          <header className="header">
+            <div className="contents">
+              <div className="container">
+                <Link to={(this.state.user == -1 ? "/managers" : "/portfolios")} onClick={() => this.setPage(this.state.user == -1 ? "managers" : "portfolios")}>
+                  <img src={logoWhite} className="logo"/>
+                </Link>
+                <ul className="links right">
+                  {headerLinks}
+                </ul>
+              </div>
             </div>
           </header>
           <div className="content">
             {this.renderPage()}
           </div>
-          {footer}
+          <div className="footer">
+            <div className="container">
+              <span>
+                Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
+              </span>
+              <div className="social">
+                <a href="https://t.me/wealthman_global" target="_blank">
+                  <img src="telegram.svg" className="social-icon" />
+                </a>
+                <a href="https://www.facebook.com/WealthMan.io/" target="_blank">
+                  <img src="facebook.svg" className="social-icon" />
+                </a>
+                <a href="https://www.instagram.com/wealthman.io/" target="_blank">
+                  <img src="instagram.svg" className="social-icon" />
+                </a>
+                <a href="https://bitcointalk.org/index.php?topic=2006205" target="_blank">
+                  <img src="bitcointalk.svg" className="social-icon" />
+                </a>
+              </div>
+              <Link to={"/totallydifferentlogin"} className="right">
+                <button className="big-blue-button">Login for managers</button>
+              </Link>
+            </div>
+          </div>
         </article>
       </Router>
     );

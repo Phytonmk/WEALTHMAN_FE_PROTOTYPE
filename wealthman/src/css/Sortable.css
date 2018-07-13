@@ -175,11 +175,11 @@ ul.sortable li .cart {
 .first {
   /* margin: 0 !important; */
 }
-.last button {
+/* .last button {
   float: right !important;
   text-align: right !important;
   padding-right: 15px !important;
-}
+} */
 .last button.asc,
 .last button.desc {
   float: right !important;
