@@ -17,6 +17,11 @@ class ManagersPage extends Component {
       gotData: false,
     }
   }
+  applyManager(managerID) {
+    setReduxState({
+      currentManager: managerID,
+    });
+  }
   componentWillMount() {
     api.get('managers')
       .then((res) => {
@@ -102,7 +107,9 @@ class ManagersPage extends Component {
       return {
         id: manager.id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
-        name: manager.name + " " + manager.surname,
+        name: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
+          {manager.name + " " + manager.surname}
+        </Link>,
         rating: {
           render: <div className="rating">{manager.rating}</div>,
           sortBy: manager.rating
@@ -117,7 +124,7 @@ class ManagersPage extends Component {
         perfomance: manager.profit,
         clients: manager.clients,
         aum6: <img src="graph.png" className="graph" />,
-        apply: <Link to={"/manager/" + manager.id} className="no-margin">
+        apply: <Link to={this.props.user === -1 ? "/reg-or-login" : "/kyc"} className="no-margin" onClick={() => this.applyManager(manager.id)}>
             <button className="big-blue-button">
               APPLY NOW
             </button>
@@ -189,7 +196,7 @@ class ManagersPage extends Component {
               </div>
             </div>
             <Sortable2
-              filter={row => row.name.toLowerCase().includes(this.state.searchName.toLowerCase())}
+              filter={row => row.name.props.children.toLowerCase().includes(this.state.searchName.toLowerCase())}
               columns={sortableHeader}
               data={sortableManagers}
             />

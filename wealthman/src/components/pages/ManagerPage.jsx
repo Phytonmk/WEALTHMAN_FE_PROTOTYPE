@@ -8,6 +8,11 @@ import { api, setPage, setCurrency } from '../helpers';
 class ManagerPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      profitability: '-',
+      clients: '-',
+      portfolios: '-'
+    }
   }
   componentWillMount() {
     api.get('manager/' + this.props.match.params.id)
@@ -16,14 +21,21 @@ class ManagerPage extends Component {
         setReduxState({managers: [res.data]});
       })
       .catch(console.log);
+    api.get('manager-statistics/' + this.props.match.params.id)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          profitability: res.data.profitability,
+          clients: res.data.clients.length,
+          portfolios: res.data.portfolios,
+        });
+      })
+      .catch(console.log);
   }
   apply() {
-    const algorythm = this.props.algorythms.find(algorythm => algorythm.creator === this.props.match.params.id);
     setReduxState({
       currentManager: this.props.match.params.id,
-      currentAlgorythm: algorythm ? algorythm.id : -1
     });
-    console.log(`currentAlgorythm set as ${this.props.currentAlgorythm}`);
   }
   render() {
     var manager = this.props.managers.find(manager => manager.id == this.props.match.params.id);
@@ -154,12 +166,12 @@ class ManagerPage extends Component {
 
             <div className="box">
               <h3>Statistics</h3>
-              <h1 className="green">3361.60%</h1>
+              <h1 className="green">{this.state.profitability}%</h1>
               <small>Profitability (all time)</small>
-              <h1>77</h1>
+              <h1>{this.state.clients}</h1>
               <small>Quantity clients</small>
-              <h1>59</h1>
-              <small>Cases in management</small>
+              <h1>{this.state.portfolios}</h1>
+              <small>Portfolios in management</small>
             </div>
 
             <div className="box">

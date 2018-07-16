@@ -17,6 +17,7 @@ class RegOrLoginForNewInvestorPage extends Component {
       <div>
         <div className="container reg-or-log-in">
           <div className="box">
+            <h2>You have to sign in or sign up to continue</h2>
             <div className="container">
               <div className="document-box">
                 <h3 className="text-center">

@@ -43,6 +43,7 @@ import PortfoliosPage from './components/pages/PortfoliosPage';
 import PortfolioPage from './components/pages/PortfolioPage';
 import WithdrawPage from './components/pages/WithdrawPage';
 import RegOrLoginForNewInvestorPage from './components/pages/RegOrLoginForNewInvestorPage';
+import DeclinePage from './components/pages/DeclinePage';
 
 //
 
@@ -182,7 +183,7 @@ class App extends Component {
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
 
           <Route path="/chat" render={() => this.renderChatPage()}/>
-          <Route path="/decline" render={() => this.renderDeclinePage()}/>
+          <Route path="/decline/:id" component={DeclinePage}/>
           <Route path="/faq" render={() => this.renderFAQPage()}/>
           <Route path="/team" render={() => this.renderTeamPage()}/>
           <Route path="/contact" render={() => this.renderContactPage()}/>
@@ -788,49 +789,7 @@ class App extends Component {
     );
   }
 
-  renderDeclinePage() {
-    return (
-      <div>
-        {/* {this.renderBackButton()} */}
-        <div className="container">
-          <div className="box">
-            <h3>Reason for decline</h3>
-            <div className="row-padding">
-              <label htmlFor="1">
-                <input type="checkbox" id="1" />
-                Insufficient information
-              </label>
-            </div>
-            <div className="row-padding">
-              <label htmlFor="2">
-                <input type="checkbox" id="2" />
-                Information is unacceptable
-              </label>
-            </div>
-            <div className="row-padding">
-              <label htmlFor="3">
-                <input type="checkbox" id="3" />
-                Other
-              </label>
-            </div>
-            <div className="row-padding">
-              <textarea rows="4" cols="50" placeholder="Comment">
-                {}
-              </textarea>
-            </div>
-            <div className="row-padding">
-              <Link to={"/request/" + this.state.currentRequest} onClick={() => this.setPage("request", this.state.currentRequest)}>
-                <button className="back">Back</button>
-              </Link>
-              <Link to={"/requests"} onClick={() => this.setPage("requests")}>
-                <button className="continue">Submit</button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+ 
   renderChatPage() {
     return (
       <div>

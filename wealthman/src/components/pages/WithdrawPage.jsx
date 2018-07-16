@@ -21,8 +21,7 @@ class WithdrawPage extends Component {
               <p>Withdrawing address: <b>0x18Dda87E2b73D58827a6dEfA99E2b86241CEDDe9</b></p>
             </div>
             <div className="row-padding">
-              <p>Withdrawing amount:</p>
-              <p><input type="number" style={{width: 100}} value="400"/></p>
+              <p>Sum: <b>1 000 000 $ (1234 Eth) </b></p>
             </div>
             <div className="row-padding">
               <p><button className="continue">Widthdraw</button></p>

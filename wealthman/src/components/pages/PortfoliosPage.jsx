@@ -124,7 +124,8 @@ class PortfoliosPage extends Component {
     ];
     var portfolios = this.props.portfolios.map((portfolio, i) => {
       var investor = this.props.investors.find(inv => inv.id == portfolio.investor);
-      var manager = this.props.managers.find(m => m.id == portfolio.manager);
+      var manager = this.props.managers.find(m => m.id == portfolio.manager) || {};
+      // var request = this.props.requests.find(m => m.id == portfolio.request) || {};
       var alg = this.props.algorythms.find(alg => alg.id == portfolio.alg) || {};
       let price = 0; 
       if (this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
@@ -142,7 +143,7 @@ class PortfoliosPage extends Component {
         // percent_portfolio: (portfolio.value * price / totalValue * 100).toFixed(1),
         // amount: portfolio.value,
         // value: (portfolio.value * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        status: portfolio.status,
+        status: '-'/*request.status*/,
         cost: "тут будет график",//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
         // analysis: "link.com",
         // comments: "comment",

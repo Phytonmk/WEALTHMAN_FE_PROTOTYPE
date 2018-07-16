@@ -16,7 +16,8 @@ class MoneyPage extends Component {
     this.state = {
       gotData: false,
       status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
-      contractAddress: ''
+      contractAddress: '',
+      request: {}
     };
   }
   componentWillMount() {
@@ -32,7 +33,7 @@ class MoneyPage extends Component {
         }
         this.setState({
           gotData: true,
-          status, contractAddress
+          status, contractAddress, request
         })
       })
       .catch(console.log)
@@ -92,18 +93,26 @@ class MoneyPage extends Component {
       }).catch(console.log);
   }
   finish() {
-    // api.post('portfolio-formating', {request: this.props.match.params.id})
-    //   .then(() => {setPage('portfolios')})
-    //   .catch(console.log);
-    web3 = new Web3(web3.currentProvider);
+    var web3 = new Web3(web3.currentProvider);
     var contract = web3.eth.contract(abi);
-    var contractInstance = contract.at('0x38C937dF579406C9F2725d846e50b91880575A65');
-    var a =contractInstance.trade(['0x0'], ["0xD626F6CdF102b18fc9FF16013443428490EC4E53"], ['1000'],function(err, transactionHash) {
-      if (err)
+    var contractInstance = contract.at(this.state.contractAddress);
+    var a = contractInstance.deposit({value: web3.toWei(request.value.toString(), 'ether'), gas: 2000}, (err, transactionHash) => {
+      if (err) {
         console.log(err);
-      else
-        setPage('portfolios')
-    })
+      } else {
+        console.log(transactionHash);
+        setPage('portfolios');
+      }
+    });
+    // web3 = new Web3(web3.currentProvider);
+    // var contract = web3.eth.contract(abi);
+    // var contractInstance = contract.at('0x38C937dF579406C9F2725d846e50b91880575A65');
+    // var a =contractInstance.trade(['0x0'], ["0xD626F6CdF102b18fc9FF16013443428490EC4E53"], ['1000'],function(err, transactionHash) {
+    //   if (err)
+    //     console.log(err);
+    //   else
+    //     setPage('portfolios')
+    // })
   
   }
   render() {

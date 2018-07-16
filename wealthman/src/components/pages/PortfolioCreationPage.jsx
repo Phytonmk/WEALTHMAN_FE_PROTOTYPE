@@ -35,8 +35,8 @@ class PortfolioCreationPage extends Component {
       .then((res) => {
         setReduxState({
           requests: [res.data.request],
-          investor: [res.data.investor],
-          manager: [res.data.manager]
+          investors: [res.data.investor],
+          managers: [res.data.manager]
         });
       })
       .catch(console.log);
@@ -225,24 +225,23 @@ class PortfolioCreationPage extends Component {
               <img src={"../investor/" + investor.img} className="avatar" />
             </div>
             <div className="third">
-              {name}
-              <p>New client. 1   days on platform</p>
-              {age}
-              <p>client id 50{investor.id}00{investor.id}</p>
+              <h4>{investor.name} {investor.surname}</h4>
+              <p>user id #<b>{investor.id}</b></p>
             </div>
             <div className="third text-right">
-              <p>request number {this.props.match.params.id}</p>
-              <p>{request.date}</p>
+              <p>request number #<b>{request.id}</b></p>
+              <p>created: <b>{new myDate(request.date).niceTime()}</b></p>
             </div>
             <div className="row-padding">
               <Link to={"/chat"}>
                 <button className="continue" onClick={() => setPage("chat")}>Start chat</button>
               </Link>
             </div>
-            <p>Target value: {request.value}{request.currency}</p>
-            <p>Term 4 month</p>
-            <p>Risk profile: 25%</p>
-            <p>Target earning rate</p>
+            <p><b>Target value:</b> {request.value}</p>
+            <p><b>Risk profile:</b> {investor.riskprofile}</p>
+            <p><b>Investor comment:</b> {request.comment ? request.comment : 'nothing'}</p>
+            <p><b>Analysis Neccesity:</b> {(request.options || {}).analysis ? 'yes' : 'no'}</p>
+            <p><b>Comment Neccesity:</b> {(request.options || {}).comment ? 'yes' : 'no'}</p>
 
 
 

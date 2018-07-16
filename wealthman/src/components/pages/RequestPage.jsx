@@ -10,7 +10,7 @@ class RequestPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      portfolios: []
+      portfolios: [],
     }
   }
   componentWillMount() {
@@ -39,13 +39,6 @@ class RequestPage extends Component {
           noLink: true
         }}));
         this.setState({portfolios});
-      })
-      .catch(console.log);
-  }
-  decline () {
-    api.post('decline-request/' + this.props.match.params.id)
-      .then((res) => {
-        setPage('requests');
       })
       .catch(console.log);
   }
@@ -85,24 +78,15 @@ class RequestPage extends Component {
         class: "comments",
       },
     ]
-    console.log(this.state.portfolios);
     var request = this.props.requests.find(r => r.id == this.props.match.params.id);
     if (request === undefined)
       return <p> Loading... </p>
     var investor = this.props.user == 1 ? this.props.investors.find(i => i.id == request.investor) : this.props.managers.find(i => i.id == request.manager);
     if (investor === undefined)
       return <p> Loading... </p>
-    var name;
-    var age;
-    if (investor.kyc == "yes") {
-      name = <h4>{investor.name} {investor.surname}</h4>;
-      age = <p>{investor.age} years old</p>;
-    }
-    else {
-      name = <h4>{investor.email}</h4>;
-      age = <p>KYC unfullfilled</p>;
-    }
-
+    const name = <h4>{investor.name} {investor.surname}</h4>;
+    const age = <p>{investor.age} years old</p>;
+    console.log(investor);
     var buttons = request.status == "accepted" ?
     (
       <div className="row-padding">
@@ -116,13 +100,17 @@ class RequestPage extends Component {
       if (request.status === 'pending') 
         actionButtons =
           <div>
-            <button className="back" onClick={() => this.decline()}>Decline</button>
+            <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
+                <button className="back right">Decline</button>
+              </Link>
             <button className="continue" onClick={() => this.accept()}>Accept</button>
           </div>;
       else if (request.status === 'waiting for transaction')
         actionButtons =
           <div>
-            <button className="back" onClick={() => this.decline()}>Decline</button>
+            <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
+                <button className="back right">Decline</button>
+              </Link>
             <button className="continue" onClick={() => setPage('money/' + request.id)}>Send money</button>
           </div>
       return (
@@ -135,11 +123,11 @@ class RequestPage extends Component {
               </div>
               <div className="third">
                 <h4>{investor.name} {investor.surname}</h4>
+                <p>user id #<b>{investor.id}</b></p>
               </div>
               <div className="third text-right">
-                <p>request number {this.props.currentRequest}</p>
-                <p>{request.date}</p>
-                <p className={request.status}>{request.status}</p>
+                <p>request number #<b>{request.id}</b></p>
+                <p>created: <b>{new myDate(request.date).niceTime()}</b></p>
               </div>
               <div className="row-padding">
                 <Link to={"/chat"}>
@@ -173,7 +161,7 @@ class RequestPage extends Component {
         </div>
         );
       }
-    if (this.props.user == 1 && request.status === 'waiting')
+    if (this.props.user == 1 && (request.status === 'waiting' || request.status === 'pending'))
       return (
         <div>
       {/* {this.renderBackButton()} */}
@@ -181,17 +169,15 @@ class RequestPage extends Component {
         <div className="first-tab">
           <div className="box">
             <div className="circle left">
-              <img src={("../investor/") + investor.img} className="avatar" />
+              <img src={''} className="avatar" />
               </div>
               <div className="third">
-                {name}
-                <p>New client. 1   days on platform</p>
-                {age}
-                <p>client id 50{investor.id}00{investor.id}</p>
+                <h4>{investor.name} {investor.surname}</h4>
+                <p>user id #<b>{investor.id}</b></p>
               </div>
               <div className="third text-right">
-                <p>request number {this.props.currentRequest}</p>
-                <p>{request.date}</p>
+                <p>request number #<b>{request.id}</b></p>
+                <p>created: <b>{new myDate(request.date).niceTime()}</b></p>
               </div>
               <div className="row-padding">
                 <Link to={"/chat"}>
@@ -206,7 +192,7 @@ class RequestPage extends Component {
                 <Link to={"/portfoliocreation/" + this.props.match.params.id} onClick={() => this.setPage("portfoliocreation")}>
                   <button className="continue right">Create portfolio</button>
                 </Link>
-              <Link to={"/decline"} onClick={() => this.setPage("decline")}>
+              <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
                 <button className="back right">Decline</button>
               </Link>
             </div>
@@ -214,6 +200,19 @@ class RequestPage extends Component {
         </div>
       </div>
     </div>);
+    if (request.status === 'declined')
+      return (
+        <div className="container">
+          <div className="first-tab">
+            <div className="box">
+              <h2>Request declined</h2>
+              <Link to="/requests">
+                <button className="back" onClick={() => previousPage()}>Back</button>
+              </Link>
+            </div> 
+          </div> 
+        </div>
+      ); 
     return (
       <div className="container">
         <div className="first-tab">

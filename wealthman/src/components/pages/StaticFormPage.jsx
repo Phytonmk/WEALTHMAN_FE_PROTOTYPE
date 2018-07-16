@@ -193,7 +193,7 @@ class StaticFormPage extends Component {
                 {
                   this.state.question === questions.length - 1 ?
                   <button className="continue" onClick={() => this.sendForm()}>Complete form</button> :
-                  <button className="continue" onClick={() => this.setState({question: this.state.question + 1})}>Next question</button>
+                  <button className="continue" onClick={() => this.state.answers[this.state.question] !== undefined ? this.setState({question: this.state.question + 1}) : alert('You haven\'t answered yer')}>Next question</button>
                 }
               </div>
             </div>

@@ -17,12 +17,15 @@ class RegisterPage extends Component {
     this.goToAgreement = this.goToAgreement.bind(this);
   }
   goToAgreement(event) {
-    api.post('register', this.state)
-      .then((result) => {
-        console.log(result.data);
-        setCookie('accessToken', result.data);
-        setPage("email")})
-      .catch(console.log);
+    if (/.+@{1}.+\.{1}.+/.test(this.state.login))
+      api.post('register', this.state)
+        .then((result) => {
+          console.log(result.data);
+          setCookie('accessToken', result.data);
+          setPage("email")})
+        .catch(console.log);
+    else
+      alert('You must input email!');
   }
   previousPage() {
     var previousPages = this.props.previousPages.slice();
@@ -60,9 +63,7 @@ class RegisterPage extends Component {
               <Link to={("/manager" + this.props.currentManager)}>
                 <button className="back" onClick={() => this.previousPage()}>Back</button>
               </Link>
-              <Link to={"/email"}>
-                <button className="continue" onClick={(event) => this.goToAgreement(event)}>Register</button>
-              </Link>
+              <button className="continue" onClick={(event) => this.goToAgreement(event)}>Register</button>
             </div>
           </div>
         </div>

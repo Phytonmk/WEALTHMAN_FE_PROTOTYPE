@@ -11,10 +11,20 @@ class AccountPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      email: '',
       old_password: '',
       new_password1: '',
       new_password2: '',
     }
+  }
+  componentWillMount() {
+    api.post('getme')
+      .then((res) => {
+        this.setState({
+          email: res.data.login
+        })
+      })
+      .catch(console.log);
   }
   saveData() {
     if (this.state.old_password !== '' && this.state.new_password1 !== '' &&
@@ -46,7 +56,7 @@ class AccountPage extends Component {
             </div> */}
             <div className="half padding-side">
               <h3 className="high">Contact information</h3>
-              <input type="text" placeholder="email"/>
+              <input type="text" placeholder="email" value={this.state.email}/>
               <input type="text" placeholder="phone number"/>
               <h3 className="high">Change password</h3>
               <input type="password" placeholder="old password" value={this.state.old_password} onChange={(event) => this.setState({old_password: event.target.value})}/>
