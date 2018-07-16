@@ -3,24 +3,41 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
+import Sortable from '../Sortable.jsx';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
+
+const RANDOM = (range=100) => Math.ceil(Math.random() * range);
 
 class ManagersPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchName: ""
+      searchName: "",
+      gotData: false,
     }
   }
   componentWillMount() {
     api.get('managers')
       .then((res) => {
-        setReduxState({managers: res.data});
+        console.log(this.props.managers);
+        console.log(res.data);
+        setReduxState({managers: res.data.map(manager => {
+          let newManager = Object.assign({}, manager);
+          newManager.rating = RANDOM();
+          newManager.annual = RANDOM();
+          newManager.aum = RANDOM();
+          newManager.profit = RANDOM();
+          newManager.clients = RANDOM();
+          return newManager;
+        })});
+        this.setState({gotData: true})
       })
       .catch(console.log);
   }
   render() {
+    if (!this.state.gotData)
+      return <div className="box loading"><p>Loading</p></div>
     let sortableHeader = [
       {
         property: "img",
@@ -57,7 +74,7 @@ class ManagersPage extends Component {
       },
       {
         property: "perfomance",
-        title: "% of perfomance",
+        title: "performance fee",
         // width: "73px",
         width: "103px",
         type: "number",
@@ -84,7 +101,7 @@ class ManagersPage extends Component {
     let sortableManagers = this.props.managers.map(manager => {
       return {
         id: manager.id,
-        img: <img src={"/manager/" + manager.img} className="user-icon" />,
+        img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
         name: manager.name + " " + manager.surname,
         rating: {
           render: <div className="rating">{manager.rating}</div>,

@@ -8,6 +8,9 @@ import { api, setPage, setCurrency } from '../helpers';
 class PortfoliosPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      gotData: false
+    }
   }
   componentWillMount() {
     api.post('portfolios/load')
@@ -18,6 +21,7 @@ class PortfoliosPage extends Component {
         } else {
           setReduxState({portfolios: []});
         }
+        this.setState({gotData: true});
       })
       .catch(console.log);
     api.get('stocks')
@@ -27,6 +31,8 @@ class PortfoliosPage extends Component {
       .catch(console.log);
   }
   render() {
+    if (!this.state.gotData)
+      return <div className="box loading"><p>Loading</p></div>
     var currentPage;
     var currencies = this.props.currentCurrencyPrices.map((c, i) =>
       <option key={i} value={c.name}>{c.name}</option>
@@ -248,9 +254,9 @@ class PortfoliosPage extends Component {
                 {currencies}
               </select>
             </div>
-            <div className="title box" style={{float: 'right', height: 40, textAlign: 'center'}}>
+            {this.props.user === 0 ? <div className="title box" style={{float: 'right', height: 40, textAlign: 'center', padding: 0}}>
               <button className="continue" style={{display: 'inline-block'}}onClick={() => setPage('withdraw')}>Withdraw</button>
-            </div>
+            </div> : ''}
           </div>
         </div>
         <div className="container">

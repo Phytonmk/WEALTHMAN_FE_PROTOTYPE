@@ -133,7 +133,11 @@ class AccountPage extends Component {
       <div>
         {/* {this.renderBackButton()} */}
         <div className="container">
-          <h1>Account</h1>
+          <h1 style={{
+            marginTop: 20,
+            marginLeft: 63,
+            marginBottom: 20,
+          }}>Account</h1>
           <div className="first-tab">
             {accountPage}
           </div>
@@ -145,10 +149,10 @@ class AccountPage extends Component {
               <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "residency" })}>Residency</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "forms" })}>Fill forms</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "kyc" })}>Know Your Criminals</button> */}
-              <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "personal" })}>Account Information</button>
-              {this.props.user == 1 ? "" : <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "risk" })}>Risk Tollerance Profile</button>}
-              {this.props.user == 1 ? "" : <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "inv" })}>Investment goals and strategy aims</button>}
-              <button className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "kyc" })}>Detailed information (kyc)</button>
+              <button style={{width: 'auto'}} className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "personal" })}>Account Information</button>
+              {this.props.user == 1 ? "" : <button style={{width: 'auto'}} className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "risk" })}>Risk Tollerance Profile</button>}
+              {this.props.user == 1 ? "" : <button style={{width: 'auto'}} className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "inv" })}>Investment goals and strategy aims</button>}
+              <button style={{width: 'auto'}} className="transactions-link" onClick={() => setReduxState({ currentAccountPage: "kyc" })}>Detailed information (kyc)</button>
             </div>
           </div>
         </div>

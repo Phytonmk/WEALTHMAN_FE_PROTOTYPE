@@ -138,7 +138,8 @@ class Sortable2 extends Component {
           this.state.rowProperties.map((property, index) => {
             let cell = row[property.name];
             if (typeof cell == "undefined") {
-              console.log(property.name);
+              console.log('undefined cell in sortable2: ' + property.name);
+              return <div className="cell"></div>
             }
             return (
               <div

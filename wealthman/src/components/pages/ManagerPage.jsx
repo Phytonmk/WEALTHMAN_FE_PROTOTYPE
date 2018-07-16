@@ -49,12 +49,12 @@ class ManagerPage extends Component {
         <div className="new-long-header" />
         <div className="manager-container">
           <div className="top-row">
-            <img src={"/manager/" + manager.img} className="avatar"/>
+            <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="avatar"/>
 
             <div className="main-info">
               <div className="name-row">
                 <h1>{manager.name} {manager.surname}</h1>
-                <h3>Age {manager.age}</h3>
+                <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
               <div className="fees-row">
                 <h3>Fees</h3>
@@ -64,7 +64,7 @@ class ManagerPage extends Component {
 
             <div className="column right">
               <div className="row">
-                <Link to={"/contact"} onClick={() => this.setPage("contact")}>
+                <Link to={"/chat"} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
                 <Link to={this.props.user === -1 ? "/register" : "/kyc"} onClick={() => this.apply()}>
@@ -75,16 +75,16 @@ class ManagerPage extends Component {
                 <span>Social networks</span>
                 <div className="row">
                   <a href="https://t.me/wealthman_global" target="_blank">
-                    <img src="telegram.svg" className="social-icon" />
+                    <img src="img/footer/telegram.png" className="social-icon" />
                   </a>
                   <a href="https://www.facebook.com/WealthMan.io/" target="_blank">
-                    <img src="facebook.svg" className="social-icon" />
+                    <img src="img/footer/facebook.png" className="social-icon" />
                   </a>
                   <a href="https://www.instagram.com/wealthman.io/" target="_blank">
-                    <img src="instagram.svg" className="social-icon" />
+                    <img src="img/footer/instagram.png" className="social-icon" />
                   </a>
                   <a href="https://bitcointalk.org/index.php?topic=2006205" target="_blank">
-                    <img src="linkedin.svg" className="social-icon" />
+                    <img src="img/footer/linkedin.png" className="social-icon" />
                   </a>
                 </div>
               </div>

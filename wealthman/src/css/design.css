@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic');
+body, html {
+  font-family: 'Roboto', sans-serif;
+}
 a.big-blue-button,
 button.big-blue-button,
 button.big-transparent-button {
@@ -260,8 +264,9 @@ article.long-text-input button.cancel {
   margin-top: 7px;
 }
 .footer .social .social-icon {
-  width: 23px;
-  height: 23px;
+  /*width: 23px;*/
+  /*height: 23px;*/
+  filter: invert(70%); /*Иначе на белом фоне не видно ¯\_(ツ)_/¯*/
   margin-left: 10px;
   float: left;
 }
@@ -272,8 +277,8 @@ article.long-text-input button.cancel {
   margin-right: 125px;
 }
 .manager-container .social .social-icon {
-  width: 23px;
-  height: 23px;
+  /*width: 23px;*/
+  /*height: 23px;*/
   margin-left: 14px;
   float: left;
 }
@@ -347,4 +352,32 @@ article.long-text-input button.cancel {
   background-size: contain;
   background-repeat: no-repeat;
   content: "";
+}
+
+/*
+input[type="range" i]::-webkit-slider-thumb, input[type="range" i]::-webkit-media-slider-thumb {
+  background-color: #48a8da;
+}*/
+
+.loading p {
+  text-align: center;
+  font-size: 50px;
+}
+.loading p:after {
+  content: '';
+  animation: dots infinite 1s
+}
+@keyframes dots {
+  0% {
+    content: ''
+  }
+  25% {
+    content: '.'
+  }
+  50% {
+    content: '..'
+  }
+  75% {
+    content: '...'
+  }
 }

@@ -21,7 +21,7 @@ class DashboardPage extends Component {
     const xs = [];
 
     let date = moment('2015-1-1 00:00', 'YYYY-MM-DD HH:mm');
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 20; i++) {
       xs.push(date.format('D-MMM-YY HH:mm'));
       date = date.add(1, 'hour');
     }
@@ -31,7 +31,7 @@ class DashboardPage extends Component {
     console.log(data);
     return data;
   }
-    mouseOverHandler(d, e) {
+  mouseOverHandler(d, e) {
     this.setState({
       showToolTip: true,
       top: e.y,
@@ -62,6 +62,12 @@ class DashboardPage extends Component {
       );
     }
     return false;
+  }
+  genPoints() {
+    const result = [];
+    for (let i = 1; i <= 20; i++)
+      result.push({ x: i +'-May-15', y: this.getRandomArbitrary(i * 5 - 20, i * 5 + 20) });
+    return result;
   }
   render() {
     var currencies = this.props.currentCurrencyPrices.map((c, i) =>
@@ -98,27 +104,7 @@ class DashboardPage extends Component {
             interpolate={'cardinal'}
             width={1050}
             height={400}
-            data={[
-              [
-                { x: '1-Jan-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Feb-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Mar-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Apr-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-May-15', y: this.getRandomArbitrary(0, 100) }
-              ], [
-                { x: '1-Jan-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Feb-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Mar-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Apr-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-May-15', y: this.getRandomArbitrary(0, 100) }
-              ], [
-                { x: '1-Jan-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Feb-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Mar-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-Apr-15', y: this.getRandomArbitrary(0, 100) },
-                { x: '1-May-15', y: this.getRandomArbitrary(0, 100) }
-              ]
-            ]}
+            data={[this.genPoints(), this.genPoints(), this.genPoints()]}
           />
         </div>
         <div className="box">

@@ -121,14 +121,14 @@ class MoneyPage extends Component {
       else
         return <div className="container">
             <div className="box">
-              <h2> Waiting... </h2>
+              <h2> Contract mining, it may take awhile... </h2>
             </div>
           </div>
     }
     if (this.state.status === 3) {
       return <div className="container">
             <div className="box">
-              <h2> Error occured, maybe you rejected contract </h2>
+              <h2> You have rejected the contract, please, contact with you manager </h2>
             </div>
           </div>
     }

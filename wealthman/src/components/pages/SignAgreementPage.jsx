@@ -33,7 +33,9 @@ class SignAgreementPage extends Component {
                 </div>
               </div>
               <div className="row-padding">
-                <button className="back" onClick={() => prevousPage()}>Back</button>
+                <Link to={"/requests/" + this.props.match.params.id}>
+                  <button className="back">Back</button>
+                </Link>
                 <Link to={"/money/" + this.props.match.params.id}>
                   <button className="continue">Continue</button>
                 </Link>

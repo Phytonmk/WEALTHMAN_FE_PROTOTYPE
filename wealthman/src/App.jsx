@@ -1049,21 +1049,21 @@ class App extends Component {
               </span>
               <div className="social">
                 <a href="https://t.me/wealthman_global" target="_blank">
-                  <img src="telegram.svg" className="social-icon" />
+                  <img src="img/footer/telegram.png" className="social-icon" />
                 </a>
                 <a href="https://www.facebook.com/WealthMan.io/" target="_blank">
-                  <img src="facebook.svg" className="social-icon" />
+                  <img src="img/footer/facebook.png" className="social-icon" />
                 </a>
                 <a href="https://www.instagram.com/wealthman.io/" target="_blank">
-                  <img src="instagram.svg" className="social-icon" />
+                  <img src="img/footer/instagram.png" className="social-icon" />
                 </a>
                 <a href="https://bitcointalk.org/index.php?topic=2006205" target="_blank">
-                  <img src="bitcointalk.svg" className="social-icon" />
+                  <img src="img/footer/linkedin.png" className="social-icon" />
                 </a>
               </div>
-              <Link to={"/totallydifferentlogin"} className="right">
-                <button className="big-blue-button">Login for managers</button>
-              </Link>
+              {this.state.user === -1 ? <Link to={"/manager-reg"} className="right">
+                <button className="big-blue-button">Registration for managers</button>
+              </Link> : ''}
             </div>
           </div>
         </article>

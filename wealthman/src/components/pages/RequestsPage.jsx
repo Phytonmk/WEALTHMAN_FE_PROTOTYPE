@@ -23,14 +23,14 @@ class RequestsPage extends Component {
   constructor(props) {
     super(props);
   
-    this.state = {requests, managers: [], investors: []};
+    this.state = {requests, managers: [], investors: [], gotData: false};
   }
   componentWillMount() {
     // console.log('componentWillMount');
     const component = this;
     api.post('requests')
       .then((res) => {
-        component.setState({requests: res.data, managers: [], investors: []});
+        component.setState({requests: res.data, managers: [], investors: [], gotData: true});
         for (let request of component.state.requests) {
           api.get('manager/' + request.manager)
             .then((res) => {
@@ -52,6 +52,8 @@ class RequestsPage extends Component {
       .catch(console.log);
   }
   render() {
+    if (!this.state.gotData)
+      return <div className="box loading"><p>Loading</p></div>
     console.log('render');
     var requests = this.state.requests.slice().map((request, index) => {
       var investor = (this.props.user == 1 ? this.state.investors.find(i => i.id == request.investor) : this.state.managers.find(i => i.id == request.manager)) || {};

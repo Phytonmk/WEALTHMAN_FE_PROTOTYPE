@@ -11,8 +11,9 @@ class PortfolioPage extends Component {
     this.props = {};
   }
   componentWillMount() {
-    api.post('get-request', {request: this.props.match.params.id})
+    api.post('get-request/' + this.props.match.params.id, {request: this.props.match.params.id})
       .then(res => {
+        console.log(res.data);
         setReduxState({
           managers: [res.data.manager],
           investors: [res.data.investor],
@@ -20,9 +21,21 @@ class PortfolioPage extends Component {
         })
       })
       .catch(console.log)
+    api.post('portfolio/load', {request: this.props.match.params.id})
+      .then(res => {
+        console.log(res.data);
+        if (res.data.exists)
+          setReduxState({
+            portfolios: [res.data.portfolio]
+          });
+      })
+      .catch(console.log)
   }
   render() {
-    var portfolio = this.props.portfolios.find(p => p.id == this.props.match.params.id);
+    console.log(this.props.portfolios);
+    var portfolio = this.props.portfolios.find(p => p.request == this.props.match.params.id);
+    if (portfolio === undefined)
+      return <div className="box loading"><p>Loading</p></div>
     var investor = this.props.investors.find(i => i.id == portfolio.investor);
     var manager = this.props.managers.find(m => m.id == portfolio.manager);
     var image = <img />;//this.props.user == 0 ? <img src={"../manager/" + manager.img} className="avatar" /> : <img src={"../investor/" + investor.img} className="avatar" />;
@@ -52,13 +65,13 @@ class PortfolioPage extends Component {
         </div>
       );
     }
-    var totalValue = this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency).price * portfolio.value;
-    var currentCurrency = this.props.currentCurrencyPrices.find(c => c.name == this.props.currentCurrency);
+    var totalValue = (this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency) || {price: 0}).price * portfolio.value;
+    var currentCurrency = this.props.currentCurrencyPrices.find(c => c.name == this.props.currentCurrency) || {price: 0};
     var currencies = this.props.currentCurrencyPrices.map((c, i) =>
       <option key={i} value={c.name}>{c.name}</option>
     );
-    var currenciesList = this.props.portfolioCurrencies.map(currency => {
-      var price = this.props.currentCurrencyPrices.find(c => c.name == currency.currency).price;
+    var currenciesList = portfolio.currencies.map(currency => {
+      var price = (this.props.currentCurrencyPrices.find(c => c.name == currency.currency) || {price: 0}).price;
 
       return {
         id: currency.id,
@@ -75,7 +88,7 @@ class PortfolioPage extends Component {
 
     return (
       <div>
-        <div className="second-header">
+        <div className="second-header" style={{height: 115}}>
           <div className="container">
             <div className="title">
               <h2>Porfolio</h2>

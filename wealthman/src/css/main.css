@@ -16,6 +16,7 @@
   font-weight: 1000;
   font-style: normal;
 }
+@import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic');
 @font-face {
   font-family: "Calibre";
   src: url("../fonts/calibre_regular_italic.woff");
@@ -1157,7 +1158,7 @@ img.graph {
 }
 
 .token-listings input[type=number] {
-  max-width: 40px !important;
+  max-width: 70px !important;
   vertical-align: top;
 }
 .token-listings input[type=text] {
