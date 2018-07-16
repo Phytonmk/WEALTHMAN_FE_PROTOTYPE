@@ -91,7 +91,7 @@ class DashboardPage extends Component {
         </div>
         <div className="box">
           <div style={{display: 'inline-block', width: '300px', verticalAlign: 'top'}}>
-          {/*<PieChart
+          <PieChart
             data={[
               { key: 'A', value: 10, color: '#aaac84' },
               { key: 'B', value: 20, color: '#dce7c5' },
@@ -100,7 +100,7 @@ class DashboardPage extends Component {
             size={300}
             innerHoleSize={100}
             padding={10}
-          />*/}
+          />
           </div>
           <div style={{display: 'inline-block', width: '700px'}}>
             <Sortable

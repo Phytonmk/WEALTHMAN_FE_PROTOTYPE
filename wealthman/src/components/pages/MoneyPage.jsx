@@ -10,6 +10,26 @@ import { api, getCookie, setCookie, newLines, setPage, previousPage } from '../h
 
 import { abi, bytecode, contract, _exchanger, _admin } from '../smart-contract-data';
 
+class Timer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      left: this.props.start - this.props.duration
+    }
+  }
+  componentWillMount() {
+    setInterval(() => {
+      this.setState(previousState => previousState.left - 1000);
+    }, 1000);
+  }
+  render() {
+    if (!this.props.start)
+      return <div>∞</div>
+    const date = new Date(this.state.left);
+    return <div>{date.getTime()}</div>
+  }
+}
+
 class MoneyPage extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +37,8 @@ class MoneyPage extends Component {
       gotData: false,
       status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
       contractAddress: '',
-      request: {}
+      request: {},
+
     };
   }
   componentWillMount() {
@@ -33,7 +54,7 @@ class MoneyPage extends Component {
         }
         this.setState({
           gotData: true,
-          status, contractAddress, request
+          status, contractAddress, request: res.data.request
         })
       })
       .catch(console.log)
@@ -93,10 +114,9 @@ class MoneyPage extends Component {
       }).catch(console.log);
   }
   finish() {
-    var web3 = new Web3(web3.currentProvider);
     var contract = web3.eth.contract(abi);
     var contractInstance = contract.at(this.state.contractAddress);
-    var a = contractInstance.deposit({value: web3.toWei(request.value.toString(), 'ether'), gas: 2000}, (err, transactionHash) => {
+    var a = contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(), 'ether'), gas: 50000}, (err, transactionHash) => {
       if (err) {
         console.log(err);
       } else {
@@ -214,6 +234,9 @@ class MoneyPage extends Component {
             <div className="row-padding">
               As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
             </div>
+            {/*<div className="row-padding">
+              Time left <Timer start={this.state.request.contract_deployment} duration={1000 * 60 * 45} /> 
+            </div>*/}
             <div className="row-padding">
               <button className="back" onClick={() => previousPage()}>Back</button>
               <button className="continue" onClick={() => this.finish()}>Finish</button>

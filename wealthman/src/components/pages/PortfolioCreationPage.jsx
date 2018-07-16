@@ -237,7 +237,7 @@ class PortfolioCreationPage extends Component {
                 <button className="continue" onClick={() => setPage("chat")}>Start chat</button>
               </Link>
             </div>
-            <p><b>Target value:</b> {request.value}</p>
+            <p><b>Target value:</b> {request.value} ETH</p>
             <p><b>Risk profile:</b> {investor.riskprofile}</p>
             <p><b>Investor comment:</b> {request.comment ? request.comment : 'nothing'}</p>
             <p><b>Analysis Neccesity:</b> {(request.options || {}).analysis ? 'yes' : 'no'}</p>
