@@ -1,0 +1,1006 @@
+@font-face
+  font-family: "Calibre"
+  src: url("../fonts/calibre_light.woff")
+  font-weight: 200
+  font-style: normal
+
+
+@font-face
+  font-family: "Calibre"
+  src: url("../fonts/calibre_regular.woff")
+  font-weight: 700
+  font-style: normal
+
+
+@font-face
+  font-family: "Calibre"
+  src: url("../fonts/calibre_medium.woff")
+  font-weight: 1000
+  font-style: normal
+
+
+@import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic')
+
+@font-face
+  font-family: "Calibre"
+  src: url("../fonts/calibre_regular_italic.woff")
+  font-weight: normal
+  font-style: italic
+
+
+@font-face
+  font-family: "Gilroy"
+  src: url("../fonts/Gilroy/GilroyLight.woff")
+
+
+@font-face
+  font-family: "Gilroy-ExtraBold"
+  src: url("../fonts/Gilroy/GilroyExtraBold.woff")
+
+
+body, html
+  box-sizing: border-box
+  font-family: Roboto
+  font-size: 18px
+  line-height: 23px
+  color: #161338
+  margin: 0
+
+body
+  background-color: #ecf1f5
+
+*
+  box-sizing: border-box
+  color: #071e40
+
+button
+  border: none
+  background-color: rgba(0, 0, 0, 0)
+  cursor: pointer
+  outline: none
+  padding: 0
+  margin: 0
+
+a
+  font-size: 18px
+  color: blue
+  cursor: pointer
+  padding: 0
+
+ul.links
+  display: flex
+  list-style: none
+  padding: 0
+  margin: 0
+
+li.link
+  display: list-item
+
+.left
+  float: left !important
+
+.right
+  float: right !important
+
+.center
+  float: none !important
+  margin: auto !important
+
+.column-center
+  width: 30%
+  margin: auto
+
+.text-left
+  text-align: left !important
+
+.text-right
+  text-align: right !important
+
+.text-center
+  text-align: center !important
+
+.blue-text
+  color: #095074
+  cursor: pointer
+
+.container
+  width: 1266px
+  height: 100%
+  overflow-y: auto
+  margin: auto
+  margin-top: 0
+  margin-bottom: 0
+  overflow: hidden
+  position: relative
+
+.content
+  flex-grow: 1
+  overflow-y: auto
+  flex-shrink: 0
+
+.box .container
+  width: 1000px
+  padding: 10px 0
+
+.row
+  width: 100%
+  overflow-y: auto
+  position: relative
+  bottom: 0
+
+.row-padding
+  width: 100%
+  overflow-y: auto
+  position: relative
+  bottom: 0
+  padding: 30px 0 0
+
+.column
+  overflow: auto
+  float: left
+  display: table
+
+.info .column
+  margin-left: 218px
+
+article.page
+  min-height: 100vh
+  background-color: none
+  display: flex
+  flex-direction: column
+  align-items: stretch
+
+.box
+  background-color: white
+  padding: 38px 40px
+  margin-bottom: 20px
+  border-radius: 2px
+  overflow-y: auto
+  p
+    margin: 10px
+
+.half-box
+  width: 356px
+  min-height: 200px
+  background-color: white
+  border: 1px solid #e7e7ea
+  padding: 18px 24px
+  margin-bottom: 24px
+  border-radius: 3px
+  float: left
+  &.margin-right
+    margin-right: 24px
+
+.login-box
+  width: 355px
+  float: left
+  margin: 50px
+  padding: 30px
+  background-color: white
+  border: 1px solid #e7e7ea
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.15)
+  color: #161338
+  h3
+    text-align: center
+    margin-top: 0
+
+.box input[type="text"], .login-box input[type="text"], .box input[type="number"], .login-box input[type="number"], .box input[type="file"], .login-box input[type="file"], .box input[type="password"], .login-box input[type="password"]
+  width: 100%
+  max-width: 320px
+  height: 40px
+  padding: 8px 12px
+  border: 1px solid #b7b7c0
+  outline: none
+  margin: 6px 0 24px
+
+.box input[type="checkbox"], .login-box input[type="checkbox"]
+  margin-right: 6px
+
+label
+  padding-top: 10px
+  cursor: pointer
+  line-height: 1
+
+.box input[type="textarea"]
+
+.login-box
+  button
+    &.login
+      width: 100%
+      height: 40px
+      text-align: center
+      color: white
+      background-color: #084a6c
+      margin-top: 15px
+    &.register
+      width: 100%
+      height: 40px
+      text-align: center
+      color: white
+      background-color: #084a6c
+      margin-top: 15px
+      background-color: #4cab5a
+    &.login:hover
+      background-color: #48a8da
+    &.register:hover
+      background-color: #58c468
+  small
+    margin-right: 10px
+
+header.header
+  height: 90px
+  background-color: #071e40
+  position: relative
+  flex-shrink: 0
+  z-index: 10
+  border-bottom: 1px solid rgba(256, 256, 256, 0.15)
+  &::before
+    width: 100%
+    height: 90px
+    object-fit: contain
+    mix-blend-mode: screen
+    background: url("../img/21-screen.png")
+    position: absolute
+    content: ""
+    top: 0
+    z-index: 10
+  .contents
+    position: absolute
+    width: 100%
+    height: 100%
+    z-index: 20
+    overflow: visible
+
+img.logo
+  height: 15px
+  width: auto
+  margin-top: 36px
+  cursor: pointer
+
+h1
+  font-size: 40px
+  line-height: 48px
+  weight: 300
+  margin: 0 0 15px
+
+h2
+  font-size: 30px
+  line-height: 39px
+  margin: 0
+
+.box h2
+  margin-bottom: 30px
+
+h3
+  font-size: 24px
+  line-height: 29px
+  margin-bottom: 12px
+  &.high
+    line-height: 40px
+    margin: 6px 0 24px
+
+h4
+  font-size: 20px
+  line-height: 25px
+  margin-bottom: 12px
+
+.white
+  color: white
+  padding-bottom: 20px
+
+header.header ul.links
+  z-index: 20
+  margin-top: 30px
+  li.link
+    a.link
+      margin-right: 40px
+      color: rgba(255, 255, 255, 0.54) !important
+      text-decoration: none
+      font-size: 15px
+      line-height: 1.2
+
+.no-margin
+  margin: 0 !important
+
+header.header
+  ul.links li.link a.link:hover
+    color: white
+  &.transparent ul.links li.link a.link
+    color: #161338
+    &:hover
+      border-bottom: 2px solid #48a8da
+
+.footer a.login
+  height: 40px
+  margin-top: 5px
+  background-color: #f4f4f4
+  color: #48a8da
+  border: 1px solid #48a8da
+  padding: 8px 25px
+  margin-right: 12px
+  font-size: 16px
+  color: white
+  background-color: #193665
+  text-decoration: none
+
+header.header a
+  &.login
+    height: 40px
+    margin-top: 5px
+    background-color: #f4f4f4
+    color: #48a8da
+    border: 1px solid #48a8da
+    padding: 8px 25px
+    margin-right: 12px
+    font-size: 16px
+    color: white
+    background-color: #193665
+    text-decoration: none
+    &:hover
+      background-color: #48a8da
+      color: white
+  &.invest
+    height: 40px
+    margin-top: 5px
+    color: white
+    background-color: #48a8da
+    border-color: #48a8da
+    padding: 8px 25px
+    font-size: 16px
+    &:hover
+      background-color: #193665
+
+.footer
+  width: 100%
+  height: 111px
+  padding-top: 31px
+  background-color: rgba(0, 0, 0, 0)
+  flex-shrink: 0
+  border-top: 1px solid #dfe4e8
+  .big-blue-button
+    margin-right: 40px
+    float: right
+  span
+    font-size: 14px
+    margin-top: 10px
+    float: left
+  a
+    width: auto
+
+.footer-white
+  width: 100%
+  border-top: 1px solid #c2c2c2
+  a
+    margin-right: 20px
+    color: #505050
+    text-decoration: none
+    &:hover
+      color: #428bca
+  .footer-container
+    height: auto
+    padding: 10px 0
+    &.padding
+      padding: 30px 0
+
+.border-bottom
+  border-bottom: 1px solid #c2c2c2
+
+.logged
+  background-color: #f4f4f4 !important
+
+.footer-container
+  width: calc(1140px * .8 - 40px)
+  height: 224px
+  margin-left: calc((100% - (1140px * .8 - 40px)) / 2 + 40px)
+  padding-top: 20px
+  color: #747386
+  font-size: 16px
+  line-height: 21px
+
+.z1
+  width: 75%
+  float: left
+  &.full
+    width: 100%
+    float: left
+
+.z2
+  width: 25%
+  float: left
+
+.footer-container .half
+  padding-left: 40px
+
+.footer
+  h4
+    font-size: 19px
+    line-height: 22px
+    color: white
+  a.login
+    background-color: rgba(0, 0, 0, 0)
+    border: none
+    color: white
+    padding: 0
+  button.link
+    height: 30px
+    color: white
+    text-decoration: none
+    float: left
+    font-size: 13px
+  a
+    &.login
+      height: 30px
+      color: white
+      text-decoration: none
+      float: left
+      font-size: 13px
+    height: 30px
+    color: white
+    text-decoration: none
+    float: left
+    font-size: 13px
+  ul.links
+    margin-bottom: 36px
+    li.link
+      padding: 12px 0 0 0
+      button.link
+        margin-right: 60px
+        font-size: 18px
+        line-height: 23px
+        color: #e6e6e6
+        font-weight: 600
+
+.logged ul.links li.link button.link
+  color: #747386 !important
+
+.footer small
+  font-size: 16px
+  line-height: 21px
+  color: #b7b7c0
+  font-weight: 200px
+
+.logged small
+  font-size: 12px !important
+  color: #999999 !important
+
+.box button.back, .manager-box button.back, .box button.continue, .manager-box button.continue
+  font-size: 17px
+  line-height: 21px
+  height: 39px
+  border-radius: 3px
+  padding: 0 30px
+
+.box button.back, .manager-box button.back
+  color: #555
+  background-color: #fcfcfc
+  border: 1px solid #e3e3e3
+  margin-right: 12px
+
+.info button.back
+  margin-right: 24px
+
+.box button.back:hover, .manager-box button.back:hover
+  background-color: #f4f4f4
+
+.box button.continue, .manager-box button.continue
+  color: #fff
+  background-color: #48a8da
+  border-color: #48a8da
+
+.box button.continue:hover, .manager-box button.continue:hover
+  background-color: #193665
+
+.form-question
+  width: 100%
+  margin: 20px
+  .answer
+    width: calc(100% - 40px)
+    height: auto
+    min-height: 50px
+    padding-left: 10px
+    padding-top: 10px
+    border-top: 1px solid #e3e3e3
+    label
+      font-size: 16px
+      padding-left: 20px
+      padding-top: 2px
+      cursor: pointer
+  h4
+    margin-bottom: 20px
+
+button.send
+  font-size: 16px
+  width: 100%
+  height: 40px
+  text-align: center
+  background-color: #48a8da
+  color: white
+  margin-top: 20px
+  &:hover
+    background-color: #193665
+
+.circle
+  border-radius: 100px
+  width: 130px
+  height: 130px
+  overflow: hidden
+  margin: 0 35px 35px 10px
+
+img.avatar
+  width: 100%
+  margin: 0 !important
+
+.second-header
+  width: 100%
+  height: 95px
+  background-color: white
+  border-bottom: 1px solid #e7e7ea
+  padding: 18px 0
+  .container
+    padding: 0 12px
+  .title
+    overflow-x: auto
+    height: 100%
+    border-right: 1px solid #e7e7ea
+    padding-right: 50px
+    margin-right: 50px
+    float: left
+    overflow-y: hidden
+  .description
+    width: 700px
+    float: left
+
+.description
+  select
+    width: 100px
+    height: 23px
+    font-size: 18px
+    padding: 0
+  option
+    font-size: 18px
+
+.first-tab
+  width: 736px
+  margin: 0 12px
+  float: left
+
+.second-tab
+  width: 356px
+  margin: 0 12px
+  float: left
+
+.question
+  width: 100%
+  min-height: 40px
+  padding-top: 10px
+  color: #5c5b6b
+  p
+    float: left
+    margin: 0 5px
+
+button
+  &.transactions-link
+    color: #1e83ef
+    width: 100%
+    text-align: left
+    margin: 5px
+    &:hover
+      color: #043ec8
+  &.blue-link
+    color: #747386
+    margin: 5px
+    &.active
+      color: #48a8da
+      font-weight: 800
+      text-decoration: underline
+
+.grey-link
+  margin-left: 10px
+  color: #c2c2c2
+  text-decoration: none
+  cursor: pointer
+  &:hover
+    color: grey
+
+.upper-tab
+  button.transactions-link
+    width: auto
+    float: left
+    margin-right: 60px
+  display: table
+  width: 100%
+  .box
+    display: table
+    width: 100%
+
+p.grey
+  color: #747386
+  margin: 0 10px
+
+.long-header
+  width: 100%
+  height: 210px
+  margin-bottom: -210px
+  background: linear-gradient(to bottom, #193665, #48a8da)
+
+.third-header
+  width: 100%
+  height: 40px
+  background-color: white
+  border-bottom: 1px solid #e7e7ea
+  padding-top: 7.5px
+  button.back
+    font-size: 18px
+    color: #8e95a0
+    opacity: .75
+    border: none
+    background-color: none
+    &:hover
+      opacity: 1
+    &::before
+      background: url(../img/back.png)
+      width: 9px
+      height: 14px
+      background-size: contain
+      background-repeat: no-repeat
+      margin: 5px 8px
+      content: ""
+      float: left
+  .container
+    padding: 0
+
+.progress-bar
+  width: 100%
+  height: 5px
+  background-color: #5ad77d
+  .progress
+    height: 5px
+    background-color: #5ad77d
+
+.company
+  width: 100%
+  overflow-y: auto
+  margin: 0
+  .circle
+    width: 65px
+    height: 65 px
+
+.half
+  width: 50%
+  overflow-y: auto
+  float: left
+
+.third
+  width: 33.33%
+  overflow-y: auto
+  float: left
+
+.two-third
+  width: 66.66%
+  float: left
+
+.fourth
+  width: 25%
+  overflow-y: auto
+  float: left
+
+.three-fourth
+  width: 75%
+  overflow-y: auto
+  float: left
+
+.right-border
+  border-right: 1px solid #e7e7ea
+
+.padding-side
+  padding: 0 10px
+
+select
+  width: 100%
+  max-width: 400px
+  height: 40px
+  padding: 8px 12px
+  border: 1px solid #b7b7c0
+  outline: none
+  margin: 6px 0 24px
+
+option
+
+.manager-box
+  width: 100%
+  overflow: auto
+  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.05)
+  border-radius: 7px
+  margin-bottom: 24px
+  .cover
+    background: linear-gradient(to right bottom, #193665, #48a8da)
+    width: 100%
+    height: 150px
+    border-top-left-radius: 3px
+    border-top-right-radius: 3px
+    margin: 0
+    z-index: -1
+  .info
+    width: 100%
+    min-height: 200px
+    overflow-y: auto
+    margin: 0
+    background-color: white
+    border: 1px solid #e7e7ea
+    padding: 94px 24px 18px
+  .circle
+    width: 168px
+    height: 168px
+    border-radius: 168px
+    border: 3px solid white
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.15)
+    margin: -183px 0 0 257px
+    position: absolute
+    z-index: 10
+
+.half-box .circle
+  width: 80px
+  height: 80px
+  border-radius: 70px
+  margin: 0 18px 0 0
+
+.user-agreement
+  width: 95%
+  margin: auto
+  margin-top: 34px
+  margin-bottom: 34px
+  height: 250px
+  overflow-y: scroll
+  background-color: white
+  border: 1px solid #e7e7ea
+  padding: 18px 24px
+  border-radius: 5px
+
+.document-box
+  width: 318px
+  height: 318px
+  margin: 12px
+  padding-top: 110px
+  border: 1px solid #e7e7ea
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15)
+  float: left
+  button.continue
+    margin-left: calc(50% - 100px)
+    margin-top: 15px
+
+.green
+  color: green !important
+
+.red
+  color: red !important
+
+a
+  &.telegram::before
+    background: url("../img/footer/telegram.png")
+  &.bitcointalk::before
+    background: url("../img/footer/bitcointalk.png")
+
+button.facebook::before
+  background: url("../img/footer/facebook.png")
+
+a
+  &.facebook::before
+    background: url("../img/footer/facebook.png")
+  &.instagram::before
+    background: url("../img/footer/instagram.png")
+  &.medium::before
+    background: url("../img/footer/medium.png")
+  &.reddit::before
+    background: url("../img/footer/reddit.png")
+
+button.twitter::before, a.twitter::before
+  background: url("../img/footer/twitter.png")
+
+button.linkedin::before
+  background: url("../img/footer/linkedin.png")
+
+a
+  &.linkedin::before
+    background: url("../img/footer/linkedin.png")
+  &.youtube::before
+    background: url("../img/footer/youtube.png")
+
+button.google::before
+  background: url("../img/footer/google.png")
+
+a
+  &.telegram::before, &.bitcointalk::before, &.facebook::before, &.instagram::before, &.medium::before, &.reddit::before, &.twitter::before, &.linkedin::before, &.youtube::before
+    width: 16px
+    height: 16px
+    background-size: contain
+    background-repeat: no-repeat
+    background-position: center
+    content: ""
+    float: left
+    margin: 3px 8px 0 0
+
+button
+  &.facebook, &.linkedin, &.twitter, &.google
+    width: 42px
+    height: 36px
+    background-color: #4867ad
+    border-radius: 3px
+    margin-top: 20px
+    margin-right: 10px
+
+.login-box button
+  &.facebook, &.linkedin, &.twitter, &.google
+    margin-top: 10px
+
+button
+  &.twitter
+    background-color: #49a0ec
+  &.Linkedin
+    background-color: #3076b0
+  &.google
+    background-color: #cc5849
+  &.facebook::before, &.linkedin::before, &.twitter::before, &.google::before
+    width: 20px
+    height: 20px
+    background-size: contain
+    background-repeat: no-repeat
+    background-position: center
+    content: ""
+    float: left
+    margin: 0 0 0 11px
+
+.small
+  font-size: 12px
+
+.row .tridot
+  text-overflow: ellipsis
+  overflow: hidden
+
+p
+  width: 90%
+  margin: auto
+  margin-bottom: 32px
+
+.hidden
+  visibility: hidden
+  position: absolute
+
+.visible
+  visibility: visible
+
+.invisible
+  visibility: hidden !important
+  width: 0 !important
+  height: 0 !important
+  overflow: hidden !important
+  margin: 0 !important
+  padding: 0 !important
+  border: 0 !important
+  display: none !important
+
+ul.token-listings
+  padding: 0
+  li
+    width: 100%
+    margin: auto
+    overflow-y: auto
+    border-top: 1px solid #e7e7ea
+    padding: 12px 0
+    *
+      color: #747386
+      font-size: 18px
+      line-height: 25px
+      overflow-y: auto
+      float: left
+      display: inline-block
+      margin-left: 13px
+    &.titles *
+      font-weight: 600
+      color: #48a8da
+    .number
+      width: 25px
+    .check
+      width: 60px
+    .currency
+      width: 120px
+    .percent
+      width: 80px
+    .amount, .value
+      width: 120px
+    .analysis, .comments
+      width: 220px
+    * input
+      width: 100%
+      height: 30px
+      margin: 0
+      border: 1px solid #e7e7ea
+      &[type="text"]
+        width: 100%
+        height: 30px
+        margin: 0
+        border: 1px solid #e7e7ea
+      &[type="checkbox"]
+        margin: 0
+        top: -4px
+        position: relative
+
+button.continue.right.margin
+  margin-left: 15px
+
+img.portfolio
+  width: 100%
+  height: auto
+
+ol[type="1"] li
+  margin: 10px 0
+
+b.eth-address
+  background-color: white
+  border: 1px solid grey
+  padding: 6px 16px
+  border-radius: 5px
+  margin-left: 10px
+
+button.show-code
+  color: #56b6c2
+  text-decoration: underline
+  width: 100%
+  text-align: left
+
+.code-container
+  background-color: #282c34
+  color: #56b6c2
+  font-family: monospace
+  width: 96%
+  margin: 12px 2%
+  transition: height 200ms, border 200ms, border-radius 200ms, padding 200ms
+  &.show
+    display: table
+    height: 100px
+    border: 2px solid #388f68
+    border-radius: 10px
+    padding: 8px 16px
+  &.hide
+    height: 0
+    border: 0
+    border-radius: 0
+    overflow: hidden
+    padding: 0
+
+.upper-titles
+  display: table
+  float: left
+  margin: 0 !important
+  p.blue
+    border-bottom: 1px solid #e7e7ea
+    padding-bottom: 8px
+    margin-bottom: 8px !important
+
+.width100
+  width: 100%
+  float: none !important
+
+img.graph
+  width: 100%
+  height: auto
+  margin: 0 !important
+  float: left
+
+.capitalize
+  text-transform: capitalize
+
+.stocks-sortable
+  .titles div, li div
+    width: 180px !important
+
+.uploaded-photo
+  max-height: 200px
+  max-width: 200px
+
+.token-listings input
+  &[type=number]
+    max-width: 70px !important
+    vertical-align: top
+  &[type=text]
+    max-width: 150px !important
+    vertical-align: top

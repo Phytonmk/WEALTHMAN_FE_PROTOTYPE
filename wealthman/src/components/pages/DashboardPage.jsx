@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 import Sortable from '../Sortable'
 
 import moment from 'moment';
@@ -30,24 +30,6 @@ class DashboardPage extends Component {
     });
     console.log(data);
     return data;
-  }
-  mouseOverHandler(d, e) {
-    this.setState({
-      showToolTip: true,
-      top: e.y,
-      left: e.x,
-      value: d.value,
-      key: d.data.key});
-  }
-
-  mouseMoveHandler(e) {
-    if (this.state.showToolTip) {
-      this.setState({top: e.y, left: e.x});
-    }
-  }
-
-  mouseOutHandler() {
-    this.setState({showToolTip: false});
   }
 
   createTooltip() {
@@ -109,20 +91,16 @@ class DashboardPage extends Component {
         </div>
         <div className="box">
           <div style={{display: 'inline-block', width: '300px', verticalAlign: 'top'}}>
-          <PieChart
+          {/*<PieChart
             data={[
-              { key: 'A', value: this.getRandomArbitrary(0, 100), color: '#aaac84' },
-              { key: 'B', value: this.getRandomArbitrary(0, 100), color: '#dce7c5' },
-              { key: 'C', value: this.getRandomArbitrary(0, 100), color: '#e3a51a' }
+              { key: 'A', value: 10, color: '#aaac84' },
+              { key: 'B', value: 20, color: '#dce7c5' },
+              { key: 'C', value: 30, color: '#e3a51a' }
             ]}
             size={300}
             innerHoleSize={100}
-            mouseOverHandler={this.mouseOverHandler}
-            mouseOutHandler={this.mouseOutHandler.bind(this)}
-            mouseMoveHandler={this.mouseMoveHandler.bind(this)}
             padding={10}
-            styles={this.styles}
-          />
+          />*/}
           </div>
           <div style={{display: 'inline-block', width: '700px'}}>
             <Sortable

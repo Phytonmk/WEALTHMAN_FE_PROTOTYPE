@@ -10,8 +10,8 @@ import myDate from './components/myDate.jsx';
 
 import logoWhite from './img/logo.svg';
 import logoBlue from './img/logo_blue.svg';
-import './css/main.css';
-import './css/design.css';
+import './css/main.sass';
+import './css/design.sass';
 
 import { api, setPage } from './components/helpers';
 
@@ -42,6 +42,7 @@ import DashboardPage from './components/pages/DashboardPage';
 import PortfoliosPage from './components/pages/PortfoliosPage';
 import PortfolioPage from './components/pages/PortfolioPage';
 import WithdrawPage from './components/pages/WithdrawPage';
+import RegOrLoginForNewInvestorPage from './components/pages/RegOrLoginForNewInvestorPage';
 
 //
 
@@ -65,14 +66,6 @@ class App extends Component {
         auth();
         window.location.reload(false);
       });
-    // document.cookie = '';
-    // document.location.href = '#';
-    // setReduxState({
-    //   user: -1,
-    //   currentPage: "managers",
-    //   login: "",
-    //   password: ""
-    // });
   }
 
   setPage(page, id) {
@@ -174,6 +167,7 @@ class App extends Component {
           <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
           <Route path="/requests" component={RequestsPage}/>
 
+          <Route path="/reg-or-login" component={RegOrLoginForNewInvestorPage}/>
           <Route path="/static form" component={StaticFormPage}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
           <Route path="/agreement" component={AgreementPage}/>
@@ -204,7 +198,7 @@ class App extends Component {
 
           <Route path="/manager-reg" component={ManagerRegPage}/>
           <Route path="/manager-detailing" component={ManagerDetailingPage}/>
-          <Route path="/withdraw" component={WithdrawPage}/>
+          <Route path="/withdraw/:id" component={WithdrawPage}/>
         </Switch>
     );
   }

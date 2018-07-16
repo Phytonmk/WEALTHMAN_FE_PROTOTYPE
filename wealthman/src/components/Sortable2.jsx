@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import myDate from './myDate.jsx';
-import '../css/Sortable2.css';
+import '../css/Sortable2.sass';
 
 {/*
 //  //  //              USAGE EXAMPLE              //  //  //

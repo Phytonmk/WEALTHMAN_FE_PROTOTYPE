@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable from '../Sortable.jsx';
 import myDate from '../myDate.jsx';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 const requests = [
     {

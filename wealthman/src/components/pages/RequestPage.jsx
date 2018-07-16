@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable from '../Sortable.jsx';
 import myDate from '../myDate.jsx';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class RequestPage extends Component {
   constructor(props) {
@@ -111,7 +111,20 @@ class RequestPage extends Component {
       </Link>
       </div>
       ) : "";
-    if (this.props.user == 0)
+    if (this.props.user == 0) {
+      let actionButtons;
+      if (request.status === 'pending') 
+        actionButtons =
+          <div>
+            <button className="back" onClick={() => this.decline()}>Decline</button>
+            <button className="continue" onClick={() => this.accept()}>Accept</button>
+          </div>;
+      else if (request.status === 'waiting for transaction')
+        actionButtons =
+          <div>
+            <button className="back" onClick={() => this.decline()}>Decline</button>
+            <button className="continue" onClick={() => setPage('money/' + request.id)}>Send money</button>
+          </div>
       return (
         <div>
         <div className="container">
@@ -153,53 +166,70 @@ class RequestPage extends Component {
                   }
                 />
                 <br />
-                <button className="back" onClick={() => this.decline()}>Decline</button>
-                <button className="continue" onClick={() => this.accept()}>Accept</button>
+                {actionButtons}
               </div> : ''}
             </div>
           </div>
         </div>
         );
-    return (
-      <div>
-    {/* {this.renderBackButton()} */}
-    <div className="container">
-      <div className="first-tab">
-        <div className="box">
-          <div className="circle left">
-            <img src={("../investor/") + investor.img} className="avatar" />
-            </div>
-            <div className="third">
-              {name}
-              <p>New client. 1   days on platform</p>
-              {age}
-              <p>client id 50{investor.id}00{investor.id}</p>
-            </div>
-            <div className="third text-right">
-              <p>request number {this.props.currentRequest}</p>
-              <p>{request.date}</p>
-            </div>
-            <div className="row-padding">
-              <Link to={"/chat"}>
-                <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+      }
+    if (this.props.user == 1 && request.status === 'waiting')
+      return (
+        <div>
+      {/* {this.renderBackButton()} */}
+      <div className="container">
+        <div className="first-tab">
+          <div className="box">
+            <div className="circle left">
+              <img src={("../investor/") + investor.img} className="avatar" />
+              </div>
+              <div className="third">
+                {name}
+                <p>New client. 1   days on platform</p>
+                {age}
+                <p>client id 50{investor.id}00{investor.id}</p>
+              </div>
+              <div className="third text-right">
+                <p>request number {this.props.currentRequest}</p>
+                <p>{request.date}</p>
+              </div>
+              <div className="row-padding">
+                <Link to={"/chat"}>
+                  <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+                </Link>
+              </div>
+              {/*<p>Target value: {request.value}{request.currency}</p>
+                <p>Term 4 month</p>
+                <p>Risk profile: 25%</p>
+                <p>Target earning rate</p>*/}
+              <div className="row-padding">
+                <Link to={"/portfoliocreation/" + this.props.match.params.id} onClick={() => this.setPage("portfoliocreation")}>
+                  <button className="continue right">Create portfolio</button>
+                </Link>
+              <Link to={"/decline"} onClick={() => this.setPage("decline")}>
+                <button className="back right">Decline</button>
               </Link>
             </div>
-            {/*<p>Target value: {request.value}{request.currency}</p>
-              <p>Term 4 month</p>
-              <p>Risk profile: 25%</p>
-              <p>Target earning rate</p>*/}
-            <div className="row-padding">
-              <Link to={"/portfoliocreation/" + this.props.match.params.id} onClick={() => this.setPage("portfoliocreation")}>
-                <button className="continue right">Create portfolio</button>
-              </Link>
-            <Link to={"/decline"} onClick={() => this.setPage("decline")}>
-              <button className="back right">Decline</button>
-            </Link>
           </div>
         </div>
       </div>
-    </div>
-  </div>);
+    </div>);
+    return (
+      <div className="container">
+        <div className="first-tab">
+          <div className="box">
+          Page cannot be rendered properly, data for developers:
+          <pre>
+            Usertype: {this.props.user}
+            <br />
+            Request status: {request.status}
+            <br />
+            Request id: {request.id}
+          </pre>
+          </div>
+        </div>
+      </div>
+      )
   }
 }
 export default connect(a => a)(RequestPage);

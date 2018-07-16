@@ -28,8 +28,8 @@ class Login2Page extends Component {
       });
   }
   setPage(page, id) {
-    var prevousPages = this.props.prevousPages.slice();
-    prevousPages.push(this.props.currentPage);
+    var previousPages = this.props.previousPages.slice();
+    previousPages.push(this.props.currentPage);
     if (typeof id !== "undefined")
       switch (page) {
         case "manager":
@@ -48,7 +48,7 @@ class Login2Page extends Component {
 
     setReduxState({
       currentPage: page,
-      prevousPages: prevousPages,
+      previousPages: previousPages,
       currentAccountPage: "personal",
       currentPortfoliosPage: "active",
     });

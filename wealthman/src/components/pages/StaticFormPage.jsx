@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 
-import { api, getCookie, setPage, prevousPage } from '../helpers';
+import { api, getCookie, setPage, previousPage } from '../helpers';
 
 import auth from '../auth.js';
 
@@ -187,7 +187,7 @@ class StaticFormPage extends Component {
               <div className="row-padding">
                 {
                   this.state.question === 0 ?
-                  (<button className="back" onClick={() => prevousPage()}>Back</button>) :
+                  (<button className="back" onClick={() => previousPage()}>Back</button>) :
                   (<button className="back" onClick={() => this.setState({question: this.state.question - 1})}>Back</button>)
                 }
                 {

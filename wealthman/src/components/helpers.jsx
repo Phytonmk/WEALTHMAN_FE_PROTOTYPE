@@ -70,7 +70,6 @@ const tryLogin = (login, password) => {
     .then((res) =>{
       setCookie('accessToken', res.data.accessToken);
       setCookie('usertype', res.data.usertype);
-      console.log(res.data);
       if (res.data.usertype == 0)
         setReduxState({
           user: 0,
@@ -92,8 +91,9 @@ const tryLogin = (login, password) => {
 }
 
 const setPage = (page, id) => {
-  var prevousPages = store.getState().prevousPages.slice();
-  prevousPages.push(store.getState().currentPage);
+  var previousPages = store.getState().previousPages.slice();
+  // previousPages.push(store.getState().currentPage);
+  previousPages.push(document.location.hash.substr(2)); // substr(2) to remove #/ in begining  
   if (typeof id !== "undefined")
     switch (page) {
       case "manager":
@@ -112,7 +112,7 @@ const setPage = (page, id) => {
 
   setReduxState({
     currentPage: page,
-    prevousPages: prevousPages,
+    previousPages: previousPages,
     currentAccountPage: "personal",
     currentPortfoliosPage: "active",
   });
@@ -143,16 +143,20 @@ const setCurrency = (event) => {
   });
 }
 
-const prevousPage = () => {
-  var prevousPages = store.getState().prevousPages.slice();
-  if (prevousPages.length == 0)
+const previousPage = () => {
+  var previousPages = store.getState().previousPages.slice();
+  console.log(previousPages);
+  if (previousPages.length == 0)
     return;
-  var currentPage = prevousPages.pop();
+  var currentPage = previousPages.pop();
 
   setReduxState({
     currentPage: currentPage,
-    prevousPages: prevousPages
+    previousPages: previousPages
   })
+  const url = '#/' + currentPage;
+  console.log(`Moving to page ${url}`);
+  document.location.href = url; 
 }
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, prevousPage};
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage};

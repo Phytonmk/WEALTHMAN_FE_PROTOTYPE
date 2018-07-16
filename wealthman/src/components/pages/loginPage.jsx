@@ -25,7 +25,10 @@ class loginPage extends Component {
         setCookie('usertype', res.data.usertype);
         if (res.data.usertype == 0) {
           setReduxState({user: 0});
-          setPage('portfolios');
+          if (this.props.currentManager === -1)
+            setPage('portfolios');
+          else
+            setPage('kyc');
         }
         else if (res.data.usertype == 1) {
           setReduxState({user: 1});

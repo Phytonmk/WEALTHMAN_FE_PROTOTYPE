@@ -3,8 +3,10 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ProgressBar from '../ProgressBar.jsx'
+import QRCode from 'qrcode.react';
 
-import { api, getCookie, setCookie, newLines, setPage, prevousPage } from '../helpers';
+
+import { api, getCookie, setCookie, newLines, setPage, previousPage } from '../helpers';
 
 import { abi, bytecode, contract, _exchanger, _admin } from '../smart-contract-data';
 
@@ -12,9 +14,28 @@ class MoneyPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected
+      gotData: false,
+      status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
       contractAddress: ''
     };
+  }
+  componentWillMount() {
+    api.post('get-request/' + this.props.match.params.id)
+      .then((res) => {
+        let status = 4;
+        let contractAddress = '';
+        if (res.data.request.status === 'pending')
+          status = 0;
+        if (res.data.request.status === 'waiting for transaction') {
+          status = 2;
+          contractAddress = res.data.portfolio.smart_contract;
+        }
+        this.setState({
+          gotData: true,
+          status, contractAddress
+        })
+      })
+      .catch(console.log)
   }
   openMetamask() {
     if (typeof web3 === 'undefined') {
@@ -24,6 +45,7 @@ class MoneyPage extends Component {
       .then(res => {
         const _owner = res.data.investor;
         const _manager = res.data.manager;
+        console.log(`ADDRESSES:\ninvestor: ${_owner},\n manager: ${_manager}`);
         const _endTime = 1538784000;
         const _tradesMaxCount = 2;
         const _managmentFee = 200 ;
@@ -62,7 +84,7 @@ class MoneyPage extends Component {
                 .then(() => console.log('ok'))
                 .catch(console.log);
             } else {
-              console.log(`contract: ${contract.address}`);
+              console.log(`contract:`, contract);
               this.setState({status: 1});
             }
          }
@@ -85,6 +107,8 @@ class MoneyPage extends Component {
   
   }
   render() {
+    if (!this.state.gotData)
+      return <div className="box loading"><p>Loading</p></div>
     if (this.state.status === 0) {
       return <div className="container">
             <div className="box">
@@ -121,16 +145,23 @@ class MoneyPage extends Component {
       else
         return <div className="container">
             <div className="box">
-              <h2> Contract mining, it may take awhile... </h2>
+              <h2> Transaction is submitted. Please, wait for Etherium network to mine the transaction. Don`t close the page until we inform you </h2>
             </div>
           </div>
     }
     if (this.state.status === 3) {
       return <div className="container">
-            <div className="box">
-              <h2> You have rejected the contract, please, contact with you manager </h2>
+               <div className="box">
+                 <h2> You have rejected the contract, please, contact with you manager </h2>
+               </div>
+             </div>
+    }
+    if (this.state.status === 4) {
+      return <div className="container">
+              <div className="box">
+                <h2> Error occurred :'( </h2>
+              </div>
             </div>
-          </div>
     }
     return (
       <div>
@@ -154,6 +185,14 @@ class MoneyPage extends Component {
                 </li>
                 <li>
                   Copy this address of smart-contract <b className="eth-address">{this.state.contractAddress}</b>
+                  <br />
+                  <br />
+                  Or scan QR code
+                  <br />
+                  <br />
+                  <QRCode value={this.state.contractAddress} />
+                  <br />
+                  <br />
                 </li>
                 <li>
                   Go to your Ethereum wallet and paste the address of smart-contract as destination address
@@ -167,7 +206,7 @@ class MoneyPage extends Component {
               As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
             </div>
             <div className="row-padding">
-              <button className="back" onClick={() => prevousPage()}>Back</button>
+              <button className="back" onClick={() => previousPage()}>Back</button>
               <button className="continue" onClick={() => this.finish()}>Finish</button>
             </div>
           </div>

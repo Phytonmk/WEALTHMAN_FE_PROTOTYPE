@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable from '../Sortable.jsx';
 import myDate from '../myDate.jsx';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 let stocks = [];
 let stockTableCacheIsOld = true;
@@ -177,10 +177,10 @@ class PortfolioCreationPage extends Component {
           {token.name}
         </div>
         <div className="percent">
-          <input value={this.state[token.name + '-percent']} onChange={(event) => this.setState({[token.name + '-percent']: event.target.value})} type="number"></input>
+          <input value={this.state[token.name + '-percent']} onChange={(event) => this.setState({[token.name + '-percent']: event.target.value})} type="number" min="0" max="100"></input>
         </div>
         <div className="amount">
-          <input value={this.state[token.name + '-amount']} onChange={(event) => this.setState({[token.name + '-amount']: event.target.value})} type="number"></input>
+          <input value={this.state[token.name + '-amount']} onChange={(event) => this.setState({[token.name + '-amount']: event.target.value})} type="number"  min="0"></input>
         </div>
         <div className="value">
           {set}

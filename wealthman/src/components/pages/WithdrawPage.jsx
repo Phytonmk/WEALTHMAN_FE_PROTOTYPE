@@ -2,19 +2,12 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class WithdrawPage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-  }
-  send() {
-    api.post('request', {manager: this.props.currentManager})
-      .then(() => {
-        setPage('requests');
-      })
-      .catch(console.log);
   }
   render() {
     return(
@@ -23,9 +16,16 @@ class WithdrawPage extends Component {
         {/*this.renderProgressBar()*/}
         <div className="container">
           <div className="box">
-            <h2>Witdraw you money</h2>
+            <h2>Witdrawing portfolio #14</h2>
             <div className="row-padding">
-              <p>Withdrawing... 💰💰💰</p>
+              <p>Withdrawing address: <b>0x18Dda87E2b73D58827a6dEfA99E2b86241CEDDe9</b></p>
+            </div>
+            <div className="row-padding">
+              <p>Withdrawing amount:</p>
+              <p><input type="number" style={{width: 100}} value="400"/></p>
+            </div>
+            <div className="row-padding">
+              <p><button className="continue">Widthdraw</button></p>
             </div>
           </div>
         </div>

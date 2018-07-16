@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic')
+
+body, html
+  font-family: 'Roboto', sans-serif
+
+a.big-blue-button
+  height: 36px
+  border-radius: 18px
+  background-color: #39a9dc
+  padding: 11px 25px
+  color: white
+  text-transform: uppercase
+button
+  &.big-blue-button
+    height: 36px
+    border-radius: 18px
+    background-color: #39a9dc
+    padding: 11px 25px
+    color: white
+    text-transform: uppercase
+  &.big-transparent-button
+    height: 36px
+    border-radius: 18px
+    background-color: #39a9dc
+    padding: 11px 25px
+    color: white
+    text-transform: uppercase
+    background-color: rgba(0, 0, 0, 0)
+    border: 1px solid white
+
+header.header a.big-blue-button
+  font-size: 15px
+  text-decoration: none
+  margin-left: 22px
+
+article.long-text-input
+  width: 100%
+  height: 65px
+  background: white
+  position: relative
+  input[type="text"]
+    position: absolute
+    left: 48px
+    top: 0
+    width: calc(100% - 350px)
+    height: 100%
+    padding: 27px 0
+    font-size: 15px
+    color: #071e40
+    line-height: 1.2
+    letter-spacing: -0.2px
+    outline: none
+    border: none
+  button
+    &.search
+      background: url("../img/zoom.svg")
+      width: 19px
+      height: 18px
+      left: 0
+      top: 24px
+    &.cancel
+      background: url("../img/cross.svg")
+      width: 15px
+      height: 16px
+      right: 0
+      top: 25px
+    &.search, &.cancel
+      position: absolute
+      background-size: contain
+      background-repeat: no-repeat
+      content: ""
+
+.card-1, .card-2, .card-3
+  width: 229px
+  height: 80px
+  background: white
+  margin: 20px 0 20px 20px
+  float: right
+  position: relative
+  border-radius: 1px
+
+.card-1 span, .card-2 span, .card-3 span
+  display: table
+  position: absolute
+  left: 70px
+  top: 22px
+  font-size: 14px
+  line-height: 1
+  color: #071e40
+  margin: 0
+
+.card-1 h4, .card-2 h4, .card-3 h4
+  display: table
+  position: absolute
+  left: 70px
+  top: 40px
+  font-size: 22px
+  line-height: 1
+  color: #071e40
+  margin: 0
+  font-weight: 500
+
+.card-1 .img
+  background: url("../img/shape-1.svg")
+
+.card-2 .img
+  background: url("../img/shape-2.svg")
+
+.card-3 .img
+  background: url("../img/shape-3.svg")
+
+.card-1 .img, .card-2 .img, .card-3 .img
+  position: absolute
+  top: 24px
+  left: 19px
+  width: auto
+  width: 35px
+  height: 35px
+  background-size: contain
+  background-repeat: no-repeat
+  content: ""
+
+.advisors
+  width: 383px
+  padding-top: 42px
+  float: left
+  span
+    display: table
+    color: #66666a
+    font-size: 14px
+    margin-right: 16px
+    float: left
+    line-height: 1
+  .blue-link
+    font-size: 14px
+    color: #39a9dc
+    margin: 0 6px 0 0
+    line-height: 1
+    &.active
+      font-weight: normal
+  a.grey-link
+    font-size: 14px
+    margin: 0
+  .row.margin
+    margin-top: 11px
+
+.manager-container
+  width: 960px
+  margin: auto
+  display: table
+  padding: 50px 0
+  position: relative
+  z-index: 20
+  .main-column
+    width: 576px
+    float: left
+  .second-column
+    width: 364px
+    float: right
+  .top-row
+    width: 100%
+    height: 237px
+  img.avatar
+    width: 96px
+    height: 96px
+    border-radius: 100px
+    float: left
+  h1, h2, h3
+    letter-spacing: -0.1px
+    line-height: 1.25
+    font-weight: 500
+  h1
+    font-size: 24px
+    margin: 25px 0 7px 0
+  h2
+    font-size: 18px
+    margin: 0 0 26px 0
+  h3
+    font-size: 16px
+    margin: 0 0 14px 0
+  .main-info
+    h1, h2
+      color: white
+    h3
+      color: rgba(255, 255, 255, 0.54)
+  .box h1
+    display: block
+    margin: 24px 0 0
+    line-height: 1
+  h1.green
+    color: #47bf6f !important
+  small
+    font-size: 13px
+    color: #79828f
+    margin: 0
+    line-height: 1
+  .main-info
+    display: table
+    margin-left: 29px
+    float: left
+    .name-row
+      margin-bottom: 25px
+  li, span
+    font-size: 15px
+    color: #79828f
+
+.new-long-header
+  width: 100%
+  height: 347px
+  background: #071e40
+  position: absolute
+  top: 60px
+  z-index: 1
+  &::after
+    width: 100%
+    height: 100%
+    object-fit: contain
+    mix-blend-mode: screen
+    background: url("../img/21-screen.png")
+    position: absolute
+    content: ""
+    top: 0
+
+.footer .social
+  width: 138px
+  float: right
+  margin-top: 7px
+  .social-icon
+    filter: invert(70%)
+    // Иначе на белом фоне не видно ¯\_(ツ)_/¯
+    margin-left: 10px
+    float: left
+
+.manager-container
+  .social
+    display: table
+    float: right
+    margin-top: 44px
+    margin-right: 125px
+    .social-icon
+      margin-left: 14px
+      float: left
+    span
+      margin-left: 14px
+    .row
+      margin-top: 13px
+  .box .social
+    margin: 0
+    float: left
+    .social-icon
+      margin: 0 14px 0 0
+  button.big-transparent-button
+    margin-left: 20px
+  .company-info
+    margin-bottom: 61px
+    display: table
+    h1
+      margin: 9px 0 0
+      font-weight: 400
+    h3
+      margin: 16px 0 0
+      color: #79828f
+  .company-icon
+    width: 77px
+    height: 76px
+    background-color: #d3d7db
+    border-radius: 77px
+    float: left
+    margin-right: 19px
+  .webpage, .networks
+    width: 100%
+    padding-left: 41px
+    position: relative
+  .webpage
+    margin-bottom: 29px
+    a
+      font-size: 15px
+      color: #3daedf
+      text-decoration: none
+      word-break: break-all
+  .networks a
+    font-size: 15px
+    color: #3daedf
+    text-decoration: none
+    word-break: break-all
+  .webpage::before
+    background: url(../img/webpage.svg)
+  .networks::before
+    background: url(../img/networks.svg)
+  .webpage::before, .networks::before
+    width: 19px
+    height: 22px
+    position: absolute
+    left: 0
+    top: 0
+    background-size: contain
+    background-repeat: no-repeat
+    content: ""
+
+.loading p
+  text-align: center
+  font-size: 50px
+  &:after
+    content: ''
+    animation: dots infinite 1s
+
+@keyframes dots
+  0%
+    content: ""
+
+  25%
+    content: "."
+
+  50%
+    content: ".."
+
+  75%
+    content: "..."
+
+
+.reg-or-log-in button
+  margin: 0px !important
+
+.smart-contract-sizer
+  text-align: center
+  width: 170px
+  overflow-x: auto
+  display: inline-block
+.box.portfolios-page
+  .sortable
+    max-width: 100%

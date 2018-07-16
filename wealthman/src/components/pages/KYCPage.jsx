@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class KYCPage extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class KYCPage extends Component {
             </div>
             <div className="row-padding">
               <Link to={"/manager form"}>
-                <button className="back" onClick={() => prevousPage()}>Back</button>
+                <button className="back" onClick={() => previousPage()}>Back</button>
               </Link>
               <button className="continue" onClick={() => this.send()}>Send to manager</button>
             </div>

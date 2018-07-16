@@ -29,7 +29,7 @@ class AgreementPage extends Component {
             {newLines(this.props.agreement)}
             <div className="row-padding">
               <Link to={"/email"}>
-                <button className="back" onClick={() => this.prevousPage()}>Back</button>
+                <button className="back" onClick={() => this.previousPage()}>Back</button>
               </Link>
               <Link to={"/static form"}>
                 <button className="continue" onClick={() => this.agree()}>Agree</button>

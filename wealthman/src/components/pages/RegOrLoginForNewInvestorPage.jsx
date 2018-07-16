@@ -6,7 +6,7 @@ import ProgressBar from '../ProgressBar.jsx'
 
 import { api, getCookie, setCookie, newLines, setPage, previousPage } from '../helpers';
 
-class SignAgreementPage extends Component {
+class RegOrLoginForNewInvestorPage extends Component {
   constructor(props) {
     super(props);
   
@@ -15,28 +15,29 @@ class SignAgreementPage extends Component {
   render() {
     return (
       <div>
-        <div className="container">
+        <div className="container reg-or-log-in">
           <div className="box">
             <div className="container">
-              <h2>Sign Agreement</h2>
-              <p>Please download and fill this form. Then scan and upload it back to the site.</p>
               <div className="document-box">
-                <h3 className="text-center">Agreement form</h3>
-                <div className="row">
-                  <button className="continue">DOWNLOAD FILE</button>
-                </div>
+                <h3 className="text-center">
+                  <Link to="/login">
+                    <button className="continue">
+                      Sign in
+                    </button>
+                  </Link>
+                </h3>
               </div>
               <div className="document-box">
-                <h3 className="text-center">Filled Agreement form</h3>
-                <div className="row">
-                  <button className="continue">UPLOAD FILE</button>
-                </div>
+                <h3 className="text-center">
+                  <Link to="/register">
+                    <button className="continue">
+                      Sign up
+                    </button>
+                  </Link>
+                </h3>
               </div>
               <div className="row-padding">
                 <button className="back" onClick={() => previousPage()}>Back</button>
-                <Link to={"/money/" + this.props.match.params.id}>
-                  <button className="continue">Continue</button>
-                </Link>
               </div>
             </div>
           </div>
@@ -46,4 +47,4 @@ class SignAgreementPage extends Component {
   }
 }
 
-export default connect(a => a)(SignAgreementPage)
+export default connect(a => a)(RegOrLoginForNewInvestorPage)

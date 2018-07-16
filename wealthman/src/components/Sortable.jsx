@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import myDate from './myDate.jsx';
-import '../css/main.css';
-import '../css/Sortable.css';
+import '../css/main.sass';
+import '../css/Sortable.sass';
 
 class Sortable extends Component {
   constructor(props) {

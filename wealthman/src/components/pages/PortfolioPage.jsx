@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable from '../Sortable.jsx';
-import { api, setPage, setCurrency, prevousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class PortfolioPage extends Component {
   constructor(props) {
@@ -18,16 +18,8 @@ class PortfolioPage extends Component {
           managers: [res.data.manager],
           investors: [res.data.investor],
           requests: [res.data.request],
+          portfolios: [res.data.portfolio]
         })
-      })
-      .catch(console.log)
-    api.post('portfolio/load', {request: this.props.match.params.id})
-      .then(res => {
-        console.log(res.data);
-        if (res.data.exists)
-          setReduxState({
-            portfolios: [res.data.portfolio]
-          });
       })
       .catch(console.log)
   }
@@ -120,7 +112,7 @@ class PortfolioPage extends Component {
             <p>Target earning rate</p>
             {/* <img className="portfolio" src="../portfolio.jpg" />
             <div className="row-padding">
-              <button className="back right" onClick={() => this.prevousPage()}>Delete</button>
+              <button className="back right" onClick={() => this.previousPage()}>Delete</button>
             </div> */}
           </div>
           <div className="box">

@@ -24,15 +24,15 @@ class RegisterPage extends Component {
         setPage("email")})
       .catch(console.log);
   }
-  prevousPage() {
-    var prevousPages = this.props.prevousPages.slice();
-    if (prevousPages.length == 0)
+  previousPage() {
+    var previousPages = this.props.previousPages.slice();
+    if (previousPages.length == 0)
       return;
-    var currentPage = prevousPages.pop();
+    var currentPage = previousPages.pop();
 
     setReduxState({
       currentPage: currentPage,
-      prevousPages: prevousPages
+      previousPages: previousPages
     })
   }
   render () {
@@ -58,7 +58,7 @@ class RegisterPage extends Component {
               </div>
               <div className="row-padding">
               <Link to={("/manager" + this.props.currentManager)}>
-                <button className="back" onClick={() => this.prevousPage()}>Back</button>
+                <button className="back" onClick={() => this.previousPage()}>Back</button>
               </Link>
               <Link to={"/email"}>
                 <button className="continue" onClick={(event) => this.goToAgreement(event)}>Register</button>
