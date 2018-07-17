@@ -107,9 +107,12 @@ class ManagersPage extends Component {
       return {
         id: manager.id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
-        name: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
-          {manager.name + " " + manager.surname}
-        </Link>,
+        name: {
+          render: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
+            {manager.name + " " + manager.surname}
+          </Link>,
+          sortBy: manager.name + " " + manager.surname
+        },
         rating: {
           render: <div className="rating">{manager.rating}</div>,
           sortBy: manager.rating
@@ -196,7 +199,7 @@ class ManagersPage extends Component {
               </div>
             </div>
             <Sortable2
-              filter={row => row.name.props.children.toLowerCase().includes(this.state.searchName.toLowerCase())}
+              filter={row => row.name.sortBy.toLowerCase().includes(this.state.searchName.toLowerCase())}
               columns={sortableHeader}
               data={sortableManagers}
             />

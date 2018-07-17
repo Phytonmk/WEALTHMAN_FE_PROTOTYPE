@@ -14,7 +14,7 @@
     width: 100%
     height: 72px
     background: white
-    padding: 22px 20px 0
+    padding: 0 20px
     margin-bottom: 10px
     border-radius: 2px
   .header
@@ -23,13 +23,16 @@
     padding: 19px 20px 0
     border-top: 1px solid #d2d7da
   ul.listings li.listing .cell
-    height: 30px
+    height: 72px
     content: ""
     float: left
     margin-right: 20px
+    padding-top: 22px
     font-size: 16px
     line-height: 1.75
     text-align: left
+    overflow-y: visible
+    overflow-x: hidden
   .header .cell
     height: 25px
     content: ""
@@ -66,11 +69,11 @@
         content: ""
     &.last
       margin-right: 0 !important
-      padding: 0 !important
+      padding-right: 0 !important
   ul.listings li.listing .cell
     &.last
       margin-right: 0 !important
-      padding: 0 !important
+      padding-right: 0 !important
     .rating
       height: 28px
       display: table

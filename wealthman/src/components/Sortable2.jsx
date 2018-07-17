@@ -65,7 +65,7 @@ class Sortable2 extends Component {
       this.setState({error: "no data"});
       return;
     }
-    //DEBBAGING: comment when finished
+    //FOR DEBBAGING PURPOSES: comment this when finished
     this.props.columns.forEach(column => {
       if (!this.props.data[0].hasOwnProperty(column.property)) {
         this.setState({error: "Error: rows doesn\'t have \"" + column.property + "\" property"});
@@ -107,23 +107,24 @@ class Sortable2 extends Component {
       <ul className="listings">
         {
           this.props.data
-          .filter(this.props.filter)
+          .filter(this.props.filter ? this.props.filter : i => true)
           .sort((a, b) => {
             let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("sortBy") ?
-              a[this.state.sortBy].hasOwnProperty("sortBy") : a[this.state.sortBy];
+              a[this.state.sortBy].sortBy : a[this.state.sortBy];
             let sortableB = b[this.state.sortBy].hasOwnProperty("render") && b[this.state.sortBy].hasOwnProperty("sortBy") ?
-              b[this.state.sortBy].hasOwnProperty("sortBy") : b[this.state.sortBy];
+              b[this.state.sortBy].sortBy : b[this.state.sortBy];
 
             switch (this.props.columns.find(column => column.property == this.state.sortBy).type) {
               case "number":
-                return this.state.order ? Number(sortableA) < Number(sortableB) : Number(sortableA) > Number(sortableB);
+                // alert(sortableA + sortableB);
+                return this.state.order ? Number(sortableA) - Number(sortableB) : Number(sortableB) - Number(sortableA);
               case "date":
                 let dateA = new myDate(sortableA);
                 return this.state.order ? dateA.less(sortableB) : !dateA.less(sortableB);
               case "unsortable":
                 return true;
               default:
-                return this.state.order ? sortableA < sortableB : sortableA > sortableB;
+                return this.state.order ? String(sortableA).localeCompare(String(sortableB)) : String(sortableB).localeCompare(String(sortableA));
             }
           })
           .map(row => this.renderListing(row))

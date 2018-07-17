@@ -33,11 +33,11 @@ class PortfoliosPage extends Component {
   render() {
     if (!this.state.gotData)
       return <div className="box loading"><p>Loading</p></div>
-    var currentPage;
-    var currencies = this.props.currentCurrencyPrices.map((c, i) =>
+    let currentPage;
+    let currencies = this.props.currentCurrencyPrices.map((c, i) =>
       <option key={i} value={c.name}>{c.name}</option>
     );
-    var currentCurrency = this.props.currentCurrencyPrices.find(c => c.name == this.props.currentCurrency) || {price: 0};
+    let currentCurrency = this.props.currentCurrencyPrices.find(c => c.name == this.props.currentCurrency) || {price: 0};
     let totalValue
     if (this.props.portfolios.length > 0)
       totalValue = this.props.portfolios
@@ -52,31 +52,21 @@ class PortfoliosPage extends Component {
     else
       totalValue = 0;
 
-    var titles = [
+    let titles = [
       {
-        property:"number",
-        title: "#",
-        tooltip: "number",
-        width: "30px",
-      },
-      {
-        property: "number_portfolio",
-        title: "portfolio",
-        tooltip: "number of portfolio",
+        property: "portfolio",
+        title: "Portfolio",
         width: "50px",
       },
       {
         property: "manager",
         title: "Manager",
-        tooltip: "Manager that manage this portfolio",
         width: "100px",
       },
       {
-        property: "smartCntract",
-        title: "smart-cntract",
-        tooltip: "number of smart contract",
-        class: "number-smart",
-        width: "180px",
+        property: "smart",
+        title: "Smart-cntract",
+        width: "250px",
       },
       // {
       //   property: "instrument",
@@ -86,10 +76,9 @@ class PortfoliosPage extends Component {
       // },
       {
         property: "profit",
-        title: "profit",
-        tooltip: "current profit",
-        class: "profit",
+        title: "Profit",
         width: "150px",
+        type: "unsortable"
       },
       // {
       //   property: "value",
@@ -99,52 +88,47 @@ class PortfoliosPage extends Component {
       // },
       {
         property: "status",
-        title: "status",
-        tooltip: "status of portfolio",
-        class: "status",
+        title: "Status",
         width: "100px",
       },
       {
         property: "cost",
-        title: "cost",
-        tooltip: "commision",
-        class: "cost",
+        title: "Cost",
         width: "150px",
+        type: "unsortable"
       },
       {
         property: "details",
-        width: "135px",
+        width: "95px",
         type: "unsortable",
       },
       {
         property: "withdraw",
-        width: "85px",
+        width: "125px",
         type: "unsortable",
       },
     ];
-    var portfolios = this.props.portfolios.map((portfolio, i) => {
-      var investor = this.props.investors.find(inv => inv.id == portfolio.investor);
-      var manager = this.props.managers.find(m => m.id == portfolio.manager) || {};
-      // var request = this.props.requests.find(m => m.id == portfolio.request) || {};
-      var alg = this.props.algorythms.find(alg => alg.id == portfolio.alg) || {};
-      let price = 0; 
+    let portfolios = this.props.portfolios.map((portfolio, i) => {
+      let investor = this.props.investors.find(inv => inv.id == portfolio.investor);
+      let manager = this.props.managers.find(m => m.id == portfolio.manager) || {};
+      // let request = this.props.requests.find(m => m.id == portfolio.request) || {};
+      let alg = this.props.algorythms.find(alg => alg.id == portfolio.alg) || {};
+      let price = 0;
       if (this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
         price = this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       return {
-        type: "portfolio",
-        number: i,
+        id: portfolio.id,
         manager: manager.name + ' ' + manager.surname,
-        id: portfolio.request,
-        number_portfolio: portfolio.id,
-        smartCntract: <span className="smart-contract-sizer">{portfolio.smart_contract}</span>,
+        portfolio: portfolio.id,
+        smart: portfolio.smart_contract,
         // instrument: alg.name,
-        profit: "тут будет график",
+        profit: <img src="graph.png" className="graph" />,
         // currency: portfolio.currency,
         // percent_portfolio: (portfolio.value * price / totalValue * 100).toFixed(1),
         // amount: portfolio.value,
         // value: (portfolio.value * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        status: '-'/*request.status*/,
-        cost: "тут будет график",//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
+        status: 'Recalculated'/*request.status*/,
+        cost: <img src="graph.png" className="graph" />,//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
         // analysis: "link.com",
         // comments: "comment",
         details: <Link to={"/portfolio/" + portfolio.request} className="no-margin">
@@ -160,12 +144,12 @@ class PortfoliosPage extends Component {
       };
     });
 
-    var statistics;
+    let statistics;
 
     switch (this.props.currentPortfoliosPage) {
       case "active":
         currentPage = (
-          <div className="box portfolios-page">
+          <div className="portfolios-page">
             <h4>Active Portfolios</h4>
             <Sortable2
               filter={row => true/*row.name.toLowerCase().includes(this.state.searchName.toLowerCase())*/}
@@ -288,14 +272,12 @@ class PortfoliosPage extends Component {
         </div>
         <div className="container">
           <div className="upper-tab">
-            <div className="box">
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "proposed" })}>Proposed (Initial)</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "active" })}>Active</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "revision" })}>Revision</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "recalculated" })}>Recalculated</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "archived" })}>Archived</button>
               <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "statistics" })}>Statistics</button>
-            </div>
           </div>
           {currentPage}
         </div>
