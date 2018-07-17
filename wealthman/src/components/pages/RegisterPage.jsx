@@ -43,8 +43,16 @@ class RegisterPage extends Component {
     return(
       <div>
         {/* {this.renderBackButton()} */}
-        <ProgressBar currentPage={this.props.currentPage}/>
         <div className="container">
+          {/*<div className="login-box">
+            <h2>Sign up</h2>
+            <div className="login-inner-box">
+              <div className="login-box-tab">
+              </div>
+              <div className="login-box-tab">
+              </div>
+            </div>
+          </div>*/}
           <div className="box">
             <h2>Registration page</h2>
               <div className="row">

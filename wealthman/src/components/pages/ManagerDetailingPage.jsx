@@ -8,6 +8,8 @@ import { api, getCookie, setPage } from '../helpers';
 
 import auth from '../auth.js';
 
+const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory']
+
 let uploadFile;
 class ManagerDetailingPage extends Component {
   constructor(props) {
@@ -17,13 +19,27 @@ class ManagerDetailingPage extends Component {
       state[q] = ''
     for (let q of questions.company)
       state[q] = ''
+    state.services = [];
     this.state = state;
+  }
+  addService() {
+    const services = [...this.state.services];
+    let type = services.length;
+    services.push({type: 0, fee: 0, recalculation: 365});
+    this.setState({services});
+  }
+  setServiceData(event, serviceIndex, property) {
+    const services = [...this.state.services];
+    services[serviceIndex][property] = event.target.value * 1;
+    this.setState({services});
+    console.log(this.state);
   }
   createWallet() {
     api.get('create-wallet')
       .then(res => {
         this.setState({
           wallet_address: res.data.address,
+          generated_wallet: res.data.address,
           privateKey: res.data.privateKey
         })
       })
@@ -45,7 +61,6 @@ class ManagerDetailingPage extends Component {
         .catch(console.log);
   }
   render() {
-    console.log(this.state.register);
     return (
       <div className="container">
           <div className="box">
@@ -73,6 +88,31 @@ class ManagerDetailingPage extends Component {
                     <input type="text" value={this.state[question]} onChange={(event) => {this.setState({[question]: event.target.value})}} placeholder={question.replace(/\_/g, ' ')} />
                   </div> 
                 </div>)}
+                <br />
+                <div className="row">
+                  Services
+                </div>
+                <br />
+                {this.state.services.map((service, i) => <div key={i} className="service-selecting-element">
+                  <select value={servicesList[service.type]} onChange={(event) => this.setServiceData(event, i, 'type')}>
+                    {servicesList.map((option, index) => <option key={index} value={service.type}>{option}</option>)}
+                  </select>
+                  <br />
+                  Fee
+                  <br />
+                  <input type="number" placeholder="fee" value={service.fee} onChange={(event) => this.setServiceData(event, i, 'fee')}/>
+                  <br />
+                  Recalculation
+                  <br />
+                  <input type="number" placeholder="recalculation" value={service.recalculation} onChange={(event) => this.setServiceData(event, i, 'recalculation')}/>
+                </div>)}
+                {this.state.services.length < 3 ? <div className="row">
+                  <button className="back" onClick={() => this.addService()}>Add service</button>
+                </div> : ''}
+                <br />
+                <div className="row">
+                  {this.state.photo_uploaded === '' ? 'Upload photo' : 'Uploaded photo'}
+                </div>
                 {this.state.photo_uploaded === '' ?
                   <div>
                     <div className="row">
@@ -89,16 +129,17 @@ class ManagerDetailingPage extends Component {
                 }
                 {this.state.register === 'manager' ?
                 <div>
+                
                   <div className="row">
                     Wallet address
                   </div>
                   <div className="row">
                      <input type="text" value={this.state.wallet_address} onChange={(event) => {this.setState({wallet_address: event.target.value})}} placeholder="Wallet address" />
                   </div>
-                  <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+                  <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet  ? {display: 'block'} : {display: 'none'}}>
                     Your private key, save it to safe place
                   </div> 
-                  <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+                  <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet  ? {display: 'block'} : {display: 'none'}}>
                      <input type="text" value={this.state.privateKey}   />
                   </div> 
                   <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>

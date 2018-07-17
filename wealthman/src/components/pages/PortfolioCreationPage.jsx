@@ -276,36 +276,6 @@ class PortfolioCreationPage extends Component {
             </ul>
           </div>
           <div className="box">
-            <div className="row">
-              <div className="half">
-                <h4>Fee</h4>
-                <ul>
-                  <div className="row">
-                    <input type="checkbox" />
-                      С прибыли
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      С объема
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      За вход
-                  </div>
-                  <div className="row">
-                    <input type="checkbox" />
-                      За выход
-                  </div>
-                </ul>
-              </div>
-              <div className="half">
-                <h4>Frequency for recalculation</h4>
-                <input placeholder="no more than"></input>
-              </div>
-            </div>
-            <div className="row">
-              <input placeholder="Comments"></input>
-            </div>
             <div className="row-padding">
               <button className="continue right margin" onClick={() => this.send()}>Send</button>
               <button className="continue right margin" onClick={() => this.save()}>Save</button>

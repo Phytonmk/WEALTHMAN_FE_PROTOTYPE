@@ -1,7 +1,7 @@
 
 import { setReduxState, store } from '../redux/index';
-import { api, getCookie, setCookie, setPage } from './helpers';
 
+import { api, getCookie, setCookie, setPage } from './helpers';
 
 const auth = (callback=()=>{}) => {
   if (getCookie('accessToken')) {

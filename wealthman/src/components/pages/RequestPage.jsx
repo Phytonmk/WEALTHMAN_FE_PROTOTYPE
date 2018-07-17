@@ -200,6 +200,69 @@ class RequestPage extends Component {
         </div>
       </div>
     </div>);
+    if (this.props.user == 0 && request.status === 'waiting for transaction')
+      return (
+        <div className="container">
+          <div className="first-tab">
+            <div className="box">
+              <div className="circle left">
+                <img src={''} className="avatar" />
+              </div>
+              <div className="third">
+                <h4>{investor.name} {investor.surname}</h4>
+                <p>user id #<b>{investor.id}</b></p>
+              </div>
+              <div className="third text-right">
+                <p>request number #<b>{request.id}</b></p>
+                <p>created: <b>{new myDate(request.date).niceTime()}</b></p>
+              </div>
+              <div className="row-padding">
+                <Link to={"/chat"}>
+                  <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+                </Link>
+              </div>
+            </div>
+            <div className="box">
+              <h2>Waiting for you transaction</h2>
+              <Link to="/requests">
+                <button className="back" onClick={() => previousPage()}>Back</button>
+              </Link>
+              <Link to={"/money/" + this.props.match.params.id}>
+                <button className="continue right">Send money</button>
+              </Link>
+            </div> 
+          </div> 
+        </div>)
+    if (this.props.user == 1 && request.status === 'waiting for transaction')
+      return (
+        <div className="container">
+          <div className="first-tab">
+            <div className="box">
+              <div className="circle left">
+                <img src={''} className="avatar" />
+              </div>
+              <div className="third">
+                <h4>{investor.name} {investor.surname}</h4>
+                <p>user id #<b>{investor.id}</b></p>
+              </div>
+              <div className="third text-right">
+                <p>request number #<b>{request.id}</b></p>
+                <p>created: <b>{new myDate(request.date).niceTime()}</b></p>
+              </div>
+              <div className="row-padding">
+                <Link to={"/chat"}>
+                  <button className="continue" onClick={() => this.setPage("chat")}>Start chat</button>
+                </Link>
+              </div>
+            </div>
+            <div className="box">
+              <h2>Waiting for invesotr's transaction</h2>
+              <Link to="/requests">
+                <button className="back" onClick={() => previousPage()}>Back</button>
+              </Link>
+            </div> 
+          </div> 
+        </div>)
     if (request.status === 'declined')
       return (
         <div className="container">
@@ -213,6 +276,32 @@ class RequestPage extends Component {
           </div> 
         </div>
       ); 
+    if (request.status === 'failed')
+      return (
+        <div className="container">
+          <div className="first-tab">
+            <div className="box">
+              <h2>Request failed due to out problems, create new request</h2>
+              <Link to="/requests">
+                <button className="back" onClick={() => previousPage()}>Back</button>
+              </Link>
+            </div> 
+          </div> 
+        </div>
+      );
+    if (request.status === 'contract deploying')
+      return (
+        <div className="container">
+          <div className="first-tab">
+            <div className="box">
+              <h2>Contract deploying, please wait</h2>
+              <Link to="/requests">
+                <button className="back" onClick={() => previousPage()}>Back</button>
+              </Link>
+            </div> 
+          </div> 
+        </div>
+      );
     return (
       <div className="container">
         <div className="first-tab">

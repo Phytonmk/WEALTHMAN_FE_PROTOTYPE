@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { setReduxState } from '../../redux';
+import { store, setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
+
 
 class PortfoliosPage extends Component {
   constructor(props) {
@@ -12,12 +13,22 @@ class PortfoliosPage extends Component {
       gotData: false
     }
   }
+  loadManagers(portfolios) {
+    for (let porfolio of portfolios) {
+      api.get('manager/' + porfolio.manager)
+        .then((res) => {
+          const managers = [...store.getState().managers];
+          managers.push(res.data);
+          setReduxState({managers});
+        }).catch(console.log);
+    }
+  }
   componentWillMount() {
     api.post('portfolios/load')
       .then((res) => {
-        console.log(this.props.portfolios, res.data.portfolios)
         if (res.data.exists) {
           setReduxState({portfolios: res.data.portfolios});
+          this.loadManagers(res.data.portfolios);
         } else {
           setReduxState({portfolios: []});
         }
@@ -66,7 +77,7 @@ class PortfoliosPage extends Component {
       {
         property: "smart",
         title: "Smart-cntract",
-        width: "250px",
+        width: "280px",
       },
       // {
       //   property: "instrument",
@@ -99,7 +110,7 @@ class PortfoliosPage extends Component {
       },
       {
         property: "details",
-        width: "95px",
+        width: "125px",
         type: "unsortable",
       },
       {
@@ -118,7 +129,7 @@ class PortfoliosPage extends Component {
         price = this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       return {
         id: portfolio.id,
-        manager: manager.name + ' ' + manager.surname,
+        manager: (manager.name || '-') + ' ' + (manager.surname || ''),
         portfolio: portfolio.id,
         smart: portfolio.smart_contract,
         // instrument: alg.name,
@@ -136,8 +147,8 @@ class PortfoliosPage extends Component {
               Details
             </button>
           </Link>,
-        withdraw: <Link to={"/withdraw/" + portfolio.request} className="no-margin">
-            <button className="big-blue-button">
+        withdraw: <Link to={portfolio.smart_contract !== '-' ? "/withdraw/" + portfolio.request : '#'} className="no-margin">
+            <button className={portfolio.smart_contract !== '-' ? 'big-blue-button' : 'big-grey-button'}> 
               Withdraw
             </button>
           </Link>

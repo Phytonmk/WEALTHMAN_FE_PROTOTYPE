@@ -7,7 +7,24 @@ import Sortable from '../Sortable.jsx';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
 
-const RANDOM = (range=100) => Math.ceil(Math.random() * range);
+const filters = [
+  {
+    link: "Robo-advisor",
+    description: "Invest on Autopilot",
+  },
+  {
+    link: "Discretionary",
+    description: "Get The Right Investment Manager For Your Wealth",
+  },
+  {
+    link: "Advisory",
+    description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
+  },
+  {
+    link: "Unsorted",
+    description: "Display all managers",
+  }
+];
 
 class ManagersPage extends Component {
   constructor(props) {
@@ -15,6 +32,11 @@ class ManagersPage extends Component {
     this.state = {
       searchName: "",
       gotData: false,
+      filter: 'Unsorted',
+      offers: [],
+      totalInvestors: '-',
+      totalManagers: '-',
+      totalAum: '-',
     }
   }
   applyManager(managerID) {
@@ -22,27 +44,33 @@ class ManagersPage extends Component {
       currentManager: managerID,
     });
   }
-  componentWillMount() {
-    api.get('managers')
+  load(filter) {
+    if (filter)
+      this.setState({filter});
+    else
+      filter = this.state.filter
+    this.setState({gotData: false});
+
+    let filterIndex;
+    switch(filter.toLowerCase()) {
+      case 'robo-advisor': filterIndex = 0; break;
+      case 'discretionary': filterIndex = 1; break;
+      case 'advisory': filterIndex = 2; break;
+      default: filterIndex = -1
+    }
+    console.log(filterIndex);
+    api.get('marketplace/' + filterIndex)
       .then((res) => {
-        console.log(this.props.managers);
-        console.log(res.data);
-        setReduxState({managers: res.data.map(manager => {
-          let newManager = Object.assign({}, manager);
-          newManager.rating = RANDOM();
-          newManager.annual = RANDOM();
-          newManager.aum = RANDOM();
-          newManager.profit = RANDOM();
-          newManager.clients = RANDOM();
-          return newManager;
-        })});
-        this.setState({gotData: true})
+        this.setState(res.data);
+        this.setState({gotData: true});
       })
       .catch(console.log);
   }
+  componentWillMount() {
+    this.setState({gotData: false});
+    this.load();
+  }
   render() {
-    if (!this.state.gotData)
-      return <div className="box loading"><p>Loading</p></div>
     let sortableHeader = [
       {
         property: "img",
@@ -78,6 +106,13 @@ class ManagersPage extends Component {
         tooltip: "Assets Under Management in millions of $"
       },
       {
+        property: "services",
+        title: "Services",
+        // width: "73px",
+        width: "100px",
+        type: "unsortable",
+      },
+      {
         property: "perfomance",
         title: "performance fee",
         // width: "73px",
@@ -103,7 +138,7 @@ class ManagersPage extends Component {
         type: "unsortable",
       },
     ];
-    let sortableManagers = this.props.managers.map(manager => {
+    let sortableManagers = this.state.offers.map((manager, i) => {
       return {
         id: manager.id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
@@ -114,20 +149,27 @@ class ManagersPage extends Component {
           sortBy: manager.name + " " + manager.surname
         },
         rating: {
-          render: <div className="rating">{manager.rating}</div>,
-          sortBy: manager.rating
+          render: <div className="rating">{manager.successRate}</div>,
+          sortBy: manager.successRate
         },
         //rename this variable everywhere !!!
-        min: manager.annual,
+        min: '-',
         aum: {
           render: manager.aum + "$",
           sortBy: manager.aum
         },
+        services: manager.services.length === 0 ? <div>-</div> : 
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {filters[service.type].link}
+        </li>)}</ul>,
         //rename this variable everywhere !!!
-        perfomance: manager.profit,
         clients: manager.clients,
+        perfomance: manager.services.length === 0 ? <div>-</div> : 
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {manager.services[i].fee}%
+        </li>)}</ul>,
         aum6: <img src="graph.png" className="graph" />,
-        apply: <Link to={this.props.user === -1 ? "/reg-or-login" : "/kyc"} className="no-margin" onClick={() => this.applyManager(manager.id)}>
+        apply: <Link to={this.props.user === -1 ? "/reg-or-login/" + manager.id : "/kyc/" + manager.id} className="no-margin" onClick={() => this.applyManager(manager.id)}>
             <button className="big-blue-button">
               APPLY NOW
             </button>
@@ -135,27 +177,13 @@ class ManagersPage extends Component {
       };
     });
 
-    var filters = [
-      {
-        link: "Robo-advisor",
-        description: "Invest on Autopilot",
-      },
-      {
-        link: "Discretionary",
-        description: "Get The Right Investment Manager For Your Wealth",
-      },
-      {
-        link: "Advisory",
-        description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
-      }
-    ];
     // var filtersMapped = filters.map((filter, i) =>
     //   <button key={i} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
     //     {filter.link}
     //   </button>
     // );
-    let filtersMapped = filters.map(filter =>
-      <button key={filter.link} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
+    let filtersMapped = filters.map((filter, i) =>
+      <button key={i} className={"blue-link left" + (this.state.filter == filter.link ? " active" : "")} onClick={() => this.load(filter.link)}>
         {filter.link}
       </button>
     );
@@ -185,24 +213,30 @@ class ManagersPage extends Component {
               <div className="card-3">
                 <div className="img" />
                 <span>Total AUM, min $</span>
-                <h4>3$</h4>
+                <h4>{this.state.totalAum}</h4>
               </div>
               <div className="card-2">
                 <div className="img" />
                 <span>Total managers</span>
-                <h4>15</h4>
+                <h4>{this.state.totalManagers}</h4>
               </div>
               <div className="card-1">
                 <div className="img" />
                 <span>Total investors</span>
-                <h4>8</h4>
+                <h4>{this.state.totalInvestors}</h4>
               </div>
             </div>
+        </div>
+        <div className="container">
+          {this.state.gotData ?
             <Sortable2
               filter={row => row.name.sortBy.toLowerCase().includes(this.state.searchName.toLowerCase())}
               columns={sortableHeader}
               data={sortableManagers}
             />
+            :
+            <div className="loading"><p>Loading</p></div>
+          }
         </div>
       </div>
     );

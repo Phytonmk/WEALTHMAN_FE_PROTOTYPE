@@ -9,7 +9,7 @@ import { api, getCookie, setCookie, newLines, setPage, previousPage } from '../h
 class RegOrLoginForNewInvestorPage extends Component {
   constructor(props) {
     super(props);
-  
+    setReduxState({currentManager: this.props.match.params.manager});
     this.state = {};
   }
   render() {

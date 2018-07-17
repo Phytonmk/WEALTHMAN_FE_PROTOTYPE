@@ -93,6 +93,24 @@ const defaultState = {
       link: "sone"
     }
   ],
+  loggedCamponyLinks: [
+    {
+      label: "dashboard",
+      link: "dashboard"
+    }, {
+      label: "my company",
+      link: "company"
+    }, {
+      label: "managers",
+      link: "managers"
+    }, {
+      label: "account",
+      link: "account"
+    }, {
+      label: "logout",
+      link: "logout"
+    }
+  ],
   unloggedLinks: [
     {
       label: "about us",

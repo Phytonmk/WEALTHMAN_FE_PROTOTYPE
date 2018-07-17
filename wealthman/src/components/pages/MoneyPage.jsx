@@ -13,20 +13,21 @@ import { abi, bytecode, contract, _exchanger, _admin } from '../smart-contract-d
 class Timer extends Component {
   constructor(props) {
     super(props);
+    //this.props.duration
     this.state = {
-      left: this.props.start - this.props.duration
+      left: new Date().getTime() - new Date(this.props.start).getTime()
     }
   }
   componentWillMount() {
     setInterval(() => {
-      this.setState(previousState => previousState.left - 1000);
+      this.setState({left: this.state.left - 1000});
     }, 1000);
   }
   render() {
     if (!this.props.start)
       return <div>∞</div>
     const date = new Date(this.state.left);
-    return <div>{date.getTime()}</div>
+    return <div>{date.getHours()}:{(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()}:{(date.getSeconds() < 10 ? '0' : '') + date.getSeconds()}</div>
   }
 }
 

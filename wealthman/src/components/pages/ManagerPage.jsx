@@ -79,7 +79,7 @@ class ManagerPage extends Component {
                 <Link to={"/chat"} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
-                <Link to={this.props.user === -1 ? "/reg-or-login" : "/kyc"} onClick={() => this.apply()}>
+                <Link to={this.props.user === -1 ? "/reg-or-login/" + manager.id : "/kyc/" + manager.id} onClick={() => this.apply()}>
                   <button className="big-blue-button right">Apply now</button>
                 </Link>
               </div>

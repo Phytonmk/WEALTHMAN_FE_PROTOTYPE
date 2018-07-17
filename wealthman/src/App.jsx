@@ -44,6 +44,7 @@ import PortfolioPage from './components/pages/PortfolioPage';
 import WithdrawPage from './components/pages/WithdrawPage';
 import RegOrLoginForNewInvestorPage from './components/pages/RegOrLoginForNewInvestorPage';
 import DeclinePage from './components/pages/DeclinePage';
+import CompanyManagmentPage from './components/pages/CompanyManagmentPage';
 
 //
 
@@ -163,6 +164,7 @@ class App extends Component {
 
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/company/:id" component={CompanyPage}/>
+          <Route path="/company" component={CompanyManagmentPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" component={PortfolioPage}/>
           <Route path="/request/:id" component={RequestPage}/>
@@ -172,7 +174,7 @@ class App extends Component {
           <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
           <Route path="/requests" component={RequestsPage}/>
 
-          <Route path="/reg-or-login" component={RegOrLoginForNewInvestorPage}/>
+          <Route path="/reg-or-login/:manager" component={RegOrLoginForNewInvestorPage}/>
           <Route path="/static form" component={StaticFormPage}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
           <Route path="/agreement" component={AgreementPage}/>
@@ -183,6 +185,7 @@ class App extends Component {
           <Route path="/register" component={RegisterPage}/>
           <Route path="/money/:id" component={MoneyPage}/>
           <Route path="/kyc" component={KYCPage}/>
+          <Route path="/kyc/:manager" component={KYCPage}/>
           <Route path="/investor register" component={InvestorRegistorPage}/>
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
 
@@ -880,6 +883,9 @@ class App extends Component {
         break;
       case 2:
         headerLinks = this.state.loggedSuplierLinks;
+        break;
+      case 3:
+        headerLinks = this.state.loggedCompanyLinks;
         break;
     }
     headerLinks = headerLinks.map((link, i) => {

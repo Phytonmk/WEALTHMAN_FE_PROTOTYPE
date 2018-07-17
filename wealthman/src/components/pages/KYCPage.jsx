@@ -12,7 +12,14 @@ class KYCPage extends Component {
       manager_comment: false,
       value: '',
       comment: '',
+      manager: 'Manager-name'
     };
+  }
+  componentWillMount() {
+    api.get('manager/' + this.props.currentManager)
+      .then((res) => {
+        this.setState({manager: (res.data.name || '') + ' ' + (res.data.suname || '')})
+      })
   }
   send() {
     api.post('request', {
@@ -41,7 +48,7 @@ class KYCPage extends Component {
             <div className="row">
               <p>By clicking “Send to manager” button you send</p>
               <ol>
-                <li> Request for portfolio balance to manager <b>Manager-name</b></li>
+                <li> Request for portfolio balance to manager <b>{this.state.manager}</b></li>
                 <li> Your personal risk profile and information </li>
               </ol>
             </div>
@@ -53,7 +60,7 @@ class KYCPage extends Component {
               <p>Investment size</p>
             </div>
             <div className="row">
-              <input type="number" value={this.state.value} onChange={(event) => this.setState({value: event.target.value})} /> ETH
+              <input type="number" value={this.state.value} min="0" step="0.1" onChange={(event) => this.setState({value: event.target.value})} /> ETH
             </div>
             <div className="row">
               <p>Comment for manager</p>

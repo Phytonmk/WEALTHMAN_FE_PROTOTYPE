@@ -21,7 +21,8 @@ class InvestorRegistorPage extends Component {
       country: '',
       address: '',
       wallet_address: '',
-      photo_uploaded: ''
+      photo_uploaded: '',
+      generated_wallet: ''
     }
   }
   createWallet() {
@@ -29,6 +30,7 @@ class InvestorRegistorPage extends Component {
       .then(res => {
         this.setState({
           wallet_address: res.data.address,
+          generated_wallet: res.data.address,
           privateKey: res.data.privateKey
         })
       })
@@ -119,10 +121,10 @@ class InvestorRegistorPage extends Component {
             <div className="row">
                <input type="text" value={this.state.wallet_address} onChange={(event) => {this.setState({wallet_address: event.target.value})}} placeholder="Wallet address" />
             </div>
-            <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+            <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet  ? {display: 'block'} : {display: 'none'}}>
               Your private key, save it to safe place
             </div> 
-            <div className="row" style={this.state.privateKey ? {display: 'block'} : {display: 'none'}}>
+            <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet ? {display: 'block'} : {display: 'none'}}>
                <input type="text" value={this.state.privateKey}   />
             </div> 
             <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
