@@ -1,40 +1,46 @@
 .sortable
-  ul.listings
-    list-style-type: none
-    //width: 1266px
-    padding: 0
-    margin: 0
+  width: 100%
+  margin-bottom: 37px
   .header
     box-sizing: border-box
     display: inline-block
     width: 100%
-  ul.listings li.listing
-    box-sizing: border-box
-    display: inline-block
-    width: 100%
-    height: 72px
-    background: white
-    padding: 0 20px
-    margin-bottom: 10px
-    border-radius: 2px
-  .header
     height: 64px
     background: rgba(0, 0, 0, 0)
     padding: 19px 20px 0
-    border-top: 1px solid #d2d7da
-  ul.listings li.listing .cell
-    height: 72px
-    content: ""
-    float: left
-    margin-right: 20px
-    font-size: 16px
-    line-height: 1.75
-    text-align: left
-    overflow-y: hidden
-    overflow-x: auto
-    // padding-top: 22px
-    display: flex
-    align-items: center
+    position: relative
+  .header .navigation
+    position: absolute
+    top: 19px
+    right: 0
+    display: table
+    button.left-arrow, button.right-arrow
+      width: 26px
+      height: 26px
+      border-radius: 1px
+      background: white
+      cursor: default
+      position: relative
+    button.left-arrow
+      margin-right: 6px
+    button.left-arrow.active, button.right-arrow.active
+      cursor: pointer
+    button.left-arrow::after, button.right-arrow::after
+      content: ""
+      position: absolute
+      border-width: 5px
+      border-style: solid
+      top: 8px
+    button.left-arrow::after
+      left: 5px
+      border-color: transparent #a2a9b5 transparent transparent
+    button.right-arrow::after
+      left: 10px
+      border-color: transparent transparent transparent #a2a9b5
+    button.left-arrow.active::after
+      border-color: transparent #0c1e3e transparent transparent
+    button.right-arrow.active::after
+      border-color: transparent transparent transparent #0c1e3e
   .header .cell
     height: 25px
     content: ""
@@ -72,6 +78,37 @@
     &.last
       margin-right: 0 !important
       padding-right: 0 !important
+  .header select
+    width: 50%
+    height: 25px
+    margin: 0 0 0 5px
+    position: relative
+    top: -7px
+  ul.listings
+    list-style-type: none
+    width: 100%
+    padding: 0
+    margin: 0
+  ul.listings li.listing
+    box-sizing: border-box
+    display: inline-block
+    width: 100%
+    height: 72px
+    background: white
+    padding: 0 20px
+    margin-bottom: 10px
+    border-radius: 2px
+  ul.listings li.listing .cell
+    height: 72px
+    content: ""
+    float: left
+    margin-right: 20px
+    padding-top: 22px
+    font-size: 16px
+    line-height: 1.75
+    text-align: left
+    overflow-y: visible
+    overflow-x: hidden
   ul.listings li.listing .cell
     &.last
       margin-right: 0 !important
@@ -85,7 +122,6 @@
       padding: 0 9px
       line-height: 1.75
       font-size: 16px
-      margin: auto
   .user-icon
     width: 41px
     height: 41px
@@ -94,3 +130,18 @@
   button.big-blue-button
     top: -4px
     position: relative
+
+  button.show-more
+    width: 100%
+    height: 36px
+    opacity: 0.12
+    border-radius: 2px
+    background-color: #071e40
+    cursor: pointer
+    color: white
+    font-size: 14px
+    font-weight: bold
+    line-height: 1.29
+    text-align: center
+  button.show-more:hover
+    opacity: .85

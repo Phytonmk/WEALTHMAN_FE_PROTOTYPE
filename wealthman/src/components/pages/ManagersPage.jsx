@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import Sortable from '../Sortable.jsx';
-import Sortable from '../Sortable.jsx';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
 
@@ -146,25 +144,25 @@ class ManagersPage extends Component {
           render: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
             {manager.name + " " + manager.surname}
           </Link>,
-          sortBy: manager.name + " " + manager.surname
+          value: manager.name + " " + manager.surname
         },
         rating: {
           render: <div className="rating">{manager.successRate}</div>,
-          sortBy: manager.successRate
+          value: manager.successRate
         },
         //rename this variable everywhere !!!
         min: '-',
         aum: {
           render: manager.aum + "$",
-          sortBy: manager.aum
+          value: manager.aum
         },
-        services: manager.services.length === 0 ? <div>-</div> : 
+        services: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {filters[service.type].link}
         </li>)}</ul>,
         //rename this variable everywhere !!!
         clients: manager.clients,
-        perfomance: manager.services.length === 0 ? <div>-</div> : 
+        perfomance: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].fee}%
         </li>)}</ul>,
@@ -230,9 +228,11 @@ class ManagersPage extends Component {
         <div className="container">
           {this.state.gotData ?
             <Sortable2
-              filter={row => row.name.sortBy.toLowerCase().includes(this.state.searchName.toLowerCase())}
+              filter={row => row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())}
               columns={sortableHeader}
               data={sortableManagers}
+              navigation={true}
+              maxShown={5}
             />
             :
             <div className="loading"><p>Loading</p></div>

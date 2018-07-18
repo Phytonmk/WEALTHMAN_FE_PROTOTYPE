@@ -1,8 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic')
 
 body, html
+  background-color: #ecf1f5
   font-family: 'Roboto', sans-serif
+  letter-spacing: -0.1px
   min-width: 1280px
+  color: #071e40
 
 a.big-blue-button
   height: 36px
@@ -18,14 +21,6 @@ button
     background-color: #39a9dc
     padding: 11px 25px
     color: white
-    text-transform: uppercase
-  &.big-grey-button
-    height: 36px
-    border-radius: 18px
-    background-color: #354d58
-    padding: 11px 25px
-    color: white
-    cursor: no-drop
     text-transform: uppercase
   &.big-transparent-button
     height: 36px
@@ -47,32 +42,36 @@ article.long-text-input
   height: 65px
   background: white
   position: relative
+
+.search-field
   input[type="text"]
     position: absolute
     left: 48px
     top: 0
     width: calc(100% - 350px)
     height: 100%
-    padding: 27px 0
+    // padding: 27px 0
     font-size: 15px
     color: #071e40
     line-height: 1.2
-    letter-spacing: -0.2px
     outline: none
     border: none
+    background: rgba(0,0,0,0)
   button
     &.search
       background: url("../img/zoom.svg")
       width: 19px
       height: 18px
       left: 0
-      top: 24px
+      // top: 24px
+      top: calc((100% - 19px) / 2)
     &.cancel
       background: url("../img/cross.svg")
       width: 15px
       height: 16px
       right: 0
-      top: 25px
+      // top: 25px
+      top: calc((100% - 16px) / 2)
     &.search, &.cancel
       position: absolute
       background-size: contain
@@ -175,7 +174,6 @@ article.long-text-input
     border-radius: 100px
     float: left
   h1, h2, h3
-    letter-spacing: -0.1px
     line-height: 1.25
     font-weight: 500
   h1
@@ -342,3 +340,59 @@ article.long-text-input
 .no-link-style
   text-decoration: none
   color: black
+
+input
+  height: 50px
+  border-radius: 2px
+  border: 1px solid #d4d9e2
+  font-size: 15px
+  line-height: 1.6
+  color: #79828f
+
+.requests-container
+  width: 960px
+  margin: auto
+  span.cancelled,
+  span.declined,
+  span.accepted,
+  span.pending
+    margin-left: 14px
+    position: relative
+    text-transform: capitalize
+  span.cancelled::before,
+  span.declined::before,
+  span.accepted::before,
+  span.pending::before
+    position: absolute
+    content: ""
+    width: 5px
+    height: 5px
+    top: 7px
+    left: -14px
+    border-radius: 5px
+  span.cancelled::before
+    background: #eb3323
+  span.declined::before
+    background: #ff9b02
+  span.accepted::before
+    background: #47bf6f
+  span.pending::before
+    background: #f6c143
+  .my-requests
+    width: 100%
+    height: 130px
+    padding-top: 50px
+    .searcharea
+      position: relative
+      width: 75%
+      height: 23px
+      float: right
+    h2
+      font-weight: normal
+      font-size: 24px
+      line-height: .75
+      margin-bottom: 7px
+    span
+      font-size: 16px
+      line-height: 1.13
+      color: rgba(121, 130, 143, 0.54)

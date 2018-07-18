@@ -38,10 +38,14 @@ import '../css/Sortable2.sass';
         //this will be rendered to the column cell
         render: <div className="rating">{manager.rating}</div>,
         //will be sorted by that property
-        sortBy: {manager.rating}
+        value: {manager.rating}
       }
     };
   })}
+  //(OPTIONAL) show navigational arrows (may overlay content in right corner of the header)
+  navigation={true}
+  //(OPTIONAL) maximum shown rows (default 10)
+  maxShown={5}
 />
 */}
 
@@ -51,17 +55,19 @@ class Sortable2 extends Component {
     this.state = {
       sortBy: -1,
       order: false,
+      offset: 0,
+      maxShown: 10,
       error: undefined,
       rowProperties: undefined,
     }
   }
 
   componentWillMount() {
-    if (!((this.props.columns && this.props.columns.length > 0))) {
+    if (!(this.props.columns && this.props.columns.length > 0)) {
       this.setState({error: "no columns"});
       return;
     }
-    if (!((this.props.data && this.props.data.length > 0))) {
+    if (!(this.props.data && this.props.data.length > 0)) {
       this.setState({error: "no data"});
       return;
     }
@@ -72,6 +78,10 @@ class Sortable2 extends Component {
         return;
       }
     });
+    if (!this.props.data[0].hasOwnProperty("id")) {
+      this.setState({error: "data objects doesn't have id"});
+      return;
+    }
 
     //set width for columns
     this.setState({
@@ -91,6 +101,9 @@ class Sortable2 extends Component {
       if (firstSortableColumn)
         this.setState({sortBy: firstSortableColumn.property});
     }
+
+    if (this.props.maxShown)
+      this.setState({maxShown: this.props.maxShown});
   }
 
   setSortBy(sortBy) {
@@ -109,10 +122,10 @@ class Sortable2 extends Component {
           this.props.data
           .filter(this.props.filter ? this.props.filter : i => true)
           .sort((a, b) => {
-            let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("sortBy") ?
-              a[this.state.sortBy].sortBy : a[this.state.sortBy];
-            let sortableB = b[this.state.sortBy].hasOwnProperty("render") && b[this.state.sortBy].hasOwnProperty("sortBy") ?
-              b[this.state.sortBy].sortBy : b[this.state.sortBy];
+            let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("value") ?
+              a[this.state.sortBy].value : a[this.state.sortBy];
+            let sortableB = b[this.state.sortBy].hasOwnProperty("render") && b[this.state.sortBy].hasOwnProperty("value") ?
+              b[this.state.sortBy].value : b[this.state.sortBy];
 
             switch (this.props.columns.find(column => column.property == this.state.sortBy).type) {
               case "number":
@@ -127,6 +140,7 @@ class Sortable2 extends Component {
                 return this.state.order ? String(sortableA).localeCompare(String(sortableB)) : String(sortableB).localeCompare(String(sortableA));
             }
           })
+          .slice(this.state.offset, this.state.offset + this.state.maxShown)
           .map(row => this.renderListing(row))
         }
       </ul>
@@ -140,14 +154,14 @@ class Sortable2 extends Component {
             let cell = row[property.name];
             if (typeof cell == "undefined") {
               console.log('undefined cell in sortable2: ' + property.name);
-              return <div className="cell"></div>
+              return <div className="cell" />;
             }
             return (
               <div
                 className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
                 style={{width: property.width}}
               >
-                {(cell.hasOwnProperty("render") && cell.hasOwnProperty("sortBy") ? cell.render : cell)}
+                {(cell.hasOwnProperty("render") && cell.hasOwnProperty("value") ? cell.render : (cell))}
               </div>
             );
           })
@@ -164,17 +178,74 @@ class Sortable2 extends Component {
             <div
               className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
               style={{"width": this.state.rowProperties[index].width}}
+              title={column.tooltip ? column.tooltip : column.title}
             >
-              <span
-                className={(column.type == "unsortable" ? "unsortable" : "") + (this.state.sortBy === column.property ? (this.state.order ? "asc" : "desc") : "")}
-                onClick={() => this.setSortBy(column.property)}
-              >
-                {column.title}
-              </span>
+              {
+                typeof column.title == "string" ?
+                  <span
+                    className={(column.type == "unsortable" ? "unsortable" : "") + (this.state.sortBy === column.property ? (this.state.order ? "asc" : "desc") : "")}
+                    onClick={() => this.setSortBy(column.property)}
+                  >
+                    {column.title}
+                  </span>
+                :
+                  column.title
+              }
             </div>
           )
         }
+        {this.props.navigation ? this.renderNavigation() : ""}
       </div>
+    );
+  }
+
+  renderNavigation() {
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+
+    if (this.state.maxShown >= length)
+      return;
+
+    return (
+      <div className="navigation">
+        {
+          this.state.offset > 0 ?
+          <button
+            className="left-arrow active"
+            onClick={() => this.setState({
+              offset: Math.max(this.state.offset - this.state.maxShown, 0),
+              maxShown: Math.min(this.state.maxShown, this.state.offset)
+            })}
+          />
+          :
+          <button className="left-arrow" />
+        }
+        {
+          this.state.offset + this.state.maxShown < length ?
+          <button
+            className="right-arrow active"
+            onClick={() => this.setState({
+              offset: Math.min(this.state.offset + this.state.maxShown, length - 1)
+            })}
+          />
+          :
+          <button className="right-arrow" />
+        }
+      </div>
+    );
+  }
+
+  renderShowMore() {
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+
+    if (this.state.offset + this.state.maxShown >= length)
+      return;
+
+    return (
+      <button className="show-more" onClick={() => this.setState({
+        maxShown: this.state.maxShown + (this.props.maxShown ? this.props.maxShown : 10)
+      })}>
+        SHOW MORE
+      </button>
     );
   }
 
@@ -192,6 +263,7 @@ class Sortable2 extends Component {
       <div className="sortable">
         {this.renderHeader()}
         {this.renderListings()}
+        {this.renderShowMore()}
       </div>
     );
   }

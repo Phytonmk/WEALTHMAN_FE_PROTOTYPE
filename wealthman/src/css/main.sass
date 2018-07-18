@@ -1,5 +1,5 @@
 @font-face
-  font-family: "Calibre-Light"
+  font-family: "Calibre"
   src: url("../fonts/calibre_light.woff")
   font-weight: 200
   font-style: normal
@@ -45,9 +45,6 @@ body, html
   line-height: 23px
   color: #161338
   margin: 0
-
-body
-  background-color: #ecf1f5
 
 *
   box-sizing: border-box
@@ -124,7 +121,7 @@ li.link
 
 .row
   width: 100%
-  //overflow-y: auto
+  overflow-y: auto
   position: relative
   bottom: 0
 
@@ -383,7 +380,7 @@ header.header a
       padding: 30px 0
 
 .border-bottom
-  border-bottom: 1px solid #c2c2c2
+  border-bottom: 1px solid #d2d7da
 
 .logged
   background-color: #f4f4f4 !important
@@ -638,7 +635,7 @@ p.grey
     &:hover
       opacity: 1
     &::before
-      background: url(../img/back.png)
+      // background: url(../img/back.png)
       width: 9px
       height: 14px
       background-size: contain
@@ -774,39 +771,39 @@ option
 .red
   color: red !important
 
-a
-  &.telegram::before
-    background: url("../img/footer/telegram.png")
-  &.bitcointalk::before
-    background: url("../img/footer/bitcointalk.png")
-
-button.facebook::before
-  background: url("../img/footer/facebook.png")
-
-a
-  &.facebook::before
-    background: url("../img/footer/facebook.png")
-  &.instagram::before
-    background: url("../img/footer/instagram.png")
-  &.medium::before
-    background: url("../img/footer/medium.png")
-  &.reddit::before
-    background: url("../img/footer/reddit.png")
-
-button.twitter::before, a.twitter::before
-  background: url("../img/footer/twitter.png")
-
-button.linkedin::before
-  background: url("../img/footer/linkedin.png")
-
-a
-  &.linkedin::before
-    background: url("../img/footer/linkedin.png")
-  &.youtube::before
-    background: url("../img/footer/youtube.png")
-
-button.google::before
-  background: url("../img/footer/google.png")
+// a
+//   &.telegram::before
+//     background: url("../img/footer/telegram.png")
+//   &.bitcointalk::before
+//     background: url("../img/footer/bitcointalk.png")
+//
+// button.facebook::before
+//   background: url("../img/footer/facebook.png")
+//
+// a
+//   &.facebook::before
+//     background: url("../img/footer/facebook.png")
+//   &.instagram::before
+//     background: url("../img/footer/instagram.png")
+//   &.medium::before
+//     background: url("../img/footer/medium.png")
+//   &.reddit::before
+//     background: url("../img/footer/reddit.png")
+//
+// button.twitter::before, a.twitter::before
+//   background: url("../img/footer/twitter.png")
+//
+// button.linkedin::before
+//   background: url("../img/footer/linkedin.png")
+//
+// a
+//   &.linkedin::before
+//     background: url("../img/footer/linkedin.png")
+//   &.youtube::before
+//     background: url("../img/footer/youtube.png")
+//
+// button.google::before
+//   background: url("../img/footer/google.png")
 
 a
   &.telegram::before, &.bitcointalk::before, &.facebook::before, &.instagram::before, &.medium::before, &.reddit::before, &.twitter::before, &.linkedin::before, &.youtube::before
@@ -1004,32 +1001,3 @@ img.graph
   &[type=text]
     max-width: 150px !important
     vertical-align: top
-
-// .new-login-box
-//   background-color: rgba(0,0,0,0)
-//   width: 700px
-//   margin: 100px auto
-//   h2
-//     font-family: Calibre-Light
-//     text-align: center
-//     font-size: 60px
-//   .login-inner-box
-//     display: block
-//     border-radius: 2px
-//     background-color: white
-//     border: 1px solid #EEE
-//     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.15)
-//     width: 700px
-//     margin-top: 50px
-//     float: none
-//     height: 300px
-//     .login-box-tab
-//       width: 50%
-//       height: 100%
-//       &:nth-child(1)
-//         border-right: 2px solid #EEE
-
-ul.services-in-table-list
-  // list-style: none
-  font-size: 12px
-  padding-left: 15px
