@@ -157,9 +157,9 @@ module.exports = (app) => {
     req.files.file.mv(__dirname+ '/../../img/investors/' + investor.id + '.png', async (err) => {
       if (err)
         return res.sendStatus(500).send(err);
-      res.send('investors/' + investor.id + '.png');
       investor.set({img: 'investors/' + investor.id + '.png'});
       await investor.save();
+      res.send('investors/' + investor.id + '.png');
       res.end();
     });
   });
@@ -176,17 +176,21 @@ module.exports = (app) => {
       const managerID = await Manager.countDocuments({});
       manager = new Manager(Object.assign(req.body, {user: token.user, id: managerID}));
     }
-    if (!req.files)
-      return res.sendStatus(400).send('No files were uploaded.');
+    if (!req.files) {
+      res.sendStatus(400).send('No files were uploaded.');
+      return;
+    }
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/managers/');
     req.files.file.mv(__dirname+ '/../../img/managers/' + manager.id + '.png', async (err) => {
-      if (err)
-        return res.sendStatus(500).send(err);
-      res.send('managers/' + manager.id + '.png');
-      res.sendStatus(200);
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);;
+        return;
+      }
       manager.set({img: 'managers/' + manager.id + '.png'});
       await manager.save();
+      res.send('managers/' + manager.id + '.png');
       res.end();
     });
   });
@@ -201,7 +205,7 @@ module.exports = (app) => {
     let company = await Company.findOne({user: token.user});
     if (company === null) {
       const companyID = await Company.countDocuments({});
-      const company = new Company(Object.assign(req.body, {user: token.user, id: companyID}));
+      company = new Company(Object.assign(req.body, {user: token.user, id: companyID}));
     }
     if (!req.files)
       return res.sendStatus(400).send('No files were uploaded.');
@@ -210,9 +214,9 @@ module.exports = (app) => {
     req.files.file.mv(__dirname+ '/../../img/companies/' + company.id + '.png', async (err) => {
       if (err)
         return res.sendStatus(500).send(err);
-      res.send('companies/' + company.id + '.png');
       company.set({img: 'companies/' + company.id + '.png'});
       await company.save();
+      res.send('companies/' + company.id + '.png');
       res.end();
     });
   });
@@ -229,7 +233,7 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    user.set({type: 1});
+    user.set({type: 3});
     await user.save();
     const companyID = await Company.countDocuments({});
     const foundCompany = await Company.findOne({user: user.id});
@@ -285,6 +289,12 @@ module.exports = (app) => {
     switch (user.type) {
       case 0:
         userData = await Investor.findOne({user: user.id});
+        break;
+      case 1:
+        userData = await Manager.findOne({user: user.id});
+        break;
+      case 3:
+        userData = await Company.findOne({user: user.id});
         break;
     }
     res.send({usertype: user.type, userData});

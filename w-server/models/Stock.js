@@ -8,7 +8,8 @@ const StockSchema = mongoose.Schema({
   change_percnt: String,
   high_price: String,
   low_price: String,
-  volume: String
+  volume: String,
+  token_img: String
 });
 
 module.exports = mongoose.model('stocks', StockSchema);

@@ -2,6 +2,7 @@ const defaultState = {
   user: -1,
   login: "",
   password: "",
+  userData: {},
 
   currentPage: "",
   currentManager: -1,
@@ -93,15 +94,18 @@ const defaultState = {
       link: "sone"
     }
   ],
-  loggedCamponyLinks: [
+  loggedCompanyLinks: [
     {
-      label: "dashboard",
-      link: "dashboard"
+      label: "requests",
+      link: "requests"
     }, {
-      label: "my company",
+      label: "company",
       link: "company"
     }, {
-      label: "managers",
+      label: "company managers",
+      link: "company-managers"
+    }, {
+      label: "lonely managers",
       link: "managers"
     }, {
       label: "account",

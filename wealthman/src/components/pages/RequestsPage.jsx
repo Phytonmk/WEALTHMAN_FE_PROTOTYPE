@@ -6,44 +6,7 @@ import Sortable2 from '../Sortable2.jsx';
 import myDate from '../myDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
-const requests = [
-    {
-      id: 0,
-      investor: 0,
-      manager: 6,
-      date: "15:16 18-07-2018",
-      value: 1,
-      currency: "ETH",
-      status: "cancelled",
-    },
-    {
-      id: 1,
-      investor: 0,
-      manager: 6,
-      date: "15:16 12-07-2016",
-      value: 2,
-      currency: "ETC",
-      status: "declined",
-    },
-    {
-      id: 2,
-      investor: 0,
-      manager: 6,
-      date: "15:16 12-05-2017",
-      value: 4,
-      currency: "BTC",
-      status: "accepted",
-    },
-    {
-      id: 3,
-      investor: 0,
-      manager: 6,
-      date: "15:16 12-08-2015",
-      value: 3,
-      currency: "XRP",
-      status: "pending",
-    },
-  ]
+const requests = [{}]
 
 class RequestsPage extends Component {
   constructor(props) {
@@ -52,6 +15,7 @@ class RequestsPage extends Component {
       requests,
       managers: [],
       investors: [],
+      companies: [],
       gotData: true,
       searchName: "",
       status: "All",
@@ -75,8 +39,14 @@ class RequestsPage extends Component {
             .then((res) => {
               const investors = [...component.state.investors];
               investors.push(res.data);
-              console.log('data');
               component.setState({investors});
+            })
+            .catch(console.log);
+          api.get('company/' + request.company)
+            .then((res) => {
+              const companies = [...component.state.companies];
+              companies.push(res.data);
+              component.setState({companies});
             })
             .catch(console.log);
         }
@@ -86,7 +56,6 @@ class RequestsPage extends Component {
   render() {
     if (!this.state.gotData)
       return <div className="box loading"><p>Loading</p></div>
-    console.log('render');
     let sortableHeader = [
       {
         property: "img",
@@ -124,30 +93,44 @@ class RequestsPage extends Component {
       {
         property: "chat",
         title: "",
-        width: "150px",
+        width: "100px",
+        type: "unsortable",
+      },
+      {
+        property: "details",
+        title: "",
+        width: "120px",
         type: "unsortable",
       },
     ];
     let sortableRequests = this.state.requests.map(request => {
-      let user = (this.props.user == 1 ?
-        this.state.investors.find(i => i.id == request.investor)
-        :
-        this.state.managers.find(i => i.id == request.manager)) || {
-          id: 0,
-          name: "Hideo",
-          surname: "Kojima",
-          img: "manager/user.svg",
-        };
+      let user = {};
+      if (request.type === 'portfolio') {
+        if (this.props.user === 0)
+          user = request.company ?
+          this.state.companies.find(i => i.id == request.company) || {} :
+          this.state.managers.find(i => i.id == request.manager) || {}
+        else if (this.props.user === 1)
+          user = request.company ?
+          this.state.companies.find(i => i.id == request.company) || {} :
+          this.state.investors.find(i => i.id == request.investor) || {}
+        else if (this.props.user === 3)
+          user = this.state.investors.find(i => i.id == request.investor) || {}
+      } else if (request.type === 'inviting') {
+        if (this.props.user === 1)
+          user = this.state.companies.find(i => i.id == request.company) || {}
+        else if (this.props.user === 3)
+          user = this.state.managers.find(i => i.id == request.manager) || {};
+      }
       let date = new myDate(request.date);
-
       return {
         id: request.id,
         img: <img src={user.img ? api.imgUrl(user.img) : 'manager/user.svg'} className="user-icon" />,
         name: {
           render: <Link to={(this.props.user == 1 ? "/investor/" : "/manager/") + user.id} className="no-margin no-link-style">
-            {user.name + " " + user.surname}
+            {user.name || user.company_name || '' + " " + user.surname || ''}
           </Link>,
-          value: user.name + " " + user.surname
+          value: user.name || '' + " " + user.surname || ''
         },
         date: {
           render: date.niceTime(),
@@ -160,8 +143,14 @@ class RequestsPage extends Component {
           value: request.status
         },
         chat: <button className="big-blue-button chat">
-          START CHAT
-        </button>
+          CHAT
+        </button>,
+        details: 
+        <Link to={"request/" + request.id}>
+          <button className="big-blue-button chat">
+            DETAILS
+          </button>
+        </Link>
       };
     });
 

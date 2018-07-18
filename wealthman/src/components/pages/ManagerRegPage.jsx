@@ -16,14 +16,14 @@ class RegisterPage extends Component {
     this.goToAgreement = this.goToAgreement.bind(this);
   }
   goToAgreement(event) {
-    if (/.+@{1}.+\.{1}.+/.test(this.state.login))
+    // if (/.+@{1}.+\.{1}.+/.test(this.state.login))
       api.post('register', this.state)
         .then((result) => {
           setCookie('accessToken', result.data);
           setPage("manager-detailing")})
         .catch(console.log);
-    else
-      alert('You must input email!');
+    // else
+    //   alert('You must input email!');
   }
   previousPage() {
     var previousPages = this.props.previousPages.slice();

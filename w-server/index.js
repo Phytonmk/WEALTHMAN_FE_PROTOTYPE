@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 })
 app.use((req, res, next) => {
-  console.log(`request: ${JSON.stringify(req.body)}`);
+  console.log(`request to ${req.originalUrl}: ${JSON.stringify(req.body)}`);
   next();
 });
 mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlParser: true}, (err) => {
@@ -29,4 +29,5 @@ mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlPar
     console.log('mongo connected')
 });
 require('./routes/index.js')(app);
+require('./iterators/index.js')(app);
 app.listen(port, () => console.log(`Started on localhost:${port}`))

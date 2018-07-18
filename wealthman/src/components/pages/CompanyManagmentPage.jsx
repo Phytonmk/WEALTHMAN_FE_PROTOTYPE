@@ -24,7 +24,12 @@ class CompanyManagmentPage extends Component {
         <div className="container">
           <div className="box">
             <h3>Manage your compony</h3>
-            
+            <div className="row">
+              <textarea placeholder="Description"></textarea>
+            </div>
+            <div className="row">
+              <textarea placeholder="Socials links"></textarea>
+            </div>
           </div>
         </div>
       </div>

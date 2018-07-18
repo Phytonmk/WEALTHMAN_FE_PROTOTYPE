@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, previousPage } from '../helpers';
+import { api, setPage, setCurrency, previousPage, getCookie } from '../helpers';
 
 class KYCPage extends Component {
   constructor(props) {
@@ -12,18 +12,32 @@ class KYCPage extends Component {
       manager_comment: false,
       value: '',
       comment: '',
-      manager: 'Manager-name'
+      manager: '-',
+      managerName: '-'
     };
+    if (this.props.match.params.manager === undefined) {
+      let managerString = getCookie('selectedManager');
+      this.props.match.params.manager = managerString.split('/')[0];
+      this.props.match.params.id = managerString.split('/')[1];
+    }
   }
   componentWillMount() {
-    api.get('manager/' + this.props.currentManager)
+    let manager = '';
+    console.log(this.props.match)
+    if (this.props.match.params.manager === 'manager')
+      manager = 'manager';
+    else if (this.props.match.params.manager === 'company')
+      manager = 'company';
+    this.setState({manager});
+    api.get(manager + '/' + this.props.match.params.id)
       .then((res) => {
-        this.setState({manager: (res.data.name || '') + ' ' + (res.data.suname || '')})
+        this.setState({managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.suname || '')})
       })
   }
   send() {
     api.post('request', {
-      manager: this.props.currentManager,
+      type: 'portfolio',
+      [this.state.manager]: this.props.match.params.id,
       value: this.state.value,
       comment: this.state.comment,
       options: {
@@ -46,9 +60,9 @@ class KYCPage extends Component {
               <h2>Know Your Criminals</h2>
             </div>
             <div className="row">
-              <p>By clicking “Send to manager” button you send</p>
+              <p>By clicking “Send to {this.state.manager}” button you send</p>
               <ol>
-                <li> Request for portfolio balance to manager <b>{this.state.manager}</b></li>
+                <li> Request for portfolio balance to {this.state.manager} <b>{this.state.managerName}</b></li>
                 <li> Your personal risk profile and information </li>
               </ol>
             </div>
@@ -79,7 +93,7 @@ class KYCPage extends Component {
               <Link to={"/manager form"}>
                 <button className="back" onClick={() => previousPage()}>Back</button>
               </Link>
-              <button className="continue" onClick={() => this.send()}>Send to manager</button>
+              <button className="continue" onClick={() => this.send()}>Send to {this.state.manager}</button>
             </div>
           </div>
         </div>

@@ -38,6 +38,10 @@ class loginPage extends Component {
           setReduxState({user: 2});
           setPage('managers');
         }
+        else if (res.data.usertype == 3) {
+          setReduxState({user: 2});
+          setPage('requests');
+        }
       })
       .catch((error) => {
         console.log(error);

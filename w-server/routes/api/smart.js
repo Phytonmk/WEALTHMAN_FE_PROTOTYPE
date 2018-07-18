@@ -119,10 +119,4 @@ module.exports = (app) => {
     res.status(200);
     res.end('');
   });
-  app.get('/smart', (req, res) => {
-    res.status(200);
-    res.end('');
-
-    console.log('SMART CONTRACT');
-  });
 }

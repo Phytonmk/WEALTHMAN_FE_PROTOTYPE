@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { setReduxState } from '../../redux';
+import { store, setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
-import { api, setPage, setCurrency } from '../helpers';
+import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 const filters = [
   {
@@ -18,10 +18,6 @@ const filters = [
     link: "Advisory",
     description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
   },
-  {
-    link: "Unsorted",
-    description: "Display all managers",
-  }
 ];
 
 class ManagersPage extends Component {
@@ -30,19 +26,33 @@ class ManagersPage extends Component {
     this.state = {
       searchName: "",
       gotData: false,
-      filter: 'Unsorted',
+      filter: 'Robo-advisor',
       offers: [],
       totalInvestors: '-',
       totalManagers: '-',
       totalAum: '-',
     }
+    let lastPage
+    store.subscribe(() => {
+      const state = store.getState();
+      if ((state.currentPage === 'company-managers' || state.currentPage === 'managers') && state.currentPage !== lastPage)
+        setTimeout(this.load.bind(this), 0);
+    });
   }
   applyManager(managerID) {
     setReduxState({
       currentManager: managerID,
     });
+    const manager = this.state.offers.find(i => i.id === managerID);
+    setCookie('service', filters[this.state.filter]);
+    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
   }
   load(filter) {
+    this.setState({
+      offers: [],
+      gotData: false
+    })
     if (filter)
       this.setState({filter});
     else
@@ -54,10 +64,11 @@ class ManagersPage extends Component {
       case 'robo-advisor': filterIndex = 0; break;
       case 'discretionary': filterIndex = 1; break;
       case 'advisory': filterIndex = 2; break;
-      default: filterIndex = -1
+      default: filterIndex = 0
     }
-    console.log(filterIndex);
-    api.get('marketplace/' + filterIndex)
+    console.log(`filterIndex: ${filterIndex}`);
+    // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
+    api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
       .then((res) => {
         this.setState(res.data);
         this.setState({gotData: true});
@@ -65,7 +76,6 @@ class ManagersPage extends Component {
       .catch(console.log);
   }
   componentWillMount() {
-    this.setState({gotData: false});
     this.load();
   }
   render() {
@@ -79,7 +89,7 @@ class ManagersPage extends Component {
       {
         property: "name",
         title: "Manager name",
-        width: "206px",
+        width: "156px",
       },
       {
         property: "rating",
@@ -91,8 +101,8 @@ class ManagersPage extends Component {
       {
         property: "min",
         title: "min. investment",
-        // width: "64px",
-        width: "104px",
+        width: "64px",
+        // width: "104px",
         type: "number",
       },
       {
@@ -107,7 +117,7 @@ class ManagersPage extends Component {
         property: "services",
         title: "Services",
         // width: "73px",
-        width: "100px",
+        width: "150px",
         type: "unsortable",
       },
       {
@@ -136,15 +146,31 @@ class ManagersPage extends Component {
         type: "unsortable",
       },
     ];
+    if (this.props.user === 3) { // user -- company
+      sortableHeader.pop();
+      if (this.props.currentPage === 'company-managers')
+        sortableHeader.push({
+          property: 'chat',
+          width: "105px",
+          type: "unsortable",
+        })
+      else
+        sortableHeader.push({
+          property: 'invite',
+          width: "135px",
+          type: "unsortable",
+        })
+    }
     let sortableManagers = this.state.offers.map((manager, i) => {
+      const name = manager.name || manager.company_name || '' + " " + manager.surname || '';
       return {
         id: manager.id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
         name: {
           render: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
-            {manager.name + " " + manager.surname}
+            {name}
           </Link>,
-          value: manager.name + " " + manager.surname
+          value: name
         },
         rating: {
           render: <div className="rating">{manager.successRate}</div>,
@@ -167,9 +193,19 @@ class ManagersPage extends Component {
           {manager.services[i].fee}%
         </li>)}</ul>,
         aum6: <img src="graph.png" className="graph" />,
-        apply: <Link to={this.props.user === -1 ? "/reg-or-login/" + manager.id : "/kyc/" + manager.id} className="no-margin" onClick={() => this.applyManager(manager.id)}>
+        apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
             <button className="big-blue-button">
               APPLY NOW
+            </button>
+          </div>,
+        invite: <Link to={"/invite-manager/" + manager.id} className="no-margin">
+            <button className="big-blue-button">
+              INVITE NOW
+            </button>
+          </Link>,
+        chat: <Link to={"/chat/" + manager.user} className="no-margin">
+            <button className="big-blue-button">
+              Chat
             </button>
           </Link>
       };

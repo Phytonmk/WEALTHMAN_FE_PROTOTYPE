@@ -32,7 +32,7 @@ import ManagerPage from './components/pages/ManagerPage';
 import CompanyPage from './components/pages/CompanyPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
-import RequestPage from './components/pages/RequestPage';
+import RequestPage from './components/pages/RequestPage/index.jsx';
 import PortfolioCreationPage from './components/pages/PortfolioCreationPage';
 import SignAgreementPage from './components/pages/SignAgreementPage';
 import MoneyPage from './components/pages/MoneyPage';
@@ -45,6 +45,7 @@ import WithdrawPage from './components/pages/WithdrawPage';
 import RegOrLoginForNewInvestorPage from './components/pages/RegOrLoginForNewInvestorPage';
 import DeclinePage from './components/pages/DeclinePage';
 import CompanyManagmentPage from './components/pages/CompanyManagmentPage';
+import InviteManagerPage from './components/pages/InviteManagerPage';
 
 //
 
@@ -165,27 +166,28 @@ class App extends Component {
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/company/:id" component={CompanyPage}/>
           <Route path="/company" component={CompanyManagmentPage}/>
+          <Route path="/invite-manager/:manager" component={InviteManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" component={PortfolioPage}/>
           <Route path="/request/:id" component={RequestPage}/>
 
           <Route path="/portfolios" component={PortfoliosPage}/>
           <Route path="/managers" component={ManagersPage}/>
+          <Route path="/company-managers" component={ManagersPage}/>
           <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
           <Route path="/requests" component={RequestsPage}/>
 
-          <Route path="/reg-or-login/:manager" component={RegOrLoginForNewInvestorPage}/>
+          <Route path="/reg-or-login" component={RegOrLoginForNewInvestorPage}/>
           <Route path="/static form" component={StaticFormPage}/>
           <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
           <Route path="/agreement" component={AgreementPage}/>
           <Route path="/signagreement/:id" component={SignAgreementPage}/>
-          <Route path="/manager form" render={() => this.renderManagerFormPage()}/>
           <Route path="/thanks" render={() => this.renderThanksPage()}/>
           <Route path="/thanks2" render={() => this.renderThanks2Page()}/>
           <Route path="/register" component={RegisterPage}/>
           <Route path="/money/:id" component={MoneyPage}/>
           <Route path="/kyc" component={KYCPage}/>
-          <Route path="/kyc/:manager" component={KYCPage}/>
+          <Route path="/kyc/:manager/:id" component={KYCPage}/>
           <Route path="/investor register" component={InvestorRegistorPage}/>
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
 
@@ -407,51 +409,51 @@ class App extends Component {
 
 
 
-  renderManagerFormPage() {
-    // if (this.state.algorythms[this.state.currentAlgorythm]) {
+  // renderManagerFormPage() {
+  //   // if (this.state.algorythms[this.state.currentAlgorythm]) {
 
-      var manager = this.state.managers.find(manager => manager.id == this.state.algorythms[this.state.currentAlgorythm].creator);
-      var form = this.state.managerQuestions.map((question, i) =>
-        <div key={i} className="form-question">
-          <h4>{question.question}</h4>
-          {
-            question.answers.map((answer, i) =>
-            <div key={i} className="answer">
-              <input type="radio" id={answer} />
-              <label htmlFor={answer}>{answer}</label>
-            </div>
-          )
-        }
-        </div>
-      );
+  //     var manager = this.state.managers.find(manager => manager.id == this.state.algorythms[this.state.currentAlgorythm].creator);
+  //     var form = this.state.managerQuestions.map((question, i) =>
+  //       <div key={i} className="form-question">
+  //         <h4>{question.question}</h4>
+  //         {
+  //           question.answers.map((answer, i) =>
+  //           <div key={i} className="answer">
+  //             <input type="radio" id={answer} />
+  //             <label htmlFor={answer}>{answer}</label>
+  //           </div>
+  //         )
+  //       }
+  //       </div>
+  //     );
 
-      return (
-        <div>
-          {/* {this.renderBackButton()} */}
-          {this.renderProgressBar()}
-          <div className="container">
-            <div className="box">
-              <div className="container">
-                <h2>Manager Form Questions</h2>
-                <h4 className="grey">Asked by manager ({manager.name} {manager.surname})</h4>
-                {form}
-                <div className="row-padding">
-                  <Link to={"/dynamic form"}>
-                    <button className="back" onClick={() => this.prevousPage()}>Back</button>
-                  </Link>
-                  <Link to={"/kyc"}>
-                    <button className="continue" onClick={() => this.setPage("KYC")}>Continue</button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    // } else {
-    //   return this.renderKYCPage();
-    // }
-  }
+  //     return (
+  //       <div>
+  //         {/* {this.renderBackButton()} */}
+  //         {this.renderProgressBar()}
+  //         <div className="container">
+  //           <div className="box">
+  //             <div className="container">
+  //               <h2>Manager Form Questions</h2>
+  //               <h4 className="grey">Asked by manager ({manager.name} {manager.surname})</h4>
+  //               {form}
+  //               <div className="row-padding">
+  //                 <Link to={"/dynamic form"}>
+  //                   <button className="back" onClick={() => this.prevousPage()}>Back</button>
+  //                 </Link>
+  //                 <Link to={"/kyc"}>
+  //                   <button className="continue" onClick={() => this.setPage("KYC")}>Continue</button>
+  //                 </Link>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   // } else {
+  //   //   return this.renderKYCPage();
+  //   // }
+  // }
 
   renderThanksPage() {
     return(

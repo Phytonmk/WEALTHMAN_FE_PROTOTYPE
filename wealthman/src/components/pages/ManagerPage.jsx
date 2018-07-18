@@ -79,9 +79,15 @@ class ManagerPage extends Component {
                 <Link to={"/chat"} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
+                {this.props.user === 3 ? 
+                <Link to={"/invite-manager/" + manager.id}>
+                  <button className="big-blue-button right">Invite now</button>
+                </Link>
+                : 
                 <Link to={this.props.user === -1 ? "/reg-or-login/" + manager.id : "/kyc/" + manager.id} onClick={() => this.apply()}>
                   <button className="big-blue-button right">Apply now</button>
                 </Link>
+                }
               </div>
               <div className="social">
                 <span>Social networks</span>
@@ -133,35 +139,42 @@ class ManagerPage extends Component {
           </div>
           <div className="second-column">
             <div className="box">
-              <div className="company-info">
-                <Link to={"/company/0"}>
-                  <div className="company-icon" />
-                </Link>
-                <div className="column left">
-                  <h3>Company</h3>
-                  <h1>Moroz&Co</h1>
-                </div>
+              {manager.company === -1 ?
+              <div className="row">
+                Lonely manager
               </div>
-              <div className="webpage">
-                <div className="row">
-                  <span>Webpage:</span>
+              :
+              <div>
+                <div className="company-info">
+                  <Link to={"/company/0"}>
+                    <div className="company-icon" />
+                  </Link>
+                  <div className="column left">
+                    <h3>Company</h3>
+                    <h1>Moroz&Co</h1>
+                  </div>
                 </div>
-                <a href="https://en.wikipedia.org/wiki/Ponzi_scheme" target="_blank">https://en.wikipedia.org/wiki/Ponzi_scheme</a>
-              </div>
-              <div className="networks">
-                <div className="row">
-                  <span>Social networks:</span>
+                <div className="webpage">
+                  <div className="row">
+                    <span>Webpage:</span>
+                  </div>
+                  <a href="https://en.wikipedia.org/wiki/Ponzi_scheme" target="_blank">https://en.wikipedia.org/wiki/Ponzi_scheme</a>
                 </div>
-                <div className="row">
-                  <a href="http://www.facebook.com/ponzi" target="_blank">http://www.facebook.com/ponzi</a>
+                <div className="networks">
+                  <div className="row">
+                    <span>Social networks:</span>
+                  </div>
+                  <div className="row">
+                    <a href="http://www.facebook.com/ponzi" target="_blank">http://www.facebook.com/ponzi</a>
+                  </div>
+                  <div className="row">
+                    <a href="http://www.twitter.com/ponzi" target="_blank">http://www.twitter.com/ponzi</a>
+                  </div>
+                  <div className="row">
+                    <a href="http://www.linkedin.com/in/ponzi" target="_blank">http://www.linkedin.com/in/ponzi</a>
+                  </div>
                 </div>
-                <div className="row">
-                  <a href="http://www.twitter.com/ponzi" target="_blank">http://www.twitter.com/ponzi</a>
-                </div>
-                <div className="row">
-                  <a href="http://www.linkedin.com/in/ponzi" target="_blank">http://www.linkedin.com/in/ponzi</a>
-                </div>
-              </div>
+              </div>}
             </div>
 
             <div className="box">

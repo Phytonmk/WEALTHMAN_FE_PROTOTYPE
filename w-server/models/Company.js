@@ -1,6 +1,12 @@
 
 const mongoose = require('mongoose');
 
+const ServiceSchema = mongoose.Schema({
+  type: Number, //0 - Robo-advisor, 1 - Discretionary, 2 - Advisory
+  fee: Number,
+  recalculation: Number // - in days
+});
+
 const CompanyScheme = mongoose.Schema({
   id: Number,
   img: String,
@@ -17,6 +23,7 @@ const CompanyScheme = mongoose.Schema({
   fb: String,
   linkedin: String,
   about: String,
+  services: [ServiceSchema]
 });
 
 module.exports = mongoose.model('Company', CompanyScheme);

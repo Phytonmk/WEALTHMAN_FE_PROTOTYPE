@@ -8,11 +8,11 @@ const auth = (callback=()=>{}) => {
     api.post('getme', {accessToken: getCookie('accessToken')})
       .then(res => {
         if (/[0-9]+/.test(res.data.usertype))
-          setReduxState({user: res.data.usertype});
+          setReduxState({user: res.data.usertype, userData: res.data.userData || {}});
         callback();
       })
       .catch((e) => {
-        if (e.response.status === 403) {
+        if (e.response && e.response.status === 403) {
           setCookie('accessToken', '');
           setPage('')
         } else {

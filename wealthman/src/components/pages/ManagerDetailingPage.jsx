@@ -28,11 +28,17 @@ class ManagerDetailingPage extends Component {
     services.push({type: 0, fee: 0, recalculation: 365});
     this.setState({services});
   }
+  removeService(index) {
+    const services = [...this.state.services];
+    services.splice(index, 1);
+    this.setState({services});
+    this.forceUpdate();
+  }
   setServiceData(event, serviceIndex, property) {
     const services = [...this.state.services];
     services[serviceIndex][property] = event.target.value * 1;
     this.setState({services});
-    console.log(this.state);
+    console.log(this.state.services);
   }
   createWallet() {
     api.get('create-wallet')
@@ -94,8 +100,8 @@ class ManagerDetailingPage extends Component {
                 </div>
                 <br />
                 {this.state.services.map((service, i) => <div key={i} className="service-selecting-element">
-                  <select value={servicesList[service.type]} onChange={(event) => this.setServiceData(event, i, 'type')}>
-                    {servicesList.map((option, index) => <option key={index} value={service.type}>{option}</option>)}
+                  <select onChange={(event) => this.setServiceData(event, i, 'type')}>
+                    {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} key={index} value={index}>{option}</option>)}
                   </select>
                   <br />
                   Fee
@@ -105,6 +111,10 @@ class ManagerDetailingPage extends Component {
                   Recalculation
                   <br />
                   <input type="number" placeholder="recalculation" value={service.recalculation} onChange={(event) => this.setServiceData(event, i, 'recalculation')}/>
+                  <br />
+                  <button className="back" onClick={() => this.removeService(i)}>Remove {servicesList[service.type]} from list</button>
+                  <br />
+                  <br />
                 </div>)}
                 {this.state.services.length < 3 ? <div className="row">
                   <button className="back" onClick={() => this.addService()}>Add service</button>
@@ -185,7 +195,6 @@ const questions = {
     'about'
   ],
   company: [
-    'company',
     'company_name',
     'company_link',
     'founded',
