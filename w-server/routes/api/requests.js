@@ -49,7 +49,14 @@ module.exports = (app) => {
     const request = new Request({
       id: requestID,
       investor: investor.id,
-      [managerType]: managerId 
+      [managerType]: managerId,
+      value: req.body.value,
+      comment: req.body.comment,
+      service: req.body.service,
+      options: {
+        analysis: req.body.options.analysis,
+        comment: req.body.options.manager_comment
+      }
     });
     await request.save();
     res.status(200);

@@ -10,7 +10,7 @@ class Header extends Component {
   render() {
     return (
       <div>
-        <div className="row">
+        <div className="row request-header">
           <div className="circle left">
             <img src={this.props.img} className="avatar" />
           </div>

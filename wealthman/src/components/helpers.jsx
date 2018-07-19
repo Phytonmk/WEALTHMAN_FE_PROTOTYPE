@@ -19,7 +19,7 @@ const api = {
       }
     }
     axios.post(uploadUrl, formData, config)
-      .then((res) => resolve(apiUrl + 'img/' + res.data))
+      .then((res) => resolve(res.data))
       .catch(reject);
   }),
   imgUrl: (file) => apiUrl + 'img/' + file

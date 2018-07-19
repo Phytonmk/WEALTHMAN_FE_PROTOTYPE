@@ -16,14 +16,14 @@ class RegisterPage extends Component {
     this.goToAgreement = this.goToAgreement.bind(this);
   }
   goToAgreement(event) {
-    // if (/.+@{1}.+\.{1}.+/.test(this.state.login))
+    if (this.state.login !== '' && this.state.password !== '')
       api.post('register', this.state)
         .then((result) => {
           setCookie('accessToken', result.data);
           setPage("manager-detailing")})
         .catch(console.log);
-    // else
-    //   alert('You must input email!');
+    else
+      alert('You should fill all inputs to continue registration');
   }
   previousPage() {
     var previousPages = this.props.previousPages.slice();
@@ -43,7 +43,7 @@ class RegisterPage extends Component {
         {/* {this.renderBackButton()} */}
         <div className="container">
           <div className="box">
-            <h2>Mangers' registration page</h2>
+            <h2>Manger's registration page</h2>
               <div className="row">
                 <b>Email</b>
               </div>

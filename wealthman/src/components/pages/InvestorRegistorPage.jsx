@@ -126,6 +126,8 @@ class InvestorRegistorPage extends Component {
             </div> 
             <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet ? {display: 'block'} : {display: 'none'}}>
                <input type="text" value={this.state.privateKey}   />
+               <br />
+               <b>Notice</b>: Wealthman does not save your private keys in the datadase. Keep your private key in secret.
             </div> 
             <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
                In case you have not got Ethereum Wallet push the button below

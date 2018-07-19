@@ -44,7 +44,7 @@ class ManagersPage extends Component {
       currentManager: managerID,
     });
     const manager = this.state.offers.find(i => i.id === managerID);
-    setCookie('service', filters[this.state.filter]);
+    setCookie('service', this.state.filter);
     setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
     setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
   }
@@ -57,7 +57,6 @@ class ManagersPage extends Component {
       this.setState({filter});
     else
       filter = this.state.filter
-    this.setState({gotData: false});
 
     let filterIndex;
     switch(filter.toLowerCase()) {
@@ -66,6 +65,7 @@ class ManagersPage extends Component {
       case 'advisory': filterIndex = 2; break;
       default: filterIndex = 0
     }
+    this.setState({filter: filterIndex, gotData: false});
     console.log(`filterIndex: ${filterIndex}`);
     // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
     api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
@@ -167,7 +167,7 @@ class ManagersPage extends Component {
         id: manager.id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
         name: {
-          render: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
+          render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id} className="no-margin no-link-style">
             {name}
           </Link>,
           value: name
@@ -190,7 +190,7 @@ class ManagersPage extends Component {
         clients: manager.clients,
         perfomance: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
-          {manager.services[i].fee}%
+          {manager.services[i].perfomance_fee}%
         </li>)}</ul>,
         aum6: <img src="graph.png" className="graph" />,
         apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
@@ -238,6 +238,7 @@ class ManagersPage extends Component {
                   <span>Sort by</span>
                   {filtersMapped}
                 </div>
+                <br />
                 <div className="row margin">
                   <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
                     Invest on Autopilot

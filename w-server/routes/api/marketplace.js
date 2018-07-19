@@ -11,7 +11,7 @@ module.exports = (app) => {
     
     const totalAum = RANDOM();
 
-    let searchQuery = {company: -1};
+    let searchQuery = {company: null};
     if (req.params.filter !== '-1')
       searchQuery['services.type'] = req.params.filter;
     if (req.query['only-from-company'] !== undefined)

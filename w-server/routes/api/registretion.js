@@ -314,10 +314,13 @@ module.exports = (app) => {
       return;
     }
     if (req.body.new_password1 === req.body.new_password2) {
-      user.set({password: req.body.new_password1});
+      user.set({password_hash: password_hash(req.body.new_password1)});
       await user.save();
+      res.sendStatus(200);
+      res.end();
+    } else {
+      res.sendStatus(500);
+      res.end();
     }
-    res.sendStatus(200);
-    res.end();
   });
 }

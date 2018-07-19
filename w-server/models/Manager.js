@@ -1,11 +1,7 @@
 
 const mongoose = require('mongoose');
 
-const ServiceSchema = mongoose.Schema({
-  type: Number, //0 - Robo-advisor, 1 - Discretionary, 2 - Advisory
-  fee: Number,
-  recalculation: Number // - in days
-});
+const ServiceSchema = require('../schemas/ServiceSchema');
 
 const ManagerScheme = mongoose.Schema({
   id: Number,

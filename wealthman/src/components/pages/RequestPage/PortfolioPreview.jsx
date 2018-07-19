@@ -1,40 +1,48 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import Sortable from '../../Sortable.jsx';
+import Sortable2 from '../../Sortable2.jsx';
 import myDate from '../../myDate.jsx';
 
-
-const titles = [
+let sortableHeader = [
   {
+    property: "number",
     title: "#",
-    tooltip: "number",
-    class: "number",
+    width: "41px",
+    type: "number",
   },
   {
+    property: "icon",
+    title: "icon",
+    width: "41px",
+    type: "unsortable",
+  },
+  {
+    property: "currency",
     title: "currency",
-    tooltip: "currency",
-    class: "currency",
+    width: "100px",
   },
   {
+    property: "percent",
     title: "percent",
-    tooltip: "percentr",
-    class: "percent",
+    width: "100px",
+    type: "number",
   },
   {
+    property: "amount",
     title: "amount",
-    tooltip: "amounter",
-    class: "amount",
+    width: "100px",
+    type: "number",
   },
   {
+    property: "analysis",
     title: "analysis",
-    tooltip: "analysis",
-    class: "analysis",
+    width: "100px",
   },
   {
+    property: "comments",
     title: "comments",
-    tooltip: "comments",
-    class: "comments",
+    width: "100px",
   },
 ]
 
@@ -45,19 +53,11 @@ class PortfolioPreview extends Component {
   render() {
     return (
       <div className="box">
-        <Sortable
-          titles={titles}
-          listings={this.props.portfolios}
-          setPage={() => {}}
-          currencySelector={
-            <select value={this.props.currentCurrency} onChange={() => {}}>
-              {
-                this.props.currentCurrencyPrices.map(c =>
-                  <option value={c.name}>{c.name}</option>
-                )
-              }
-            </select>
-          }
+        <Sortable2
+          columns={sortableHeader}
+          data={this.props.portfolios}
+          navigation={true}
+          maxShown={5}
         />
       </div>)
   }

@@ -4,6 +4,21 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency, previousPage, getCookie } from '../helpers';
 
+const filters = [
+  {
+    link: "Robo-advisor",
+    description: "Invest on Autopilot",
+  },
+  {
+    link: "Discretionary",
+    description: "Get The Right Investment Manager For Your Wealth",
+  },
+  {
+    link: "Advisory",
+    description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
+  },
+];
+
 class KYCPage extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +28,9 @@ class KYCPage extends Component {
       value: '',
       comment: '',
       manager: '-',
-      managerName: '-'
+      managerId: '',
+      managerName: '-',
+      service: '-'
     };
     if (this.props.match.params.manager === undefined) {
       let managerString = getCookie('selectedManager');
@@ -23,23 +40,26 @@ class KYCPage extends Component {
   }
   componentWillMount() {
     let manager = '';
-    console.log(this.props.match)
     if (this.props.match.params.manager === 'manager')
       manager = 'manager';
     else if (this.props.match.params.manager === 'company')
       manager = 'company';
-    this.setState({manager});
+    this.setState({manager, service: (filters[getCookie('service')] || {link: '-'}).link});
     api.get(manager + '/' + this.props.match.params.id)
       .then((res) => {
-        this.setState({managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.suname || '')})
+        this.setState({
+          managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.suname || ''),
+          managerId: res.data.id
+        })
       })
   }
   send() {
     api.post('request', {
       type: 'portfolio',
-      [this.state.manager]: this.props.match.params.id,
+      [this.state.manager]: this.state.managerId,
       value: this.state.value,
       comment: this.state.comment,
+      service: this.state.service,
       options: {
         analysis: this.state.analysis,
         comment: this.state.manager_comment
@@ -62,7 +82,7 @@ class KYCPage extends Component {
             <div className="row">
               <p>By clicking “Send to {this.state.manager}” button you send</p>
               <ol>
-                <li> Request for portfolio balance to {this.state.manager} <b>{this.state.managerName}</b></li>
+                <li> Request for portfolio balance to {this.state.manager} <b>{this.state.managerName}</b> and selected service: <b>{this.state.service}</b></li>
                 <li> Your personal risk profile and information </li>
               </ol>
             </div>

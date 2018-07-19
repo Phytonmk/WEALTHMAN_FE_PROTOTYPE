@@ -17,7 +17,7 @@ class RegisterPage extends Component {
     this.goToAgreement = this.goToAgreement.bind(this);
   }
   goToAgreement(event) {
-    if (/.+@{1}.+\.{1}.+/.test(this.state.login))
+    if (this.state.login !== '' && this.state.password !== '')
       api.post('register', this.state)
         .then((result) => {
           console.log(result.data);
@@ -25,7 +25,7 @@ class RegisterPage extends Component {
           setPage("email")})
         .catch(console.log);
     else
-      alert('You must input email!');
+      alert('You should fill all inputs to continue registration');
   }
   previousPage() {
     var previousPages = this.props.previousPages.slice();

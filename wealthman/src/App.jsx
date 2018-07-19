@@ -23,10 +23,10 @@ import auth from './components/auth.js';
 import loginPage from './components/pages/loginPage';
 import login2Page from './components/pages/Login2Page';
 import RegisterPage from './components/pages/RegisterPage';
-import InvestorRegistorPage from './components/pages/InvestorRegistorPage';
+import InvestorRegistorPage from './components/pages/registration/InvestorRegistorPage';
 import AgreementPage from './components/pages/AgreementPage';
 import ManagerRegPage from './components/pages/ManagerRegPage';
-import ManagerDetailingPage from './components/pages/ManagerDetailingPage';
+import ManagerDetailingPage from './components/pages/registration/ManagerRegistorPage';
 import ManagersPage from './components/pages/ManagersPage';
 import ManagerPage from './components/pages/ManagerPage';
 import CompanyPage from './components/pages/CompanyPage';
@@ -1026,6 +1026,12 @@ class App extends Component {
                   <img src="img/footer/linkedin.png" className="social-icon" />
                 </a>
               </div>
+              <Link to={"https://wealthman.io/contact/"} className="right">
+                <button className="big-blue-button">CONTACT US</button>
+              </Link>
+              <Link to={"faq"} className="right">
+                <button className="big-blue-button">FAQ</button>
+              </Link>
               {this.state.user === -1 ? <Link to={"/manager-reg"} className="right">
                 <button className="big-blue-button">Registration for managers</button>
               </Link> : ''}

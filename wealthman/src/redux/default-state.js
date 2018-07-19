@@ -117,19 +117,7 @@ const defaultState = {
   ],
   unloggedLinks: [
     {
-      label: "about us",
-      link: "about"
-    }, {
-      label: "faq",
-      link: "faq"
-    }, {
-      label: "team",
-      link: "team"
-    }, {
-    //   label: "contact us",
-    //   link: "contact"
-    // }, {
-      label: "wealthman",
+      label: "About Wealthman",
       link: "https://wealthman.io/"
     }, {
       label: "login",

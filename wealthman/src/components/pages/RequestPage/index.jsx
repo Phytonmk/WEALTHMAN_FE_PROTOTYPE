@@ -15,33 +15,56 @@ class RequestPage extends Component {
     this.state = {
       gotData: false,
       portfolios: [],
+      stocks: []
     }
   }
   componentWillMount() {
-    setReduxState({currentRequest: this.props.match.params.id});
-    api.post('get-request/' + this.props.match.params.id)
-      .then((res) => {
-        this.setState(Object.assign({gotData: true}, res.data));
-        if (res.data.request.type === 'portfolio') {
-          api.post('portfolio/load', {request: this.state.request.id})
-            .then((res) => {
-              if (res.data.exists) {
-                const portfolios = res.data.portfolio.currencies.map(((portfolio, i) => { return {
-                  number: i,
-                  currency: portfolio.currency,
-                  percent: portfolio.percent,
-                  amount: portfolio.amount,
-                  analysis: portfolio.analysis,
-                  comments: portfolio.comments,
-                  noLink: true
-                }}));
-                this.setState({portfolios});
-              }
-            })
-            .catch(console.log);
-        }
-      })
-      .catch(console.log);
+    const getRequest = () => {
+      setReduxState({currentRequest: this.props.match.params.id});
+      api.post('get-request/' + this.props.match.params.id)
+        .then((res) => {
+          this.setState(Object.assign({gotData: true}, res.data));
+          if (res.data.request.type === 'portfolio') {
+            getPortfolio();
+          }
+        })
+        .catch(console.log);
+
+    }
+    const getPortfolio = () => {
+      api.post('portfolio/load', {request: this.state.request.id})
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.exists) {
+            const portfolios = res.data.portfolio.currencies.map(((portfolio, i) => { return {
+              id: i,
+              number: i,
+              icon: '',
+              currency: portfolio.currency,
+              percent: portfolio.percent,
+              amount: portfolio.amount,
+              analysis: portfolio.analysis,
+              comments: portfolio.comments
+            }}));
+            this.setState({portfolios});
+            getStocks();
+          }
+        })
+        .catch(console.log);
+    }
+    const getStocks = () => {
+      api.get('stocks')
+        .then((res) => {
+          const state = Object.assign({}, this.state);
+          for (let portfolio in state.portfolios) {
+            state.portfolios[portfolio].icon = <img src={(res.data.find(stock => stock.name === state.portfolios[portfolio].currency) || {token_img: 'x'}).token_img} className="token-icon" />
+          }
+          console.log(state);
+          this.setState(state);
+        })
+        .catch(console.log);
+    }
+    getRequest();
   }
   acceptInviting() {
     api.post('company/accept-inviting', {
@@ -87,7 +110,6 @@ class RequestPage extends Component {
       img: anotherPersonData.img ? api.imgUrl(anotherPersonData.img) : 'manager/user.svg'
     }
 
-    console.log(anotherPerson.img);
 
     let buttons = '';
 
@@ -96,7 +118,7 @@ class RequestPage extends Component {
         switch(this.state.request.status) {
           case 'pending':
             buttons = 
-            <div>
+            <div className="row">
              <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
                <button className="back right">Decline</button>
              </Link>
@@ -134,7 +156,6 @@ class RequestPage extends Component {
         // }
       break;
     }
-    console.log(this.props.user);
     return (
       <div className="container">
         <div className="box">

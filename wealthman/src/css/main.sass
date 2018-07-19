@@ -121,7 +121,7 @@ li.link
 
 .row
   width: 100%
-  overflow-y: auto
+  overflow-y: visible
   position: relative
   bottom: 0
 
@@ -181,14 +181,15 @@ article.page
     text-align: center
     margin-top: 0
 
-.box input[type="text"], .login-box input[type="text"], .box input[type="number"], .login-box input[type="number"], .box input[type="file"], .login-box input[type="file"], .box input[type="password"], .login-box input[type="password"]
-  width: 100%
-  max-width: 320px
-  height: 40px
-  padding: 8px 12px
-  border: 1px solid #b7b7c0
-  outline: none
-  margin: 6px 0 24px
+.box, .login-box
+  input[type="text"], input[type="text"], input[type="number"], input[type="number"], input[type="file"], input[type="file"], input[type="password"], input[type="password"]
+    width: 100%
+    max-width: 320px
+    height: 40px
+    padding: 8px 12px
+    border: 1px solid #b7b7c0
+    outline: none
+    margin: 6px 0 24px
 
 .box input[type="checkbox"], .login-box input[type="checkbox"]
   margin-right: 6px
@@ -667,9 +668,10 @@ p.grey
     height: 65 px
 
 .half
-  width: 50%
+  width: calc(50% - 30px)
   overflow-y: auto
-  float: left
+  // float: left
+  display: inline-block
 
 .third
   width: 33.33%
@@ -1011,3 +1013,8 @@ img.graph
   margin-left: 15px
   font-size: 14px
   list-style: none
+
+.porfolio-creation-tabs
+  margin: 15px
+  color: #48a8da
+  font-size: 20px

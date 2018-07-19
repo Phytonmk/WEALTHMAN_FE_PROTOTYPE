@@ -5,6 +5,21 @@ import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
 import { api, setPage, setCurrency } from '../helpers';
 
+const filters = [
+  {
+    link: "Robo-advisor",
+    description: "Invest on Autopilot",
+  },
+  {
+    link: "Discretionary",
+    description: "Get The Right Investment Manager For Your Wealth",
+  },
+  {
+    link: "Advisory",
+    description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
+  },
+];
+
 class ManagerPage extends Component {
   constructor(props) {
     super(props);
@@ -32,10 +47,10 @@ class ManagerPage extends Component {
       })
       .catch(console.log);
   }
-  apply() {
-    setReduxState({
-      currentManager: this.props.match.params.id,
-    });
+  apply(filter) {
+    setCookie('service', filter);
+    setCookie('selectedManager', 'manager/' + this.props.match.params.id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + 'manager/' + this.props.match.params.id);
   }
   render() {
     var manager = this.props.managers.find(manager => manager.id == this.props.match.params.id);
@@ -83,10 +98,7 @@ class ManagerPage extends Component {
                 <Link to={"/invite-manager/" + manager.id}>
                   <button className="big-blue-button right">Invite now</button>
                 </Link>
-                : 
-                <Link to={this.props.user === -1 ? "/reg-or-login/" + manager.id : "/kyc/" + manager.id} onClick={() => this.apply()}>
-                  <button className="big-blue-button right">Apply now</button>
-                </Link>
+                : ''
                 }
               </div>
               <div className="social">
@@ -110,36 +122,44 @@ class ManagerPage extends Component {
           </div>
 
           <div className="main-column">
-            <div className="box">
-              <h2>Biography</h2>
-              <h3>KEF HOLDINGS, Business Analyst. DIFC, Dubai, UAE.</h3>
-              <h3>September 2016 – August 2017</h3>
-              <ul>
-                <li>Engaged in financial modeling, transaction due diligence, and investment portfolio performance tracking</li>
-                <li>Conducted detailed due diligence on the country, market, competitive environment and financial issues</li>
-                <li>Conducted regular financial research to stay apprised about global economy and global financial markets</li>
-                <li>Represented the firm's commercial interests while leading sales, tender contract negotiations, and business development</li>
-                <li>Worked on projects covering strategy formulation, new project investments, and growth opportunities for KEF Infra GO GOODSCOUT, Executive Insurance Broker. New York, NY, USA</li>
-              </ul>
-              <h3>April 2015 – November 2015</h3>
-              <ul>
-                <li>Managed all aspects of business development from initial strategic and fiscal planning to final testing and delivery</li>
-                <li>Established strategic business partnerships with over 40 global program senior officials at universities in NYC</li>
-                <li>Obtained NY Life & Health and Property & Casualty insurance producer licenses INFLOT WORLDWIDE, Supervising Port Agent. St. Petersburg, Russia</li>
-              </ul>
-              <h3>May 2009 – July 2009</h3>
-              <ul>
-                <li>Coordinated over 100 clearance procedures for international passenger cruise ships calling to the port of SPb</li>
-                <li>Liaised with port authorities, procured supplies, and arranged customs, immigration and quarantine clearance procedures</li>
-                <li>Organized documentation filing including submission of crew lists, cargo manifest and trading certificates</li>
-                <li>Arranged vessel mooring and handling, as well as husbandry services for various types of vessels E</li>
-              </ul>
-            </div>
-
+            {(manager.services || []).map((service, i) => <div className="box" key={i}>
+              <h2>
+                {filters[service.type].link}
+                <button
+                  onClick={() => this.apply(i)}
+                  className="big-blue-button right"
+                >Invest now</button>
+              </h2>
+              <p>{filters[service.type].description}</p>
+              <div className="row">
+                <b>Exit fee:</b> {service.exit_fee} %
+              </div>              
+              <div className="row">
+                <b>Managment fee:</b> {service.managment_fee} %
+              </div>
+              <div className="row">
+                <b>Perfomance fee:</b> {service.perfomance_fee} %
+              </div>
+              <div className="row">
+                <b>Font fee:</b> {service.font_fee} %
+              </div>
+              <div className="row">
+                <b>Recalculation:</b> {service.recalculation}
+              </div>
+              <div className="row">
+                <b>Minimal investment:</b> {service.min} $
+              </div>
+              <div className="row">
+                <b>Metodology:</b> {service.metodology}
+              </div>
+              <div className="row">
+                <b>Philosofy:</b> {service.philosofy} 
+              </div>              
+            </div>)}
           </div>
           <div className="second-column">
             <div className="box">
-              {manager.company === -1 ?
+              {manager.company === null ?
               <div className="row">
                 Lonely manager
               </div>
