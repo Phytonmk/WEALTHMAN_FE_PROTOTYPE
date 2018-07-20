@@ -66,17 +66,17 @@ class RequestsPage extends Component {
       {
         property: "name",
         title: "Manager name",
-        width: "206px",
+        width: "90px",
+        type: "unsortable"
       },
       {
         property: "date",
         title: "Date",
-        width: "140px",
-        type: "date",
+        width: "100px",
       },
       {
         property: "status",
-        title: <div>
+        title: 'Status'/*<div>
           <span className="left">Status</span>
           <select value={this.state.status} onChange={event => this.setState({status: event.target.value})}>
             {
@@ -87,8 +87,23 @@ class RequestsPage extends Component {
               )
             }
           </select>
-        </div>,
-        width: "200px",
+        </div>*/,
+        width: "100px",
+      },
+      {
+        property: 'value',
+        title: 'value',
+        width: '50px'
+      },
+      {
+        property: 'service',
+        title: 'service',
+        width: '100px'
+      },
+      {
+        property: 'percent_change',
+        title: 'percent_change',
+        width: '50px'
       },
       {
         property: "chat",
@@ -123,9 +138,11 @@ class RequestsPage extends Component {
           user = this.state.managers.find(i => i.id == request.manager) || {};
       }
       let date = new myDate(request.date);
+      const value = Math.ceil(Math.random() * 100);
+      const percent_change = Math.ceil(Math.random() * 20);
       return {
         id: request.id,
-        img: <img src={user.img ? api.imgUrl(user.img) : 'manager/user.svg'} className="user-icon" />,
+        img: <div className="in-sortable-img-container"><img src={user.img ? api.imgUrl(user.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: {
           render: <Link to={(this.props.user == 1 ? "/investor/" : "/manager/") + user.id} className="no-margin no-link-style">
             {user.name || user.company_name || '' + " " + user.surname || ''}
@@ -135,6 +152,15 @@ class RequestsPage extends Component {
         date: {
           render: date.niceTime(),
           value: date.getTime(),
+        },
+        value: {
+          render: value + '$',
+          value: value
+        },
+        service: request.service || 'undefined',
+        percent_change: {
+          render: percent_change + '%',
+          value: percent_change
         },
         status: {
           render: <span className={request.status}>
@@ -177,8 +203,8 @@ class RequestsPage extends Component {
             filter={
               row =>
                 row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
-                &&
-                (this.state.status.toLowerCase() == "all" ? true : (row.status.value.toLowerCase() == this.state.status.toLowerCase()))
+                /*&&
+                (this.state.status.toLowerCase() == "all" ? true : (row.status.value.toLowerCase() == this.state.status.toLowerCase()))*/
             }
             columns={sortableHeader}
             data={sortableRequests}

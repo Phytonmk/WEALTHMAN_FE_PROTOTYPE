@@ -39,7 +39,6 @@ class MoneyPage extends Component {
       status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
       contractAddress: '',
       request: {},
-
     };
   }
   componentWillMount() {
@@ -47,10 +46,11 @@ class MoneyPage extends Component {
       .then((res) => {
         let status = 4;
         let contractAddress = '';
-        if (res.data.request.status === 'pending')
+        if (res.data.request.status === 'proposed')
           status = 0;
-        if (res.data.request.status === 'waiting for transaction') {
+        if (res.data.request.status === 'waiting for deposit') {
           status = 2;
+          console.log(res.data);
           contractAddress = res.data.portfolio.smart_contract;
         }
         this.setState({
@@ -122,7 +122,7 @@ class MoneyPage extends Component {
         console.log(err);
       } else {
         console.log(transactionHash);
-        setPage('portfolios');
+        setPage('requests');
       }
     });
     // web3 = new Web3(web3.currentProvider);
@@ -214,18 +214,29 @@ class MoneyPage extends Component {
                   Check that you have enough money on it to invest
                 </li>
                 <li>
-                  Copy this address of smart-contract <b className="eth-address">{this.state.contractAddress}</b>
-                  <br />
-                  <br />
-                  Or scan QR code
-                  <br />
-                  <br />
-                  <QRCode value={this.state.contractAddress} />
-                  <br />
-                  <br />
+                  Deposit, you can:
                 </li>
                 <li>
-                  Go to your Ethereum wallet and paste the address of smart-contract as destination address
+                  <ul>
+                    <br />
+                    <li>
+                      Copy this address of smart-contract <b className="eth-address">{this.state.contractAddress}</b>
+                      <br />
+                      <br />
+                      Go to your Ethereum wallet and paste the address of smart-contract as destination address
+                    </li>  
+                    <li>  
+                      Scan QR code
+                      <br />
+                      <br />
+                      <QRCode value={this.state.contractAddress} />
+                      <br />
+                      <br />
+                    </li>
+                    <li>
+                      <button className="continue" href="" onClick={() => this.finish()}>Use MetaMask</button>
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   Submit the money transfer
@@ -233,14 +244,18 @@ class MoneyPage extends Component {
               </ol>
             </div>
             <div className="row-padding">
-              As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/portfolios"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
+              As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/requests"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
             </div>
             {/*<div className="row-padding">
               Time left <Timer start={this.state.request.contract_deployment} duration={1000 * 60 * 45} /> 
             </div>*/}
             <div className="row-padding">
-              <button className="back" onClick={() => previousPage()}>Back</button>
-              <button className="continue" onClick={() => this.finish()}>Finish</button>
+              <Link to={"/request/" + this.props.match.params.id}>
+                <button className="back">Back</button>
+              </Link>
+              <Link to={"/requests"}>
+                <button className="continue right">Finish</button>
+              </Link>
             </div>
           </div>
         </div>

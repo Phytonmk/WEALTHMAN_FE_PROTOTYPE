@@ -30,7 +30,8 @@ class KYCPage extends Component {
       manager: '-',
       managerId: '',
       managerName: '-',
-      service: '-'
+      service: '-',
+      revisionsAmount: 0,
     };
     if (this.props.match.params.manager === undefined) {
       let managerString = getCookie('selectedManager');
@@ -47,8 +48,9 @@ class KYCPage extends Component {
     this.setState({manager, service: (filters[getCookie('service')] || {link: '-'}).link});
     api.get(manager + '/' + this.props.match.params.id)
       .then((res) => {
+        console.log(res.data.name, res.data.surname)
         this.setState({
-          managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.suname || ''),
+          managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.surname || ''),
           managerId: res.data.id
         })
       })
@@ -60,6 +62,7 @@ class KYCPage extends Component {
       value: this.state.value,
       comment: this.state.comment,
       service: this.state.service,
+      revisions_amount: this.state.revisionsAmount,
       options: {
         analysis: this.state.analysis,
         comment: this.state.manager_comment
@@ -96,6 +99,15 @@ class KYCPage extends Component {
             <div className="row">
               <input type="number" value={this.state.value} min="0" step="0.1" onChange={(event) => this.setState({value: event.target.value})} /> ETH
             </div>
+
+            {this.state.service === 'Robo-advisor' || this.state.service === '-' ? '' : <div>
+              <div className="row">
+                <p>Allowed revisions amount</p>
+              </div>
+              <div className="row">
+                <input type="number" value={this.state.revisionsAmount} min="0" step="1" onChange={(event) => this.setState({revisionsAmount: event.target.value})} />
+              </div>
+            </div>}
             <div className="row">
               <p>Comment for manager</p>
             </div>

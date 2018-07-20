@@ -4,10 +4,33 @@ import React from 'react';
 import { store, setReduxState } from '../redux';
 
 const apiUrl = 'http://159.89.17.248:8080/api/';
+// const apiUrl = 'http://localhost:8080/api/';
 
 const api = {
-  post: (url, data={}, options) => axios.post(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options),
-  get: (url, data={}, options) => axios.get(apiUrl + url, Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}), options),
+  post: (url, data={}, options) => new Promise((resolve, reject) => {
+    axios.post(
+      apiUrl + url,
+      Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}),
+      options
+     ).then(resolve)
+      .catch(err => {
+        if (err.response === undefined)
+          console.log('Connection error. Maybe server is down');
+        reject(err);
+      })
+  }),
+  get: (url, data={}, options) => new Promise((resolve, reject) => {
+    axios.get(
+      apiUrl + url,
+      Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}),
+      options
+     ).then(resolve)
+      .catch(err => {
+        if (err.response === undefined)
+          console.log('Connection error. Maybe server is down');
+        reject(err);
+      })
+  }),
   upload: (url, file) => new Promise((resolve, reject) => {
     const uploadUrl = apiUrl + 'photo/' + url;
     const formData = new FormData();

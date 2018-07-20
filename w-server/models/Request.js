@@ -7,7 +7,7 @@ const RequestSchema = mongoose.Schema({
   manager: Number,
   company: Number,
   date: {type: Date, default: Date.now},
-  status: {type: String, default: 'waiting'}, // Cancelled Declined, Accepted, Pending, Revision, Recalculated
+  status: {type: String, default: 'pending'},
   value: Number,
   comment: String,
   options: {
@@ -15,7 +15,9 @@ const RequestSchema = mongoose.Schema({
     comment: Boolean
   },
   contract_deployment: Date,
-  service: String
+  service: String,
+  revisions_amount: {type: Number, default: 0},
+  revisions: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

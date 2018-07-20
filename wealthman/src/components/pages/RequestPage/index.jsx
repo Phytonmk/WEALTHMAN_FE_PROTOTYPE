@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 import myDate from '../../myDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../../helpers';
 
+import Title from './Title';
 import Header from './Header';
+import Details from './Details';
 import PorfolioPreview from './PortfolioPreview';
 import ManagersList from './ManagersList';
 
@@ -15,7 +17,8 @@ class RequestPage extends Component {
     this.state = {
       gotData: false,
       portfolios: [],
-      stocks: []
+      stocks: [],
+      draftExists: false
     }
   }
   componentWillMount() {
@@ -25,16 +28,18 @@ class RequestPage extends Component {
         .then((res) => {
           this.setState(Object.assign({gotData: true}, res.data));
           if (res.data.request.type === 'portfolio') {
-            getPortfolio();
+            getPortfolio(res.data.request.status);
           }
         })
         .catch(console.log);
 
     }
-    const getPortfolio = () => {
-      api.post('portfolio/load', {request: this.state.request.id})
+    const getPortfolio = (requestStatus) => {
+      api.post('portfolio/load', {
+        request: this.state.request.id,
+        state: requestStatus === 'revision' ? 'draft' : 'active'
+      })
         .then((res) => {
-          console.log(res.data);
           if (res.data.exists) {
             const portfolios = res.data.portfolio.currencies.map(((portfolio, i) => { return {
               id: i,
@@ -77,7 +82,21 @@ class RequestPage extends Component {
       .catch(console.log);
   }
   acceptPortfolio() {
-    setPage('signagreement/' + this.props.match.params.id);
+    setPage('signagreement/' + this.state.request.id);
+  }
+  acceptReview() {
+    api.post('portfolio/accept-review/' + this.state.request.id)
+      .then(() => {
+        setPage('requests');
+      })
+      .catch(console.log);
+  }
+  declineReview () {
+    api.post('portfolio/decline-review/' + this.state.request.id)
+      .then(() => {
+        setPage('requests');
+      })
+      .catch(console.log);
   }
   render() {
     if (!this.state.gotData)
@@ -106,7 +125,7 @@ class RequestPage extends Component {
     const anotherPerson = {
       id: anotherPersonData.id,
       user: anotherPersonData.user,
-      name: anotherPersonData.company_name || (anotherPersonData.name || '' + ' ' + anotherPersonData.surname || ''),
+      name: anotherPersonData.company_name || ((anotherPersonData.name || '') + ' ' + (anotherPersonData.surname || '')),
       img: anotherPersonData.img ? api.imgUrl(anotherPersonData.img) : 'manager/user.svg'
     }
 
@@ -116,25 +135,66 @@ class RequestPage extends Component {
     switch (this.props.user) {
       case 0:
         switch(this.state.request.status) {
-          case 'pending':
+          case 'proposed':
             buttons = 
             <div className="row">
+             <Link to="/requests">
+               <button className="back">Back</button>
+             </Link>
              <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
                <button className="back right">Decline</button>
              </Link>
              <button className="continue" onClick={() => this.acceptPortfolio()}>Accept</button>
            </div>;
           break;
+          case 'revision':
+            buttons = 
+              <div className="row-padding">
+               <Link to="/requests">
+                 <button className="back">Back</button>
+               </Link>
+               <button className="continue right" onClick={() => this.acceptReview()}>Accept</button>
+               <button className="back right" onClick={() => this.declineReview()}>Decline</button>
+             </div>
+          break;
+          case 'waiting for deposit':
+            buttons = 
+              <div className="row-padding">
+               <Link to="/requests">
+                 <button className="back">Back</button>
+               </Link>
+               <Link to={'/money/' + this.props.match.params.id}>
+                 <button className="continue right">Deposit page</button>
+               </Link>
+             </div>
+          break;
+          case 'active':
+            buttons = 
+              <div className="row-padding">
+               <Link to="/requests">
+                 <button className="back">Back</button>
+               </Link>
+               <Link to={"/portfoliocreation/" + this.props.match.params.id}> 
+                 <button className="back right side-margin">Portfolio Allocation</button>
+                 <button className="back right side-margin">Recommendation history</button>
+                 <button className="continue right side-margin" onClick={() => alert('Unable to add funds in this version')}>Add funds</button>
+                 <button className="continue right side-margin" onClick={() => alert('Unable to withdraw in this version')}>Withdraw</button>
+               </Link>
+             </div>
+          break;
         }
       break;
       case 1:
         switch(this.state.request.status) {
-          case 'waiting':
+          case 'pending':
             if (this.state.request.type === 'portfolio')
               buttons = 
                 <div className="row-padding">
+                 <Link to="/requests">
+                   <button className="back">Back</button>
+                 </Link>
                  <Link to={"/portfoliocreation/" + this.props.match.params.id} onClick={() => this.setPage("portfoliocreation")}>
-                   <button className="continue right">Create portfolio</button>
+                   <button className="continue right">{this.state.portfolios.length === 0 ? 'Create portfolio' : 'Edit portfolio'}</button>
                  </Link>
                  <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
                    <button className="back right">Decline</button>
@@ -143,11 +203,25 @@ class RequestPage extends Component {
             else if (this.state.request.type === 'inviting') 
               buttons = 
                 <div className="row-padding">
+                 <Link to="/requests">
+                   <button className="back">Back</button>
+                 </Link>
                  <button className="continue right" onClick={() => this.acceptInviting()}>Accept</button>
                  <Link to={"/decline/" + this.props.match.params.id} onClick={() => this.setPage("decline/" + this.props.match.params.id)}>
                    <button className="back right">Decline</button>
                  </Link>
                </div>
+          break;
+          case 'active':
+            buttons = 
+              <div className="row-padding">
+               <Link to="/requests">
+                 <button className="back">Back</button>
+               </Link>
+               <Link to={"/portfoliocreation/" + this.props.match.params.id}> 
+                 <button className="continue right">{ /*draftExists*/false ? 'Edit review draft' : 'Review portfolio'}</button>
+               </Link>
+             </div>
           break;
         }
       break;
@@ -155,9 +229,21 @@ class RequestPage extends Component {
         // switch(this.state.request.status) {
         // }
       break;
+      default:
+              buttons = 
+                <div className="row-padding">
+                 <Link to="/requests">
+                   <button className="back">Back</button>
+                 </Link>
+               </div>
+
     }
     return (
       <div className="container">
+        {/* <Title
+          request={this.state.request}
+          user={this.props.user}
+          /> */}
         <div className="box">
           <Header 
             name={anotherPerson.name}
@@ -168,6 +254,7 @@ class RequestPage extends Component {
             buttons={buttons}
           />
         </div>
+        <Details request={this.state.request} />
         {
           this.state.portfolios.length > 0 ?
           <PorfolioPreview
@@ -184,22 +271,6 @@ class RequestPage extends Component {
           /> : ''
         }
       </div>)
-    return (
-      <div className="container">
-        <div className="first-tab">
-          <div className="box">
-          Page cannot be rendered properly, data for developers:
-          <pre>
-            Usertype: {this.props.user}
-            <br />
-            Request status: {this.state.request.status}
-            <br />
-            Request id: {this.state.request.id}
-          </pre>
-          </div>
-        </div>
-      </div>
-      )
   }
 }
 export default connect(a => a)(RequestPage);

@@ -36,7 +36,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({request: request.id});
+    const portfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
     if (portfolio === null) {
       res.status(500);
       res.end('');
@@ -71,13 +71,15 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({request: request.id});
+    const portfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
     if (portfolio === null) {
       res.status(500);
       res.end('');
       return;
     }
-    portfolio.set({smart_contract: req.body.contractAddress});
+    request.set({status: 'waiting for deposit'});
+    await request.save();
+    portfolio.set({smart_contract: req.body.contractAddress, state: 'active'});
     await portfolio.save();
     res.status(200);
     res.end();

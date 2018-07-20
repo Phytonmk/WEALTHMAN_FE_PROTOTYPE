@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const PortfolioScheme = mongoose.Schema({
   id: Number,
+  state: {type: String, default: 'draft'}, // active, draft, old
   request: Number,
   manager: Number,
   investor: Number,

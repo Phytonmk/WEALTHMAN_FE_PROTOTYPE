@@ -48,20 +48,20 @@ const defaultState = {
 
   loggedInvestorLinks: [
     {
-      label: "dashboard",
+      label: "summary",
       link: "dashboard"
     }, {
-      label: "my requests",
-      link: "requests"
-    }, {
       label: "portfolio",
-      link: "portfolios",
+      link: "requests",
     }, {
-      label: "managers",
+      label: "marketplace",
       link: "managers"
     }, {
       label: "account",
       link: "account"
+    }, {
+      label: "reports & documents",
+      link: "managers"
     }, {
       label: "logout",
       link: "logout"
@@ -72,17 +72,17 @@ const defaultState = {
       label: "dashboard",
       link: "dashboard"
     }, {
-      label: "my requests",
+      label: "reporting",
+      link: "dashboard"
+    }, {
+      label: "clients",
       link: "requests"
     }, {
-      label: "portfolios",
-      link: "portfolios"
+      label: "portfolio",
+      link: "requests"
     }, {
-      label: "account",
+      label: "profile",
       link: "account"
-    // }, {
-    //   label: "algorythms",
-    //   link: "algorythms"
     }, {
       label: "logout",
       link: "logout"

@@ -26,7 +26,7 @@ class loginPage extends Component {
         if (res.data.usertype == 0) {
           setReduxState({user: 0});
           if (this.props.currentManager === -1)
-            setPage('portfolios');
+            setPage('requests');
           else
             setPage('kyc');
         }

@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
-import { api, setPage, setCurrency } from '../helpers';
+import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 const filters = [
   {
@@ -26,22 +26,24 @@ class ManagerPage extends Component {
     this.state = {
       profitability: '-',
       clients: '-',
-      portfolios: '-'
+      portfolios: '-',
+      manager: null,
+      managerType: this.props.match.path.includes('company') ? 'company' : 'manager'
     }
   }
   componentWillMount() {
-    api.get('manager/' + this.props.match.params.id)
+    api.get(this.state.managerType + '/' + this.props.match.params.id)
       .then((res) => {
         console.log('res.data');
-        setReduxState({managers: [res.data]});
+        this.setState({manager: res.data});
       })
       .catch(console.log);
-    api.get('manager-statistics/' + this.props.match.params.id)
+    api.get(this.state.managerType + '-statistics/' + this.props.match.params.id)
       .then((res) => {
         console.log(res.data);
         this.setState({
           profitability: res.data.profitability,
-          clients: res.data.clients.length,
+          clients: res.data.clients,
           portfolios: res.data.portfolios,
         });
       })
@@ -49,35 +51,22 @@ class ManagerPage extends Component {
   }
   apply(filter) {
     setCookie('service', filter);
-    setCookie('selectedManager', 'manager/' + this.props.match.params.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + 'manager/' + this.props.match.params.id);
+    setCookie('selectedManager', this.state.managerType + '/' + this.props.match.params.id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + this.state.managerType + '/' + this.props.match.params.id);
   }
   render() {
-    var manager = this.props.managers.find(manager => manager.id == this.props.match.params.id);
-    console.log(this.props.managers);
-    if (manager === undefined)
+    var manager = this.state.manager;
+    if (manager === null)
       return <div></div>
-    var company = this.props.companies.find(company => company.id == manager.company);
-
-    var companies;
-    var algs = this.props.algorythms.filter(alg => {
-      return alg.creator == manager.id;
-    });
-    // }).map(alg =>
-    //   <div className="manager-listing" onClick={() => this.setPage("algorythm", alg.id)}>
-    //     <h4>{alg.name}</h4>
-    //     <p className="grey">rating {alg.rating}/10</p>
-    //   </div>
-    // );
-
 
     return (
       <div>
         <div className="new-long-header" />
         <div className="manager-container">
           <div className="top-row">
-            <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="avatar"/>
-
+            <div className="circle left">
+              <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="avatar"/>
+            </div>
             <div className="main-info">
               <div className="name-row">
                 <h1>{manager.name} {manager.surname}</h1>
@@ -159,41 +148,13 @@ class ManagerPage extends Component {
           </div>
           <div className="second-column">
             <div className="box">
-              {manager.company === null ?
+              {manager.company_name ?
               <div className="row">
-                Lonely manager
+                Company
               </div>
               :
-              <div>
-                <div className="company-info">
-                  <Link to={"/company/0"}>
-                    <div className="company-icon" />
-                  </Link>
-                  <div className="column left">
-                    <h3>Company</h3>
-                    <h1>Moroz&Co</h1>
-                  </div>
-                </div>
-                <div className="webpage">
-                  <div className="row">
-                    <span>Webpage:</span>
-                  </div>
-                  <a href="https://en.wikipedia.org/wiki/Ponzi_scheme" target="_blank">https://en.wikipedia.org/wiki/Ponzi_scheme</a>
-                </div>
-                <div className="networks">
-                  <div className="row">
-                    <span>Social networks:</span>
-                  </div>
-                  <div className="row">
-                    <a href="http://www.facebook.com/ponzi" target="_blank">http://www.facebook.com/ponzi</a>
-                  </div>
-                  <div className="row">
-                    <a href="http://www.twitter.com/ponzi" target="_blank">http://www.twitter.com/ponzi</a>
-                  </div>
-                  <div className="row">
-                    <a href="http://www.linkedin.com/in/ponzi" target="_blank">http://www.linkedin.com/in/ponzi</a>
-                  </div>
-                </div>
+              <div className="row">
+                Lonely manager
               </div>}
             </div>
 

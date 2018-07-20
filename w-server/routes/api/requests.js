@@ -45,6 +45,16 @@ module.exports = (app) => {
       res.end('');
       return;
     }
+    if ((!req.body.type || req.body.type === 'portfolio') && !['Robo-advisor', 'Discretionary', 'Advisory'].includes(req.body.service)) {
+      res.status(406);
+      res.end('');
+      return;
+    }
+    if (req.body.revisions) {
+      res.status(406);
+      res.end('');
+      return;      
+    }
     const requestID = await Request.countDocuments({});
     const request = new Request({
       id: requestID,
@@ -83,7 +93,8 @@ module.exports = (app) => {
     const investor = await Investor.findOne({id: request.investor});
     const manager = await Manager.findOne({id: request.manager});
     const company = await Company.findOne({id: request.company});
-    res.send({request, investor, manager, company});
+    const portfolio = await Portfolio.findOne({request: request.id});
+    res.send({request, investor, manager, company, portfolio});
     res.status(200);
     res.end();
   });
@@ -129,37 +140,37 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
-  app.post('/api/pending-request/:id', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken});
-    if (token === null) {
-      res.status(403);
-      res.end('');
-      return;
-    }
-    console.log('-')
-    const  manager = await Manager.findOne({user: token.user});
-    if (manager === null) {
-      res.status(403);
-      res.end('');
-    }
-    const request = await Request.findOne({manager: manager.id, id: req.params.id});
-    if (request === null) {
-      res.status(404);
-      res.end('');
-      return;
-    }
-    console.log('-')
-    const portfolio = await Portfolio.findOne({manager: manager.id, request: req.params.id});
-    if (portfolio === null) {
-      res.status(403);
-      res.end('');
-      return;
-    }
-    request.set({status: 'pending'});
-    await request.save();
-    res.status(200);
-    res.end();
-  });
+  // app.post('/api/pending-request/:id', async (req, res, next) => {
+  //   const token = await Token.findOne({token: req.body.accessToken});
+  //   if (token === null) {
+  //     res.status(403);
+  //     res.end('');
+  //     return;
+  //   }
+  //   console.log('-')
+  //   const  manager = await Manager.findOne({user: token.user});
+  //   if (manager === null) {
+  //     res.status(403);
+  //     res.end('');
+  //   }
+  //   const request = await Request.findOne({manager: manager.id, id: req.params.id});
+  //   if (request === null) {
+  //     res.status(404);
+  //     res.end('');
+  //     return;
+  //   }
+  //   console.log('-')
+  //   const portfolio = await Portfolio.findOne({manager: manager.id, request: req.params.id});
+  //   if (portfolio === null) {
+  //     res.status(403);
+  //     res.end('');
+  //     return;
+  //   }
+  //   request.set({status: 'pending'});
+  //   await request.save();
+  //   res.status(200);
+  //   res.end();
+  // });
   app.post('/api/requests/relay-to-manager', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {

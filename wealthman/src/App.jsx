@@ -163,8 +163,8 @@ class App extends Component {
           <Route path="/help center" render={() => this.renderHelpCenterPage()}/>
           <Route path="/blog" render={() => this.renderBlogPage()}/>
 
+          <Route path="/company/:id" component={ManagerPage}/>
           <Route path="/manager/:id" component={ManagerPage}/>
-          <Route path="/company/:id" component={CompanyPage}/>
           <Route path="/company" component={CompanyManagmentPage}/>
           <Route path="/invite-manager/:manager" component={InviteManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>

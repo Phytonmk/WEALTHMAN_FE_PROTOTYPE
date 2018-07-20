@@ -66,17 +66,20 @@ class ManagersPage extends Component {
       default: filterIndex = 0
     }
     this.setState({filter: filterIndex, gotData: false});
-    console.log(`filterIndex: ${filterIndex}`);
+    console.log(`loading...`);
     // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
     api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
       .then((res) => {
+        console.log(`loaded`);
         this.setState(res.data);
         this.setState({gotData: true});
+        setTimeout(() => this.forceUpdate(), 0);
       })
       .catch(console.log);
   }
-  componentWillMount() {
-    this.load();
+  componentDidMount() {
+    if (!this.state.gotData)
+      this.load();
   }
   render() {
     let sortableHeader = [
@@ -101,7 +104,7 @@ class ManagersPage extends Component {
       {
         property: "min",
         title: "min. investment",
-        width: "64px",
+        width: "103px",
         // width: "104px",
         type: "number",
       },
@@ -162,10 +165,10 @@ class ManagersPage extends Component {
         })
     }
     let sortableManagers = this.state.offers.map((manager, i) => {
-      const name = manager.name || manager.company_name || '' + " " + manager.surname || '';
+      const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '');
       return {
         id: manager.id,
-        img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
+        img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id} className="no-margin no-link-style">
             {name}
@@ -177,7 +180,10 @@ class ManagersPage extends Component {
           value: manager.successRate
         },
         //rename this variable everywhere !!!
-        min: '-',
+        min: manager.services.length === 0 ? <div>-</div> :
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {manager.services[i].min || '?'} $
+        </li>)}</ul>,
         aum: {
           render: manager.aum + "$",
           value: manager.aum
@@ -190,7 +196,7 @@ class ManagersPage extends Component {
         clients: manager.clients,
         perfomance: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
-          {manager.services[i].perfomance_fee}%
+          {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
         aum6: <img src="graph.png" className="graph" />,
         apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
@@ -224,7 +230,7 @@ class ManagersPage extends Component {
 
     return (
       <div>
-        <article className="long-text-input">
+        <article className="long-text-input search-field">
           <div className="container">
             <button className="search" />
             <button className="cancel" onClick={() => this.setState({searchName: ""})} />

@@ -82,4 +82,22 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  app.get('/api/company-statisitcs/:id', async (req, res, next) => {
+    const company = await Company.findOne({id: req.params.id});
+    if (company === null) {
+      res.status(404);
+      res.end();
+      return;
+    }
+    const profitability = Math.ceil(Math.random() * 100);
+    const clients = Math.ceil(Math.random() * 100);
+    const portfolios = Math.ceil(Math.random() * 100);
+    res.status(200);
+    res.send({
+      profitability,
+      clients,
+      portfolios
+    });
+    res.end();
+  });
 }

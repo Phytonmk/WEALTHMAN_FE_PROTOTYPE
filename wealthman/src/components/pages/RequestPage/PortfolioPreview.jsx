@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../../Sortable2.jsx';
 import myDate from '../../myDate.jsx';
 
+
 let sortableHeader = [
   {
     property: "number",
@@ -51,11 +52,39 @@ class PortfolioPreview extends Component {
     super(props);
   }
   render() {
+    const portfolios = [];
+    let i = 0;
+    for (let portfolio of this.props.portfolios) {
+      for (let property in portfolio) {
+        if (!portfolio[property]) {
+          switch (property) {
+            case 'analysis':
+              portfolio[property] = 'no analysis';
+            break;
+            case 'comments':
+              portfolio[property] = 'no comment';
+            break;
+            case 'amount':
+              portfolio[property] = '0';
+            break;
+            case 'percent':
+              portfolio[property] = '0';
+            break;
+            default:
+              portfolio[property] = '';
+          }
+        }
+        if (property === 'percent' && portfolio[property].toString().indexOf('%') === -1)
+          portfolio[property] += ' %';
+      }
+      portfolio.id = ++i;
+      portfolios.push(portfolio);
+    }
     return (
       <div className="box">
         <Sortable2
           columns={sortableHeader}
-          data={this.props.portfolios}
+          data={portfolios}
           navigation={true}
           maxShown={5}
         />
