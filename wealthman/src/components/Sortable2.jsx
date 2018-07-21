@@ -160,6 +160,7 @@ class Sortable2 extends Component {
               <div
                 className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
                 style={{width: property.width}}
+                key={property.name}
               >
                 {(cell.hasOwnProperty("render") && cell.hasOwnProperty("value") ? cell.render : (cell))}
               </div>
@@ -179,6 +180,7 @@ class Sortable2 extends Component {
               className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
               style={{"width": this.state.rowProperties[index].width}}
               title={column.tooltip ? column.tooltip : column.title}
+              key={column.property}
             >
               {
                 typeof column.title == "string" ?

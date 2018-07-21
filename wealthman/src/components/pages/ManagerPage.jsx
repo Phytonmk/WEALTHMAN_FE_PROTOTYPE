@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
+import Social from './../Social';
 
 const filters = [
   {
@@ -83,29 +84,16 @@ class ManagerPage extends Component {
                 <Link to={"/chat"} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
-                {this.props.user === 3 ? 
+                {this.props.user === 3 ?
                 <Link to={"/invite-manager/" + manager.id}>
                   <button className="big-blue-button right">Invite now</button>
                 </Link>
                 : ''
                 }
               </div>
-              <div className="social">
+              <div className="social-links">
                 <span>Social networks</span>
-                <div className="row">
-                  <a href="https://t.me/wealthman_global" target="_blank">
-                    <img src="img/footer/telegram.png" className="social-icon" />
-                  </a>
-                  <a href="https://www.facebook.com/WealthMan.io/" target="_blank">
-                    <img src="img/footer/facebook.png" className="social-icon" />
-                  </a>
-                  <a href="https://www.instagram.com/wealthman.io/" target="_blank">
-                    <img src="img/footer/instagram.png" className="social-icon" />
-                  </a>
-                  <a href="https://bitcointalk.org/index.php?topic=2006205" target="_blank">
-                    <img src="img/footer/linkedin.png" className="social-icon" />
-                  </a>
-                </div>
+                <Social links={manager.social} />
               </div>
             </div>
           </div>
@@ -122,7 +110,7 @@ class ManagerPage extends Component {
               <p>{filters[service.type].description}</p>
               <div className="row">
                 <b>Exit fee:</b> {service.exit_fee} %
-              </div>              
+              </div>
               <div className="row">
                 <b>Managment fee:</b> {service.managment_fee} %
               </div>
@@ -142,8 +130,8 @@ class ManagerPage extends Component {
                 <b>Metodology:</b> {service.metodology}
               </div>
               <div className="row">
-                <b>Philosofy:</b> {service.philosofy} 
-              </div>              
+                <b>Philosofy:</b> {service.philosofy}
+              </div>
             </div>)}
           </div>
           <div className="second-column">

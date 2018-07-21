@@ -3,6 +3,8 @@ import { store, setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
+import Select from '../Select.jsx';
+import Search from '../Search.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 const filters = [
@@ -26,7 +28,7 @@ class ManagersPage extends Component {
     this.state = {
       searchName: "",
       gotData: false,
-      filter: 'Robo-advisor',
+      filter: "Robo-advisor",
       offers: [],
       totalInvestors: '-',
       totalManagers: '-',
@@ -65,7 +67,8 @@ class ManagersPage extends Component {
       case 'advisory': filterIndex = 2; break;
       default: filterIndex = 0
     }
-    this.setState({filter: filterIndex, gotData: false});
+    // this.setState({filter: filterIndex, gotData: false});
+    this.setState({gotData: false});
     console.log(`loading...`);
     // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
     api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
@@ -188,17 +191,20 @@ class ManagersPage extends Component {
           render: manager.aum + "$",
           value: manager.aum
         },
-        services: manager.services.length === 0 ? <div>-</div> :
-        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
-          {filters[service.type].link}
-        </li>)}</ul>,
+        services: {
+          render: manager.services.length === 0 ? <div>-</div> :
+          <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+            {filters[service.type].link}
+          </li>)}</ul>,
+          value: manager.services.map(service => filters[service.type].link).reduce((a, b) => a + " " + b)
+        },
         //rename this variable everywhere !!!
         clients: manager.clients,
         perfomance: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
-        aum6: <img src="graph.png" className="graph" />,
+        aum6: <img src="/graph.png" className="graph" />,
         apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
             <button className="big-blue-button">
               APPLY NOW
@@ -230,11 +236,9 @@ class ManagersPage extends Component {
 
     return (
       <div>
-        <article className="long-text-input search-field">
+        <article className="long-text-input">
           <div className="container">
-            <button className="search" />
-            <button className="cancel" onClick={() => this.setState({searchName: ""})} />
-            <input type="text" value={this.state.searchName} onChange={(event) => this.setState({ searchName: event.target.value })} placeholder="Search..." />
+            <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
           </div>
         </article>
         <div className="container">
@@ -242,7 +246,13 @@ class ManagersPage extends Component {
               <div className="advisors">
                 <div className="row">
                   <span>Sort by</span>
-                  {filtersMapped}
+                  {/* {filtersMapped} */}
+                  <Select
+                    value={this.state.filter}
+                    options={filters.map(filter => filter.link)}
+                    setValue={(value) => this.setState({filter: value})}
+                    width="135px"
+                  />
                 </div>
                 <br />
                 <div className="row margin">
@@ -271,7 +281,11 @@ class ManagersPage extends Component {
         <div className="container">
           {this.state.gotData ?
             <Sortable2
-              filter={row => row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())}
+              filter={row =>
+                row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
+                &&
+                row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
+              }
               columns={sortableHeader}
               data={sortableManagers}
               navigation={true}

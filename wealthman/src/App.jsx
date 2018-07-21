@@ -6,6 +6,7 @@ import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
 import Sortable from './components/Sortable.jsx';
+import Social from './components/Social';
 import myDate from './components/myDate.jsx';
 
 import logoWhite from './img/logo.svg';
@@ -200,6 +201,7 @@ class App extends Component {
           <Route path="/manager-ua" render={() => this.renderManagerUserAgreementPage()}/>
 
           <Route path="/email" render={() => this.renderEmailPage()}/>
+          <Route path="/metamask" render={() => this.renderMetamaskPage()}/>
           <Route path="/logout" component={ManagersPage}/>
 
           <Route path="/portfoliocreation/:id" component={PortfolioCreationPage}/>
@@ -798,7 +800,7 @@ class App extends Component {
     );
   }
 
- 
+
   renderChatPage() {
     return (
       <div>
@@ -835,6 +837,28 @@ class App extends Component {
       </div>
     );
   }
+  renderMetamaskPage() {
+    return (
+      <div>
+        <div className="container">
+          <div className="box">
+            Before you continue, please download <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Metamask</a> to your browser and log in to the extention through the private key.
+            <div className="row">
+              <div className="metamask" />
+            </div>
+            <div className="row-padding">
+              <Link to={"/register"} onClick={() => this.setPage("register")}>
+                <button className="back">Back</button>
+              </Link>
+              <Link to="/agreement" onClick={() => this.setPage("email")}>
+                <button className="continue">I have downloaded</button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   renderEmailPage() {
     return (
       <div>
@@ -843,7 +867,7 @@ class App extends Component {
             <h3>Confirm Email</h3>
             <p>(Front-end can't send emails. So here is the next step without actually confirming email)</p>
             <div className="row-padding">
-              <Link to={"/register"} onClick={() => this.setPage("register")}>
+              <Link to={"/register"} onClick={() => this.setPage("metamask")}>
                 <button className="back">Back</button>
               </Link>
               <Link to="/agreement" onClick={() => this.setPage("agreement")}>
@@ -1012,19 +1036,8 @@ class App extends Component {
               <span>
                 Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
               </span>
-              <div className="social">
-                <a href="https://t.me/wealthman_global" target="_blank">
-                  <img src="img/footer/telegram.png" className="social-icon" />
-                </a>
-                <a href="https://www.facebook.com/WealthMan.io/" target="_blank">
-                  <img src="img/footer/facebook.png" className="social-icon" />
-                </a>
-                <a href="https://www.instagram.com/wealthman.io/" target="_blank">
-                  <img src="img/footer/instagram.png" className="social-icon" />
-                </a>
-                <a href="https://bitcointalk.org/index.php?topic=2006205" target="_blank">
-                  <img src="img/footer/linkedin.png" className="social-icon" />
-                </a>
+              <div className="right">
+                <Social links={["https://t.me/wealthman_global", "https://www.facebook.com/WealthMan.io/", "https://www.instagram.com/wealthman.io/", "https://bitcointalk.org/index.php?topic=2006205"]} />
               </div>
               <Link to={"https://wealthman.io/contact/"} className="right">
                 <button className="big-blue-button">CONTACT US</button>

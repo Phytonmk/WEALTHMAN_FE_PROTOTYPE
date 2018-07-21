@@ -1,5 +1,6 @@
 .sortable
   width: 100%
+  overflow-y: auto
   margin-bottom: 37px
   .header
     box-sizing: border-box
@@ -62,9 +63,9 @@
       &.asc, &.desc
         text-decoration: underline
       &.asc::after
-        background: url(../img/buttons/arrow_up.png)
+        background: url("../img/buttons/arrow_up.png")
       &.desc::after
-        background: url(../img/buttons/arrow_down.png)
+        background: url("../img/buttons/arrow_down.png")
       &.asc::after, &.desc::after
         width: 9px
         height: 6px
@@ -73,17 +74,13 @@
         top: 5px
         background-size: contain
         background-repeat: no-repeat
-        opacity: .9
+        opacity: .6
         content: ""
+      &.margin
+        margin-right: 5px
     &.last
       margin-right: 0 !important
       padding-right: 0 !important
-  .header select
-    width: 50%
-    //height: 25px
-    margin: 0 0 0 5px
-    position: relative
-    top: -7px
   ul.listings
     list-style-type: none
     width: 100%

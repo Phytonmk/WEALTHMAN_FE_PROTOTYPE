@@ -7,6 +7,7 @@
     "chartist": "^0.11.0",
     "helpers": "^0.0.6",
     "highcharts": "^6.1.1",
+    "jquery": "^3.3.1",
     "moment": "^2.22.2",
     "parcel-bundler": "^1.9.4",
     "qrcode": "^1.2.0",

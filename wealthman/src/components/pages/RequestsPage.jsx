@@ -3,6 +3,8 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
+import Select from '../Select.jsx';
+import Search from '../Search.jsx';
 import myDate from '../myDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
@@ -67,7 +69,6 @@ class RequestsPage extends Component {
         property: "name",
         title: "Manager name",
         width: "90px",
-        type: "unsortable"
       },
       {
         property: "date",
@@ -76,19 +77,17 @@ class RequestsPage extends Component {
       },
       {
         property: "status",
-        title: 'Status'/*<div>
-          <span className="left">Status</span>
-          <select value={this.state.status} onChange={event => this.setState({status: event.target.value})}>
-            {
-              ["All", "Declined", "Accepted", "Cancelled", "Pending"].map(status =>
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              )
-            }
-          </select>
-        </div>*/,
-        width: "100px",
+        title: <div>
+          <span className="left margin">Status: </span>
+          <Select
+            value={this.state.status}
+            options={["All", "Declined", "Accepted", "Cancelled", "Pending"]}
+            setValue={(value) => this.setState({status: value})}
+            width="135px"
+          />
+        </div>,
+        width: "150px",
+        type: "unsortable"
       },
       {
         property: 'value',
@@ -100,11 +99,11 @@ class RequestsPage extends Component {
         title: 'service',
         width: '100px'
       },
-      {
-        property: 'percent_change',
-        title: 'percent_change',
-        width: '50px'
-      },
+      // {
+      //   property: 'percent_change',
+      //   title: 'percent_change',
+      //   width: '50px'
+      // },
       {
         property: "chat",
         title: "",
@@ -171,7 +170,7 @@ class RequestsPage extends Component {
         chat: <button className="big-blue-button chat">
           CHAT
         </button>,
-        details: 
+        details:
         <Link to={"request/" + request.id}>
           <button className="big-blue-button chat">
             DETAILS
@@ -188,23 +187,16 @@ class RequestsPage extends Component {
               <h2>My requests</h2>
               <span>All requests</span>
             </div>
-            <div className="searcharea search-field">
-              <button className="search" />
-              {
-                this.state.searchName.length != "" ?
-                  <button className="cancel" onClick={() => this.setState({searchName: ""})} />
-                  :
-                  ""
-              }
-              <input type="text" value={this.state.searchName} onChange={(event) => this.setState({ searchName: event.target.value })} placeholder="Search..." />
+            <div className="searcharea">
+              <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
             </div>
           </div>
           <Sortable2
             filter={
               row =>
                 row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
-                /*&&
-                (this.state.status.toLowerCase() == "all" ? true : (row.status.value.toLowerCase() == this.state.status.toLowerCase()))*/
+                &&
+                (this.state.status.toLowerCase() == "all" ? true : (row.status.value.toLowerCase() == this.state.status.toLowerCase()))
             }
             columns={sortableHeader}
             data={sortableRequests}

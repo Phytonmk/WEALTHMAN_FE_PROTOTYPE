@@ -22,7 +22,7 @@ class RegisterPage extends Component {
         .then((result) => {
           console.log(result.data);
           setCookie('accessToken', result.data);
-          setPage("email")})
+          setPage("metamask")})
         .catch(console.log);
     else
       alert('You should fill all inputs to continue registration');

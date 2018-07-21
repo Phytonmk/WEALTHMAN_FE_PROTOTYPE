@@ -58,41 +58,6 @@ article.long-text-input
   background: white
   position: relative
 
-.search-field
-  input[type="text"]
-    position: absolute
-    left: 48px
-    top: 0
-    width: calc(100% - 350px)
-    height: 100%
-    // padding: 27px 0
-    font-size: 15px
-    color: #071e40
-    line-height: 1.2
-    outline: none
-    border: none
-    background: rgba(0,0,0,0)
-  button
-    &.search
-      background: url("../img/zoom.svg")
-      width: 19px
-      height: 18px
-      left: 0
-      // top: 24px
-      top: calc((100% - 19px) / 2)
-    &.cancel
-      background: url("../img/cross.svg")
-      width: 15px
-      height: 16px
-      right: 0
-      // top: 25px
-      top: calc((100% - 16px) / 2)
-    &.search, &.cancel
-      position: absolute
-      background-size: contain
-      background-repeat: no-repeat
-      content: ""
-
 .card-1, .card-2, .card-3
   width: 229px
   height: 80px
@@ -183,6 +148,10 @@ article.long-text-input
   .top-row
     width: 100%
     height: 237px
+    .social-links
+      display: table
+      float: left
+      margin-top: 44px
   img.avatar
     // width: 96px
     // height: 96px
@@ -228,6 +197,7 @@ article.long-text-input
 
 .new-long-header
   width: 100%
+  min-width:  1280px
   height: 347px
   background: #071e40
   position: absolute
@@ -242,35 +212,9 @@ article.long-text-input
     position: absolute
     content: ""
     top: 0
-
-.footer .social
-  width: 138px
-  float: right
-  margin-top: 7px
-  .social-icon
-    filter: invert(70%)
-    // Иначе на белом фоне не видно ¯\_(ツ)_/¯
-    margin-left: 10px
-    float: left
+    left: 0
 
 .manager-container
-  .social
-    display: table
-    float: right
-    margin-top: 44px
-    margin-right: 125px
-    .social-icon
-      margin-left: 14px
-      float: left
-    span
-      margin-left: 14px
-    .row
-      margin-top: 13px
-  .box .social
-    margin: 0
-    float: left
-    .social-icon
-      margin: 0 14px 0 0
   button.big-transparent-button
     margin-left: 20px
   .company-info
@@ -430,5 +374,5 @@ input
   border: 1px solid grey
   img
     border-radius: 0 !important
-    width: 100% !important;
-    height: auto !important;
+    width: 100% !important
+    height: auto !important

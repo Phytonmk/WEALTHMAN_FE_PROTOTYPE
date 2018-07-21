@@ -1,0 +1,42 @@
+.search-field
+  position: relative
+  width: 100%
+  height: 28px
+  input[type="text"]
+    position: absolute
+    left: 48px
+    top: 0
+    width: calc(100% - 350px)
+    height: 100%
+    // padding: 27px 0
+    font-size: 15px
+    color: #071e40
+    line-height: 1.2
+    outline: none
+    border: none
+    background: rgba(0,0,0,0)
+  button
+    &.search
+      background: url("../img/zoom.svg")
+      width: 19px
+      height: 18px
+      left: 0
+      // top: 24px
+      top: calc((100% - 19px) / 2)
+    &.cancel
+      background: url("../img/cross.svg")
+      width: 15px
+      height: 16px
+      right: 0
+      // top: 25px
+      top: calc((100% - 16px) / 2)
+    &.search, &.cancel
+      position: absolute
+      background-size: contain
+      background-repeat: no-repeat
+      content: ""
+
+.searcharea .search-field input[type="text"]
+  left: 30px
+article.long-text-input .search-field
+  height: 65px
