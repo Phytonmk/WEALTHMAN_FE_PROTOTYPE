@@ -115,16 +115,28 @@ class MoneyPage extends Component {
       }).catch(console.log);
   }
   finish() {
-    var contract = web3.eth.contract(abi);
-    var contractInstance = contract.at(this.state.contractAddress);
-    var a = contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(), 'ether'), gas: 50000}, (err, transactionHash) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(transactionHash);
-        setPage('requests');
-      }
+    web3.eth.sendTransaction({
+      from: this.props.userData.wallet_address,
+      to: this.state.contractAddress,
+      value: web3.toWei(this.state.request.value.toString(), 'ether'),
+      gas: 7600000,
+      gasPrice: 1
+    }, console.log)
+    .then(function(receipt){
+      console.log(receipt);
     });
+    
+    // var contract = web3.eth.contract(abi);
+    // var contractInstance = contract.at(this.state.contractAddress);
+    // var a = contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(), 'ether'), gas: 50000}, (err, transactionHash) => {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     console.log(transactionHash);
+    //     setPage('requests');
+    //   }
+    // });
+
     // web3 = new Web3(web3.currentProvider);
     // var contract = web3.eth.contract(abi);
     // var contractInstance = contract.at('0x38C937dF579406C9F2725d846e50b91880575A65');

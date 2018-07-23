@@ -23,6 +23,16 @@ class AccountPage extends Component {
       user: ''
     }
   }
+  componentWillMount() {
+    if (this.props.userData === undefined || this.props.userData.wallet_address === undefined) {
+      api.post('getme')
+        .then((res) => {
+          setReduxState({userData: res.data.userData});
+          // setTimeout(() => this.forceUpdate(), 0);
+        })
+        .catch(console.log)
+    }
+  }
   changePassword() {
     if (this.state.old_password !== '' && this.state.new_password1 !== '' &&
       this.state.new_password1 === this.state.new_password2) {

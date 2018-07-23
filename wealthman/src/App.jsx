@@ -67,12 +67,16 @@ class App extends Component {
   logout() {
     api.post('logout')
       .then(() => {
-        auth(() => {
-          window.location.reload(false);
-            // this.state = store.getState();
-            // this.forceUpdate();
+        setReduxState({
+          user: -1,
+          userData: {}
+        })
+        // auth(() => {
+        //   window.location.reload(false);
+        //     // this.state = store.getState();
+        //     // this.forceUpdate();
 
-        });
+        // });
       });
   }
 

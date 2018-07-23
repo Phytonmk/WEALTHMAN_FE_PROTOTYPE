@@ -45,7 +45,7 @@ class KYCPage extends Component {
       manager = 'manager';
     else if (this.props.match.params.manager === 'company')
       manager = 'company';
-    this.setState({manager, service: (filters[getCookie('service')] || {link: '-'}).link});
+    this.setState({manager, service: (getCookie('service') || '')});
     api.get(manager + '/' + this.props.match.params.id)
       .then((res) => {
         console.log(res.data.name, res.data.surname)
@@ -122,7 +122,7 @@ class KYCPage extends Component {
             </div>
             <br />
             <div className="row-padding">
-              <Link to={"/manager form"}>
+              <Link to={"/managers"}>
                 <button className="back" onClick={() => previousPage()}>Back</button>
               </Link>
               <button className="continue" onClick={() => this.send()}>Send to {this.state.manager}</button>

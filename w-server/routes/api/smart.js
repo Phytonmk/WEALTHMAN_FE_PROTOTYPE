@@ -9,6 +9,8 @@ const Accounts = require('web3-eth-accounts');
 
 const ABI = require('../../contract_abi');
 
+const addPortfolio = require('../../trading/wealthman_portfolio_add');
+
 module.exports = (app) => {
   app.post('/api/get-smart-contract-data', async (req, res) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -81,6 +83,7 @@ module.exports = (app) => {
     await request.save();
     portfolio.set({smart_contract: req.body.contractAddress, state: 'active'});
     await portfolio.save();
+    await addPortfolio(req.body.contractAddress);
     res.status(200);
     res.end();
   })

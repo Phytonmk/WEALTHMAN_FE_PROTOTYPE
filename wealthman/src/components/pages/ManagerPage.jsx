@@ -51,7 +51,7 @@ class ManagerPage extends Component {
       .catch(console.log);
   }
   apply(filter) {
-    setCookie('service', filter);
+    setCookie('service', filters[filter].link);
     setCookie('selectedManager', this.state.managerType + '/' + this.props.match.params.id);
     setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + this.state.managerType + '/' + this.props.match.params.id);
   }

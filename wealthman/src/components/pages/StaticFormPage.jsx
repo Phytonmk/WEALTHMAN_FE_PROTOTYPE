@@ -9,73 +9,66 @@ import { api, getCookie, setPage, previousPage } from '../helpers';
 import auth from '../auth.js';
 
 import ProgressBar2 from '../ProgressBar2';
+import QuestionsForm from '../QuestionsForm';
 
 const questions = [
   {
-    question: "What is your primary reason for investing?",
-    subtitle: "Choose one goal and then add other goals from your personal account. ",
-    answers: ["Long-term investment growth", "Emergency fund", "Retirement", "Large purchase (like education,  house,  business, etc) ", "Other"]
+    question: 'What is your primary reason for investing?',
+    subtitle: 'Choose one goal and then add other goals from your personal account. ',
+    answers: ['Long-term investment growth', 'Emergency fund', 'Retirement', 'Large purchase (like education,  house,  business, etc)', 'Other'],
+    step: 1,
+    total: 4,
+    condition: () => true
   },
   {
-    question: "How old are you? ",
-    subtitle: "Your answer will allow us to understand your investment timelines and build right plan.",
-    slider: {
-      from: 18,
-      to: 100,
-      step:1
-    }
+    question: 'How long do you plan to hold your investments in the markets?',
+    inputs: ['Years'],
+    condition: (answers) => answers[0] !== undefined && ['Long-term investment growth', 'Emergency fund', 'Other'].includes(answers[0].answer),
+    step: 2,
+    total: 4
   },
   {
-    question: "What age and length of retirement you plan?",
-    inputs: ["Retirement age",  "Retirement length"]
+    question: 'What is the total amount you want to invest?',
+    inputs: ['$'],
+    condition: (answers) => answers[0] !== undefined && ['Long-term investment growth', 'Emergency fund', 'Other'].includes(answers[0].answer),
+    step: 3,
+    total: 4
   },
   {
-    question: "How long do you plan to hold your investments in the markets?",
-    answers: ["Short (Less than 3 years)", "Medium (3 to 8 years)", "Long (8 years or more)"]
+    question: 'What age and length of retirement you want to save?',
+    inputs: ['Age', 'Length'],
+    condition: (answers) => answers[0] !== undefined && answers[0].answer === 'Retirement',
+    step: 2,
+    total: 4
   },
   {
-    question: "What currency you measure your wealth?",
-    answers: ["BTC","ETH","EUR","USD","GBP","CHF","RUB"]
+    question: 'What is the total amount you want to save?',
+    inputs: ['$'],
+    condition: (answers) => answers[0] !== undefined && answers[0].answer === 'Retirement',
+    step: 3,
+    total: 4
   },
   {
-    question: "What's your annual income?",
-    answers: ["Under $25k","$25k - $50k","$51k - $100k","$101k - $300k","$301k - $1.2m","Over $1.2m"]
+    question: 'What are the current value and expected time of your purchase?',
+    inputs: ['Value', 'Expected time'],
+    condition: (answers) => answers[0] !== undefined && answers[0].answer === 'Large purchase (like education,  house,  business, etc)',
+    step: 2,
+    total: 3
   },
   {
-    question: "What is the size of your liquid assets?",
-    subtitle:"Add up your checking, savings, investment portfolios, even the cash under your mattress - but exclude assets like your home or car. An estimate will work.",
-    slider: {
-      from: 0,
-      to: 100,
-      step: 5
-    }
+    question: 'What currency of your purchase?',
+    answers: ['BTC','ETH','EUR','USD','GBP','CHF','RUB'],
+    condition: (answers) => answers[0] !== undefined && answers[0].answer === 'Large purchase (like education,  house,  business, etc)',
+    step: 3,
+    total: 3
   },
   {
-    question: "What is the value of other property you own?",
-    subtitle: "Add up the value of your home, car, or other valuables you own. An estimate will work.",
-    slider: {
-      from: 0,
-      to: 100,
-      step: 5
-    }
+    question: 'What currency you measure your wealth?',
+    answers: ['BTC','ETH','EUR','USD','GBP','CHF','RUB'],
+    condition: (answers) => answers[0] !== undefined && answers[0].answer !== 'Large purchase (like education,  house,  business, etc)',
+    step: 4,
+    total: 4
   },
-  {
-    question: "What about your debts?",
-    subtitle: "Add up any mortgages, loans, leases or credit card debt. An estimate will work.",
-    slider: {
-      from: 0,
-      to: 100,
-      step: 5
-    }
-  },
-  {
-    question: "How long have you been an investor in the stock market?",
-    answers: ["I've never invested in the stock market before","Less than 5 years","Between 5 and 10 years","More than 10 years"]
-  },
-  {
-    question: "What would you do if your investment portfolio lost 10% of its value in a month during a global market decline?",
-    answers: ["Buy more","Hold investments","Sell investments"]
-  }
 ]
 
 
@@ -96,106 +89,25 @@ class StaticFormPage extends Component {
       })
       .catch(console.log);
   }
-  radioAnswer(event) {
-    const answers = [...this.state.answers];
-    answers[this.state.question] = {
-      question: questions[this.state.question].question,
-      answer: event.target.id,
-    };
-    this.setState({answers});
-  }
-  sliderAnswer(event) {
-    console.log(event.target.value);
-    const answers = [...this.state.answers];
-    answers[this.state.question] = {
-      question: questions[this.state.question].question,
-      answer: event.target.value,
-    };
-    this.setState({answers});
-  }
-  textAnswer(event, inputIndex) {
-    const answers = [...this.state.answers];
-    if (typeof answers[this.state.question] === 'undefined')
-      answers[this.state.question] = [];
-    answers[this.state.question][inputIndex] = {
-      question: questions[this.state.question].question,
-      answer: event.target.value,
-    };
-    this.setState({answers});
-  }
   render() {
     // console.log(this.state.answers);
-    let question;
-    if (questions[this.state.question].answers)
-      question = 
-        <div>
-          {questions[this.state.question].answers.map((answer, i) =>
-            <div key={i} id={i} className="answer">
-              <input
-                 type="radio"
-                 id={answer}
-                 checked={this.state.answers[this.state.question] !== undefined && this.state.answers[this.state.question].answer === answer}
-                 onChange={(event) => this.radioAnswer(event)} />
-              <label htmlFor={answer}>{answer}</label>
-            </div>)}
-        </div>
-    else if (questions[this.state.question].slider)
-      question = 
-        <div className="answer">
-          <input
-           type="range"
-           from={questions[this.state.question].slider.from}
-           step={questions[this.state.question].slider.step}
-           to={questions[this.state.question].slider.to}
-           value={this.state.answers[this.state.question] !== undefined ? this.state.answers[this.state.question].answer : questions[this.state.question].slider.to}
-           onChange={(event) => this.sliderAnswer(event)}
-           />
-          <label>{this.state.answers[this.state.question] !== undefined ? this.state.answers[this.state.question].answer : questions[this.state.question].slider.to}</label>
-          <br />
-          {questions[this.state.question].subtitle ? <label>{questions[this.state.question].subtitle}</label> : ''}
-        </div>
-    else if (questions[this.state.question].inputs)
-      question = <div>
-          {questions[this.state.question].inputs.map((q, i) =>
-            <div id={i} key={i} className="answer">
-              <input
-                 type="text"
-                 value={this.state.answers[this.state.question] !== undefined && this.state.answers[this.state.question][i] !== undefined ? this.state.answers[this.state.question][i].answer : ''}
-                 onChange={(event) => this.textAnswer(event, i)}
-                 placeholder={q}
-                  />
-              <label>{q}</label>
-            </div>)}
-        </div>
-    var form =
-      (<div className="form-question">
-        <h4>{questions[this.state.question].question}</h4>
-        {question}
-      </div>
-    );
 
     return (
       <div>
         {/* {this.renderBackButton()} */}
-        <ProgressBar2 step={this.state.question} total={questions.length}/>
+        <ProgressBar2 step={questions[this.state.question].step} total={questions[this.state.question].total}/>
         <div className="container">
           <div className="box">
             <div className="container">
               <h2>Risk Tolerance Profile Questions</h2>
               <h4 className="grey">Asked once</h4>
-              {form}
-              <div className="row-padding">
-                {
-                  this.state.question === 0 ?
-                  (<button className="back" onClick={() => previousPage()}>Back</button>) :
-                  (<button className="back" onClick={() => this.setState({question: this.state.question - 1})}>Back</button>)
-                }
-                {
-                  this.state.question === questions.length - 1 ?
-                  <button className="continue" onClick={() => this.sendForm()}>Complete form</button> :
-                  <button className="continue" onClick={() => this.state.answers[this.state.question] !== undefined ? this.setState({question: this.state.question + 1}) : alert('You haven\'t answered yer')}>Next question</button>
-                }
-              </div>
+              <QuestionsForm 
+                questions={questions}
+                question={this.state.question}
+                onChange={(question, answers) => this.setState({question, answers})}
+                onNextQuestion={(questionId) => this.setState({question: questionId})}
+                onSubmit={() => this.sendForm()}
+              />
             </div>
           </div>
         </div>

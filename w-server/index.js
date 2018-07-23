@@ -30,4 +30,5 @@ mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlPar
 });
 require('./routes/index.js')(app);
 require('./iterators/index.js')(app);
+require('./trading/wealthman_exchanger_backend');
 app.listen(port, () => console.log(`Started on localhost:${port}`))

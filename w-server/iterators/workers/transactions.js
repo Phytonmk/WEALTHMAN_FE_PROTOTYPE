@@ -3,16 +3,18 @@ const apiURL = 'https://api-rinkeby.etherscan.io';
 
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
-const axios = require('axios');
+
+const checkBalance = require('../../trading/wealthman_check_balance');
+const trade = require('../../trading/wealthman_trade');
 
 let workingProcess = false;
 
 const work = async () => {
   if (workingProcess)
     return false;
-  workingProcess = true;
+  // workingProcess = true;
 
-  const requests = await Request.find({status: 'waiting for transaction'});
+  const requests = await Request.find({status: 'waiting for deposit'});
   const smartContracts = [];
   let i = 0;
   for (request of requests) {
@@ -24,15 +26,24 @@ const work = async () => {
         request: request.id
       });
   }
-  // for (let smartContract of smartContracts) {
-  //   const res = await axios.get(`${apiURL}/api?module=transaction&action=gettxreceiptstatus&txhash=${smartContract.address}&apikey=${token}`)
-  //     .catch((err) => {console.log('Error occurred', err)});
-  //   const data = res.data;
-  //   console.log(data, smartContract.address);
-  // }
+  for (let smartContract of smartContracts) {
+    console.log(`Checking ${smartContract.address} for deposit...`);
+    const deposit = await checkBalance(smartContract.address);
+    if (deposit)
+      console.log('deposited');
+    else
+      console.log('no deposit');
+    if (deposit) {
+      const request = await Request.findOne({id: smartContract.request});
+      trade(smartContract.address, smartContract.request);
+      request.set({status: 'active'});  
+      await request.save();
+    }
+  }
+  workingProcess = false;
 }
 
 
 
 work();
-let interval = setInterval(work, 1000 * 60 * 15);
+let interval = setInterval(work, 1000 * 60 * 3);
