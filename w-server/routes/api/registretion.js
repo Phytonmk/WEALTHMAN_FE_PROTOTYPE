@@ -4,6 +4,8 @@ const Token = require('../../models/accessToken');
 const Investor = require('../../models/Investor');
 const Manager = require('../../models/Manager');
 const Company = require('../../models/Company');
+const AnswersForm = require('../../models/AnswersForm');
+const KYCAnswersForm = require('../../models/KYCAnswersForm');
 const fs = require('fs-extra');
 
 const salt = 'super salt';
@@ -88,14 +90,22 @@ module.exports = (app) => {
     }
 
     // HANDLING
-    const riskprofile = Math.ceil(Math.random() * 10);
+    // const riskprofile = Math.ceil(Math.random() * 10);
 
-    console.log('riskprofile', riskprofile)
+    // console.log('riskprofile', riskprofile)
 
-    investor.set({riskprofile});
-    await investor.save();
-    res.send(riskprofile.toString());
-    res.end();
+    const answersFormId = await AnswersForm.countDocuments({});
+    const answersForm = new AnswersForm({
+      id: answersFormId,
+      user: token.user,
+      answers: req.body.answers
+    })
+    await answersForm.save();
+    // investor.set({riskprofile});
+    // await investor.save();
+    // res.send(riskprofile.toString());
+    res.status(200);
+    res.end()
   });
   app.post('/api/investor/data', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -249,10 +259,11 @@ module.exports = (app) => {
   app.post('/api/login', async (req, res, next) => {
     const user = await User.findOne({
       login: req.body.login,
-      password_hash: crypto.createHash('md5').update(salt + req.body.password + salt).digest("hex")
+      password_hash: password_hash(req.body.password)
     });
     if (user === null) {
       res.sendStatus(403);
+      console.log(`Wrong login or password:\n${req.body.login}\n${req.body.password}\n${password_hash(req.body.password)}`)
       res.end();
       return;
     }

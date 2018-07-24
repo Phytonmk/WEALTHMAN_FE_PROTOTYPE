@@ -13,7 +13,7 @@ class Social extends Component {
     return (
       <div className="social">
         {
-          this.props.links.map((link, index) => {
+          this.props.links === undefined ? '' : this.props.links.map((link, index) => {
             let availableIcons = [["telegram", "t.me"], ["bitcointalk"], ["facebook"], ["instagram"], ["medium"], ["reddit"], ["twitter"], ["linkedin"], ["youtube"]];
             let returned = "";
 

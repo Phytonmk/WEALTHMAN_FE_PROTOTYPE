@@ -15,7 +15,7 @@ const ManagerScheme = mongoose.Schema({
   methodology: String,
   exit_fee: String,
   management_fee: String,
-  font_fee: String,
+  front_fee: String,
   performance_fee: String,
   social: [String],
   about: String,

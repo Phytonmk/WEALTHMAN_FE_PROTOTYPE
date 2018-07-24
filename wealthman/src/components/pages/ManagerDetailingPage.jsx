@@ -189,7 +189,7 @@ const questions = {
     'methodology',
     'exit_fee',
     'managment_fee',
-    'font_fee',
+    'front_fee',
     'performance_fee',
     'tweeter',
     'fb',
@@ -223,7 +223,7 @@ offers
 methodology
 exit_fee
 managment_fee
-font_fee
+front_fee
 performance_fee
 min_investment
 

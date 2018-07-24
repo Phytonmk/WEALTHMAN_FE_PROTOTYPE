@@ -44,6 +44,7 @@ class Header extends Component {
               <div className="row"><b>Request type</b>: {this.props.request.type}</div>
               <div className="row"><b>Request status</b>: {this.props.request.status}</div>
               <div className="row-padding"><b>Value</b>: {this.props.request.value} ETH</div>
+              <div className="row-padding"><b>Period</b>: {this.props.request.period} {this.props.request.period > 1 ? 'days' : 'day'}</div>
               <div className="row"><b>Comment</b>: {this.props.request.comment ? this.props.request.comment : 'no comment'}</div>
               <div className="row"><b>Service</b>: {this.props.request.service}</div>
               <div className="row"><b>Alowed revision amounts</b>: {this.props.request.service === 'Robo-advisor' ? 'unlimited' : this.props.request.revisions_amount}</div>
@@ -55,7 +56,16 @@ class Header extends Component {
               </code>
               
             </div>
-          : 'This version of frontend is unable to render request of this type'
+          : 
+            <div>
+              <div className="row"><b>Request type</b>: {this.props.request.type}</div>
+              <div className="row"><b>Request status</b>: {this.props.request.status}</div>
+              <div className="row"><b>Initinated by</b>: {this.props.request.initiatedByManager ? 'manger' : 'company'}</div>
+              <code>
+                {/*JSON.stringify(this.props.request, null, 4)*/}
+              </code>
+              
+            </div>
         ) : 'Loading...'}
         </div>
       </div>)

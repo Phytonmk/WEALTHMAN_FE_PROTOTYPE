@@ -5,7 +5,7 @@ const ServiceSchema = mongoose.Schema({
   exit_fee: Number,
   managment_fee: Number,
   perfomance_fee: Number,
-  font_fee: Number,
+  front_fee: Number,
   recalculation: Number, // - in days
   min: Number, // in dollars
   metodology: String,

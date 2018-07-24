@@ -27,12 +27,12 @@ const work = async () => {
       });
   }
   for (let smartContract of smartContracts) {
-    console.log(`Checking ${smartContract.address} for deposit...`);
+    // console.log(`Checking ${smartContract.address} for deposit...`);
     const deposit = await checkBalance(smartContract.address);
-    if (deposit)
-      console.log('deposited');
-    else
-      console.log('no deposit');
+    // if (deposit)
+    //   console.log(`deposited on ${smartContract.address}`);
+    // else
+    //   console.log(`no deposit on ${smartContract.address}`);
     if (deposit) {
       const request = await Request.findOne({id: smartContract.request});
       trade(smartContract.address, smartContract.request);

@@ -78,9 +78,9 @@ class Form extends Component {
         exit_fee: 12,
         managment_fee: 12,
         perfomance_fee: 12,
-        font_fee: 12,
+        front_fee: 12,
         recalculation: 365,
-        min: '',
+        min: 10000000,
         metodology: '',
         philosofy: '',
       });
@@ -203,7 +203,7 @@ class Form extends Component {
                   <br />
                   Font fee
                   <br />
-                  <input type="number" placeholder="Font fee" value={service.font_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'font_fee')}/>
+                  <input type="number" placeholder="Font fee" value={service.front_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'front_fee')}/>
                   <br />
                   Recalculation
                   <br />

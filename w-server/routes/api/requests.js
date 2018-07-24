@@ -4,6 +4,7 @@ const Manager = require('../../models/Manager');
 const Company = require('../../models/Company');
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
+const KYCAnswersForm = require('../../models/KYCAnswersForm');
 
 
 module.exports = (app) => {
@@ -53,7 +54,7 @@ module.exports = (app) => {
     if (req.body.revisions) {
       res.status(406);
       res.end('');
-      return;      
+      return;
     }
     const requestID = await Request.countDocuments({});
     const request = new Request({
@@ -63,11 +64,30 @@ module.exports = (app) => {
       value: req.body.value,
       comment: req.body.comment,
       service: req.body.service,
+      period: req.body.period,
       options: {
         analysis: req.body.options.analysis,
         comment: req.body.options.manager_comment
-      }
+      },
+      period: req.body.period
     });
+
+
+    // HANDLING
+    const riskprofile = Math.ceil(Math.random() * 10);
+
+    // console.log('riskprofile', riskprofile)
+
+    const kycAnswersFormId = await KYCAnswersForm.countDocuments({});
+    const kycAnswersForm = new KYCAnswersForm({
+      id: kycAnswersFormId,
+      request: request.id,
+      answers: req.body.answers
+    })
+    await kycAnswersForm.save();
+    investor.set({riskprofile});
+    await investor.save();
+    res.status(200);
     await request.save();
     res.status(200);
     res.end();

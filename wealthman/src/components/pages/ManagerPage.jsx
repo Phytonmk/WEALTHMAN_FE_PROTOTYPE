@@ -58,8 +58,18 @@ class ManagerPage extends Component {
   render() {
     var manager = this.state.manager;
     if (manager === null)
-      return <div></div>
+      return <div>...</div>
 
+    let inviteBtn = '';
+
+    if (this.props.user === 3 && manager.company_name === undefined && (manager.company === -1 || manager.company === null))
+      inviteBtn = <Link to={"/participating/" + manager.id}>
+                    <button className="big-blue-button right">Invite now</button>
+                  </Link>
+    else if (this.props.user === 1 && manager.company_name !== undefined && (this.props.userData.company === -1 || this.props.userData.company === null))
+      inviteBtn = <Link to={"/participating/" + manager.id}>
+                    <button className="big-blue-button right">Apply to be in</button>
+                  </Link>
     return (
       <div>
         <div className="new-long-header" />
@@ -70,7 +80,7 @@ class ManagerPage extends Component {
             </div>
             <div className="main-info">
               <div className="name-row">
-                <h1>{manager.name} {manager.surname}</h1>
+                <h1>{(manager.name || manager.company_name || '') + (manager.surname || '')}</h1>
                 <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
               <div className="fees-row">
@@ -84,12 +94,7 @@ class ManagerPage extends Component {
                 <Link to={"/chat"} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
-                {this.props.user === 3 ?
-                <Link to={"/invite-manager/" + manager.id}>
-                  <button className="big-blue-button right">Invite now</button>
-                </Link>
-                : ''
-                }
+                {inviteBtn}
               </div>
               <div className="social-links">
                 <span>Social networks</span>
@@ -118,7 +123,7 @@ class ManagerPage extends Component {
                 <b>Perfomance fee:</b> {service.perfomance_fee} %
               </div>
               <div className="row">
-                <b>Font fee:</b> {service.font_fee} %
+                <b>Font fee:</b> {service.front_fee} %
               </div>
               <div className="row">
                 <b>Recalculation:</b> {service.recalculation}

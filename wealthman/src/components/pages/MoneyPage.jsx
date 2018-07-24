@@ -36,7 +36,7 @@ class MoneyPage extends Component {
     super(props);
     this.state = {
       gotData: false,
-      status: 0, // status 0 -- page loaded; 1 -- metamask opened; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
+      status: 0, // status 0 -- page loaded; 1 -- deploying; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
       contractAddress: '',
       request: {},
     };
@@ -48,6 +48,8 @@ class MoneyPage extends Component {
         let contractAddress = '';
         if (res.data.request.status === 'proposed')
           status = 0;
+        if (res.data.request.status === 'deploying')
+          status = 1;
         if (res.data.request.status === 'waiting for deposit') {
           status = 2;
           console.log(res.data);
@@ -60,59 +62,14 @@ class MoneyPage extends Component {
       })
       .catch(console.log)
   }
-  openMetamask() {
-    if (typeof web3 === 'undefined') {
-      return;
-    }
-    api.post('get-smart-contract-data', {request: this.props.match.params.id})
-      .then(res => {
-        const _owner = res.data.investor;
-        const _manager = res.data.manager;
-        console.log(`ADDRESSES:\ninvestor: ${_owner},\n manager: ${_manager}`);
-        const _endTime = 1538784000;
-        const _tradesMaxCount = 2;
-        const _managmentFee = 200 ;
-        const _performanceFee =500;
-        const _frontFee = 100 ;
-        const _exitFee = 100;
-        const _mngPayoutPeriod = 7 ;
-        const _prfPayoutPeriod =30;
-        const portfolioContract = web3.eth.contract(contract);
-        const portfolio = portfolioContract.new(
-         _owner,
-         _manager,
-         _exchanger,
-         _admin,
-         _endTime,
-         _tradesMaxCount,
-         _managmentFee,
-         _performanceFee,
-         _frontFee,
-         _exitFee,
-         _mngPayoutPeriod,
-         _prfPayoutPeriod,
-         {
-          from: web3.eth.accounts[0],
-          data: bytecode,
-          gas: '4700000'
-         },
-         (error, contract) => {
-            if (error) {
-              console.log(error);
-              this.setState({status: 3});
-            } else if (typeof contract.address !== 'undefined') {
-              console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-              this.setState({status: 2, contractAddress: contract.address});
-              api.post('set-smart-contract', {contractAddress: contract.address, request: this.props.match.params.id})
-                .then(() => console.log('ok'))
-                .catch(console.log);
-            } else {
-              console.log(`contract:`, contract);
-              this.setState({status: 1});
-            }
-         }
-        )
-      }).catch(console.log);
+  deploy() {
+    api.post('contracts/deploy', {
+      request: this.state.request.id,
+      manager: this.state.request.manager
+    }).then((res) => {
+      console.log(res.status);
+      this.setState({status: 1})
+    }).catch(console.log);
   }
   finish() {
     web3.eth.sendTransaction({
@@ -158,20 +115,14 @@ class MoneyPage extends Component {
               <div className="row">
                 <ol type="1">
                   <li>
-                    To deploy smart contract install MetaMask in your current browser
-                  </li>
-                  <li>
-                    Be sure that you are logged in MetaMask
-                  </li>
-                  <li>
-                    Be sure that you have enough Ethereum to pay commission
-                  </li>
-                  <li>
-                    Push the button below
+                    To deploy smart contract just push the button below
                   </li>
                 </ol>
                 <div className="row">
-                  <button className="continue" onClick={() => this.openMetamask()}>Open MetaMask</button>
+                  <Link to={"/request/" + this.props.match.params.id}>
+                    <button className="back">Back</button>
+                  </Link>
+                  <button className="continue" onClick={() => this.deploy()}>Deploy</button>
                 </div>
               </div>
             </div>
@@ -187,7 +138,10 @@ class MoneyPage extends Component {
       else
         return <div className="container">
             <div className="box">
-              <h2> Transaction is submitted. Please, wait for Etherium network to mine the transaction. Don`t close the page until we inform you </h2>
+              <h2>Relax<br/>Etherium network mines the transaction<br/>Check your portfolio status in 5 minutes</h2>
+              <Link to={"/requests"}>
+                <button className="back">Back to portfolios</button>
+              </Link>
             </div>
           </div>
     }

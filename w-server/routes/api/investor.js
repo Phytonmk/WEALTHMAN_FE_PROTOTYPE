@@ -18,4 +18,22 @@ module.exports = (app) => {
     res.send(investor);
     res.end();
   });
+  app.post('/api/withdraw/:request', async (req, res, next) => {
+    const token = await Token.findOne({token: req.body.accessToken});
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    const investor = await Investor.findOne({user: token.user});
+    if (investor === null) {
+      res.status(403);
+      res.end();
+      return;
+    }
+    // withdrawing...
+    res.status(200);
+    res.send(investor);
+    res.end();
+  });
 }

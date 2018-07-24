@@ -1,18 +1,17 @@
-console.log('\n\n   ╔════Waking server up═════╗');
+global.chatsWSports = [{port: 2906, connected: []}];
+global.maxChatsOnPort = 32;
+
+console.log('\n\n   ╔══Waking chats server up═╗');
 const express = require('express');
-const fs = require('fs');
 const mongoose = require('mongoose');
-const port = 8080;
+const port = 2905;
 const app = express();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const fileUpload = require('express-fileupload');
 console.log('   ║  All modules required   ║');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(fileUpload());
-app.use('/api/img', express.static('img'));
 app.use((req, res, next) => {
   res.append("Access-Control-Allow-Origin", "*");
   // res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -31,7 +30,7 @@ mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlPar
     console.log('   ╚═════mongo connected═════╝\n\n')
 });
 console.log('   ║    Almost  started...   ║');
-require('./routes/index.js')(app);
-require('./iterators/index.js')(app);
-require('./trading/wealthman_exchanger_backend');
+fs.readdirSync(__dirname + '/api/').forEach((file) => {
+    require(`${__dirname}/api/${file.substr(0, file.indexOf('.'))}`)(app);
+  });
 app.listen(port, () => console.log(`   ║Started on localhost:${port}║`))

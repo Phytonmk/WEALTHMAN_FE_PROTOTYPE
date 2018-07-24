@@ -74,6 +74,7 @@ class ManagersPage extends Component {
     api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
       .then((res) => {
         console.log(`loaded`);
+        console.log(res.data);
         this.setState(res.data);
         this.setState({gotData: true});
         setTimeout(() => this.forceUpdate(), 0);

@@ -47,6 +47,7 @@ import RegOrLoginForNewInvestorPage from './components/pages/RegOrLoginForNewInv
 import DeclinePage from './components/pages/DeclinePage';
 import CompanyManagmentPage from './components/pages/CompanyManagmentPage';
 import InviteManagerPage from './components/pages/InviteManagerPage';
+import ChatPage from './components/pages/ChatPage';
 
 //
 
@@ -171,7 +172,7 @@ class App extends Component {
           <Route path="/company/:id" component={ManagerPage}/>
           <Route path="/manager/:id" component={ManagerPage}/>
           <Route path="/company" component={CompanyManagmentPage}/>
-          <Route path="/invite-manager/:manager" component={InviteManagerPage}/>
+          <Route path="/participating/:manager" component={InviteManagerPage}/>
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
           <Route path="/portfolio/:id" component={PortfolioPage}/>
           <Route path="/request/:id" component={RequestPage}/>
@@ -196,7 +197,7 @@ class App extends Component {
           <Route path="/investor register" component={InvestorRegistorPage}/>
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
 
-          <Route path="/chat" render={() => this.renderChatPage()}/>
+          <Route path="/chats/:userId" component={ChatPage}/>
           <Route path="/decline/:id" component={DeclinePage}/>
           <Route path="/faq" render={() => this.renderFAQPage()}/>
           <Route path="/team" render={() => this.renderTeamPage()}/>

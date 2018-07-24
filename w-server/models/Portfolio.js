@@ -10,7 +10,6 @@ const PortfolioScheme = mongoose.Schema({
   instrument: {type: String, default: 'not specified'},
   alg: {type: Number, default: 0},
   value: {type: Number, default: 0},
-  status: {type: String, default: 'proposed'},
   cost: {type: Number, default: 0},
   currency: {type: String, default: 'ETH'},
   date: {type: Date, default: Date.now},

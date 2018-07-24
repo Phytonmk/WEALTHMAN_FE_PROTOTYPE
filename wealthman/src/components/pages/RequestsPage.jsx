@@ -30,25 +30,37 @@ class RequestsPage extends Component {
       .then((res) => {
         component.setState({requests: res.data, managers: [], investors: [], gotData: true});
         for (let request of component.state.requests) {
-          api.get('manager/' + request.manager)
+          let loadProfileOf = 'investor';
+          switch(this.props.user) {
+            case 0:
+              if (request.company)
+                loadProfileOf = 'company';
+              else
+                loadProfileOf = 'manager';
+            break;
+            case 1:
+              if (request.company)
+                loadProfileOf = 'company';
+              else
+                loadProfileOf = 'investor';
+            break;
+            case 3:
+              if (request.type === 'portfolio')
+                loadProfileOf = 'investor';
+              else
+                loadProfileOf = 'manager';
+            break;
+          }
+          api.get(loadProfileOf + '/' + request[loadProfileOf])
             .then((res) => {
-              const managers = [...component.state.managers];
-              managers.push(res.data);
-              component.setState({managers});
-            })
-            .catch(console.log);
-          api.get('investor/' + request.investor)
-            .then((res) => {
-              const investors = [...component.state.investors];
-              investors.push(res.data);
-              component.setState({investors});
-            })
-            .catch(console.log);
-          api.get('company/' + request.company)
-            .then((res) => {
-              const companies = [...component.state.companies];
-              companies.push(res.data);
-              component.setState({companies});
+              let many = 'investors';
+              if (loadProfileOf === 'manager')
+                many = 'managers';
+              else if (loadProfileOf === 'company')
+                many = 'companies'
+              const tmp = [...component.state[many]];
+              tmp.push(res.data);
+              component.setState({[many]: tmp});
             })
             .catch(console.log);
         }
@@ -137,13 +149,39 @@ class RequestsPage extends Component {
           user = this.state.managers.find(i => i.id == request.manager) || {};
       }
       let date = new myDate(request.date);
-      const value = Math.ceil(Math.random() * 100);
+      let value = {render: '', value: 0};
+      if (request.value)
+        value = {
+          render: request.value + ' ETH',
+          value: request.value
+        }
       const percent_change = Math.ceil(Math.random() * 20);
+      let userLink = '/investor/';
+      switch(this.props.user) {
+        case 0:
+          if (request.company)
+            userLink = '/company/';
+          else
+            userLink = '/manager/';
+        break;
+        case 1:
+          if (request.company)
+            userLink = '/company/';
+          else
+            userLink = '/investor/';
+        break;
+        case 3:
+          if (request.type === 'portfolio')
+            userLink = '/investor/';
+          else
+            userLink = '/manager/';
+        break;
+      }
       return {
         id: request.id,
         img: <div className="in-sortable-img-container"><img src={user.img ? api.imgUrl(user.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: {
-          render: <Link to={(this.props.user == 1 ? "/investor/" : "/manager/") + user.id} className="no-margin no-link-style">
+          render: <Link to={userLink + user.id} className="no-margin no-link-style">
             {user.name || user.company_name || '' + " " + user.surname || ''}
           </Link>,
           value: user.name || '' + " " + user.surname || ''
@@ -152,11 +190,8 @@ class RequestsPage extends Component {
           render: date.niceTime(),
           value: date.getTime(),
         },
-        value: {
-          render: value + '$',
-          value: value
-        },
-        service: request.service || 'undefined',
+        value,
+        service: request.type === 'inviting' ? 'inviting' : (request.service || 'undefined'),
         percent_change: {
           render: percent_change + '%',
           value: percent_change

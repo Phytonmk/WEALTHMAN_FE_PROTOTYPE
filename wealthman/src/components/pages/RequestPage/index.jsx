@@ -81,6 +81,16 @@ class RequestPage extends Component {
       })
       .catch(console.log);
   }
+  acceptApply() {
+    api.post('company/accept-apply', {
+      manager: this.state.manager.id,
+      request: this.state.request.id
+    })
+      .then(() => {
+        setPage('account');
+      })
+      .catch(console.log);
+  }
   acceptPortfolio() {
     setPage('signagreement/' + this.state.request.id);
   }
@@ -101,6 +111,7 @@ class RequestPage extends Component {
   render() {
     if (!this.state.gotData)
       return <p> Loading... </p>;
+    console.log(this.state.request);
     let anotherPersonData = {};
     switch (this.props.user) {
       case 0:
@@ -200,7 +211,7 @@ class RequestPage extends Component {
                    <button className="back right">Decline</button>
                  </Link>
                </div>
-            else if (this.state.request.type === 'inviting') 
+            else if (this.state.request.type === 'inviting' && !this.state.request.initiatedByManager) 
               buttons = 
                 <div className="row-padding">
                  <Link to="/requests">
@@ -226,8 +237,17 @@ class RequestPage extends Component {
         }
       break;
       case 3:
-        // switch(this.state.request.status) {
-        // }
+        if (this.state.request.type === 'inviting' && this.state.request.initiatedByManager) 
+          buttons = 
+            <div className="row-padding">
+             <Link to="/requests">
+               <button className="back">Back</button>
+             </Link>
+             <button className="continue right" onClick={() => this.acceptApply()}>Accept</button>
+             <Link to={"/decline/" + this.props.match.params.id}>
+               <button className="back right">Decline</button>
+             </Link>
+           </div>
       break;
       default:
               buttons = 

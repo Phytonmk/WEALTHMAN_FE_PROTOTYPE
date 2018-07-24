@@ -6,6 +6,8 @@ out/
 wealthman/dist
 wealthman/.cache
 wealthman/node_modules/
+w-server/node_modules/
+w-chat/node_modules/
 
 # Files
 *.ids

@@ -49,7 +49,6 @@ export default class QuestionsForm extends Component {
   prevQuestion() {
     const questionsStack = [...this.state.questionsStack];
     const question = questionsStack.pop();
-    console.log(question, questionsStack);
     this.setState({question, questionsStack});
     this.props.onChange(this.state.question, this.state.answers);
   }
@@ -60,10 +59,15 @@ export default class QuestionsForm extends Component {
           const questionsStack = [...this.state.questionsStack];
           questionsStack.push(this.state.question);
           this.setState({question: i, questionsStack});
-          console.log(questionsStack);
           this.props.onChange(this.state.question, this.state.answers);
           break;
         }
+        if (i === this.props.questions.length - 1) {
+          this.complete();
+        }
+      }
+      if (this.state.question + 1 >= this.props.questions.length) {
+        this.complete();
       }
     } else {
       alert('You haven\'t answered yer')
@@ -132,7 +136,7 @@ export default class QuestionsForm extends Component {
           {
             this.props.questions[this.state.question].step === this.props.questions[this.state.question].total ?
             <button className="continue" onClick={() => this.complete()}>Complete form</button> :
-            <button className="continue" onClick={() => this.nextQuestion()}>Next question</button>
+            <button className="continue" onClick={() => this.nextQuestion()}>Next</button>
           }
         </div>
       </div>
