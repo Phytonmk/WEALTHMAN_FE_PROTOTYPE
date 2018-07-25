@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency, previousPage, getCookie } from '../helpers';
 
+const services = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
 import ProgressBar2 from '../ProgressBar2';
 import QuestionsForm from '../QuestionsForm';
@@ -44,7 +45,8 @@ class KYCPage extends Component {
         console.log(res.data.name, res.data.surname)
         this.setState({
           managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.surname || ''),
-          managerId: res.data.id
+          managerId: res.data.id,
+          managerData: res.data
         })
       })
   }
@@ -75,6 +77,20 @@ class KYCPage extends Component {
       .catch(console.log);
   }
   render() {
+    let managerConditions = '';
+    if (services.includes(this.state.service) && this.state.managerData) {
+      const currentService = this.state.managerData.services.find(service => service.type === services.indexOf(this.state.service));
+      if (currentService) {
+        managerConditions = <div className="row">
+          <div className="row"><b>Exit fee</b>: {currentService.exit_fee} %</div>
+          <div className="row"><b>Management fee</b>: {currentService.managment_fee} %</div>
+          <div className="row"><b>Perfomance fee</b>: {currentService.perfomance_fee} %</div>
+          <div className="row"><b>Front fee</b>: {currentService.front_fee} %</div>
+          <div className="row"><b>Max recalculations</b>: {currentService.recalculation} days</div>
+          <div className="row"><b>Min investments</b>: {currentService.min} $</div>
+        </div>
+      }
+    }
     let pageContent;
     if (!this.state.formComplited)
       pageContent =
@@ -94,6 +110,7 @@ class KYCPage extends Component {
               <li> Your personal risk profile and information </li>
             </ol>
           </div>
+          {managerConditions}
           <div className="row">
             <p>Before it is sent, please, specify your target investment volume: and mark the follow options to get deep understanding of manager`s strategy (takes more time to get return portfolio recommendation):</p>
           </div>
@@ -121,6 +138,7 @@ class KYCPage extends Component {
           </div>}
           <div className="row">
             <p>Comment for manager</p>
+            <p>In case you want get special conditions (e.g. lower fees by greate investments amount), leave a comment here</p>
           </div>
           <div className="row">
             <input type="text" value={this.state.comment} onChange={(event) => this.setState({comment: event.target.value})} />

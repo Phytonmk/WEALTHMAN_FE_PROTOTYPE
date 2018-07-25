@@ -12,7 +12,8 @@ var investorScheme = mongoose.Schema({
   age: Number,
   country: String,
   adress: String,
-  wallet_address: String
+  wallet_address: String,
+  registred: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('investor', investorScheme);

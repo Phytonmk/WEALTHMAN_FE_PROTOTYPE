@@ -24,6 +24,14 @@ module.exports = (app) => {
       res.end('');
       return;
     }
+    if (request.status === 'pending') {
+      request.set({
+        exit_fee: req.body.fees.exit_fee,
+        managment_fee: req.body.fees.managment_fee,
+        perfomance_fee: req.body.fees.perfomance_fee,
+        front_fee: req.body.fees.front_fee,
+      });
+    }
     const existsPortfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
     if (existsPortfolio === null) {
       const portfolioID = await Portfolio.countDocuments({});
@@ -40,6 +48,8 @@ module.exports = (app) => {
       existsPortfolio.set({currencies: req.body.currencies});
       await existsPortfolio.save();
     }
+    if (request.status === 'pending')
+      await request.save();
     res.status(200);
     res.end();
   });
@@ -415,9 +425,12 @@ module.exports = (app) => {
 const updatePortfoliosState = (searchQuery) => new Promise(async (resolve, reject) => {
   const oldActivePortfolio = await Portfolio.findOne(Object.assign(searchQuery, {state: 'active'}));
   const newActivePortfolio = await Portfolio.findOne(Object.assign(searchQuery, {state: 'draft'}));
-  oldActivePortfolio.set({state: 'old'});
-  newActivePortfolio.set({smart_contract: oldActivePortfolio.smart_contract, state: 'active'});
-  await oldActivePortfolio.save();
+  newActivePortfolio.set({state: 'active'});
+  if (oldActivePortfolio !== null) {
+    newActivePortfolio.set({smart_contract: oldActivePortfolio.smart_contract}); 
+    oldActivePortfolio.set({state: 'old'});
+    await oldActivePortfolio.save();
+  }
   await newActivePortfolio.save();
   resolve();
 });

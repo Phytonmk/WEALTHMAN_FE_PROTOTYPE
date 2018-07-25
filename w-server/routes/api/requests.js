@@ -6,6 +6,7 @@ const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 const KYCAnswersForm = require('../../models/KYCAnswersForm');
 
+const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
 module.exports = (app) => {
   app.post('/api/request', async (req, res, next) => {
@@ -23,6 +24,7 @@ module.exports = (app) => {
     }
     let managerType;
     let managerId;
+    let services = null;
     if (req.body.manager) {
       const manager = await Manager.findOne({id: req.body.manager});
       if (manager === null) {
@@ -32,6 +34,7 @@ module.exports = (app) => {
       }
       managerType = 'manager';
       managerId = manager.id;
+      services = manager.services;
     } else if (req.body.company) {
       const company = await Company.findOne({id: req.body.company});
       if (company === null) {
@@ -41,12 +44,13 @@ module.exports = (app) => {
       }
       managerType = 'company';
       managerId = company.id;
+      services = company.services;
     } else {
       res.status(403);
       res.end('');
       return;
     }
-    if ((!req.body.type || req.body.type === 'portfolio') && !['Robo-advisor', 'Discretionary', 'Advisory'].includes(req.body.service)) {
+    if ((!req.body.type || req.body.type === 'portfolio') && !servicesList.includes(req.body.service)) {
       res.status(406);
       res.end('');
       return;
@@ -56,6 +60,9 @@ module.exports = (app) => {
       res.end('');
       return;
     }
+
+    const selectedService = services.find(service => service.type === servicesList.indexOf(req.body.service))
+
     const requestID = await Request.countDocuments({});
     const request = new Request({
       id: requestID,
@@ -69,7 +76,11 @@ module.exports = (app) => {
         analysis: req.body.options.analysis,
         comment: req.body.options.manager_comment
       },
-      period: req.body.period
+      period: req.body.period,
+      exit_fee: selectedService.exit_fee,
+      managment_fee: selectedService.managment_fee,
+      perfomance_fee: selectedService.perfomance_fee,
+      front_fee: selectedService.front_fee,
     });
 
 

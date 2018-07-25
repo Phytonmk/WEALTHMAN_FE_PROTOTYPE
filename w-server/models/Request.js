@@ -21,7 +21,11 @@ const RequestSchema = mongoose.Schema({
   revisions_amount: {type: Number, default: 0},
   revisions: {type: Number, default: 0},
   initiatedByManager: {type: Boolean, default: false},
-  deployment_hash: {type: String, default: ''}
+  deployment_hash: {type: String, default: ''},
+  exit_fee: Number,
+  managment_fee: Number,
+  perfomance_fee: Number,
+  front_fee: Number
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

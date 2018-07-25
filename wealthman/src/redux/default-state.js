@@ -76,7 +76,7 @@ const defaultState = {
       link: "dashboard"
     }, {
       label: "clients",
-      link: "requests"
+      link: "investors"
     }, {
       label: "portfolio",
       link: "requests"

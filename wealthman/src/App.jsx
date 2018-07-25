@@ -7,7 +7,6 @@ import Loadable from 'react-loadable';
 
 import Sortable from './components/Sortable.jsx';
 import Social from './components/Social';
-import myDate from './components/myDate.jsx';
 
 import logoWhite from './img/logo.svg';
 import logoBlue from './img/logo_blue.svg';
@@ -48,6 +47,7 @@ import DeclinePage from './components/pages/DeclinePage';
 import CompanyManagmentPage from './components/pages/CompanyManagmentPage';
 import InviteManagerPage from './components/pages/InviteManagerPage';
 import ChatPage from './components/pages/ChatPage';
+import InvestorsPage from './components/pages/InvestorsPage';
 
 //
 
@@ -216,6 +216,8 @@ class App extends Component {
           <Route path="/manager-reg" component={ManagerRegPage}/>
           <Route path="/manager-detailing" component={ManagerDetailingPage}/>
           <Route path="/withdraw/:id" component={WithdrawPage}/>
+          <Route path="/investors" component={InvestorsPage}/>
+
         </Switch>
     );
   }

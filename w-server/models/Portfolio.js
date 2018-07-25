@@ -19,6 +19,7 @@ const PortfolioScheme = mongoose.Schema({
     amount: Number,
     analysis: String,
     comments: String,
+    address: String,
   }]
 });
 

@@ -51,6 +51,12 @@ class Header extends Component {
               <div className="row-padding">Investor needs:</div>
               <div className="row"><b>Analysis</b>: {(this.props.request.options || {}).analysis ? 'yes' : 'no'}</div>
               <div className="row"><b>Comment</b>: {(this.props.request.options || {}).comment ? 'yes' : 'no'}</div>
+              <div className="row"><b>Comment</b>: {(this.props.request.options || {}).comment ? 'yes' : 'no'}</div>
+              <div className="row-padding">Fees:</div>
+              <div className="row"><b>Exit fee</b>: {this.props.request.exit_fee} %</div>
+              <div className="row"><b>Managment fee</b>: {this.props.request.managment_fee} %</div>
+              <div className="row"><b>Perfomance fee</b>: {this.props.request.perfomance_fee} %</div>
+              <div className="row"><b>Front fee</b>: {this.props.request.front_fee} %</div>
               <code>
                 {/*JSON.stringify(this.props.request, null, 4)*/}
               </code>

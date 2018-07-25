@@ -22,7 +22,11 @@ class PortfolioCreationPage extends Component {
       investor: null,
       page: 'select',
       inputData: {},
-      activeExists: false
+      activeExists: false,
+      exit_fee: '',
+      managment_fee: '',
+      perfomance_fee: '',
+      front_fee: '',
     };
   }
   componentWillMount() {
@@ -45,7 +49,11 @@ class PortfolioCreationPage extends Component {
       .then((res) => {
         this.setState({
           request: res.data.request,
-          investor: res.data.investor
+          investor: res.data.investor,
+          exit_fee: res.data.request.exit_fee,
+          managment_fee: res.data.request.managment_fee,
+          perfomance_fee: res.data.request.perfomance_fee,
+          front_fee: res.data.request.front_fee,
         });
       })
       .catch(console.log);
@@ -127,7 +135,13 @@ class PortfolioCreationPage extends Component {
     }
     api.post('portfolio/save', {
       request: this.props.match.params.id,
-      currencies: sendData
+      currencies: sendData,
+      fees: {
+        exit_fee: this.state.exit_fee,
+        managment_fee: this.state.managment_fee,
+        perfomance_fee: this.state.perfomance_fee,
+        front_fee: this.state.front_fee,
+      }
     })
       .then(() => {
         if (typeof callback === 'function')
@@ -146,8 +160,17 @@ class PortfolioCreationPage extends Component {
     })
   }
   render() {
-    let page;
+    let page = '';
     switch(this.state.page) {
+      case 'fees':
+        page = <div>
+          <div className="row">{this.state.request.status === 'pending' ? 'Request is pending, so you can set custom fees, investor may accept or decline them' : 'Request is not pending, so you unable to change them'}</div>
+          <div className="row">Exit fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.exit_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({exit_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({managment_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({perfomance_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
+        </div>
+      break;
       case 'select': 
         if (this.state.tokens.length > 0)
           page = <Sortable2
@@ -217,6 +240,7 @@ class PortfolioCreationPage extends Component {
           </div>
           <RequestDetails request={this.state.request} />
           <div className='box'>
+            <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'fees'})}>Fees</button>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'select'})}>Tokens selecting</button>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'percent'})}>Tokens percent changing</button>
             <button className='big-blue-button right' style={{marginLeft: 20}} onClick={() => this.send()}>Send</button>

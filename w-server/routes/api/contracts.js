@@ -86,22 +86,14 @@ module.exports = (app) => {
     //   res.end('');
     //   return;
     // }
-    const services = ['Robo-advisor', 'Discretionary', 'Advisory']
-    const fees = manager.services.find(service => service.type === services.indexOf(request.service));
-    if (fees === undefined) {
-      res.status(500);
-      console.log('fees are undefined');
-      console.log(manager.services, request.service);
-      return;
-    }
     const deploying = await deployContract({
       _owner: investor.wallet_address,
       _manager: manager.wallet_address,
       _tradesMaxCount: request.revisions_amount,
-      _managmentFee: fees.managment_fee,
-      _performanceFee: fees.perfomance_fee,
-      _frontFee: fees.front_fee,
-      _exitFee: fees.exit_fee,
+      _managmentFee: request.managment_fee,
+      _performanceFee: request.perfomance_fee,
+      _frontFee: request.front_fee,
+      _exitFee: request.exit_fee,
       _endTime: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * request.period).getTime()),
       _mngPayoutPeriod: undefined,
       _prfPayoutPeriod: undefined
