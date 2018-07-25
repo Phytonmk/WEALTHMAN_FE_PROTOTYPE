@@ -25,7 +25,8 @@ const RequestSchema = mongoose.Schema({
   exit_fee: Number,
   managment_fee: Number,
   perfomance_fee: Number,
-  front_fee: Number
+  front_fee: Number,
+  smart_contract_events: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('Request', RequestSchema);
