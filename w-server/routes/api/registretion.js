@@ -308,6 +308,8 @@ module.exports = (app) => {
         userData = await Company.findOne({user: user.id});
         break;
     }
+    user.set({last_request: Date.now()});
+    await user.save();
     res.send({usertype: user.type, userData});
     res.end();
   });

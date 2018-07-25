@@ -52,7 +52,7 @@ const defaultState = {
       link: "dashboard"
     }, {
       label: "portfolio",
-      link: "requests",
+      link: "portfolios",
     }, {
       label: "marketplace",
       link: "managers"
@@ -60,8 +60,8 @@ const defaultState = {
       label: "account",
       link: "account"
     }, {
-      label: "reports & documents",
-      link: "managers"
+      label: "requests",
+      link: "requests"
     }, {
       label: "logout",
       link: "logout"

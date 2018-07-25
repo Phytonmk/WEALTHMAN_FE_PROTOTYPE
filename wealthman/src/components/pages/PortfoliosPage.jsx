@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
+import QRCode from 'qrcode.react';
 
 
 class PortfoliosPage extends Component {
@@ -77,7 +78,8 @@ class PortfoliosPage extends Component {
       {
         property: "smart",
         title: "Smart-cntract",
-        width: "280px",
+        width: "100px",
+        type: "unsortable"
       },
       // {
       //   property: "instrument",
@@ -131,7 +133,7 @@ class PortfoliosPage extends Component {
         id: portfolio.id,
         manager: (manager.name || '-') + ' ' + (manager.surname || ''),
         portfolio: portfolio.id,
-        smart: portfolio.smart_contract,
+        smart:  <QRCode style={{width: 65, height: 65}} value={portfolio.smart_contract} />/*portfolio.smart_contract*/,
         // instrument: alg.name,
         profit: <img src="graph.png" className="graph" />,
         // currency: portfolio.currency,

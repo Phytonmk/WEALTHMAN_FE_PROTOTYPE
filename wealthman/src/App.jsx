@@ -215,7 +215,7 @@ class App extends Component {
 
           <Route path="/manager-reg" component={ManagerRegPage}/>
           <Route path="/manager-detailing" component={ManagerDetailingPage}/>
-          <Route path="/withdraw/:id" component={WithdrawPage}/>
+          <Route path="/withdraw/:request" component={WithdrawPage}/>
           <Route path="/investors" component={InvestorsPage}/>
 
         </Switch>
