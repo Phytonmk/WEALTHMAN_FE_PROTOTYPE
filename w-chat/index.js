@@ -1,10 +1,19 @@
+const apiPort = 2905;
 global.chatsWSports = [{port: 2906, connected: []}];
 global.maxChatsOnPort = 32;
 
+/*
+  in App.jsx
+  
+          <Route path="/chats" component={ChatPage}/>
+          <Route path="/chat/:userId" component={ChatPage}/>
+
+*/
+
 console.log('\n\n   ╔══Waking chats server up═╗');
+const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
-const port = 2905;
 const app = express();
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -33,4 +42,4 @@ console.log('   ║    Almost  started...   ║');
 fs.readdirSync(__dirname + '/api/').forEach((file) => {
     require(`${__dirname}/api/${file.substr(0, file.indexOf('.'))}`)(app);
   });
-app.listen(port, () => console.log(`   ║Started on localhost:${port}║`))
+app.listen(apiPort, () => console.log(`   ║Started on localhost:${apiPort}║`))

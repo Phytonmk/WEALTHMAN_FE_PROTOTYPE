@@ -29,7 +29,7 @@ module.exports = (port) => {
     }
   });
 
-  const chats = {};
+  const usersOfThisWorker = [];
 
   wss.on('connection', (ws) => {
     ws.on('message', async (message) => {
@@ -51,20 +51,20 @@ module.exports = (port) => {
       const ids = [sender.id, reciever.id];
       ids.sort();
       const chat = await Chats.findOne({_id: message.chat, users: ids});
-      if (ws.chatId === undefined) {
-        if (chat === null) {
-          ws.send({success: false, err: '500, created chat not found'});
-          return;
-        }
-        if (chats[chat._id] === undefined) {
-          chats[chat._id] = [{id: sender.id, ws}];
-        } else if (chats[chat._id].length === 1 && chats[chat._id][0].id !== sender.id) {
-          chats[chat._id].push({id: sender.id, ws});
-          chats[chat._id].sort();
-        }
-        ws.chatId = chat._id;
+      if (chat === null) {
+        ws.send({success: false, err: '500, created chat not found'});
+        return;
+      }
+      // if (ws.chatId === undefined) {
+      //   if (chats[chat._id] === undefined) {
+      //     chats[chat._id] = [{id: sender.id, ws}];
+      //   } else if (chats[chat._id].length === 1 && chats[chat._id][0].id !== sender.id) {
+      //     chats[chat._id].push({id: sender.id, ws});
+      //     chats[chat._id].sort();
+      //   }
+      //   ws.chatId = chat._id;
         ws.send({success: true});
-      } else if (message.text) {
+      // } else if (message.text) {
         for (let userInChat of chats[ws.chatId]) {
           userInChat.ws.send({message: {
             text: message.text,
@@ -88,9 +88,9 @@ module.exports = (port) => {
         });
         await chat.save();
         await newMessage.save();
-      } else {
-        ws.send({success: false, err: '500, not handeled msg, maybe message text is missing'});
-      }
+      // } else {
+      //   ws.send({success: false, err: '500, not handeled msg, maybe message text is missing'});
+      // }
     });
     ws.on('close', () => {
       // do stuff

@@ -197,7 +197,8 @@ class App extends Component {
           <Route path="/investor register" component={InvestorRegistorPage}/>
           <Route path="/accept" render={() => this.renderAcceptPage()}/>
 
-          <Route path="/chats/:userId" component={ChatPage}/>
+          <Route path="/chats" component={ChatPage}/>
+          <Route path="/chat/:userId" component={ChatPage}/>
           <Route path="/decline/:id" component={DeclinePage}/>
           <Route path="/faq" render={() => this.renderFAQPage()}/>
           <Route path="/team" render={() => this.renderTeamPage()}/>

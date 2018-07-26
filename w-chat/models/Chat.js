@@ -5,6 +5,7 @@ var ChatScheme = mongoose.Schema({
   ws_port: Number,
   new_messages: {type: Number, default: 1}
   last_message: {
+    sender_pic: String,
     sender_name: String,
     date: Date,
     text_preview: String

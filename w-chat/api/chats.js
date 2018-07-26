@@ -56,7 +56,7 @@ module.exports = (app) => {
   //   res.status(200);
   //   res.end();
   // });
-  app.post('/chats-api/chats-list', (req, res, next) => {
+  app.post('/chats-api/chats-list', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
       res.status(403);
@@ -81,7 +81,7 @@ module.exports = (app) => {
     res.send(chats);
     res.end();
   });
-  app.post('/chats-api/get-messages', (req, res, next) => {
+  app.post('/chats-api/get-messages', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
       res.status(403);
@@ -103,8 +103,9 @@ module.exports = (app) => {
     res.send(messages);
     res.end();
   });
-  app.post('/chats-api/ws', (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken});
+  app.get('/chats-api/ws', async (req, res, next) => {
+    console.log(req);
+    const token = await Token.findOne({token: req.headers.accessToken});
     if (token === null) {
       res.status(403);
       res.end('');
@@ -116,7 +117,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const reciever = await User.findOne({id: req.body.to});
+    const reciever = await User.findOne({id: req.query.to});
     if (reciever === null) {
       res.status(404);
       res.end('');
