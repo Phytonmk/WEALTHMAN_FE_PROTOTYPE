@@ -1,100 +1,187 @@
-const WebSocket = require('ws');
+const crypto = require('crypto');
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const Message = require('./models/Message');
 const Chat = require('./models/Chat');
 const User = require('./models/User');
-const AccessToken = require('./models/accessToken');
+const Token = require('./models/accessToken');
 
+const getUserData = require('./getUserData');
+
+const salt = 'super salt'
+
+const genToken = (user) => {
+  const token = 
+    crypto.createHash('md5')
+    .update(
+      salt +
+      user.id +
+      salt +
+      (new Date).getTime() +
+      salt +
+      user.password_hash +
+      salt
+    ).digest("hex");
+  return token;
+}
 
 module.exports = (port) => {
-  const wss = new WebSocket.Server({
-    port,
-    perMessageDeflate: {
-      zlibDeflateOptions: { // See zlib defaults.
-        chunkSize: 1024,
-        memLevel: 7,
-        level: 3,
-      },
-      zlibInflateOptions: {
-        chunkSize: 10 * 1024
-      },
-      // Other options settable:
-      clientNoContextTakeover: true, // Defaults to negotiated value.
-      serverNoContextTakeover: true, // Defaults to negotiated value.
-      clientMaxWindowBits: 10,       // Defaults to negotiated value.
-      serverMaxWindowBits: 10,       // Defaults to negotiated value.
-      // Below options specified as default values.
-      concurrencyLimit: 10,          // Limits zlib concurrency for perf.
-      threshold: 1024,               // Size (in bytes) below which messages
-                                     // should not be compressed.
-    }
+  http.listen(port, function(){
+    console.log(`   ║  Scokets opened on ${port} ║`);
   });
 
-  const usersOfThisWorker = [];
+  const sessionTokens = {};
+  const usersOfThisWorker = {};
+  const userDataCache = {};
 
-  wss.on('connection', (ws) => {
+  io.on('connection', (ws) => {
     ws.on('message', async (message) => {
-      const token = await Token.findOne({token: message.accessToken});
-      if (token === null) {
-        ws.send({success: false, err: '403, not auth'});
-        return;
-      }
-      const sender = await User.findOne({user: token.user});
-      if (sender === null) {
-        ws.send({success: false, err: '403, not auth'});
-        return;
-      }
-      const reciever = await User.findOne({user: message.to});
-      if (reciever === null) {
-        ws.send({success: false, err: '404, another user not found'});
-        return;
-      }
-      const ids = [sender.id, reciever.id];
-      ids.sort();
-      const chat = await Chats.findOne({_id: message.chat, users: ids});
-      if (chat === null) {
-        ws.send({success: false, err: '500, created chat not found'});
-        return;
-      }
-      // if (ws.chatId === undefined) {
-      //   if (chats[chat._id] === undefined) {
-      //     chats[chat._id] = [{id: sender.id, ws}];
-      //   } else if (chats[chat._id].length === 1 && chats[chat._id][0].id !== sender.id) {
-      //     chats[chat._id].push({id: sender.id, ws});
-      //     chats[chat._id].sort();
-      //   }
-      //   ws.chatId = chat._id;
-        ws.send({success: true});
-      // } else if (message.text) {
-        for (let userInChat of chats[ws.chatId]) {
-          userInChat.ws.send({message: {
-            text: message.text,
-            date: new Date().getTime();
-            from: sender.id
-          }});
+      console.log(message);
+      if (message.type === 'auth') {
+        const token = await Token.findOne({token: message.accessToken});
+        if (token === null) {
+          ws.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 1'}});
+          return;
         }
-        chat.set({
-          last_message: {
-            sender_name: '--', // update it!
-            date: new Date(),
-            text_preview: message.text.substr(0, 100)
+        const user = await User.findOne({id: token.user});
+        if (user === null) {
+          ws.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 2'}});
+          return;
+        }
+        let senderData = await getUserData(user.id);
+        const wsToken = genToken(user);
+        sessionTokens[wsToken] = {
+          id: user.id,
+          name: senderData.name,
+          img: senderData.img
+        };
+        userDataCache[user.id] = senderData;
+        usersOfThisWorker[user.id] = ws;
+        ws.emit('message', {success: true, token: wsToken});
+      } else if (message.type === 'text_message') {
+        if (sessionTokens[message.token] === undefined) {
+          ws.emit('message', {success: false, err: {code: 403, text: 'not auth'}});
+          return;
+        }
+        if (userDataCache[message.to] === undefined) {
+          const userData = await getUserData(message.to);
+          if (userData.unsuccess) {
+            ws.emit('message', {success: false, err: {code: 404, text: 'user not found'}});
+            return;
+          }
+          userDataCache[message.to] = userData;
+        }
+
+        const last_message = {
+          sender_id: sessionTokens[message.token].id,
+          pics: [sessionTokens[message.token].img, userDataCache[message.to].img],
+          names: [sessionTokens[message.token].name, userDataCache[message.to].name],
+          date: Date.now(),
+          text_preview: message.text.substr(0, 100)
+        }
+        const ids = [sessionTokens[message.token].id, message.to];
+        if (sessionTokens[message.token].id > message.to) {
+          ids.reverse();
+          last_message.pics.reverse();
+          last_message.names.reverse();
+        }
+        let chat = await Chat.findOne({users: ids});
+        if (chat === null) {
+          chat = new Chat({users: ids, last_message});
+        } else {
+          chat.set({last_message});
+        }
+        let seenBy = {[sessionTokens[message.token].id]: true, [message.to * 1]: false};
+        const newMessage = new Message({
+          chat: chat.id,
+          from: sessionTokens[message.token].id,
+          to: message.to,
+          text: message.text,
+          seenBy
+        });
+        if (usersOfThisWorker[message.to] !== undefined)
+          usersOfThisWorker[message.to].emit('message', {
+            success: true,
+            newMessage: true,
+            chat: chat.id,
+            companionId: sessionTokens[message.token].id,
+            from: 'companion',
+            text: message.text,
+            date: Date.now()
+          });
+        ws.emit('message', {success: true, msgSent: message.frontendMsgId})
+        await newMessage.save();
+        await chat.save();
+      } else if (message.type === 'system_message') {
+        if (message.password !== '123456') {
+          message.emit('message', {success: false, err: {code: 403, text: 'wrong password'}});
+          return;
+        }
+        const users = message.firstId < message.secondId ? [message.firstId, message.secondId] : [message.secondId, message.firstId]
+        let chat = await Chat.findOne({users});
+        if (userDataCache[message.firstId] === undefined) {
+          const userData = await getUserData(message.firstId);
+          if (userData.unsuccess) {
+            ws.emit('message', {success: false, err: {code: 404, text: 'user 1 not found'}});
+            return;
+          }
+          userDataCache[message.firstId] = userData;
+        }
+        if (userDataCache[message.secondId] === undefined) {
+          const userData = await getUserData(message.secondId);
+          if (userData.unsuccess) {
+            ws.emit('message', {success: false, err: {code: 404, text: 'user 2 not found'}});
+            return;
+          }
+          userDataCache[message.secondId] = userData;
+        }
+        const last_message = {
+          sender_id: -1,
+          pics: [sessionTokens[message.firstId].img, userDataCache[message.secondId].img],
+          names: [sessionTokens[message.firstId].name, userDataCache[message.secondId].name],
+          date: Date.now(),
+          text_preview: message.text.substr(0, 100)
+        }
+        if (message.firstId > message.secondId) {
+          last_message.pics.reverse();
+          last_message.names.reverse();
+        }
+        if (chat === null) {
+          chat = new Chat({users, last_message});
+        } else {
+          chat.set({last_message});
+        }
+        const newMessage = new Message({
+          chat: chat.id,
+          from: -1,
+          to: -1,
+          text: message.text,
+          link: message.link,
+          seenBy: {
+            [firstId]: false,
+            [secondId]: false
           }
         });
-        const newMessage = new Message({
-          date: new Date(),
-          chat: chat._id,
-          from: sender.id,
-          to: reciever.id,
-          text: message.text
-        });
-        await chat.save();
+        for (let id of users)
+          if (usersOfThisWorker[id] !== undefined)
+            usersOfThisWorker[id].emit('message', {
+              success: true,
+              newMessage: true,
+              chat: chat.id,
+              companionId: -1,
+              from: 'system',
+              text: message.text,
+              date: Date.now()
+            });
         await newMessage.save();
-      // } else {
-      //   ws.send({success: false, err: '500, not handeled msg, maybe message text is missing'});
-      // }
+        await chat.save();
+      } else {
+        ws.emit('message', {success: false, err: {code: 406, text: 'wrong request'}});
+      }
     });
     ws.on('close', () => {
       // do stuff
     });
-    ws.send('server is ready');
   });
 }

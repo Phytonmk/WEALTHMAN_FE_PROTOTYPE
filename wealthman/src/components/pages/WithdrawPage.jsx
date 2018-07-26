@@ -11,7 +11,7 @@ class WithdrawPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      withdrawing_address: '',
+      contract_address: '',
       state: 0 // 1 - withdraw page, 2 - withdrawing process, 3 - withdrawed, 4 - error
     };
   }
@@ -26,12 +26,16 @@ class WithdrawPage extends Component {
         state = 2;
       else if (res.data.mayBeWithdrawed)
         state = 1;
-      this.setState({withdrawing_address: res.data.address || '', state});
+      this.setState({contract_address: res.data.address || '', state});
     });
   }
   withdraw() {
-    let contract = web3.eth.contract(portfolio_abi, this.state.withdrawing_address);
-    console.log(contract.Withdraw);
+    const contract = web3.eth.contract(portfolio_abi)
+    console.log(this.state.contract_address);
+    const myContractInstance = contract.at(this.state.contract_address);
+    myContractInstance.withdraw();
+    // let contract = web3.eth.contract(portfolio_abi, this.state.withdrawing_address);
+    // console.log(contract.Withdraw);
     // contract = contract.at(this.state.withdrawing_address);
     // const data = contract.Withdraw.encodeABI();//()//.getData('0x4B42125FA39AB444cB60B31AD5C1147A11E10667', console.log);
     // console.log(contract.Withdraw());
@@ -87,8 +91,8 @@ class WithdrawPage extends Component {
         <div className="container">
           <div className="box">
             <h2>Withdrawing portfolio #{this.props.match.params.request}</h2>
-              {this.state.withdrawing_address !== '' ? <div className="row-padding">
-                <p>All portfolio currencies will be withdrawed to <b>{this.state.withdrawing_address}</b></p>
+              {this.state.contract_address !== '' ? <div className="row-padding">
+                <p>All portfolio currencies will be withdrawed from smart contract <b>{this.state.contract_address}</b> to address which was specified before deploying</p>
               </div> : ''}
               <div className="row-padding">
                 {page}

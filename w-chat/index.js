@@ -1,6 +1,6 @@
 const apiPort = 2905;
-global.chatsWSports = [{port: 2906, connected: []}];
-global.maxChatsOnPort = 32;
+// global.chatsWSports = [{port: 2906, connected: []}];
+// global.maxChatsOnPort = 32;
 
 /*
   in App.jsx
@@ -39,6 +39,7 @@ mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlPar
     console.log('   ╚═════mongo connected═════╝\n\n')
 });
 console.log('   ║    Almost  started...   ║');
+require(__dirname + '/ws.js')(2906)
 fs.readdirSync(__dirname + '/api/').forEach((file) => {
     require(`${__dirname}/api/${file.substr(0, file.indexOf('.'))}`)(app);
   });

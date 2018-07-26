@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
 // import ProgressBar from '../ProgressBar.jsx'
 
+import { setReduxState } from '../../redux'
+
 import { api, getCookie, setCookie, setPage } from '../helpers';
 
 import questions from './registration/questions';

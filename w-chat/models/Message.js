@@ -8,7 +8,7 @@ var MessageScheme = mongoose.Schema({
   text: '',
   system: {type: Boolean, default: false},
   silent: {type: Boolean, default: false},
-  seen: {type: Boolean, default: false}
+  seenBy: Object
 });
 
 module.exports = mongoose.model('Message', MessageScheme);

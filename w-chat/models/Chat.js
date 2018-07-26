@@ -2,11 +2,10 @@ const mongoose = require('mongoose');
 
 var ChatScheme = mongoose.Schema({
   users: [Number],
-  ws_port: Number,
-  new_messages: {type: Number, default: 1}
   last_message: {
-    sender_pic: String,
-    sender_name: String,
+    sender_id: Number,
+    pics: [String, String],
+    names: [String, String],
     date: Date,
     text_preview: String
   }
