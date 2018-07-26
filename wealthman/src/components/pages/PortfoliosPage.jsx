@@ -6,6 +6,9 @@ import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
 import QRCode from 'qrcode.react';
 
+import Subheader from './../Subheader';
+import Select from './../Select';
+
 
 class PortfoliosPage extends Component {
   constructor(props) {
@@ -45,7 +48,6 @@ class PortfoliosPage extends Component {
   render() {
     if (!this.state.gotData)
       return <div className="box loading"><p>Loading</p></div>
-    let currentPage;
     let currencies = this.props.currentCurrencyPrices.map((c, i) =>
       <option key={i} value={c.name}>{c.name}</option>
     );
@@ -150,150 +152,66 @@ class PortfoliosPage extends Component {
             </button>
           </Link>,
         withdraw: <Link to={portfolio.smart_contract !== '-' ? "/withdraw/" + portfolio.request : '#'} className="no-margin">
-            <button className={portfolio.smart_contract !== '-' ? 'big-blue-button' : 'big-grey-button'}> 
+            <button className={portfolio.smart_contract !== '-' ? 'big-blue-button' : 'big-grey-button'}>
               Withdraw
             </button>
           </Link>
       };
     });
 
-    let statistics;
-
-    switch (this.props.currentPortfoliosPage) {
-      case "active":
-        currentPage = (
-          <div className="portfolios-page">
-            <h4>Active Portfolios</h4>
-            <Sortable2
-              filter={row => true/*row.name.toLowerCase().includes(this.state.searchName.toLowerCase())*/}
-              columns={titles}
-              data={portfolios}
-            />
-          </div>
-        );
-        break;
-      // case "archived":
-      //   currentPage = (
-      //     <div className="box">
-      //       <h4>Archived Portfolios</h4>
-      //       <Sortable2
-      //         titles={titles}
-      //         listings={portfolios}
-      //         setPage={setPage.bind(this)}
-      //         currencySelector={
-      //           <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-      //             {
-      //               this.props.currentCurrencyPrices.map((c, i) =>
-      //                 <option key={i} value={c.name}>{c.name}</option>
-      //               )
-      //             }
-      //           </select>
-      //         }
-      //       />
-      //     </div>
-      //   );
-      //   break;
-      // case "statistics":
-      //   currentPage = (
-      //     <div className="box">
-      //       <h4>Statistics</h4>
-      //       {statistics}
-      //     </div>
-      //   );
-      //   break;
-      // /* NEW ONES */
-      // case "proposed":
-      //   currentPage = (
-      //     <div className="box">
-      //       <h4>Proposed Portfolios</h4>
-      //       <Sortable2
-      //         titles={titles}
-      //         listings={portfolios}
-      //         setPage={setPage.bind(this)}
-      //         currencySelector={
-      //           <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-      //             {
-      //               this.props.currentCurrencyPrices.map((c, i) =>
-      //                 <option key={i} value={c.name}>{c.name}</option>
-      //               )
-      //             }
-      //           </select>
-      //         }
-      //       />
-      //     </div>
-      //   );
-      //   break;
-      //   case "revision":
-      //     currentPage = (
-      //       <div className="box">
-      //         <h4>Portfolios on revision</h4>
-      //         <Sortable2
-      //           titles={titles}
-      //           listings={portfolios}
-      //           setPage={setPage.bind(this)}
-      //           currencySelector={
-      //             <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-      //               {
-      //                 this.props.currentCurrencyPrices.map((c, i) =>
-      //                   <option key={i} value={c.name}>{c.name}</option>
-      //                 )
-      //               }
-      //             </select>
-      //           }
-      //         />
-      //       </div>
-      //     );
-      //     break;
-      //     case "recalculated":
-      //       currentPage = (
-      //         <div className="box">
-      //           <h4>Recalculated Portfolios</h4>
-      //           <Sortable2
-      //             titles={titles}
-      //             listings={portfolios}
-      //             setPage={setPage.bind(this)}
-      //             currencySelector={
-      //               <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-      //                 {
-      //                   this.props.currentCurrencyPrices.map((c, i) =>
-      //                     <option key={i} value={c.name}>{c.name}</option>
-      //                   )
-      //                 }
-      //               </select>
-      //             }
-      //           />
-      //         </div>
-      //       );
-      //       break;
-    }
+    let sortable = <Sortable2
+      filter={row => true}
+      columns={titles}
+      data={portfolios}
+    />;
 
     return (
-      <div>
-        <div className="second-header">
-          <div className="container">
-            <div className="title">
-              <h2>My Portfolios</h2>
-              <p className="grey">Total value</p>
-            </div>
-            <div className="description" style={{width: 300}}>
-              <h2>{/*(totalValue / currentCurrency.price).toFixed(3) + " " + currentCurrency.name*/}</h2>
-              <select value={this.props.currentCurrency} onChange={setCurrency.bind(this)}>
-                {currencies}
-              </select>
-            </div>
-          </div>
-        </div>
+      <div id="portfolios-page">
         <div className="container">
-          <div className="upper-tab">
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "proposed" })}>Proposed (Initial)</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "active" })}>Active</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "revision" })}>Revision</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "recalculated" })}>Recalculated</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "archived" })}>Archived</button>
-              <button className="transactions-link" onClick={() => setReduxState({ currentPortfoliosPage: "statistics" })}>Statistics</button>
+          <div className="my-requests">
+            <div className="column fourth">
+              <h2>My portfolios</h2>
+              <span>Total value</span>
+            </div>
+            <div className="column three-fourth">
+              <div className="row">
+                Change the current currency
+                <Select
+                  value={this.props.currentCurrency}
+                  options={this.props.currentCurrencyPrices.map(c => c.name)}
+                  setValue={setCurrency.bind(this)}
+                  width="100px"
+                />
+              </div>
+            </div>
           </div>
-          {currentPage}
         </div>
+        <Subheader data={[
+          {
+            header: "Proposed (initial)",
+            content: sortable
+          },
+          {
+            header: "Active",
+            content: sortable
+          },
+          {
+            header: "Revision",
+            content: sortable
+          },
+          {
+            header: "Recalculated",
+            content: sortable
+          },
+          {
+            header: "Archived",
+            content: sortable
+          },
+          {
+            header: "Statistics",
+            content: sortable
+          },
+        ]} />
       </div>
     );
   }

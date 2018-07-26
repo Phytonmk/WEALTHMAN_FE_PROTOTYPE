@@ -1,46 +1,5 @@
-@font-face
-  font-family: "Calibre"
-  src: url("../fonts/calibre_light.woff")
-  font-weight: 200
-  font-style: normal
-
-
-@font-face
-  font-family: "Calibre"
-  src: url("../fonts/calibre_regular.woff")
-  font-weight: 700
-  font-style: normal
-
-
-@font-face
-  font-family: "Calibre"
-  src: url("../fonts/calibre_medium.woff")
-  font-weight: 1000
-  font-style: normal
-
-
-@import url('https://fonts.googleapis.com/css?family=Roboto&subset=cyrillic')
-
-@font-face
-  font-family: "Calibre"
-  src: url("../fonts/calibre_regular_italic.woff")
-  font-weight: normal
-  font-style: italic
-
-
-@font-face
-  font-family: "Gilroy"
-  src: url("../fonts/Gilroy/GilroyLight.woff")
-
-
-@font-face
-  font-family: "Gilroy-ExtraBold"
-  src: url("../fonts/Gilroy/GilroyExtraBold.woff")
-
-
 body, html
   box-sizing: border-box
-  font-family: Roboto
   font-size: 18px
   line-height: 23px
   color: #161338
@@ -99,16 +58,6 @@ li.link
 .blue-text
   color: #095074
   cursor: pointer
-
-.container
-  width: 1266px
-  height: 100%
-  // overflow-y: auto
-  margin: auto
-  margin-top: 0
-  margin-bottom: 0
-  // overflow: hidden
-  // position: relative
 
 .content
   flex-grow: 1
@@ -225,175 +174,51 @@ label
   small
     margin-right: 10px
 
-header.header
-  height: 90px
-  background-color: #071e40
-  position: relative
-  flex-shrink: 0
-  z-index: 10
-  border-bottom: 1px solid rgba(256, 256, 256, 0.15)
-  &::before
-    width: 100%
-    height: 90px
-    object-fit: contain
-    mix-blend-mode: screen
-    background: url("../img/21-screen.png")
-    position: absolute
-    content: ""
-    top: 0
-    z-index: 10
-  .contents
-    position: absolute
-    width: 100%
-    height: 100%
-    z-index: 20
-    overflow: visible
-
 img.logo
   height: 15px
   width: auto
   margin-top: 36px
   cursor: pointer
 
-h1
-  font-size: 40px
-  line-height: 48px
-  weight: 300
-  margin: 0 0 15px
-
-h2
-  font-size: 30px
-  line-height: 39px
-  margin: 0
-
-.box h2
-  margin-bottom: 30px
-
-h3
-  font-size: 24px
-  line-height: 29px
-  margin-bottom: 12px
-  &.high
-    line-height: 40px
-    margin: 6px 0 24px
-
-h4
-  font-size: 20px
-  line-height: 25px
-  margin-bottom: 12px
+// h1
+//   font-size: 40px
+//   line-height: 48px
+//   weight: 300
+//   margin: 0 0 15px
+//
+// h2
+//   font-size: 30px
+//   line-height: 39px
+//   margin: 0
+//
+// .box h2
+//   margin-bottom: 30px
+//
+// h3
+//   font-size: 24px
+//   line-height: 29px
+//   margin-bottom: 12px
+//   &.high
+//     line-height: 40px
+//     margin: 6px 0 24px
+//
+// h4
+//   font-size: 20px
+//   line-height: 25px
+//   margin-bottom: 12px
 
 .white
   color: white
   padding-bottom: 20px
 
-header.header ul.links
-  z-index: 20
-  margin-top: 30px
-  li.link
-    a.link
-      margin-right: 40px
-      color: rgba(255, 255, 255, 0.54) !important
-      text-decoration: none
-      font-size: 15px
-      line-height: 1.2
-
 .no-margin
   margin: 0 !important
-
-header.header
-  ul.links li.link a.link:hover
-    color: white
-  &.transparent ul.links li.link a.link
-    color: #161338
-    &:hover
-      border-bottom: 2px solid #48a8da
-
-.footer a.login
-  height: 40px
-  margin-top: 5px
-  background-color: #f4f4f4
-  color: #48a8da
-  border: 1px solid #48a8da
-  padding: 8px 25px
-  margin-right: 12px
-  font-size: 16px
-  color: white
-  background-color: #193665
-  text-decoration: none
-
-header.header a
-  &.login
-    height: 40px
-    margin-top: 5px
-    background-color: #f4f4f4
-    color: #48a8da
-    border: 1px solid #48a8da
-    padding: 8px 25px
-    margin-right: 12px
-    font-size: 16px
-    color: white
-    background-color: #193665
-    text-decoration: none
-    &:hover
-      background-color: #48a8da
-      color: white
-  &.invest
-    height: 40px
-    margin-top: 5px
-    color: white
-    background-color: #48a8da
-    border-color: #48a8da
-    padding: 8px 25px
-    font-size: 16px
-    &:hover
-      background-color: #193665
-
-.footer
-  width: 100%
-  height: 111px
-  padding-top: 31px
-  background-color: rgba(0, 0, 0, 0)
-  flex-shrink: 0
-  border-top: 1px solid #dfe4e8
-  .big-blue-button
-    margin-right: 40px
-    float: right
-  span
-    font-size: 14px
-    margin-top: 10px
-    float: left
-  a
-    width: auto
-
-.footer-white
-  width: 100%
-  border-top: 1px solid #c2c2c2
-  a
-    margin-right: 20px
-    color: #505050
-    text-decoration: none
-    &:hover
-      color: #428bca
-  .footer-container
-    height: auto
-    padding: 10px 0
-    &.padding
-      padding: 30px 0
 
 .border-bottom
   border-bottom: 1px solid #d2d7da
 
 .logged
   background-color: #f4f4f4 !important
-
-.footer-container
-  width: calc(1140px * .8 - 40px)
-  height: 224px
-  margin-left: calc((100% - (1140px * .8 - 40px)) / 2 + 40px)
-  padding-top: 20px
-  color: #747386
-  font-size: 16px
-  line-height: 21px
 
 .z1
   width: 75%
@@ -406,56 +231,8 @@ header.header a
   width: 25%
   float: left
 
-.footer-container .half
-  padding-left: 40px
-
-.footer
-  h4
-    font-size: 19px
-    line-height: 22px
-    color: white
-  a.login
-    background-color: rgba(0, 0, 0, 0)
-    border: none
-    color: white
-    padding: 0
-  button.link
-    height: 30px
-    color: white
-    text-decoration: none
-    float: left
-    font-size: 13px
-  a
-    &.login
-      height: 30px
-      color: white
-      text-decoration: none
-      float: left
-      font-size: 13px
-    height: 30px
-    color: white
-    text-decoration: none
-    float: left
-    font-size: 13px
-  ul.links
-    margin-bottom: 36px
-    li.link
-      padding: 12px 0 0 0
-      button.link
-        margin-right: 60px
-        font-size: 18px
-        line-height: 23px
-        color: #e6e6e6
-        font-weight: 600
-
 .logged ul.links li.link button.link
   color: #747386 !important
-
-.footer small
-  font-size: 16px
-  line-height: 21px
-  color: #b7b7c0
-  font-weight: 200px
 
 .logged small
   font-size: 12px !important

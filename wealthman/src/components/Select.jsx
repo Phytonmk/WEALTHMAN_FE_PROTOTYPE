@@ -46,7 +46,7 @@ class Select extends Component {
       return "error: " + this.state.error;
     return (
       <div
-        className={"select " + (this.props.className ? this.props.className : "")}
+        className="select"
         // style={{width: (this.props.width ? this.props.width : "200px")}}
         onClick={() => this.setState({opened: !this.state.opened})}
       >

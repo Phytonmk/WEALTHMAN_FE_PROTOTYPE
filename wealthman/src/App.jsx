@@ -5,11 +5,10 @@ import { store, setReduxState } from './redux/index';
 import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
 import Sortable from './components/Sortable.jsx';
-import Social from './components/Social';
 
-import logoWhite from './img/logo.svg';
-import logoBlue from './img/logo_blue.svg';
 import './css/main.sass';
 import './css/design.sass';
 
@@ -48,6 +47,7 @@ import CompanyManagmentPage from './components/pages/CompanyManagmentPage';
 import InviteManagerPage from './components/pages/InviteManagerPage';
 import ChatPage from './components/pages/ChatPage';
 import InvestorsPage from './components/pages/InvestorsPage';
+import FAQPage from './components/pages/FAQPage';
 
 //
 
@@ -62,23 +62,6 @@ class App extends Component {
       this.forceUpdate();
     });
     auth();
-  }
-
-
-  logout() {
-    api.post('logout')
-      .then(() => {
-        setReduxState({
-          user: -1,
-          userData: {}
-        })
-        // auth(() => {
-        //   window.location.reload(false);
-        //     // this.state = store.getState();
-        //     // this.forceUpdate();
-
-        // });
-      });
   }
 
   setPage(page, id) {
@@ -154,70 +137,69 @@ class App extends Component {
     return (
         <Switch>
 
-          <Route exact path="/" component={this.state.user === -1 || this.state.user === 0 ? ManagersPage : RequestsPage}/>
-          <Route path="/login" component={loginPage}/>
-          <Route path="/totallydifferentlogin"  component={login2Page}/>
-          <Route path="/account" component={AccountPage}/>
-          <Route path="/about" render={() => this.renderAboutUsPage()}/>
-          <Route path="/origin" render={() => this.renderOriginPage()}/>
-          <Route path="/invest" render={() => this.renderInvestPage()}/>
-          <Route path="/dashboard" component={DashboardPage}/>
+          <Route exact path="/" component={this.state.user === -1 || this.state.user === 0 ? ManagersPage : RequestsPage} />
+          <Route path="/login" component={loginPage} />
+          <Route path="/totallydifferentlogin"  component={login2Page} />
+          <Route path="/account" component={AccountPage} />
+          <Route path="/about" render={() => this.renderAboutUsPage()} />
+          <Route path="/origin" render={() => this.renderOriginPage()} />
+          <Route path="/invest" render={() => this.renderInvestPage()} />
+          <Route path="/dashboard" component={DashboardPage} />
 
-          <Route path="/legal" render={() => this.renderLegalPage()}/>
-          <Route path="/methodology" render={() => this.renderMethodologyPage()}/>
-          <Route path="/press" render={() => this.renderPressPage()}/>
-          <Route path="/help center" render={() => this.renderHelpCenterPage()}/>
-          <Route path="/blog" render={() => this.renderBlogPage()}/>
+          <Route path="/legal" render={() => this.renderLegalPage()} />
+          <Route path="/methodology" render={() => this.renderMethodologyPage()} />
+          <Route path="/press" render={() => this.renderPressPage()} />
+          <Route path="/help center" render={() => this.renderHelpCenterPage()} />
+          <Route path="/blog" render={() => this.renderBlogPage()} />
 
-          <Route path="/company/:id" component={ManagerPage}/>
-          <Route path="/manager/:id" component={ManagerPage}/>
-          <Route path="/company" component={CompanyManagmentPage}/>
-          <Route path="/participating/:manager" component={InviteManagerPage}/>
-          <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)}/>
-          <Route path="/portfolio/:id" component={PortfolioPage}/>
-          <Route path="/request/:id" component={RequestPage}/>
+          <Route path="/company/:id" component={ManagerPage} />
+          <Route path="/manager/:id" component={ManagerPage} />
+          <Route path="/company" component={CompanyManagmentPage} />
+          <Route path="/participating/:manager" component={InviteManagerPage} />
+          <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)} />
+          <Route path="/portfolio/:id" component={PortfolioPage} />
+          <Route path="/request/:id" component={RequestPage} />
 
-          <Route path="/portfolios" component={PortfoliosPage}/>
-          <Route path="/managers" component={ManagersPage}/>
-          <Route path="/company-managers" component={ManagersPage}/>
-          <Route path="/algorythms" render={() => this.renderAlgorythmsPage()}/>
-          <Route path="/requests" component={RequestsPage}/>
+          <Route path="/portfolios" component={PortfoliosPage} />
+          <Route path="/managers" component={ManagersPage} />
+          <Route path="/company-managers" component={ManagersPage} />
+          <Route path="/algorythms" render={() => this.renderAlgorythmsPage()} />
+          <Route path="/requests" component={RequestsPage} />
 
-          <Route path="/reg-or-login" component={RegOrLoginForNewInvestorPage}/>
-          <Route path="/static form" component={StaticFormPage}/>
-          <Route path="/dynamic form" render={() => this.renderDynamicFormPage()}/>
-          <Route path="/agreement" component={AgreementPage}/>
-          <Route path="/signagreement/:id" component={SignAgreementPage}/>
-          <Route path="/thanks" render={() => this.renderThanksPage()}/>
-          <Route path="/thanks2" render={() => this.renderThanks2Page()}/>
-          <Route path="/register" component={RegisterPage}/>
-          <Route path="/money/:id" component={MoneyPage}/>
-          <Route path="/kyc" component={KYCPage}/>
-          <Route path="/kyc/:manager/:id" component={KYCPage}/>
-          <Route path="/investor register" component={InvestorRegistorPage}/>
-          <Route path="/accept" render={() => this.renderAcceptPage()}/>
+          <Route path="/reg-or-login" component={RegOrLoginForNewInvestorPage} />
+          <Route path="/static form" component={StaticFormPage} />
+          <Route path="/dynamic form" render={() => this.renderDynamicFormPage()} />
+          <Route path="/agreement" component={AgreementPage} />
+          <Route path="/signagreement/:id" component={SignAgreementPage} />
+          <Route path="/thanks" render={() => this.renderThanksPage()} />
+          <Route path="/thanks2" render={() => this.renderThanks2Page()} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/money/:id" component={MoneyPage} />
+          <Route path="/kyc" component={KYCPage} />
+          <Route path="/kyc/:manager/:id" component={KYCPage} />
+          <Route path="/investor register" component={InvestorRegistorPage} />
+          <Route path="/accept" render={() => this.renderAcceptPage()} />
 
-          <Route path="/chats" component={ChatPage}/>
-          <Route path="/chat/:userId" component={ChatPage}/>
-          <Route path="/decline/:id" component={DeclinePage}/>
-          <Route path="/faq" render={() => this.renderFAQPage()}/>
-          <Route path="/team" render={() => this.renderTeamPage()}/>
-          <Route path="/contact" render={() => this.renderContactPage()}/>
-          <Route path="/investor-ua" render={() => this.renderInvestorUserAgreementPage()}/>
-          <Route path="/manager-ua" render={() => this.renderManagerUserAgreementPage()}/>
+          <Route path="/chats" component={ChatPage}/>?		  <Route path="/chat/:userId" component={ChatPage}/>
+          <Route path="/decline/:id" component={DeclinePage} />
+          <Route path="/faq" component={FAQPage} />
+          <Route path="/team" render={() => this.renderTeamPage()} />
+          <Route path="/contact" render={() => this.renderContactPage()} />
+          <Route path="/investor-ua" render={() => this.renderInvestorUserAgreementPage()} />
+          <Route path="/manager-ua" render={() => this.renderManagerUserAgreementPage()} />
 
-          <Route path="/email" render={() => this.renderEmailPage()}/>
-          <Route path="/metamask" render={() => this.renderMetamaskPage()}/>
-          <Route path="/logout" component={ManagersPage}/>
+          <Route path="/email" render={() => this.renderEmailPage()} />
+          <Route path="/metamask" render={() => this.renderMetamaskPage()} />
+          <Route path="/logout" component={ManagersPage} />
 
-          <Route path="/portfoliocreation/:id" component={PortfolioCreationPage}/>
-          <Route path="/signagreement" component={AgreementPage}/>
-          <Route path="/supported-browsers" render={() => this.renderSupportedBrowsersPage()}/>
+          <Route path="/portfoliocreation/:id" component={PortfolioCreationPage} />
+          <Route path="/signagreement" component={AgreementPage} />
+          <Route path="/supported-browsers" render={() => this.renderSupportedBrowsersPage()} />
 
-          <Route path="/manager-reg" component={ManagerRegPage}/>
-          <Route path="/manager-detailing" component={ManagerDetailingPage}/>
-          <Route path="/withdraw/:request" component={WithdrawPage}/>
-          <Route path="/investors" component={InvestorsPage}/>
+          <Route path="/manager-reg" component={ManagerRegPage} />
+          <Route path="/manager-detailing" component={ManagerDetailingPage} />
+          <Route path="/withdraw/:request" component={WithdrawPage} />
+          <Route path="/investors" component={InvestorsPage} />
 
         </Switch>
     );
@@ -904,160 +886,23 @@ class App extends Component {
     //   loading: Loading,
     // });
 
-    let headerLinks = [];
-    switch(this.state.user) {
-      case -1:
-        headerLinks = this.state.unloggedLinks;
-        break;
-      case 0:
-        headerLinks = this.state.loggedInvestorLinks;
-        break;
-      case 1:
-        headerLinks = this.state.loggedManagerLinks;
-        break;
-      case 2:
-        headerLinks = this.state.loggedSuplierLinks;
-        break;
-      case 3:
-        headerLinks = this.state.loggedCompanyLinks;
-        break;
-    }
-    headerLinks = headerLinks.map((link, i) => {
-      if (link.link.includes("https://"))
-        return (
-          <li key={i} className="link">
-            <a href={link.link} target="_blank" className="link">
-              {capitalize(link.label)}
-            </a>
-          </li>
-        );
-      return (
-        <li key={i} className="link" onClick={() => this.setPage(link.link)}>
-          <Link to={"/" + link.link} className={link.link == "login" || link.link == "register" ? "big-blue-button" : "link"} onClick={() => {(link.link == "logout" ? this.logout() : "")}}>
-            {capitalize(link.label)}
-          </Link>
-        </li>
-      );
-    });
-    var logo = this.state.user == -1 ? logoBlue : logoWhite;
-
-    var logButton;
-    if (this.state.user !== -1)
-      logButton = (
-        <Link to={"#"} className="login" onClick={() => this.logout()}>
-          {/* Log out */}
-        </Link>
-      );
-    else
-      logButton = (
-        <Link to={"/totallydifferentlogin"} className="login" onClick={() => this.setPage("login")}>
-          {capitalize("login")}
-        </Link>
-      );
-    var footer = this.state.currentPage == "login" ?
-    <div className="footer-white">
-      <div className="row border-bottom">
-        <div className="footer-container">
-          <Link to="/" onClick={() => this.setPage("index")}>
-            Home
-          </Link>
-          <Link to="/contact" onClick={() => this.setPage("contact")}>
-            Contact us
-          </Link>
-        </div>
-      </div>
-      <div className="row border-bottom">
-        <div className="footer-container padding">
-          Portfolio management and advisor services you offer with the use of software of Wealthman, Ltd. Please reference our Terms & Conditions and Privacy Policy. Unless otherwise specified, all return figures shown are for illustrative purposes only, and are not actual customer or model returns. Actual returns will vary greatly and depend on personal and market circumstances.
-        </div>
-      </div>
-      <div className="row">
-        <div className="footer-container text-center">
-          Patent Pending - © 2018 Wealthman, Ltd. All Rights Reserved
-        </div>
-      </div>
-    </div>
-    :
-    <div className="footer">
-      <div className="footer-container">
-        <div className={"z1" + (this.state.user != -1 ? " full" : "")}>
-            <div className="third">
-              <h4>Documents</h4>
-              <Link to={this.state.user == 1 ? "/manager-ua" : "/investor-ua"} onClick={() => this.setPage(this.state.user == 1 ? "manager-ua" : "investor-ua")}>
-                User Agreement
-              </Link>
-              <a href="https://wealthman.io/faq/">FAQ</a>
-              <a href="https://github.com/Wealthman">GitHub</a>
-            </div>
-            <div className="third">
-              <h4>Community</h4>
-              <a className="telegram" href="https://t.me/wealthman_global">Telegram</a>
-              <a className="bitcointalk" href="https://bitcointalk.org/index.php?topic=2006205">Bitcointalk</a>
-              <a className="facebook" href="https://www.facebook.com/WealthMan.io/">Facebook</a>
-              <a className="instagram" href="https://www.instagram.com/wealthman_platform/">Instagram</a>
-            </div>
-            <div className="third">
-              <h4>Blog</h4>
-              <a className="medium" href="https://medium.com/@Wealthman">Medium</a>
-              <a className="reddit" href="https://www.reddit.com/r/Wealthman/">Reddit</a>
-              <a className="twitter" href="https://twitter.com/wealthman_io">Twitter</a>
-              <a className="linkedin" href="https://www.linkedin.com/company/wealthman-io">Linkedin</a>
-              <a className="youtube" href="https://www.youtube.com/c/wealthman">YouTube</a>
-            </div>
-            {/* <div className="half">
-              <h4>Wealthman</h4>
-              <a href="https://wealthman.io/#about">About</a>
-              <a href="https://wealthman.io/team/">Team</a>
-              <a href="https://wealthman.io/contact/">Contact</a>
-            </div> */}
-        </div>
-        <div className={"z2" + (this.state.user != -1 ? " hidden" : "")}>
-          <h4>Wealth Managers</h4>
-          <Link to="/manager-reg">Register as manager</Link>
-        </div>
-      </div>
-      <div className="row text-center white small">
-        Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
-      </div>
-    </div>;
-
     return (
       <Router>
         <article className="page">
-          <header className="header">
-            <div className="contents">
-              <div className="container">
-                <Link to={(this.state.user == -1 ? "/managers" : "/portfolios")} onClick={() => this.setPage(this.state.user == -1 ? "managers" : "portfolios")}>
-                  <img src={logoWhite} className="logo"/>
-                </Link>
-                <ul className="links right">
-                  {headerLinks}
-                </ul>
-              </div>
-            </div>
-          </header>
+          <Header
+            user={this.state.user}
+            unloggedLinks={this.state.unloggedLinks}
+            loggedInvestorLinks={this.state.loggedInvestorLinks}
+            loggedManagerLinks={this.state.loggedManagerLinks}
+            loggedSuplierLinks={this.state.loggedSuplierLinks}
+            loggedCompanyLinks={this.state.loggedCompanyLinks}
+          />
           <div className="content">
             {this.renderPage()}
           </div>
-          <div className="footer">
-            <div className="container">
-              <span>
-                Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
-              </span>
-              <div className="right">
-                <Social links={["https://t.me/wealthman_global", "https://www.facebook.com/WealthMan.io/", "https://www.instagram.com/wealthman.io/", "https://bitcointalk.org/index.php?topic=2006205"]} />
-              </div>
-              <Link to={"https://wealthman.io/contact/"} className="right">
-                <button className="big-blue-button">CONTACT US</button>
-              </Link>
-              <Link to={"faq"} className="right">
-                <button className="big-blue-button">FAQ</button>
-              </Link>
-              {this.state.user === -1 ? <Link to={"/manager-reg"} className="right">
-                <button className="big-blue-button">Registration for managers</button>
-              </Link> : ''}
-            </div>
-          </div>
+          <Footer
+            user={this.state.user}
+          />
         </article>
       </Router>
     );

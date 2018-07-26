@@ -71,9 +71,9 @@ class ManagerPage extends Component {
                     <button className="big-blue-button right">Apply to be in</button>
                   </Link>
     return (
-      <div>
+      <div id="manager-page">
         <div className="new-long-header" />
-        <div className="manager-container">
+        <div className="container">
           <div className="top-row">
             <div className="circle left">
               <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="avatar"/>
@@ -139,7 +139,7 @@ class ManagerPage extends Component {
               </div>
             </div>)}
           </div>
-          <div className="second-column">
+          <div className="second-column right">
             <div className="box">
               {manager.company_name ?
               <div className="row">

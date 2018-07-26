@@ -1,0 +1,33 @@
+article.accordion
+  width: 100%
+  min-height: 73px
+  padding: 12px 0 12px 30px
+  border-bottom: 1px solid #dfe4e8
+  &.last
+    border-bottom: 0px
+  & > h2
+    color: #39a9dc
+    line-height: 49px
+    cursor: pointer
+    position: relative
+    width: 100%
+    &::after
+      position: absolute
+      content: ""
+      background: url("../img/buttons/arrow-icon.svg")
+      width: 16px
+      height: 8px
+      right: 27px
+      top: 21px
+      transition: transform .5s
+  &.opened > h2::after
+    transform: rotate(180deg)
+  & > .content
+    max-height: 0
+    // overflow-y: hidden
+    padding-bottom: 0
+    transition: max-height .5s, padding-bottom .5s
+  &.opened > .content
+    max-height: 3000px
+    padding-bottom: 14px
+    // overflow-y: auto
