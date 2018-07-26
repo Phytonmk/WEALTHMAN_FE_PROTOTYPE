@@ -101,7 +101,6 @@ class ManagersPage extends Component {
       {
         property: "rating",
         title: "Success rate",
-        // width: "55px",
         width: "85px",
         type: "number",
       },
@@ -109,13 +108,11 @@ class ManagersPage extends Component {
         property: "min",
         title: "min. investment",
         width: "103px",
-        // width: "104px",
         type: "number",
       },
       {
         property: "aum",
         title: "AUM, mln $",
-        // width: "32px",
         width: "82px",
         type: "number",
         tooltip: "Assets Under Management in millions of $"
@@ -123,21 +120,18 @@ class ManagersPage extends Component {
       {
         property: "services",
         title: "Services",
-        // width: "73px",
         width: "150px",
         type: "unsortable",
       },
       {
         property: "perfomance",
         title: "performance fee",
-        // width: "73px",
         width: "103px",
         type: "number",
       },
       {
         property: "clients",
         title: "Number of clients",
-        // width: "52px",
         width: "82px",
       },
       {
@@ -168,10 +162,12 @@ class ManagersPage extends Component {
           type: "unsortable",
         })
     }
-    let sortableManagers = this.state.offers.map((manager, i) => {
+    let sortableManagers = this.state.offers.map((manager, index) => {
       const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '');
       return {
-        id: manager.id,
+        // id: manager.id,
+        // почему-то айдишники иногда совпадают, из-за этого рисуется некорректно
+        id: index,
         img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id} className="no-margin no-link-style">
@@ -183,7 +179,6 @@ class ManagersPage extends Component {
           render: <div className="rating">{manager.successRate}</div>,
           value: manager.successRate
         },
-        //rename this variable everywhere !!!
         min: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].min || '?'} $
@@ -199,7 +194,6 @@ class ManagersPage extends Component {
           </li>)}</ul>,
           value: manager.services.map(service => filters[service.type].link).reduce((a, b) => a + " " + b)
         },
-        //rename this variable everywhere !!!
         clients: manager.clients,
         perfomance: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
@@ -224,60 +218,67 @@ class ManagersPage extends Component {
       };
     });
 
-    // var filtersMapped = filters.map((filter, i) =>
-    //   <button key={i} className={"blue-link left" + (this.props.managersFilter == filter.link ? " active" : "")} onClick={() => setReduxState({managersFilter: filter.link})}>
-    //     {filter.link}
-    //   </button>
-    // );
-    let filtersMapped = filters.map((filter, i) =>
-      <button key={i} className={"blue-link left" + (this.state.filter == filter.link ? " active" : "")} onClick={() => this.load(filter.link)}>
-        {filter.link}
-      </button>
-    );
-
     return (
-      <div>
+      <div id="managers-page">
         <article className="long-text-input">
           <div className="container">
             <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
           </div>
         </article>
         <div className="container">
-            <div className="row">
-              <div className="advisors">
-                <div className="row">
-                  <span>Sort by</span>
-                  {/* {filtersMapped} */}
-                  <Select
-                    value={this.state.filter}
-                    options={filters.map(filter => filter.link)}
-                    setValue={(value) => this.setState({filter: value})}
-                    width="135px"
-                  />
-                </div>
-                <br />
-                <div className="row margin">
-                  <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
-                    Invest on Autopilot
-                  </Link>
-                </div>
+          <div className="row">
+            <div className="advisors">
+              <div className="row">
+                <span>Sort by</span>
+                <Select
+                  value={this.state.filter}
+                  options={filters.map(filter => filter.link)}
+                  setValue={(value) => this.setState({filter: value})}
+                  width="135px"
+                />
               </div>
-              <div className="card-3">
-                <div className="img" />
-                <span>Total AUM, min $</span>
-                <h4>{this.state.totalAum}</h4>
-              </div>
-              <div className="card-2">
-                <div className="img" />
-                <span>Total managers</span>
-                <h4>{this.state.totalManagers}</h4>
-              </div>
-              <div className="card-1">
-                <div className="img" />
-                <span>Total investors</span>
-                <h4>{this.state.totalInvestors}</h4>
+              <br />
+              <div className="row margin">
+                <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
+                  Invest on Autopilot
+                </Link>
               </div>
             </div>
+            <div className="card-3">
+              <div className="img" />
+              <span>Total AUM, min $</span>
+              {/* <h4>{this.state.totalAum}</h4> */}
+              <h4>
+                {
+                  this.state.offers.length > 0 ?
+                  this.state.offers
+                  .map(manager => manager.aum)
+                  .reduce((a, b) => a + b)
+                  : ""
+                }
+              </h4>
+            </div>
+            <div className="card-2">
+              <div className="img" />
+              <span>Total managers</span>
+              {/* <h4>{this.state.totalManagers}</h4> */}
+              <h4>{this.state.offers.length}</h4>
+            </div>
+            <div className="card-1">
+              <div className="img" />
+              <span>Total investors</span>
+              {/* <h4>{this.state.totalInvestors}</h4> */}
+              <h4>
+                {
+                  this.state.offers.length > 0 ?
+                  this.state.offers
+                  .map(manager => manager.clients)
+                  .reduce((a, b) => a + b)
+                  : ""
+                }
+              </h4>
+            </div>
+          </div>
         </div>
         <div className="container">
           {this.state.gotData ?

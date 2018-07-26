@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 
 import '../css/Search.sass';
 
+{/*
+  //  //  //              USAGE EXAMPLE              //  //  //
+
+<Search
+  // (REQUIRED) value to show
+  value={this.state.searchName}
+  //(REQUIRED) function that sets the value
+  setValue={(value) => this.setState({searchName: value})}
+/>
+*/}
+
 class Search extends Component {
   constructor(props) {
     super(props);

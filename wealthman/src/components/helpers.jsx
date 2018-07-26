@@ -116,7 +116,7 @@ const tryLogin = (login, password) => {
 const setPage = (page, id) => {
   var previousPages = store.getState().previousPages.slice();
   // previousPages.push(store.getState().currentPage);
-  previousPages.push(document.location.hash.substr(2)); // substr(2) to remove #/ in begining  
+  previousPages.push(document.location.hash.substr(2)); // substr(2) to remove #/ in begining
   if (typeof id !== "undefined")
     switch (page) {
       case "manager":
@@ -160,9 +160,14 @@ const newLines = (string) => {
   return <div style={style}>{paragraphs.map((paragraph, i) => <p style={style} key={i}>{paragraph}</p>)}</div>;
 }
 
-const setCurrency = (event) => {
+// const setCurrency = (event) => {
+//   setReduxState({
+//     currentCurrency: event.target.value,
+//   });
+// }
+const setCurrency = (name) => {
   setReduxState({
-    currentCurrency: event.target.value,
+    currentCurrency: name,
   });
 }
 
@@ -179,7 +184,7 @@ const previousPage = () => {
   })
   const url = '#/' + currentPage;
   console.log(`Moving to page ${url}`);
-  document.location.href = url; 
+  document.location.href = url;
 }
 
 export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage};

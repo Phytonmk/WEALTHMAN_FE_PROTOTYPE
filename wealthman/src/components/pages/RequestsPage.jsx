@@ -80,7 +80,7 @@ class RequestsPage extends Component {
       {
         property: "name",
         title: "Manager name",
-        width: "90px",
+        width: "156px",
       },
       {
         property: "date",
@@ -98,13 +98,13 @@ class RequestsPage extends Component {
             width="135px"
           />
         </div>,
-        width: "150px",
+        width: "130px",
         type: "unsortable"
       },
       {
         property: 'value',
         title: 'value',
-        width: '50px'
+        width: '70px'
       },
       {
         property: 'service',
@@ -215,8 +215,8 @@ class RequestsPage extends Component {
     });
 
     return (
-      <div>
-        <div className="requests-container">
+      <div id="requests-page">
+        <div className="container">
           <div className="my-requests">
             <div className="column fourth">
               <h2>My requests</h2>
