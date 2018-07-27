@@ -13,52 +13,52 @@ class PortfoliosPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gotData: false
+      gotData: false,
+      portfolios: [],
+      requests: [],
+      currentCurrencyPrices: [],
+      currentCurrency: 'USD'
     }
   }
-  loadManagers(portfolios) {
-    for (let porfolio of portfolios) {
-      api.get('manager/' + porfolio.manager)
-        .then((res) => {
-          const managers = [...store.getState().managers];
-          managers.push(res.data);
-          setReduxState({managers});
-        }).catch(console.log);
-    }
-  }
+  // loadManagers(portfolios) {
+  //   for (let porfolio of portfolios) {
+  //     api.get('manager/' + porfolio.manager)
+  //       .then((res) => {
+  //         const managers = [...store.getState().managers];
+  //         managers.push(res.data);
+  //         setReduxState({managers});
+  //       }).catch(console.log);
+  //   }
+  // }
   componentWillMount() {
     api.post('portfolios/load')
       .then((res) => {
-        if (res.data.exists) {
-          setReduxState({portfolios: res.data.portfolios});
-          this.loadManagers(res.data.portfolios);
-        } else {
-          setReduxState({portfolios: []});
-        }
-        this.setState({gotData: true});
+        if (res.data.exists)
+          this.setState({gotData: true, portfolios: res.data.portfolios, requests: res.data.requests});
+        else
+          this.setState({gotData: true, portfolios: [], requests: []});
       })
       .catch(console.log);
     api.get('stocks')
       .then((res) => {
-        setReduxState({currentCurrencyPrices: res.data.map(stock => {return {name: stock.title, price: stock.last_price}})});
+        this.setState({currentCurrencyPrices: res.data.map(stock => {return {name: stock.title, price: stock.last_price}})});
       })
       .catch(console.log);
   }
   render() {
     if (!this.state.gotData)
       return <div className="box loading"><p>Loading</p></div>
-    let currencies = this.props.currentCurrencyPrices.map((c, i) =>
+    let currencies = this.state.currentCurrencyPrices.map((c, i) =>
       <option key={i} value={c.name}>{c.name}</option>
     );
-    let currentCurrency = this.props.currentCurrencyPrices.find(c => c.name == this.props.currentCurrency) || {price: 0};
+    let currentCurrency = this.state.currentCurrencyPrices.find(c => c.name == this.state.currentCurrency) || {price: 0};
     let totalValue
-    if (this.props.portfolios.length > 0)
-      totalValue = this.props.portfolios
+    if (this.state.portfolios.length > 0)
+      totalValue = this.state.portfolios
         .map(p => {
-          let price = 0;
-          if (this.props.currentCurrencyPrices.find(c => c.name == p.currency) !== undefined)
-            price = this.props.currentCurrencyPrices.find(c => c.name == p.currency).price;
-          // return (p.value - p.cost) * price;
+          let price = 1;
+          if (this.state.currentCurrencyPrices.find(c => c.name == p.currency) !== undefined)
+            price = this.state.currentCurrencyPrices.find(c => c.name == p.currency).price;
           return p.value * price;
         })
         .reduce((a, b) => a + b);
@@ -72,34 +72,27 @@ class PortfoliosPage extends Component {
         width: "50px",
       },
       {
-        property: "manager",
-        title: "Manager",
-        width: "100px",
-      },
-      {
         property: "smart",
         title: "Smart-cntract",
         width: "100px",
         type: "unsortable"
       },
-      // {
-      //   property: "instrument",
-      //   title: "instrument",
-      //   tooltip: "name of algorythm",
-      //   class: "instrument",
-      // },
+      {
+        property: "instrument",
+        title: "instrument",
+        tooltip: "name of algorythm",
+      },
       {
         property: "profit",
         title: "Profit",
         width: "150px",
         type: "unsortable"
       },
-      // {
-      //   property: "value",
-      //   title: "value",
-      //   tooltip: "value of portfolio",
-      //   class: "value",
-      // },
+      {
+        property: "value",
+        title: "value",
+        tooltip: "value of portfolio",
+      },
       {
         property: "status",
         title: "Status",
@@ -110,37 +103,23 @@ class PortfoliosPage extends Component {
         title: "Cost",
         width: "150px",
         type: "unsortable"
-      },
-      {
-        property: "details",
-        width: "125px",
-        type: "unsortable",
-      },
-      {
-        property: "withdraw",
-        width: "125px",
-        type: "unsortable",
-      },
+      }
     ];
-    let portfolios = this.props.portfolios.map((portfolio, i) => {
-      let investor = this.props.investors.find(inv => inv.id == portfolio.investor);
-      let manager = this.props.managers.find(m => m.id == portfolio.manager) || {};
-      // let request = this.props.requests.find(m => m.id == portfolio.request) || {};
-      let alg = this.props.algorythms.find(alg => alg.id == portfolio.alg) || {};
-      let price = 0;
-      if (this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
-        price = this.props.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
+    let portfolios = this.state.portfolios.map((portfolio, i) => {
+      let request = this.props.requests.find(request => request.id == portfolio.request) || {};
+      let price = 1;
+      if (this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
+        price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       return {
         id: portfolio.id,
-        manager: (manager.name || '-') + ' ' + (manager.surname || ''),
         portfolio: portfolio.id,
-        smart:  <QRCode style={{width: 65, height: 65}} value={portfolio.smart_contract} />/*portfolio.smart_contract*/,
-        // instrument: alg.name,
+        smart:  <div className="smart-contract-comact">{portfolio.smart_contract}</div>,
+        instrument: request.service,
         profit: <img src="graph.png" className="graph" />,
         // currency: portfolio.currency,
         // percent_portfolio: (portfolio.value * price / totalValue * 100).toFixed(1),
         // amount: portfolio.value,
-        // value: (portfolio.value * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
+        value: (portfolio.value * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
         status: 'Recalculated'/*request.status*/,
         cost: <img src="graph.png" className="graph" />,//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
         // analysis: "link.com",
