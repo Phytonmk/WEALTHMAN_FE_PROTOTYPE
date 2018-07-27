@@ -1,0 +1,33 @@
+.avatar
+  overflow: hidden
+  position: relative
+  .default-avatar-user,
+  .default-avatar-company,
+  img
+    position: absolute
+    top: 0
+    left: 0
+  .default-avatar-user
+    background: url("../img/user-icon.svg")
+  .default-avatar-company
+    background: url("../img/company-icon.png")
+  .default-avatar-user,
+  .default-avatar-company
+    width: 100%
+    height: 100%
+    background-size: cover
+  img
+    opacity: 0
+    transition: opacity 1s
+    &.loaded
+      opacity: 1
+    &.landscape
+      width: auto
+      height: 100%
+    &.portrait
+      width: 100%
+      height: auto
+
+#manager-page .avatar,
+#company-page .avatar
+    float: left

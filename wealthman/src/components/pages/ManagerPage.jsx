@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 import Social from './../Social';
+import Avatar from '../Avatar.jsx';
 
 const filters = [
   {
@@ -75,9 +76,10 @@ class ManagerPage extends Component {
         <div className="new-long-header" />
         <div className="container">
           <div className="top-row">
-            <div className="circle left">
+            <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="96px" />
+            {/* <div className="circle left">
               <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="avatar"/>
-            </div>
+            </div> */}
             <div className="main-info">
               <div className="name-row">
                 <h1>{(manager.name || manager.company_name || '') + (manager.surname || '')}</h1>
@@ -103,69 +105,72 @@ class ManagerPage extends Component {
             </div>
           </div>
 
-          <div className="main-column">
-            {(manager.services || []).map((service, i) => <div className="box" key={i}>
-              <h2>
-                {filters[service.type].link}
-                <button
-                  onClick={() => this.apply(i)}
-                  className="big-blue-button right"
-                >Invest now</button>
-              </h2>
-              <p>{filters[service.type].description}</p>
-              <div className="row">
-                <b>Exit fee:</b> {service.exit_fee} %
-              </div>
-              <div className="row">
-                <b>Managment fee:</b> {service.managment_fee} %
-              </div>
-              <div className="row">
-                <b>Perfomance fee:</b> {service.perfomance_fee} %
-              </div>
-              <div className="row">
-                <b>Font fee:</b> {service.front_fee} %
-              </div>
-              <div className="row">
-                <b>Recalculation:</b> {service.recalculation}
-              </div>
-              <div className="row">
-                <b>Minimal investment:</b> {service.min} $
-              </div>
-              <div className="row">
-                <b>Metodology:</b> {service.metodology}
-              </div>
-              <div className="row">
-                <b>Philosofy:</b> {service.philosofy}
-              </div>
-            </div>)}
-          </div>
-          <div className="second-column right">
-            <div className="box">
-              {manager.company_name ?
-              <div className="row">
-                Company
-              </div>
-              :
-              <div className="row">
-                Lonely manager
-              </div>}
+          <div className="row">
+            <div className="main-column">
+              {(manager.services || []).map((service, i) => <div className="box" key={i}>
+                <h2>
+                  {filters[service.type].link}
+                  <button
+                    onClick={() => this.apply(i)}
+                    className="big-blue-button right"
+                  >Invest now</button>
+                </h2>
+                <p>{filters[service.type].description}</p>
+                <div className="row">
+                  <b>Exit fee:</b> {service.exit_fee} %
+                </div>
+                <div className="row">
+                  <b>Managment fee:</b> {service.managment_fee} %
+                </div>
+                <div className="row">
+                  <b>Perfomance fee:</b> {service.perfomance_fee} %
+                </div>
+                <div className="row">
+                  <b>Font fee:</b> {service.front_fee} %
+                </div>
+                <div className="row">
+                  <b>Recalculation:</b> {service.recalculation}
+                </div>
+                <div className="row">
+                  <b>Minimal investment:</b> {service.min} $
+                </div>
+                <div className="row">
+                  <b>Metodology:</b> {service.metodology}
+                </div>
+                <div className="row">
+                  <b>Philosofy:</b> {service.philosofy}
+                </div>
+              </div>)}
             </div>
+            <div className="second-column right">
+              <div className="box">
+                {manager.company_name ?
+                <div className="row">
+                  Company
+                </div>
+                :
+                <div className="row">
+                  Lonely manager
+                </div>}
+              </div>
 
-            <div className="box">
-              <h3>Statistics</h3>
-              <h1 className="green">{this.state.profitability}%</h1>
-              <small>Profitability (all time)</small>
-              <h1>{this.state.clients}</h1>
-              <small>Quantity clients</small>
-              <h1>{this.state.portfolios}</h1>
-              <small>Portfolios in management</small>
-            </div>
+              <div className="box">
+                <h3>Statistics</h3>
+                <h1 className="green">{this.state.profitability}%</h1>
+                <small>Profitability (all time)</small>
+                <h1>{this.state.clients}</h1>
+                <small>Quantity clients</small>
+                <h1>{this.state.portfolios}</h1>
+                <small>Portfolios in management</small>
+              </div>
 
-            <div className="box">
-              <h3>Methodology</h3>
-              <span>VAR method</span>
+              <div className="box">
+                <h3>Methodology</h3>
+                <span>VAR method</span>
+              </div>
             </div>
           </div>
+
           {/* <div className="first-tab">
             <div className="manager-box">
               <div className="cover"></div>

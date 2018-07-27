@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
+import Avatar from '../Avatar.jsx';
 import myDate from '../myDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
@@ -119,13 +120,13 @@ class RequestsPage extends Component {
       {
         property: "chat",
         title: "",
-        width: "100px",
+        width: "130px",
         type: "unsortable",
       },
       {
         property: "details",
         title: "",
-        width: "120px",
+        width: "130px",
         type: "unsortable",
       },
     ];
@@ -179,7 +180,7 @@ class RequestsPage extends Component {
       }
       return {
         id: request.id,
-        img: <div className="in-sortable-img-container"><img src={user.img ? api.imgUrl(user.img) : 'manager/user.svg'} className="user-icon" /></div>,
+        img: <Avatar src={user.img ? api.imgUrl(user.img) : ""} size="40px" />,
         name: {
           render: <Link to={userLink + user.id} className="no-margin no-link-style">
             {user.name || user.company_name || '' + " " + user.surname || ''}
@@ -207,7 +208,7 @@ class RequestsPage extends Component {
         </button>,
         details:
         <Link to={"request/" + request.id}>
-          <button className="big-blue-button chat">
+          <button className="big-blue-button">
             DETAILS
           </button>
         </Link>

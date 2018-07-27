@@ -7,6 +7,7 @@
   font-weight: normal
   // line-height: 1
   margin: 0
+  outline: none
 
 body, html
   background-color: #ecf1f5
@@ -51,6 +52,20 @@ button.big-transparent-button
   text-transform: uppercase
   font-size: 14px
   line-height: 36px
+  &.save
+    padding-left: 49px
+    &::before
+  &.chat
+    padding-left: 42px
+    position: relative
+    &::before
+      background: url("../img/buttons/chat-icon.svg")
+      position: absolute
+      left: 15px
+      top: 10px
+      content: ""
+      width: 18px
+      height: 16px
 a.big-blue-button,
 button.big-blue-button
   background-color: #39a9dc
@@ -178,11 +193,6 @@ article.long-text-input
       display: table
       float: left
       margin-top: 44px
-  img.avatar
-    // width: 96px
-    // height: 96px
-    // border-radius: 100px
-    // float: left
   h1, h2, h3
     line-height: 1.25
   h1
@@ -216,6 +226,8 @@ article.long-text-input
     color: #79828f
 .green
   color: #47bf6f !important
+.blue
+  color: #39a9dc !important
 
 .new-long-header
   width: 100%
@@ -418,5 +430,72 @@ input
     & > h1
       margin-bottom: 8px
   .main-column
+    & > .box
+      padding-bottom: 5px
     .box > h3
       color: #79828f
+
+.vertical-line
+  width: 100%
+  height: 1px
+  background: #dfe4e8
+
+#account-page
+  .account-box
+    width: 100%
+    padding: 50px 100px
+    background: white
+    border: 2px dashed #dbe5ea
+    border-bottom: 0
+    overflow-y: visible
+    &:first-of-type
+      margin-top: 30px
+      border-top-left-radius: 2px
+      border-top-right-radius: 2px
+    &:last-of-type
+      border-bottom: 2px dashed #dbe5ea
+      margin-bottom: 50px
+      border-bottom-left-radius: 2px
+      border-bottom-right-radius: 2px
+    input
+      width: 100%
+      height: 50px
+      line-height: 50px
+      color: #79828f
+      margin-bottom: 24px
+      border: 1px solid #dfe4e8
+      border-radius: 2px
+      padding: 0 17px
+      transition: box-shadow .3s, border-color .3s
+      &:focus
+        box-shadow: 0 0 0 1px #39a9dc
+        border-color: #39a9dc
+      &.error
+        box-shadow: 0 0 0 1px #f70000
+        border-color: #f70000
+    span
+      display: block
+      margin-bottom: 26px
+      margin-top: 15px
+      *
+        color: #79828f
+    small
+      display: block
+      width: 100%
+      float: none
+      margin-bottom: 11px
+      line-height: 1
+      color: #071e40
+      &.blue
+        margin-bottom: 38px
+    h1
+      margin-bottom: 29px
+    h2
+      display: inline
+      margin-right: 6px
+    ul
+      margin-bottom: 26px
+      li
+        font-size: 16px
+    .big-blue-button
+      margin-top: 6px

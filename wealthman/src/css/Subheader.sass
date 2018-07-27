@@ -20,7 +20,7 @@
     margin-top: 24px
     .underline
       position: absolute
-      bottom: 0
+      bottom: -1px
       height: 3px
       background: #39a9dc
       content: ""
@@ -29,6 +29,7 @@
       height: 35px
       cursor: pointer
       text-transform: uppercase
+      font-weight: 500
       font-size: 13px
       line-height: 1.13
       color: #79828f
@@ -37,3 +38,7 @@
       transition: color .2s
       &.selected, &:hover
         color: #071e40
+  .shown-in-account
+    display: none
+#account-page .shown-in-account
+  display: table

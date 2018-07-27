@@ -46,7 +46,17 @@ class FAQPage extends Component {
           <Link to="/managers" className="blue-link active" onClick={() => setReduxState({managersFilter: "Robo-advisor"})}>Try it</Link>
         </div>
       },
-    ].map(data => <Accordion header={data.header} content={data.content} />);
+    ];
+    let accordionsMapped = accordions.map((data, index) =>
+      <div>
+        <Accordion
+          key={data.header}
+          header={data.header}
+          content={data.content}
+        />
+        {index < accordions.length - 1 ? <div className="vertical-line" /> : ""}
+      </div>
+    );
 
     return (
       <div id="faq-page">
@@ -65,7 +75,7 @@ class FAQPage extends Component {
               <h3>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
               </h3>
-              {accordions}
+              {accordionsMapped}
             </div>
           </div>
         </div>
@@ -86,7 +96,15 @@ function newLines(string) {
   }
   paragraphs.push(string.slice(prevI));
 
-  return <div>{paragraphs.map((paragraph, i) => <span key={i}>{paragraph}</span>)}</div>;
+  return <div>
+    {
+      paragraphs.map((paragraph, i) =>
+        <span key={i} style={{display: "block"}}>
+          {paragraph}
+        </span>
+      )
+    }
+  </div>;
 }
 
 export default FAQPage;

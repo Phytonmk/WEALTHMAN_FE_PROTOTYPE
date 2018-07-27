@@ -44,7 +44,8 @@ class Subheader extends Component {
 
   renderUnderline() {
     let selectedTab = document.getElementById("subheaderTab" + this.state.currentTab).getBoundingClientRect();
-    let underlineLeft = selectedTab.left;
+    let container = document.getElementById("subheaderTabs").getBoundingClientRect();
+    let underlineLeft = selectedTab.left - container.left;
     let underlineWidth = selectedTab.right - selectedTab.left;
 
     return (
@@ -66,14 +67,14 @@ class Subheader extends Component {
 
     return (
       <div className="subheader">
-        {/* <div className="container">
+        <div className="container shown-in-account">
           <div className="header-preview">
             <h1>{currentData.header}</h1>
             <span>It takes you a few minutes</span>
           </div>
-        </div> */}
+        </div>
         <div className="tabs">
-          <div className="container">
+          <div className="container relative" id="subheaderTabs">
             {
               this.props.data.map((tab, index) =>
                 <div

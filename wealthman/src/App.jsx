@@ -7,7 +7,7 @@ import Loadable from 'react-loadable';
 
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-import Sortable from './components/Sortable.jsx';
+// import Sortable from './components/Sortable.jsx';
 
 import './css/main.sass';
 import './css/design.sass';
@@ -578,7 +578,7 @@ class App extends Component {
           </div>
           <div className="box">
             <h2>Portfolio Preview</h2>
-            <Sortable
+            {/* <Sortable
               listings={currenciesList}
               setPage={this.setPage.bind(this)}
               currencySelector={
@@ -590,7 +590,7 @@ class App extends Component {
                   }
                 </select>
               }
-            />
+            /> */}
 
             {/* <div className="user-agreement">
               <h4>User Agreement</h4>

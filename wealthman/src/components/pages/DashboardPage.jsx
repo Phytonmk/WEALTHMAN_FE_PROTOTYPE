@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
-import Sortable from '../Sortable'
+// import Sortable from '../Sortable'
 
 import moment from 'moment';
 import { PieChart, AreaChart } from 'react-easy-chart';
@@ -103,7 +103,7 @@ class DashboardPage extends Component {
           />
           </div>
           <div style={{display: 'inline-block', width: '700px'}}>
-            <Sortable
+            {/* <Sortable
               listings={currenciesList}
               setPage={() => {}}
               currencySelector={
@@ -115,7 +115,7 @@ class DashboardPage extends Component {
                   }
                 </select>
               }
-            />
+            /> */}
           </div>
         </div>
       </div>

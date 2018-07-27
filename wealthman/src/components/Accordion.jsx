@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from "react-dom";
 
 import '../css/Accordion.sass';
 
@@ -21,13 +22,17 @@ class Accordion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opened: false,
-    }
+      opened: this.props.opened ? this.props.opened : false,
+      maxHeight: 0,
+    };
   }
 
-  componentWillMount() {
-    if (typeof this.props.opened != "undefined")
-      this.setState({opened: this.props.opened});
+  componentDidMount() {
+    let content = ReactDOM.findDOMNode(this);
+    if (content instanceof HTMLElement) {
+      content = content.getElementsByClassName("content")[0].getBoundingClientRect();
+      this.setState({maxHeight: content.bottom - content.top});
+    }
   }
 
   render() {
@@ -39,8 +44,13 @@ class Accordion extends Component {
         <h2 onClick={() => this.setState({opened: !this.state.opened})}>
           {this.props.header}
         </h2>
-        <div className="content">
-          {this.props.content}
+        <div
+          className="collapsable-area"
+          style={{maxHeight: (this.state.opened ? this.state.maxHeight : 0)}}
+        >
+          <div className="content">
+            {this.props.content}
+          </div>
         </div>
       </article>
     );

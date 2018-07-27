@@ -9,7 +9,6 @@ import QRCode from 'qrcode.react';
 import Subheader from './../Subheader';
 import Select from './../Select';
 
-
 class PortfoliosPage extends Component {
   constructor(props) {
     super(props);

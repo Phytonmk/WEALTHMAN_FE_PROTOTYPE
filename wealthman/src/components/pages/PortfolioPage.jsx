@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Sortable from '../Sortable.jsx';
+// import Sortable from '../Sortable.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class PortfolioPage extends Component {
@@ -116,7 +116,7 @@ class PortfolioPage extends Component {
             </div> */}
           </div>
           <div className="box">
-            <Sortable
+            {/* <Sortable
               listings={currenciesList}
               setPage={setPage.bind(this)}
               currencySelector={
@@ -128,7 +128,7 @@ class PortfolioPage extends Component {
                   }
                 </select>
               }
-            />
+            /> */}
           </div>
         </div>
       </div>

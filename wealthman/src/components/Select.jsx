@@ -15,6 +15,8 @@ import '../css/Select.sass';
   setValue={(value) => this.setState({status: value})}
   //(OPTIONAL) width of the element
   width="135px"
+  //(OPTIONAL) amount of shown options, others will be wisible after scroll (default 6)
+  maxShown={5}
 />
 */}
 
@@ -47,20 +49,23 @@ class Select extends Component {
     return (
       <div
         className="select"
-        // style={{width: (this.props.width ? this.props.width : "200px")}}
         onClick={() => this.setState({opened: !this.state.opened})}
       >
         {this.props.value}
         {
           this.state.opened ?
-            <div className="options" style={{width: (this.props.width ? this.props.width : "200px")}}>
+            <div
+              className="options"
+              style={{
+                width: (this.props.width ? this.props.width : ""),
+                maxHeight: (this.props.maxShown ? (this.props.maxShown * 47 + 10 + "px") : (6 * 47 + 10 + "px")),
+              }}>
               {
                 this.props.options.map(option =>
                   <div className="option"
                     key={option}
-                    onClick={() => {
-                      this.props.setValue(option);
-                  }}>
+                    onClick={() => this.props.setValue(option)}
+                  >
                     {option}
                   </div>
                 )

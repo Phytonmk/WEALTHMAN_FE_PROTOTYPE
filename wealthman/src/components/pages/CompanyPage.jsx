@@ -30,13 +30,13 @@ class CompanyPage extends Component {
     //   return <div></div>
 
     return (
-      <div>
+      <div id="company-page">
         <div className="new-long-header" />
         <div className="manager-container">
           <div className="top-row">
             {/* <img src={"/manager/companies/" + company.img} className="avatar"/> */}
-            <img src={"/manager/companies/" + "bitconnect.jpg"} className="avatar"/>
-
+            {/* <img src={"/manager/companies/" + "bitconnect.jpg"} className="avatar"/> */}
+            <Avatar src={"/manager/companies/" + "bitconnect.jpg"} size="96px" />
             <div className="main-info">
               <div className="name-row">
                 {/* <h1>{company.name}</h1> */}

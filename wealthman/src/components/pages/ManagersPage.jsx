@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
+import Avatar from '../Avatar.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 const filters = [
@@ -168,7 +169,8 @@ class ManagersPage extends Component {
         // id: manager.id,
         // почему-то айдишники иногда совпадают, из-за этого рисуется некорректно
         id: index,
-        img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
+        // img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
+        img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id} className="no-margin no-link-style">
             {name}
