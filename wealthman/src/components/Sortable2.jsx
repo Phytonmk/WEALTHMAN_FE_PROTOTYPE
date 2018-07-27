@@ -41,6 +41,7 @@ import '../css/Sortable2.sass';
         //will be sorted by that property
         value: {manager.rating}
       },
+      //define link for entire listing (works when Sortable2 has propery "linkProperty")
       listingLink: "/manager/" + manager.id
     };
   })}
@@ -61,31 +62,30 @@ class Sortable2 extends Component {
       order: false,
       offset: 0,
       maxShown: 10,
-      error: undefined,
+      error: "",
       rowProperties: undefined,
     }
   }
 
   componentWillMount() {
-    if (!(this.props.columns && this.props.columns.length > 0)) {
-      this.setState({error: "no columns"});
-      return;
+    //check for errors
+    if (!(this.props.columns && this.props.columns.length > 0))
+      this.setState({error: this.state.error + "no columns; "});
+    if (!(this.props.data && this.props.data.length > 0))
+      this.setState({error: this.state.error + "no data; "});
+    else {
+      //FOR DEBBAGING PURPOSES: comment this when finished
+      this.props.columns.forEach(column => {
+        if (!this.props.data[0].hasOwnProperty(column.property))
+          this.setState({error: this.state.error + "Error: rows doesn\'t have \"" + column.property + "\" property; "});
+      });
+      if (!this.props.data[0].hasOwnProperty("id"))
+        this.setState({error: this.state.error + "data objects doesn't have id; "});
+      if (this.props.linkProperty && !this.props.data[0].hasOwnProperty(this.props.linkProperty))
+        this.setState({error: this.state.error + "data objects doesn't have \"" + this.props.linkProperty + "\"property; "});
     }
-    if (!(this.props.data && this.props.data.length > 0)) {
-      this.setState({error: "no data"});
+    if (this.state.error != "")
       return;
-    }
-    //FOR DEBBAGING PURPOSES: comment this when finished
-    this.props.columns.forEach(column => {
-      if (!this.props.data[0].hasOwnProperty(column.property)) {
-        this.setState({error: "Error: rows doesn\'t have \"" + column.property + "\" property"});
-        return;
-      }
-    });
-    if (!this.props.data[0].hasOwnProperty("id")) {
-      this.setState({error: "data objects doesn't have id"});
-      return;
-    }
 
     //set width for columns
     this.setState({
@@ -262,7 +262,7 @@ class Sortable2 extends Component {
   }
 
   render() {
-    if (this.state.error)
+    if (this.state.error != "")
       return (
         <div className="sortable">
           <ul className="listings">

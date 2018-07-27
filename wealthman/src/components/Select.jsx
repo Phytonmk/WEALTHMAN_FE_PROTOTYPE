@@ -59,7 +59,8 @@ class Select extends Component {
               style={{
                 width: (this.props.width ? this.props.width : ""),
                 maxHeight: (this.props.maxShown ? (this.props.maxShown * 47 + 10 + "px") : (6 * 47 + 10 + "px")),
-              }}>
+              }}
+            >
               {
                 this.props.options.map(option =>
                   <div className="option"
