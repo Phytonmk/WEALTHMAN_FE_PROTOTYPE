@@ -19,7 +19,7 @@ class Avatar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageLoaded: false,
+      imageLoaded: true,
       orientation: "landscape",
     };
   }

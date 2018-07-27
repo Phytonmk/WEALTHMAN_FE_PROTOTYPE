@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import myDate from '../myDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
-import {default as RequestHeader} from './RequestPage/Header';
+import {default as RequestHeader} from '../dashboards/Person';
 import {default as RequestDetails} from './RequestPage/Details';
 
 
@@ -229,13 +229,8 @@ class PortfolioCreationPage extends Component {
     return (<div className='container'>
           <div className='box'>
             {this.state.investor !== null ? 
-              <RequestHeader 
-                name={(this.state.investor .name || '') + ' ' + (this.state.investor .name || '')}
-                img={api.imgUrl(this.state.investor.img)}
-                userId={this.state.investor.id}
-                requestId={this.state.request !== null ? this.state.request.id : ''}
-                requestDate={this.state.request !== null ? this.state.request.date : ''}
-                buttons={''}
+              <RequestHeader
+                requestData={{investor: this.state.investor, request: this.state.request}}
               /> : 'Loading...'}
           </div>
           <RequestDetails request={this.state.request} />

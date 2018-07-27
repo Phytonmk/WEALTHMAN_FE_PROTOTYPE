@@ -7,7 +7,7 @@ body, html
 
 *
   box-sizing: border-box
-  color: #071e40
+  // color: #071e40
 
 button
   border: none
@@ -683,8 +683,10 @@ button.show-code
 img.graph
   width: 100%
   height: auto
-  margin: 0 !important
-  float: left
+  margin: 0 auto !important
+  display: block
+  &.small-graph
+    width: 60px
 
 .capitalize
   text-transform: capitalize
@@ -912,3 +914,263 @@ img.graph
         height: 100%
         vertical-align: middle
         cursor: pointer
+.smart-contract-comact
+  word-break: break-all
+  line-height: 15px
+b
+  font-weight: bold
+
+.portfolios-currency-select
+  .select
+    display: inline-table
+    margin-left: 5px
+
+.person-details
+  display: flex
+  width: 100%
+  align-items: center
+  justify-content: space-between
+  margin: 70px 0
+  & > div
+    display: flex
+    align-items: center
+  .chat-btn
+    width: 148px
+    height: 36px
+    border-radius: 18px
+    background-color: #39a9dc
+    font-size: 14px
+    font-weight: bold
+    text-transform: uppercase
+    color: white
+    padding-left: 10px
+    padding-top: 2px
+    background-image: url('../img/chat-icon.svg')
+    background-repeat: no-repeat
+    background-position: 12px center
+  .person-details-numbers
+    width: 200px
+    justify-content: space-around
+    & > div
+      width: 50%
+  .person-details-name
+    width: 440px
+    flex-direction: column
+    align-items: flex-start
+    justify-content: center
+    h4
+      font-size: 24px
+    p
+      font-size: 16px
+  h4
+    font-size: 20px
+    font-weight: bold
+  p
+    font-size: 14px
+    color: #79828f
+    margin: 0
+    margin-top: 4px
+.grapics-boxes-container
+  display: flex
+  align-items: stretch
+  padding-top: 30px
+.pie-chart-box
+  margin-right: 30px
+  width: 260px
+  background-color: white
+  padding: 40px
+  position: relative
+  h2
+    color: #071e40
+    font-size: 16px
+    font-weight: bold
+    margin-bottom: 18px
+  .select
+    margin-bottom: 20px
+  .pie-chart-in-circle-container
+    position: absolute
+    top: 70px
+    width: 100%
+    text-align: center
+    h3
+      font-weight: bold
+      font-size: 18px
+      color: #071e40
+    p
+      font-size: 14px
+      color: #66666a
+      margin: 0
+      margin-right: 0
+      width: 100%
+  .pie-chart-subheader
+    margin-top: 18px
+    font-size: 14px
+    color: #071e40
+    white-space: nowrap
+    .pie-chart-subheader-color
+      width: 5px
+      height: 5px
+      margin-right: 12px
+      border-radius: 50%
+      display: inline-block
+      vertical-align: middle
+    .pie-chart-subheader-title
+      overflow-x: hidden
+      text-overflow: ellipsis
+      display: inline-block
+      vertical-align: middle
+      width: 170px
+.line-chart-box
+  background-color: white
+  padding: 40px
+  width: 100%
+  margin-bottom: 0
+  h2
+    color: #071e40
+    font-size: 16px
+    font-weight: bold
+    margin-bottom: 18px
+  .select
+    margin-bottom: 20px
+    width: 200px
+  svg
+    path.domain
+      display: none
+    path.line
+      stroke: #0378ff !important
+      stroke-width: 4
+      stroke-linecap: round
+    text
+      font-size: 12px
+      fill: #66666a
+  .line-chart-subheaders
+    display: flex
+    .line-chart-subheader
+      margin-right: 49px
+      h3
+        font-size: 21px
+        font-weight: bold
+      p
+        font-size: 14px
+        color: #66666a
+        margin-left: 0
+.margin-box
+  margin-top: 30px
+.page-devider
+  .page-devider-view
+    position: absolute
+    width: 100%
+    border-top: 1px solid #d2d7da
+    left: 0px
+  .page-devider-margin
+    position: relative
+    margin-bottom: 0px
+    margin-top: 30px
+.smart-contract-box
+  padding-top: 30px
+  h3
+    color: #071e40
+    font-size: 16px
+    font-weight: bold
+  & > .box
+    margin-bottom: 0px
+  p
+    margin-left: 0px
+  .smart-contract-text
+    font-size: 20px
+    color: #071e40
+  .copy-contract-btn
+    font-size: 14px
+    color: #39a9dc
+    vertical-align: bottom
+    margin-left: 30px
+    transition: opacity 0.3s
+    cursor: pointer
+.copy-input
+  display: inline-block
+  color: white
+  background-color: white
+  border: 0
+  // opacity: 0
+  width: 5px
+  height: 1px
+  &::selection
+    background: white
+  &::-moz-selection
+    background: white
+  &::selection
+    background: white
+  &::-moz-selection
+    background: white
+  &::selection
+    background: white
+  &::-moz-selection
+    background: white
+.cards-box
+  padding-top: 30px
+  .cards-container
+    display: flex
+    height: 120px
+    .cards-block
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      width: 100%
+      text-align: center
+      border-right: 1px solid #ecf1f5
+      &:last-of-type
+        border-right: 0
+      h3
+        color: #071e40
+        font-size: 18px
+        font-weight: bold
+        margin-bottom: 10px
+      p
+        margin: 0px
+        font-size: 14px
+        color: #66666a
+      h3, p
+        white-space: nowrap
+        text-overflow: ellipsis
+        overflow: hidden
+        width: calc(100% - 18px * 2)
+.reports-and-documents-box
+  padding-top: 30px
+  h3
+    font-size: 16px
+    font-weight: bold
+    color: #071e40
+  .container
+    max-width: 100%
+
+a
+  color: #071e40
+
+.investor-portfolio-header
+  display: flex
+  justify-content: space-between
+  width: 100%
+  height: 80px
+  align-items: center
+  margin-top: 30px
+  & > div:last-of-type
+    display: flex
+    justify-content: space-between
+    align-items: center
+    & > div
+      width: 200px
+  h1
+    color: #071e40
+    font-size: 24px
+  p
+    margin: 0
+    font-size: 14px
+    color: #66666a
+
+.big-blue-button.money-button
+  padding-left: 50px
+  background-image: url('../img/cool-wallet-icon.svg')
+  background-repeat: no-repeat
+  background-position: 17px center
+  font-weight: bold

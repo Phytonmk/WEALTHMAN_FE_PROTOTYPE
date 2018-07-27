@@ -1,11 +1,11 @@
-var Web3 = require('web3')
-const Tx = require('ethereumjs-tx')
-var web3 = new  Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/5c95df77f8994b7bb81f9d7dcf1dc252'))
-var portfolioAbi = require('./portfolio_abi.js');
+var config = require('./connection_settings')
 var bytecode = require('./bytecode.js')
-const privateKey = Buffer.from('4a131e9f1843d982cd3a4b83749b46bcd2435b5e19429109a16d2f144bd5d948','hex')
-const _exchanger = '0x2318fdfaa7182875e9278cd3ffe01435afe27726' ;
-const admin = '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D';
+var portfolioAbi = require('./portfolio_abi.js');
+var web3 = config.web3
+const Tx = config.tx
+const privateKey = config.privatekey
+const _exchanger = config.exchanger_adress
+const admin = config.admin_adress
 const _admin = admin;
 module.exports = (contractData) => new Promise((mainResolve, reject) => {
     let {
@@ -55,7 +55,6 @@ module.exports = (contractData) => new Promise((mainResolve, reject) => {
     }
 
     const sendRawTransaction = (rawTx) => {
-      const privateKey = "4a131e9f1843d982cd3a4b83749b46bcd2435b5e19429109a16d2f144bd5d948";
       const tx = new Tx(rawTx);
       const privateKeyBuffer = Buffer.from(privateKey, 'hex');
       tx.sign(privateKeyBuffer);

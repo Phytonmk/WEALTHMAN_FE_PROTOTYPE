@@ -5,121 +5,186 @@ import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 // import Sortable from '../Sortable'
 
-import moment from 'moment';
-import { PieChart, AreaChart } from 'react-easy-chart';
+import InvstorPortfolioHeader from '../dashboards/InvstorPortfolioHeader'
+import Cards from '../dashboards/Cards'
+import SmartContract from '../dashboards/SmartContract'
+import Graphics from '../dashboards/Graphics'
+import PageDevider from '../dashboards/PageDevider'
+import Person from '../dashboards/Person'
+import ReportsAndDocuments from '../dashboards/ReportsAndDocuments'
+
 
 class DashboardPage extends Component {
   constructor(props) {
     super(props);
-    this.props = {};
-  }
-  getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-  generateData() {
-    const data = [];
-    const xs = [];
+    this.state = {
 
-    let date = moment('2015-1-1 00:00', 'YYYY-MM-DD HH:mm');
-    for (let i = 1; i <= 20; i++) {
-      xs.push(date.format('D-MMM-YY HH:mm'));
-      date = date.add(1, 'hour');
     }
-    xs.forEach((x) => {
-      data.push({ x, y: this.getRandomArbitrary(0, 100) });
-    });
-    console.log(data);
-    return data;
-  }
-
-  createTooltip() {
-    if (this.state.showToolTip) {
-      return (
-        <ToolTip
-          top={this.state.top}
-          left={this.state.left}
-        >
-          The value of {this.state.key} is {this.state.value}
-        </ToolTip>
-      );
-    }
-    return false;
-  }
-  genPoints() {
-    const result = [];
-    for (let i = 1; i <= 20; i++)
-      result.push({ x: i +'-May-15', y: this.getRandomArbitrary(i * 5 - 20, i * 5 + 20) });
-    return result;
   }
   render() {
-    var currencies = this.props.currentCurrencyPrices.map((c, i) =>
-      <option key={i} value={c.name}>{c.name}</option>
-    );
-    const currentCurrency = this.props.portfolioCurrencies[0];
-    var currenciesList = this.props.portfolioCurrencies.map(currency => {
-      var price = (this.props.currentCurrencyPrices.find(c => c.name == currency.currency) || {price: 0}).price;
-
-      return {
-        id: currency.id,
-        type: currency.type,
-        number: "",
-        currency: currency.currency,
-        percent_portfolio: currency.percent,
-        amount: (currency.percent / 100 / price).toFixed(3),
-        value: (currency.percent / 100 / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        analysis: currency.analysis,
-        comments: currency.comments,
-      };
-    });
-
-    return(
-      <div className="container">
-        <div className="box">
-          <AreaChart
-            xType={'time'}
-            axes
-            xTicks={5}
-            yTicks={3}
-            areaColors={['#2ED155', '#2EA2D1', '#D5544B', 'yellow']}
-            noAreaGradient
-            tickTimeDisplayFormat={'%d %m'}
-            interpolate={'cardinal'}
-            width={1050}
-            height={400}
-            data={[this.genPoints(), this.genPoints(), this.genPoints()]}
-          />
-        </div>
-        <div className="box">
-          <div style={{display: 'inline-block', width: '300px', verticalAlign: 'top'}}>
-          <PieChart
-            data={[
-              { key: 'A', value: 10, color: '#aaac84' },
-              { key: 'B', value: 20, color: '#dce7c5' },
-              { key: 'C', value: 30, color: '#e3a51a' }
-            ]}
-            size={300}
-            innerHoleSize={100}
-            padding={10}
-          />
-          </div>
-          <div style={{display: 'inline-block', width: '700px'}}>
-            {/* <Sortable
-              listings={currenciesList}
-              setPage={() => {}}
-              currencySelector={
-                <select value={this.props.currentCurrency} onChange={() => {}}>
-                  {
-                    this.props.currentCurrencyPrices.map((c, i) =>
-                      <option key={i} value={c.name}>{c.name}</option>
-                    )
-                  }
-                </select>
-              }
-            /> */}
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="container">
+      <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} />
+      <Cards
+        whiteBg={true}
+        cards={[{
+          title: '10',
+          subtitle: 'Portfolios (hardcode)'
+        },{
+          title: '10',
+          subtitle: 'New requests'
+        },{
+          title: '10',
+          subtitle: 'Some stuff'
+        }]}
+      />
+      <Cards
+        cards={[{
+          title: '?',
+          subtitle: 'Primary reason for investing'
+        },{
+          title: '?',
+          subtitle: 'Balance portfolio'
+        },{
+          title: '? %',
+          subtitle: 'Change (24h)'
+        },{
+          title: '? $',
+          subtitle: 'Total earnings'
+        }]}
+      />
+      {/*<SmartContract address={this.state.requestData.portfolio.smart_contract} />*/}
+      <Graphics
+        pie={{
+          title: 'Portfolios',
+          datasets: [{
+            title: 'All time',
+            inCircleValue: '10', // if not specified calculates as a sum of all values of the dataset
+            inCircleTitle: 'All',
+            data: [{
+              header: 'Active',
+              value: 25
+            },{
+              header: 'Archived',
+              value: 75
+            },{
+              header: 'In progress',
+              value: 85
+            }]
+          }, {
+            title: 'Yesterday',
+            inCircleTitle: 'All',
+            data: [{
+              header: 'Active',
+              value: 25
+            },{
+              header: 'Archived',
+              value: 75
+            },{
+              header: 'In progress',
+              value: 85
+            },{
+              header: 'Bumped',
+              value: 50
+            }]
+          }]
+        }}
+        main={{
+          title: 'Portfolio value (all graphics hardcoded)',
+          datasets: [{
+            title: 'Jun 22 - Jul 16, 2018',
+            data: [{
+              value: 1,
+              title: '1-Jul-15'
+            },{
+              value: 2,
+              title: '2-Jul-15'
+            },{
+              value: 3,
+              title: '3-Jul-15'
+            },{
+              value: 8,
+              title: '4-Jul-15'
+            },{
+              value: 5,
+              title: '5-Jul-15'
+            },{
+              value: 3,
+              title: '6-Jul-15'
+            },{
+              value: 7,
+              title: '7-Jul-15'
+            },]
+          },{
+            title: 'May 29 - Jun 22, 2018',
+            data: [{
+              value: 11,
+              title: '1-Jun-15'
+            },{
+              value: 2,
+              title: '2-Jun-15'
+            },{
+              value: 13,
+              title: '3-Jun-15'
+            },{
+              value: 18,
+              title: '4-Jun-15'
+            },{
+              value: 5,
+              title: '5-Jun-15'
+            },{
+              value: 13,
+              title: '6-Jun-15'
+            },{
+              value: 17,
+              title: '7-Jun-15'
+            },]
+          }]
+        }}
+        additional={{
+          title: 'Aum Dinamics',
+          subheaders: [{
+            value: '100B $',
+            title: 'AUM',
+            state: 'normal'
+          },{
+            value: '13B $',
+            title: 'Earning',
+            state: 'bad'
+          },{
+            value: '13.1%',
+            title: 'Change (1y)',
+            state: 'good'
+          }],
+          datasets: [{
+            title: 'Jun 22 - Jul 16, 2018',
+            data: [{
+              value: 1,
+              title: '1-Jun-15'
+            },{
+              value: 2,
+              title: '2-Jun-15'
+            },{
+              value: 3,
+              title: '3-Jun-15'
+            },{
+              value: 8,
+              title: '4-Jun-15'
+            },{
+              value: 5,
+              title: '5-Jun-15'
+            },{
+              value: 3,
+              title: '6-Jun-15'
+            },{
+              value: 7,
+              title: '7-Jun-15'
+            },]
+          }]
+        }}
+      />
+      <PageDevider />
+      <ReportsAndDocuments />
+    </div>
   }
 }
 

@@ -1,6 +1,8 @@
+const apiURL = 'https://api-rinkeby.etherscan.io';
+// const token = 'BNJX7XSCHMS4KBD3ZS96PSCPV7BBCF3KC4';
+
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
-const Order = require('../../models/Order');
 
 const checkBalance = require('../../trading/wealthman_check_balance');
 const trade = require('../../trading/wealthman_trade');
@@ -10,7 +12,7 @@ let workingProcess = false;
 const work = async () => {
   if (workingProcess)
     return false;
-  workingProcess = true;
+  // workingProcess = true;
 
   const requests = await Request.find({status: 'waiting for deposit'});
   const smartContracts = [];
@@ -21,33 +23,21 @@ const work = async () => {
       smartContracts.push({
         address: portfolio.smart_contract,
         portfolio: portfolio.id,
-        request: request.id,
-        currencies: portfolio.currencies
+        request: request.id
       });
   }
   for (let smartContract of smartContracts) {
-    // console.log(`Checking ${smartContract.address} for deposit...`);
-    const deposit = await checkBalance(smartContract.address).catch((e) => {
-      console.log('Deposit checking error:', e.toString());
-    });
-    // if (deposit)
-    //   console.log(`deposited on ${smartContract.address}`);
-    // else
-    //   console.log(`no deposit on ${smartContract.address}`);
+    console.log(`Checking ${smartContract.address} for deposit...`);
+    const deposit = await checkBalance(smartContract.address);
+    if (deposit)
+      console.log('deposited');
+    else
+      console.log('no deposit');
     if (deposit) {
       const request = await Request.findOne({id: smartContract.request});
       trade(smartContract.address, smartContract.request);
-      request.set({status: 'active'});
+      request.set({status: 'active'});  
       await request.save();
-      for (let token of smartContract.currencies) {
-        const order = new Order({
-          token_name: token.title.toUpperCase(),
-          whole_eth_amount: request.value,
-          percent: token.percent,
-          contract_address: smartContract.address
-        });
-        await order.save();
-      }
     }
   }
   workingProcess = false;

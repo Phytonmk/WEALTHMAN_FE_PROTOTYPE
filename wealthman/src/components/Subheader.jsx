@@ -15,6 +15,8 @@ import '../css/Subheader.sass';
   ]}
   //(OPTIONAL) number of the tab, that will be opened, when Subheader renders for the first time
   initialTab={0}
+  //(OPTIONAL) tab changing event
+  onChange={function(currentTab) {}}
 />
 */}
 
@@ -79,7 +81,11 @@ class Subheader extends Component {
               this.props.data.map((tab, index) =>
                 <div
                   className={"tab " + (this.state.currentTab == index ? "selected" : "")}
-                  onClick={() => this.setState({currentTab: index})}
+                  onClick={() => {
+                    if (typeof this.props.onChange === 'function')
+                      this.props.onChange(index);
+                    this.setState({currentTab: index})
+                  }}
                   id={"subheaderTab" + index}
                   key={index}
                 >

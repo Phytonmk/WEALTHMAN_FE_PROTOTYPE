@@ -1,6 +1,3 @@
-const apiURL = 'https://api-rinkeby.etherscan.io';
-// const token = 'BNJX7XSCHMS4KBD3ZS96PSCPV7BBCF3KC4';
-
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 
@@ -12,7 +9,7 @@ let workingProcess = false;
 const work = async () => {
   if (workingProcess)
     return false;
-  // workingProcess = true;
+  workingProcess = true;
 
   const requests = await Request.find({status: 'deploying'});
   for (request of requests) {

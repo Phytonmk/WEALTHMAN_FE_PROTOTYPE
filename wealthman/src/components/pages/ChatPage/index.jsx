@@ -61,7 +61,8 @@ class ChatPage extends Component {
         .then((res) => {
           const chats = [...this.state.chats];
           const thisChat = chats.find(chat => chat.companionId === res.data.chat.userId);
-          thisChat.unread = 0;
+          if (thisChat !== undefined)
+            thisChat.unread = 0;
           this.setState({
             chats,
             currentChat: {
@@ -114,7 +115,7 @@ class ChatPage extends Component {
   }
   componentDidMount() {
     if (this.props.userData.user === undefined) {
-      window.addEventListener('auth completed', this.authEventListener);
+      window.addEventListener('auth completed', this.authEventListener.bind(this));
     } else {
       this.loadChats();
     }

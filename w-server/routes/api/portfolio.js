@@ -172,10 +172,11 @@ module.exports = (app) => {
       userID = investor.id;
     }
     const portfolios = await Portfolio.find({[user]: userID, state: 'active'});
+    const requests = await Request.find({[user]: userID, type: 'portfolio'});
     if (portfolios.length === 0) {
       res.send({exists: false})
     } else {
-      res.send({exists: true, portfolios});
+      res.send({exists: true, portfolios, requests});
     }
     res.status(200);
     res.end();

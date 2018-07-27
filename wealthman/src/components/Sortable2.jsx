@@ -97,7 +97,7 @@ class Sortable2 extends Component {
       })
     });
     //set sortBy
-    if (this.props.InitialSortBy)
+    if (this.props.initialSortBy)
       this.setState({sortBy: this.props.sortBy});
     else {
       let firstSortableColumn = this.props.columns.find(column => column.type != "unsortable");

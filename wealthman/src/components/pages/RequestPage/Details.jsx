@@ -35,6 +35,7 @@ class Header extends Component {
         <b className="eth-address">{this.state.smartContract}</b>
       </div>
     }
+    console.log(this.props);
     return (<div>
       {smartContract}
       <div className="box">
