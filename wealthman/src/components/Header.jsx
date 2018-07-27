@@ -6,6 +6,8 @@ import { api } from './helpers';
 
 import logo from './../img/logo.svg';
 
+import HeaderUserIcon from './HeaderUserIcon';
+
 import '../css/Header.sass';
 
 class Header extends Component {
@@ -13,22 +15,6 @@ class Header extends Component {
     super(props);
     this.state = {
     }
-  }
-
-  logout() {
-    api.post('logout')
-      .then(() => {
-        setReduxState({
-          user: -1,
-          userData: {}
-        })
-        // auth(() => {
-        //   window.location.reload(false);
-        //     // this.state = store.getState();
-        //     // this.forceUpdate();
-
-        // });
-      });
   }
 
   render() {
@@ -59,9 +45,15 @@ class Header extends Component {
             </a>
           </li>
         );
+      if (link.link == "logout")
+        return;
       return (
         <li key={i} className="link" onClick={() => this.setPage(link.link)}>
-          <Link to={"/" + link.link} className={link.link == "login" || link.link == "register" ? "big-blue-button" : "link"} onClick={() => {(link.link == "logout" ? this.logout() : "")}}>
+          <Link
+            to={"/" + link.link}
+            className={link.link == "login" || link.link == "register" ? "big-blue-button" : "link"}
+            onClick={() => {(link.link == "logout" ? this.logout() : "")}}
+          >
             {capitalize(link.label)}
           </Link>
         </li>
@@ -75,6 +67,10 @@ class Header extends Component {
             <Link to={(this.props.user == -1 ? "/managers" : "/portfolios")}>
               <img src={logo} className="logo"/>
             </Link>
+            {
+              this.props.user != -1 ?
+                <HeaderUserIcon /> : ""
+            }
             <ul className="links right">
               {headerLinks}
             </ul>

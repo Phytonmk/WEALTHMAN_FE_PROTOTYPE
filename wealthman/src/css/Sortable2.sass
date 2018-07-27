@@ -98,8 +98,10 @@
     padding: 16px 20px
     margin-bottom: 10px
     border-radius: 2px
+    &.clicable
+      cursor: pointer
     &.clicable:hover
-      background: #f5f5f5
+      box-shadow: 0px 2px 6px 0 rgba(0, 0, 0, 0.15)
   ul.listings li.listing .cell
     min-height: 40px
     overflow-y: auto
@@ -129,11 +131,6 @@
       padding: 0 9px
       line-height: 1.75
       font-size: 16px
-  .user-icon
-    width: 41px
-    height: 41px
-    // margin-top: -6px
-    border-radius: 100px
   button.big-blue-button
     // top: -4px
     // position: relative
