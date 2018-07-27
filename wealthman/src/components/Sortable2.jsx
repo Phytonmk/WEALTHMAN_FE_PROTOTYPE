@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import myDate from './myDate.jsx';
 import '../css/Sortable2.sass';
@@ -39,13 +40,16 @@ import '../css/Sortable2.sass';
         render: <div className="rating">{manager.rating}</div>,
         //will be sorted by that property
         value: {manager.rating}
-      }
+      },
+      listingLink: "/manager/" + manager.id
     };
   })}
   //(OPTIONAL) show navigational arrows (may overlay content in right corner of the header)
   navigation={true}
   //(OPTIONAL) maximum shown rows (default 10)
   maxShown={5}
+  //(OPTIONAL) listings become clicable links, links are taken from this property
+  linkProperty={"listingLink"}
 />
 */}
 
@@ -141,14 +145,20 @@ class Sortable2 extends Component {
             }
           })
           .slice(this.state.offset, this.state.offset + this.state.maxShown)
-          .map(row => this.renderListing(row))
+          .map(row => {
+            if (this.props.linkProperty)
+              return <Link to={row[this.props.linkProperty]}>
+                {this.renderListing(row)}
+              </Link>;
+            return this.renderListing(row)
+          })
         }
       </ul>
     );
   }
   renderListing(row) {
     return (
-      <li className="listing" key={row.id}>
+      <li className={"listing " + (this.props.linkProperty ? "clicable" : "")} key={row.id}>
         {
           this.state.rowProperties.map((property, index) => {
             let cell = row[property.name];
