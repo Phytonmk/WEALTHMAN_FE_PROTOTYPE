@@ -25,20 +25,20 @@ module.exports = (app) => {
     let managerType;
     let managerId;
     let services = null;
-    if (req.body.manager) {
+    if (req.body.manager !== undefined) {
       const manager = await Manager.findOne({id: req.body.manager});
       if (manager === null) {
-        res.status(403);
+        res.status(404);
         res.end('');
         return;
       }
       managerType = 'manager';
       managerId = manager.id;
       services = manager.services;
-    } else if (req.body.company) {
+    } else if (req.body.company !== undefined) {
       const company = await Company.findOne({id: req.body.company});
       if (company === null) {
-        res.status(403);
+        res.status(404);
         res.end('');
         return;
       }
@@ -46,7 +46,7 @@ module.exports = (app) => {
       managerId = company.id;
       services = company.services;
     } else {
-      res.status(403);
+      res.status(404);
       res.end('');
       return;
     }
