@@ -4,9 +4,8 @@ const mongoose = require('mongoose');
 const ServiceSchema = require('../schemas/ServiceSchema');
 
 const CompanyScheme = mongoose.Schema({
-  id: Number,
   img: String,
-  user: Number,
+  user: String,
   company: String,
   company_name: String,
   company_link: String,

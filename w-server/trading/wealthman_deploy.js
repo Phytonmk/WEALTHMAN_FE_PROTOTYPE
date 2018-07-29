@@ -1,11 +1,12 @@
-var config = require('./connection_settings')
-var bytecode = require('./bytecode.js')
-var portfolioAbi = require('./portfolio_abi.js');
-var web3 = config.web3
-const Tx = config.tx
-const privateKey = config.privatekey
-const _exchanger = config.exchanger_adress
-const admin = config.admin_adress
+const Web3 = require('web3')
+const Tx = require('ethereumjs-tx')
+const configs = require('../configs')
+const bytecode = require('./bytecode.js')
+const portfolioAbi = require('./portfolio_abi.js')
+const web3 = new Web3.providers.HttpProvider(configs.web3httpProvider)
+const privateKey = configs.privateKey
+const _exchanger = configs.exchangerAddress
+const admin = configs.adminAddress
 const _admin = admin;
 module.exports = (contractData) => new Promise((mainResolve, reject) => {
     let {

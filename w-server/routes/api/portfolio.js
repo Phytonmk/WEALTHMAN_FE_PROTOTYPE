@@ -34,9 +34,7 @@ module.exports = (app) => {
     }
     const existsPortfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
     if (existsPortfolio === null) {
-      const portfolioID = await Portfolio.countDocuments({});
       const portfolio = new Portfolio({
-        id: portfolioID,
         request: request.id,
         manager: request.manager,
         investor: request.investor,
@@ -132,7 +130,6 @@ module.exports = (app) => {
     }
     if (portfolio === null) {
       if (activePortfolio) {
-        const portfolioID = await Portfolio.countDocuments({});
         portfolio = portfolio.toObject();
         portfolio.state = 'draft';
         portfolio._id = undefined;

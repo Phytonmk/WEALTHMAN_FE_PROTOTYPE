@@ -63,9 +63,7 @@ module.exports = (app) => {
 
     const selectedService = services.find(service => service.type === servicesList.indexOf(req.body.service))
 
-    const requestID = await Request.countDocuments({});
     const request = new Request({
-      id: requestID,
       investor: investor.id,
       [managerType]: managerId,
       value: req.body.value,
@@ -89,9 +87,7 @@ module.exports = (app) => {
 
     // console.log('riskprofile', riskprofile)
 
-    const kycAnswersFormId = await KYCAnswersForm.countDocuments({});
     const kycAnswersForm = new KYCAnswersForm({
-      id: kycAnswersFormId,
       request: request.id,
       answers: req.body.answers
     })

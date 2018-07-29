@@ -36,17 +36,13 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const userID = await User.countDocuments({});
     const user = new User({
-      id: userID,
       login: req.body.login,
       password_hash: password_hash(req.body.password),
     });
     await user.save();
-    const tokenID = await Token.countDocuments({});
     const token = genToken(user);
     const accessToken = new Token({
-      id: tokenID,
       user: user.id,
       token
     });
@@ -69,8 +65,7 @@ module.exports = (app) => {
     }
     user.set({agreed: true, type: 0});
     await user.save();
-    const investorID = await Investor.countDocuments({});
-    const investor = new Investor({user: user.id, id: investorID});
+    const investor = new Investor({user: user.id});
     await investor.save();
     res.sendStatus(200);
     res.end();
@@ -94,9 +89,7 @@ module.exports = (app) => {
 
     // console.log('riskprofile', riskprofile)
 
-    const answersFormId = await AnswersForm.countDocuments({});
     const answersForm = new AnswersForm({
-      id: answersFormId,
       user: token.user,
       answers: req.body.answers
     })
@@ -140,10 +133,9 @@ module.exports = (app) => {
     }
     user.set({type: 1});
     await user.save();
-    const managerID = await Manager.countDocuments({});
     const foundManager = await Manager.findOne({user: user.id});
     if (foundManager === null) {
-      const manager = new Manager(Object.assign(req.body, {user: user.id, id: managerID}));
+      const manager = new Manager(Object.assign(req.body, {user: user.id}));
       await manager.save();
     } else {
       await Manager.findOneAndUpdate({user: user.id}, req.body);
@@ -183,8 +175,7 @@ module.exports = (app) => {
     }
     let manager = await Manager.findOne({user: token.user});
     if (manager === null) {
-      const managerID = await Manager.countDocuments({});
-      manager = new Manager(Object.assign(req.body, {user: token.user, id: managerID}));
+      manager = new Manager(Object.assign(req.body, {user: token.user}));
     }
     if (!req.files) {
       res.sendStatus(400).send('No files were uploaded.');
@@ -214,8 +205,7 @@ module.exports = (app) => {
     }
     let company = await Company.findOne({user: token.user});
     if (company === null) {
-      const companyID = await Company.countDocuments({});
-      company = new Company(Object.assign(req.body, {user: token.user, id: companyID}));
+      company = new Company(Object.assign(req.body, {user: token.user}));
     }
     if (!req.files)
       return res.sendStatus(400).send('No files were uploaded.');
@@ -245,10 +235,9 @@ module.exports = (app) => {
     }
     user.set({type: 3});
     await user.save();
-    const companyID = await Company.countDocuments({});
     const foundCompany = await Company.findOne({user: user.id});
     if (foundCompany === null) {
-      const company = new Company(Object.assign(req.body, {user: user.id, id: companyID}));
+      const company = new Company(Object.assign(req.body, {user: user.id}));
       await company.save();
     } else {
       await Company.findOneAndUpdate({user: user.id}, req.body);
@@ -267,10 +256,8 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const tokenID = await Token.countDocuments({});
     const token = genToken(user);
     const accessToken = new Token({
-      id: tokenID,
       user: user.id,
       token
     });

@@ -1,37 +1,51 @@
-console.log('\n\n   ╔════Waking server up═════╗');
-const express = require('express');
-const fs = require('fs');
-const mongoose = require('mongoose');
-const port = 8080;
-const app = express();
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const fileUpload = require('express-fileupload');
-console.log('   ║  All modules required   ║');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(fileUpload());
-app.use('/api/img', express.static('img'));
-app.use((req, res, next) => {
-  res.append("Access-Control-Allow-Origin", "*");
-  // res.setHeader("Access-Control-Allow-Credentials", "true");
-  // res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
-  next();
-})
-app.use((req, res, next) => {
-  console.log(`request to ${req.originalUrl}: ${JSON.stringify(req.body)}`);
-  next();
-});
-mongoose.connect('mongodb://lev:levlev@95.213.199.125:27017/test', {useNewUrlParser: true}, (err) => {
-  if (err)
-    console.log(err);
-  else
-    console.log('   ╚═════mongo connected═════╝\n\n')
-});
-console.log('   ║    Almost  started...   ║');
-require('./routes/index.js')(app);
-require('./iterators/index.js')(app);
-require('./trading/wealthman_exchanger_backend');
-app.listen(port, () => console.log(`   ║Started on localhost:${port}║`))
+const cluster = require('cluster')
+
+const numCPUs = require('os').cpus().length;
+
+const configs = require('./configs')
+
+const addSpaces = (str) => {
+  while (str.length < 36)
+    str += ' '
+  return str
+}
+
+if (cluster.isMaster) {
+  console.log('\n\n')
+  console.log('  ╔════════════════════════════════════╗')
+  if (configs.productionMode)
+    console.log('  ║           !!! WARNING !!!          ║')
+  console.log(`  ║Server confgirurated as: ${configs.productionMode ? 'production' : 'developer '} ║`)
+  console.log('  ╠════════════════════════════════════╣')
+  console.log('  ║' + addSpaces(`Configurated port: ${configs.workerPort}`) + '║')
+  console.log('  ║' + addSpaces(`Master ${process.pid} is running`) + '║')
+  console.log('  ║' + addSpaces(`numCPUs: ${numCPUs}`) + '║')
+
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork()
+  }
+  console.log('  ╠════════════════════════════════════╣')
+  console.log('  ║Deploying workers...                ║')
+
+  let onlineWorkers = 0
+  cluster.on('online', (worker) => {
+    onlineWorkers++
+    console.log('  ║' + addSpaces(`${onlineWorkers}. Worker ${worker.process.pid} started`) + '║')
+    if (onlineWorkers >= numCPUs)
+      console.log('  ╠════════════════════════════════════╣')
+  })
+  let deployedWorkers = 0
+  cluster.on('message', (worker, msg) => {
+    if (msg.workerDeployed) {
+      deployedWorkers++
+      console.log('  ║' + addSpaces(`${deployedWorkers}. Worker ${msg.pid} deployed on port ${msg.port}`) + '║')
+      if (deployedWorkers >= numCPUs)
+        console.log('  ╚════════════════════════════════════╝')
+    }
+  })
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`╍ worker ${worker.process.pid} died`)
+  })
+} else {
+  require('./worker')
+}

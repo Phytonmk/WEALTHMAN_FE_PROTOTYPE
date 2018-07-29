@@ -11,6 +11,7 @@ w-server/trading/connection_settings.js
 w-chat/node_modules/
 
 # Files
+*.config.js
 *.ids
 *.iws
 *.iml

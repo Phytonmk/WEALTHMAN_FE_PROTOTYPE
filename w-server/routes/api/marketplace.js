@@ -15,7 +15,7 @@ module.exports = (app) => {
     if (req.params.filter !== '-1')
       searchQuery['services.type'] = req.params.filter;
     if (req.query['only-from-company'] !== undefined)
-      searchQuery.company = req.query['only-from-company'] * 1;
+      searchQuery.company = req.query['only-from-company'];
     let offers = await Manager.find(searchQuery);
 
     if (req.query['only-single-managers'] !== 'true' && req.query['only-from-company'] === undefined) {

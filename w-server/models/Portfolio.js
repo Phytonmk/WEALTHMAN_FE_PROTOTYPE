@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
 
 const PortfolioScheme = mongoose.Schema({
-  id: Number,
   state: {type: String, default: 'draft'}, // active, draft, old
-  request: Number,
-  manager: Number,
-  investor: Number,
+  request: String,
+  manager: String,
+  investor: String,
   smart_contract: {type: String, default: '-'},
   instrument: {type: String, default: 'not specified'},
-  alg: {type: Number, default: 0},
   value: {type: Number, default: 0},
   cost: {type: Number, default: 0},
   currency: {type: String, default: 'ETH'},

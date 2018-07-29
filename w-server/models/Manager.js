@@ -4,12 +4,11 @@ const mongoose = require('mongoose');
 const ServiceSchema = require('../schemas/ServiceSchema');
 
 const ManagerScheme = mongoose.Schema({
-  id: Number,
   img: String,
-  user: Number,
+  user: String,
   name: String,
   surname: String,
-  company: {type: Number, default: null},
+  company: {type: String, default: null},
   company_name: String,
   company_link: String,
   methodology: String,

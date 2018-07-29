@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const accessTokenSchema = mongoose.Schema({
-  id: Number,
-  user: Number,
+  user: String,
   token: String,
   created: {type: Date, default: Date.now},
   last_ip: String,

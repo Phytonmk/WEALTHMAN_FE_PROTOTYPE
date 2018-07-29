@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
 const RequestSchema = mongoose.Schema({
-  id: Number,
   type: {type: String, default: 'portfolio'},
-  investor: Number,
-  manager: Number,
-  company: Number,
+  investor: String,
+  manager: String,
+  company: String,
   date: {type: Date, default: Date.now},
   status: {type: String, default: 'pending'},
   value: Number,

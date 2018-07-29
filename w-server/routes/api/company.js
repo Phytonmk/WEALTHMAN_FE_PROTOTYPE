@@ -23,9 +23,7 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const requestID = await Request.countDocuments({});
     const request = new Request({
-      id: requestID,
       company: company.id,
       manager: manager.id,
       type: 'inviting'
@@ -131,9 +129,7 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const requestID = await Request.countDocuments({});
     const request = new Request({
-      id: requestID,
       company: company.id,
       manager: manager.id,
       type: 'inviting',
