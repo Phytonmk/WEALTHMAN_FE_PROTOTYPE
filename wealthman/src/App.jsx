@@ -193,6 +193,7 @@ class App extends Component {
           <Route path="/metamask" render={() => this.renderMetamaskPage()} />
           <Route path="/logout" component={ManagersPage} />
 
+          <Route path="/special-offer/:id" component={PortfolioCreationPage} />
           <Route path="/portfoliocreation/:id" component={PortfolioCreationPage} />
           <Route path="/signagreement" component={AgreementPage} />
           <Route path="/supported-browsers" render={() => this.renderSupportedBrowsersPage()} />

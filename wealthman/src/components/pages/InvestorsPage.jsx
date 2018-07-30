@@ -20,12 +20,9 @@ class InvestorsPage extends Component {
   componentDidMount() {
     api.post('investors-list')
       .then((res) => {
-        // console.log(res.data);
         this.setState({gotData: true, investors: res.data});
       })
       .catch(console.log);
-    // if (!this.state.gotData)
-    //   this.load();
   }
   render() {
     let sortableHeader = [
@@ -64,12 +61,17 @@ class InvestorsPage extends Component {
         property: 'chat',
         width: "105px",
         type: "unsortable",
+      },
+      {
+        property: 'offer',
+        width: "155px",
+        type: "unsortable",
       }
     ];
     let sortableInvestors = this.state.investors.map((investor, i) => {
       const name = (investor.name || '') + " " + (investor.surname || '');
       return {
-        id: investor.id,
+        id: investor._id,
         img: <div className="in-sortable-img-container"><img src={investor.img ? api.imgUrl(investor.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: (investor.name || '') + ' ' + (investor.surname || ''),
         registered: new myDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
@@ -81,6 +83,11 @@ class InvestorsPage extends Component {
         chat: <Link to={"/chat/" + investor.user} className="no-margin">
             <button className="big-blue-button">
               Chat
+            </button>
+          </Link>,
+        offer: <Link to={"/special-offer/" + investor._id} className="no-margin">
+            <button className="big-blue-button">
+              Offer
             </button>
           </Link>
       };

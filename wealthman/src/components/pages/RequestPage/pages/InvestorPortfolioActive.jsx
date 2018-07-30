@@ -15,7 +15,7 @@ import InvstorPortfolioHeader from '../../../dashboards/InvstorPortfolioHeader';
 export default class InvestorPortfolioActive extends Component {
   render() {
     return <div>
-      <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request.id} />
+      <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request._id} />
       <Cards
         whiteBg={true}
         cards={[{

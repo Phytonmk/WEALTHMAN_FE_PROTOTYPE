@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const configs = require('./configs')
+
 var investorScheme = mongoose.Schema({
   img: String,
   user: String,
@@ -22,4 +24,4 @@ mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
     console.log(err)
 });
 
-Investor.find({}, console.log)
+Investor.findById('5b5ec9c8dbfc345a6757c402', console.log)

@@ -15,7 +15,7 @@ class Header extends Component {
   componentWillMount() {
     if (this.props.request)
       api.post('portfolio/load', {
-        request: this.props.request.id,
+        request: this.props.request._id,
         state: 'active'
       })
         .then((res) => {

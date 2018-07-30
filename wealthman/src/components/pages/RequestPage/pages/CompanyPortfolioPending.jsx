@@ -8,7 +8,7 @@ import ManagersList from '../ManagersList';
 
 export default class InvestorPortfolioDeposit extends Component {
   acceptPortfolio() {
-    setPage('signagreement/' + this.state.request.id);
+    setPage('signagreement/' + this.state.request._id);
   }
   render() {
     return <div>
@@ -20,7 +20,7 @@ export default class InvestorPortfolioDeposit extends Component {
         }]}
       />
       <Details request={this.props.requestData.request} />
-      <ManagersList request={this.props.requestData.request.id} company={this.props.requestData.company.id}/>
+      <ManagersList request={this.props.requestData.request._id} company={this.props.requestData.company._id}/>
     </div>
   }
 }

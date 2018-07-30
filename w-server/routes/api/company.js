@@ -19,7 +19,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const manager = await Manager.findOne({id: req.body.manager});
+    const manager = await Manager.findById(req.body.manager);
     if (manager === null) {
       res.status(404);
       res.end();
@@ -47,7 +47,7 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const company = await Company.findOne({id: req.params.id});
+    const company = await Company.findById(req.params.id);
     if (company === null) {
       res.status(404);
       res.end();
@@ -69,14 +69,14 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const company = await Company.findOne({id: req.body.company});
+    const company = await Company.findById(req.body.company);
     if (company === null) {
       res.status(404);
       res.end('');
       return;
     }
     const request = await Request.findOne({
-      id: req.body.request,
+      _id: req.body.request,
       status: 'pending',
       initiatedByManager: false,
       manager: manager.id,
@@ -97,7 +97,7 @@ module.exports = (app) => {
     res.end();
   });
   app.get('/api/company-statisitcs/:id', async (req, res, next) => {
-    const company = await Company.findOne({id: req.params.id});
+    const company = await Company.findById(req.params.id);
     if (company === null) {
       res.status(404);
       res.end();
@@ -127,7 +127,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const company = await Company.findOne({id: req.body.company});
+    const company = await Company.findById(req.body.company);
     if (company === null) {
       res.status(404);
       res.end();
@@ -157,14 +157,14 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const manager = await Manager.findOne({id: req.body.manager});
+    const manager = await Manager.findById(req.body.manager);
     if (manager === null) {
       res.status(404);
       res.end('');
       return;
     }
     const request = await Request.findOne({
-      id: req.body.request,
+      _id: req.body.request,
       status: 'pending',
       initiatedByManager: true,
       manager: manager.id,

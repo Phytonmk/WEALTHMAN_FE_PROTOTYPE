@@ -45,7 +45,7 @@ class KYCPage extends Component {
         console.log(res.data.name, res.data.surname)
         this.setState({
           managerName: (res.data.name || res.data.company_name || '') + ' ' + (res.data.surname || ''),
-          managerId: res.data.id,
+          managerId: res.data._id,
           managerData: res.data
         })
       })

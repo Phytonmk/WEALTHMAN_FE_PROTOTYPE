@@ -1,3 +1,4 @@
+const configs = require('../configs')
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -11,8 +12,13 @@ module.exports = (app) => {
   app.use(fileUpload())
   app.use('/api/img', express.static('img'))
   app.use((req, res, next) => {
-    res.append("Access-Control-Allow-Origin", "http://platform.wealthman.io");
-    res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
+    if (configs.productionMode) {
+      res.append("Access-Control-Allow-Origin", "http://platform.wealthman.io");
+      res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
+    } else {
+      res.append("Access-Control-Allow-Origin", "*");
+      res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
+    }
     next();
   })
   app.use((req, res, next) => {

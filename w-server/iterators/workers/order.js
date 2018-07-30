@@ -1,4 +1,4 @@
-module.exports = () => new Promise((resolve, reject) => setTimeout(resolve, 15000))
+module.exports = () => new Promise((resolve, reject) => setTimeout(resolve, 60 * 20 * 1000))
 // const Binance = require('node-binance-api');
 // const Order = require('../../models/Order');
 // const connection_settings = require('../../trading/connection_settings');

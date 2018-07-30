@@ -91,7 +91,7 @@ class ChatPage extends Component {
         .catch(console.log);
   }
   loadChats() {
-    this.loadMessages(this.props.match.params.chat * 1);
+    this.loadMessages(this.props.match.params.chat);
     chatsApi.chatsList()
       .then(res => {
         console.log(res.data);
@@ -139,7 +139,7 @@ class ChatPage extends Component {
   }
   sendMessage() {
     let msgText = this.state.typingMsg;
-    let toId = this.props.match.params.chat * 1;
+    let toId = this.props.match.params.chat;
     let toName = this.state.currentChat.name;
     let toPic = this.state.currentChat.pic;
     chatsApi.sendMessage(toId, msgText)
@@ -151,8 +151,8 @@ class ChatPage extends Component {
   }
   render() {
     if (lastSelectedChat != this.props.match.params.chat) {
-      lastSelectedChat = this.props.match.params.chat * 1;
-      this.loadMessages(this.props.match.params.chat * 1);
+      lastSelectedChat = this.props.match.params.chat;
+      this.loadMessages(this.props.match.params.chat);
     }
     return (
       <div>

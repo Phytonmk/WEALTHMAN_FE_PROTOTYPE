@@ -46,10 +46,10 @@ class ManagersPage extends Component {
     setReduxState({
       currentManager: managerID,
     });
-    const manager = this.state.offers.find(i => i.id === managerID);
+    const manager = this.state.offers.find(i => i._id === managerID);
     setCookie('service', this.state.filter);
-    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
+    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
   }
   load(filter) {
     this.setState({
@@ -71,8 +71,7 @@ class ManagersPage extends Component {
     // this.setState({filter: filterIndex, gotData: false});
     this.setState({gotData: false});
     console.log(`loading...`);
-    // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
-    api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
+    api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData._id : '?only-single-managers=true') : ''))
       .then((res) => {
         console.log(`loaded`);
         console.log(res.data);
@@ -172,7 +171,7 @@ class ManagersPage extends Component {
         // img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
-          render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id} className="no-margin no-link-style">
+          render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin no-link-style">
             {name}
           </Link>,
           value: name
@@ -202,12 +201,12 @@ class ManagersPage extends Component {
           {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
         aum6: <img src="/graph.png" className="graph" />,
-        apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
+        apply: <div className="no-margin" onClick={() => this.applyManager(manager._id)}>
             <button className="big-blue-button">
               APPLY NOW
             </button>
           </div>,
-        invite: <Link to={"/invite-manager/" + manager.id} className="no-margin">
+        invite: <Link to={"/invite-manager/" + manager._id} className="no-margin">
             <button className="big-blue-button">
               INVITE NOW
             </button>

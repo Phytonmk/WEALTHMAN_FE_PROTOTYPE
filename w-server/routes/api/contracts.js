@@ -27,13 +27,13 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({investor: investor.id, id: req.body.request});
+    const request = await Request.findOne({investor: investor.id, _id: req.body.request});
     if (request === null) {
       res.status(403);
       res.end('');
       return;
     }
-    const manager = await Manager.findOne({id: request.manager});
+    const manager = await Manager.findById(request.manager);
     if (manager === null) {
       res.status(404);
       res.end('');
@@ -84,7 +84,7 @@ module.exports = (app) => {
     }
     const request = await Request.findOne({
       investor: investor.id,
-      id: req.body.request
+      _id: req.body.request
     });
     if (request === null) {
       res.status(404);

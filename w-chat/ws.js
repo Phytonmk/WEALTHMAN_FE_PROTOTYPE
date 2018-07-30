@@ -44,20 +44,20 @@ module.exports = (port) => {
           ws.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 1'}});
           return;
         }
-        const user = await User.findOne({id: token.user});
+        const user = await User.findOne({_id: token.user});
         if (user === null) {
           ws.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 2'}});
           return;
         }
-        let senderData = await getUserData(user.id);
+        let senderData = await getUserData(user._id);
         const wsToken = genToken(user);
         sessionTokens[wsToken] = {
-          id: user.id,
+          id: user._id,
           name: senderData.name,
           img: senderData.img
         };
-        userDataCache[user.id] = senderData;
-        usersOfThisWorker[user.id] = ws;
+        userDataCache[user._id] = senderData;
+        usersOfThisWorker[user._id] = ws;
         ws.emit('message', {success: true, token: wsToken});
       } else if (message.type === 'text_message') {
         if (sessionTokens[message.token] === undefined) {
@@ -94,7 +94,7 @@ module.exports = (port) => {
         }
         let seenBy = {[sessionTokens[message.token].id]: true, [message.to]: false};
         const newMessage = new Message({
-          chat: chat.id,
+          chat: chat._id,
           from: sessionTokens[message.token].id,
           to: message.to,
           text: message.text,
@@ -104,7 +104,7 @@ module.exports = (port) => {
           usersOfThisWorker[message.to].emit('message', {
             success: true,
             newMessage: true,
-            chat: chat.id,
+            chat: chat._id,
             companionId: sessionTokens[message.token].id,
             from: 'companion',
             text: message.text,
@@ -153,7 +153,7 @@ module.exports = (port) => {
           chat.set({last_message});
         }
         const newMessage = new Message({
-          chat: chat.id,
+          chat: chat._id,
           from: -1,
           to: -1,
           text: message.text,
@@ -168,7 +168,7 @@ module.exports = (port) => {
             usersOfThisWorker[id].emit('message', {
               success: true,
               newMessage: true,
-              chat: chat.id,
+              chat: chat._id,
               companionId: -1,
               from: 'system',
               text: message.text,

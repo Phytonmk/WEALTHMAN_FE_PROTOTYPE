@@ -6,7 +6,7 @@ import Person from '../../../dashboards/Person';
 
 export default class InvestorPortfolioDeposit extends Component {
   acceptPortfolio() {
-    setPage('signagreement/' + this.state.request.id);
+    setPage('signagreement/' + this.state.request._id);
   }
   render() {
     return <div>
@@ -14,7 +14,7 @@ export default class InvestorPortfolioDeposit extends Component {
       <Cards
         whiteBg={true}
         cards={[{
-          title: <Link to={'/money/' + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Go to deposit page</Link>,
+          title: <Link to={'/money/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Go to deposit page</Link>,
         }]}
       />
     </div>

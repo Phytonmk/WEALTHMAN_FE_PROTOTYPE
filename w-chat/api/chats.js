@@ -13,18 +13,18 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findOne({_id: token.user});
     if (user === null) {
       res.status(403);
       res.end('');
       return;
     }
-    const chats = await Chat.find({users: {$in: user.id}});
+    const chats = await Chat.find({users: {$in: user._id}});
     const results = [];
     for (let chat of chats) {
       chat = chat.toObject();
-      console.log({chat: chat._id, seenBy: {[user.id]: false}});
-      chat.unread = await Message.countDocuments({chat: chat._id, [`seenBy.${user.id}`]: false});
+      console.log({chat: chat._id, seenBy: {[user._id]: false}});
+      chat.unread = await Message.countDocuments({chat: chat._id, [`seenBy.${user._id}`]: false});
       results.push(chat);
     }
     res.send(results);
@@ -37,7 +37,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findOne({_id: token.user});
     if (user === null) {
       res.status(403);
       res.end('');
@@ -49,16 +49,16 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    const ids = user.id < req.query.chat ? [user.id, req.query.chat] : [req.query.chat, user.id];
+    const ids = user._id < req.query.chat ? [user._id, req.query.chat] : [req.query.chat, user._id];
     const chat = await Chat.findOne({users: ids});
     if (chat === null) {
       res.send({messages: [], chat: anotherUserData});
       return;
     }
-    await Message.update({chat: chat._id, [`seenBy.${user.id}`]: false}, {[`seenBy.${user.id}`]: true});
+    await Message.update({chat: chat._id, [`seenBy.${user._id}`]: false}, {[`seenBy.${user._id}`]: true});
     let messages = [];
     if (req.query.offsetDate !== undefined && req.query.offsetDate * 1 == req.query.offsetDate)
-      messages = await Message.find({chat: chat._id, date: {$lte: new Date(req.query.offsetDate)}}).limit(100);
+      messages = await Message.find({chat: chat._id, date: {$lte: new Date(req.query.offsetDate * 1)}}).limit(100);
     else
       messages = await Message.find({chat: chat._id}).limit(100);
     res.send({messages, chat: anotherUserData});

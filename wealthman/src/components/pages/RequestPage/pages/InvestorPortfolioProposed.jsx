@@ -7,7 +7,7 @@ import Graphics from '../../../dashboards/Graphics';
 
 export default class InvestorPortfolioProposed extends Component {
   acceptPortfolio() {
-    setPage('signagreement/' + this.state.request.id);
+    setPage('signagreement/' + this.state.request._id);
   }
   render() {
     return <div>
@@ -61,13 +61,13 @@ export default class InvestorPortfolioProposed extends Component {
       <Cards
         whiteBg={true}
         cards={[{
-          title: <Link to={'/decline/' + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
+          title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
           state: 'bad'
         }, {
           title: 'Request another portfolio',
           subtitle: '(don\'t work yet)'
         }, {
-          title: <Link to={'/signagreement/' + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Accept</Link>,
+          title: <Link to={'/signagreement/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Accept</Link>,
           state: 'good'
         }]}
       />

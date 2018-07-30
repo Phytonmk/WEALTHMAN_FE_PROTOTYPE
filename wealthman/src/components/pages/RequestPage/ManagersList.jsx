@@ -82,10 +82,10 @@ class ManagersList extends Component {
     let sortableManagers = this.state.managers.map((manager, i) => {
       const name = manager.name  || '' + " " + manager.surname || '';
       return {
-        id: manager.id,
+        id: manager._id,
         img: <img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" />,
         name: {
-          render: <Link to={"/manager/" + manager.id} className="no-margin no-link-style">
+          render: <Link to={"/manager/" + manager._id} className="no-margin no-link-style">
             {name}
           </Link>,
           value: name
@@ -99,7 +99,7 @@ class ManagersList extends Component {
           {manager.services[i].fee}%
         </li>)}</ul>,
         relay:
-            <button onClick={() => this.relay(manager.id)} className="big-blue-button">
+            <button onClick={() => this.relay(manager._id)} className="big-blue-button">
               RELAY REQUEST
             </button>,
         chat: <Link to={"/chat/" + manager.user} className="no-margin">

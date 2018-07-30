@@ -64,7 +64,7 @@ class MoneyPage extends Component {
   }
   deploy() {
     api.post('contracts/deploy', {
-      request: this.state.request.id,
+      request: this.state.request._id,
       manager: this.state.request.manager
     }).then((res) => {
       console.log(res.status);

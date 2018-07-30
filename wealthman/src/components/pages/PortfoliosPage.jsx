@@ -105,7 +105,7 @@ class PortfoliosPage extends Component {
         price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       const value = (portfolio.value * price / (currentCurrency.price !== 0 ? currentCurrency.price : 1)).toFixed(3);
       return {
-        id: portfolio.id,
+        id: portfolio._id,
         portfolio: <b>{portfolio.id}</b>,
         smart:  <div className="smart-contract-comact">{portfolio.smart_contract}</div>,
         instrument: request.service || '',
@@ -113,7 +113,7 @@ class PortfoliosPage extends Component {
         value: (value != 'NaN' ? value : '-') + " " + currentCurrency.name,
         status: request.status,
         cost: <img src="graph.png" className="graph small-graph" />,//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        link: 'request/' + request.id
+        link: 'request/' + request._id
       };
     });
 

@@ -57,7 +57,7 @@ module.exports = (app) => {
       res.end('');
       return
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findById(token.user);
     if (user === null) {
       res.sendStatus(500);
       res.end();
@@ -125,7 +125,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findOne({__id: token.user});
     if (user === null) {
       res.sendStatus(500);
       res.end();
@@ -227,7 +227,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findById(token.user);
     if (user === null) {
       res.sendStatus(500);
       res.end();
@@ -277,7 +277,7 @@ module.exports = (app) => {
       res.end('');
       return
     }
-    const user = await User.findOne({id: token.user});
+    const user = await User.findById(token.user);
     if (user === null) {
       res.sendStatus(500);
       res.end();
@@ -307,7 +307,7 @@ module.exports = (app) => {
       res.end('');
       return
     }
-    const user = await User.findOne({id: token.user, password_hash: password_hash(req.body.old_password)});
+    const user = await User.findById(token.user).where({password_hash: password_hash(req.body.old_password)});
     if (user === null) {
       res.sendStatus(403);
       res.end();

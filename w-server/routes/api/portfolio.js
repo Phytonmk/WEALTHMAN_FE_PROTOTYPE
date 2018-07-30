@@ -4,6 +4,8 @@ const Manager = require('../../models/Manager');
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 
+const notify = require('../../helpers/notifications')
+
 module.exports = (app) => {
   app.post('/api/portfolio/save', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -18,7 +20,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({id: req.body.request});
+    const request = await Request.findById(req.body.request);
     if (request === null) {
       res.status(404);
       res.end('');
@@ -74,8 +76,8 @@ module.exports = (app) => {
       user = 'investor';
       userID = investor.id;
     }
-    const request = await Request.findOne({id: req.body.request, [user]: userID});
-    if (request === null) {
+    const request = await Request.findById(req.body.request);
+    if (request === null || request.user === userID) {
       res.status(404);
       res.end('');
       return;
@@ -114,8 +116,8 @@ module.exports = (app) => {
       user = 'investor';
       userID = investor.id;
     }
-    const request = await Request.findOne({id: req.body.request, [user]: userID});
-    if (request === null) {
+    const request = await Request.findById(req.body.request);
+    if (request === null || request.user !== userID) {
       res.status(404);
       res.end('');
       return;
@@ -190,7 +192,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({manager: manager.id, id: req.params.request, status: 'pending'});
+    const request = await Request.findOne({manager: manager.id, _id: req.params.request, status: 'pending'});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -204,6 +206,7 @@ module.exports = (app) => {
     }
     request.set({status: 'proposed'});
     await request.save();
+    await notify(request.id, `Manager proposed portfolio`)
     res.status(200);
     res.end();
   });
@@ -219,7 +222,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({manager: manager.id, id: req.params.request});
+    const request = await Request.findOne({manager: manager.id, _id: req.params.request});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -240,11 +243,14 @@ module.exports = (app) => {
       request.set({revisions: request.revisions + 1});
       await updatePortfoliosState({manager: manager.id, request: request.id});
       request.set({status: 'recalculated'});
+      await notify(request.id, `Portfolio waiting for system recalculation`)
     } else if (request.service === 'Advisory') {
       request.set({status: 'revision'});
+      await notify(request.id, `Portfolio waiting for manager revision`)
     } else {
       request.set({status: 'recalculated'});
       request.set({revisions: request.revisions + 1});
+      await notify(request.id, `Portfolio waiting for system recalculation`)
       await updatePortfoliosState({manager: manager.id, request: request.id});
     }
     await request.save();
@@ -263,7 +269,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({investor: investor.id, id: req.params.request, status: 'revision'});
+    const request = await Request.findOne({investor: investor.id, _id: req.params.request, status: 'revision'});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -279,6 +285,7 @@ module.exports = (app) => {
     await updatePortfoliosState({investor: investor.id, request: request.id})
     request.set({status: 'recalculated'});
     await request.save();
+    await notify(request.id, `Portfolio waiting for system recalculation`)
     res.status(200);
     res.end();
   });
@@ -294,7 +301,7 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({investor: investor.id, id: req.params.request, status: 'revision'});
+    const request = await Request.findOne({investor: investor.id, _id: req.params.request, status: 'revision'});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -308,6 +315,7 @@ module.exports = (app) => {
     }
     request.set({status: 'active'});
     await request.save();
+    await notify(request.id, `New portfolio declined`)
     res.status(200);
     res.end();
   });
@@ -339,8 +347,8 @@ module.exports = (app) => {
   //     user = 'investor';
   //     userID = investor.id;
   //   }
-  //   console.log({[user]: userID, id: req.params.id});
-  //   const request = await Request.findOne({[user]: userID, id: req.params.id});
+  //   console.log({[user]: userID, _id: req.params.id});
+  //   const request = await Request.findOne({[user]: userID, _id: req.params.id});
   //   if (request === null) {
   //     res.status(404);
   //     res.end('');
@@ -407,7 +415,7 @@ module.exports = (app) => {
   //     user = 'investor';
   //     userID = investor.id;
   //   }
-  //   const request = await Request.findOne({[user]: userID, id: req.params.id});
+  //   const request = await Request.findOne({[user]: userID, _id: req.params.id});
   //   if (request === null) {
   //     res.status(404);
   //     res.end('');

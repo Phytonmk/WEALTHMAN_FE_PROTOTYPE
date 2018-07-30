@@ -85,7 +85,7 @@ const getAnotherPerson = (investor, manager, company) => {
       break;
   }
   return {
-    id: anotherPersonData.id,
+    _id: anotherPersonData._id,
     user: anotherPersonData.user,
     name: anotherPersonData.company_name || ((anotherPersonData.name || '') + ' ' + (anotherPersonData.surname || '')),
     img: anotherPersonData.img ? anotherPersonData.img : 'manager/user.svg',

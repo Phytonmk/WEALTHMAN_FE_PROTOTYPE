@@ -64,11 +64,11 @@ class ManagerPage extends Component {
     let inviteBtn = '';
 
     if (this.props.user === 3 && manager.company_name === undefined && (manager.company === -1 || manager.company === null))
-      inviteBtn = <Link to={"/participating/" + manager.id}>
+      inviteBtn = <Link to={"/participating/" + manager._id}>
                     <button className="big-blue-button right">Invite now</button>
                   </Link>
     else if (this.props.user === 1 && manager.company_name !== undefined && (this.props.userData.company === -1 || this.props.userData.company === null))
-      inviteBtn = <Link to={"/participating/" + manager.id}>
+      inviteBtn = <Link to={"/participating/" + manager._id}>
                     <button className="big-blue-button right">Apply to be in</button>
                   </Link>
     return (

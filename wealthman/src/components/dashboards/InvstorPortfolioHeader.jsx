@@ -7,7 +7,7 @@ export default class InvstorPortfolioHeader extends Component {
     return <div className="investor-portfolio-header">
       <div>
         <h1>{this.props.dashboardMode ? 'Portfolios' : 'Active portfolio'}</h1>
-        <p>{this.props.requestData ? ('#' + this.props.requestData.request.id) : ''}</p>
+        <p>{this.props.requestData ? ('#' + this.props.requestData.request._id) : ''}</p>
       </div>
       <div>
         <div>

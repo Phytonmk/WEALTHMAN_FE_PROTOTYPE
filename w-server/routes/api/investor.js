@@ -36,7 +36,7 @@ module.exports = (app) => {
     }
     const investors = [];
     for (let investorId of investorsIds) {
-      const investor = await Investor.findOne({id: investorId});
+      const investor = await Investor.findById(investorId);
       if (investor !== null)
         investors.push(investor);
     }
@@ -44,7 +44,7 @@ module.exports = (app) => {
     res.end();
   });
   app.get('/api/investor/:id', async (req, res, next) => {
-    const investor = await Investor.findOne({id: req.params.id});
+    const investor = await Investor.findById(req.params.id);
     if (investor === null) {
       res.status(404);
       res.end();
