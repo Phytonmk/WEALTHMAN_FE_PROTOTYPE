@@ -8,6 +8,8 @@ const KYCAnswersForm = require('../../models/KYCAnswersForm');
 
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
+const notify = require('../../helpers/notifications')
+
 module.exports = (app) => {
   app.post('/api/request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -91,11 +93,11 @@ module.exports = (app) => {
       request: request.id,
       answers: req.body.answers
     })
-    await kycAnswersForm.save();
     investor.set({riskprofile});
+    await kycAnswersForm.save();
     await investor.save();
-    res.status(200);
     await request.save();
+    await notify(request.id, 'Request initiated by investor')
     res.status(200);
     res.end();
   });
@@ -164,6 +166,7 @@ module.exports = (app) => {
     }
     request.set({status: 'declined'});
     await request.save();
+    await notify(request.id, 'Request declined')
     res.status(200);
     res.end();
   });
@@ -224,6 +227,7 @@ module.exports = (app) => {
     }
     request.set({company: null, manager: manager.id});
     await request.save();
+    await notify(request.id, `Request relayed to manager ${(manager.name || '')} ${(manager.surname || '')}`)
     res.status(200);
     res.end();
   });

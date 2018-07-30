@@ -4,6 +4,8 @@ const Company = require('../../models/Company');
 const Request = require('../../models/Request');
 const Manager = require('../../models/Manager');
 
+const notify = require('../../helpers/notifications')
+
 module.exports = (app) => {
   app.post('/api/company/invite-manager', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -29,6 +31,7 @@ module.exports = (app) => {
       type: 'inviting'
     });
     await request.save();
+    await notify(request.id, `Company ${company.company_name} invited ${(manager.name || '')} ${(manager.surname || '')}`)
     res.status(200);
     res.end();
   });
@@ -89,6 +92,7 @@ module.exports = (app) => {
     request.set({status: 'accepted'});
     await manager.save();
     await request.save();
+    await notify(request.id, `Manager ${(manager.name || '')} ${(manager.surname || '')} accepted invite of company ${company.company_name}`)
     res.status(200);
     res.end();
   });
@@ -136,6 +140,7 @@ module.exports = (app) => {
       initiatedByManager: true
     });
     await request.save();
+    await notify(request.id, `Manager ${(manager.name || '')} ${(manager.surname || '')} requested to apply company ${company.company_name}`)
     res.status(200);
     res.end();
   });
@@ -175,6 +180,7 @@ module.exports = (app) => {
     request.set({status: 'accepted'});
     await manager.save();
     await request.save();
+    await notify(request.id, `Company ${company.company_name} accepted apply of manager ${(manager.name || '')} ${(manager.surname || '')}`)
     res.status(200);
     res.end();
   });

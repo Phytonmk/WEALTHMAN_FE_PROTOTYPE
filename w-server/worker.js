@@ -6,7 +6,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const app = express()
-const middlewears = require('./middlewears')
+const middlewears = require('./helpers/middlewears')
 middlewears(app)
 
 mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
@@ -14,9 +14,7 @@ mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
     console.log(err)
 });
 require('./routes/index.js')(app)
-require('./iterators/index.js')(app)
 
-require('./trading/wealthman_exchanger_backend')
 
 app.listen(configs.workerPort, () => {
   process.send({

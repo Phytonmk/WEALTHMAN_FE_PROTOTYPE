@@ -7,13 +7,7 @@ const Portfolio = require('../../models/Portfolio');
 const checkBalance = require('../../trading/wealthman_check_balance');
 const trade = require('../../trading/wealthman_trade');
 
-let workingProcess = false;
-
-const work = async () => {
-  if (workingProcess)
-    return false;
-  // workingProcess = true;
-
+module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'waiting for deposit'});
   const smartContracts = [];
   let i = 0;
@@ -40,10 +34,4 @@ const work = async () => {
       await request.save();
     }
   }
-  workingProcess = false;
-}
-
-
-
-work();
-let interval = setInterval(work, 1000 * 60 * 3);
+})

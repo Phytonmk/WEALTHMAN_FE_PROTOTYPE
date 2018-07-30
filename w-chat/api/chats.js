@@ -43,13 +43,13 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const anotherUserData = await getUserData(req.query.chat * 1);
+    const anotherUserData = await getUserData(req.query.chat);
     if (anotherUserData.unsuccess) {
       res.status(404);
       res.end();
       return;
     }
-    const ids = user.id < req.query.chat * 1 ? [user.id, req.query.chat * 1] : [req.query.chat * 1, user.id];
+    const ids = user.id < req.query.chat ? [user.id, req.query.chat] : [req.query.chat, user.id];
     const chat = await Chat.findOne({users: ids});
     if (chat === null) {
       res.send({messages: [], chat: anotherUserData});
@@ -58,7 +58,7 @@ module.exports = (app) => {
     await Message.update({chat: chat._id, [`seenBy.${user.id}`]: false}, {[`seenBy.${user.id}`]: true});
     let messages = [];
     if (req.query.offsetDate !== undefined && req.query.offsetDate * 1 == req.query.offsetDate)
-      messages = await Message.find({chat: chat._id, date: {$lte: new Date(req.query.offsetDate * 1)}}).limit(100);
+      messages = await Message.find({chat: chat._id, date: {$lte: new Date(req.query.offsetDate)}}).limit(100);
     else
       messages = await Message.find({chat: chat._id}).limit(100);
     res.send({messages, chat: anotherUserData});

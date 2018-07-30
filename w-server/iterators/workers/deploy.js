@@ -4,13 +4,7 @@ const Portfolio = require('../../models/Portfolio');
 const checkDeployment = require('../../trading/wealthman_check_deploy');
 const trade = require('../../trading/wealthman_trade');
 
-let workingProcess = false;
-
-const work = async () => {
-  if (workingProcess)
-    return false;
-  workingProcess = true;
-
+module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'deploying'});
   for (request of requests) {
     if (request.deployment_hash) {
@@ -42,10 +36,4 @@ const work = async () => {
       }
     }
   }
-  workingProcess = false;
-}
-
-
-
-work();
-let interval = setInterval(work, 1000 * 60 * 3);
+})

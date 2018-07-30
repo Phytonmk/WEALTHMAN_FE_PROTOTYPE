@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 var MessageScheme = mongoose.Schema({
   date: {type: Date, default: Date.now},
   chat: String,
-  from: Number,
-  to: Number,
+  from: String,
+  to: String,
   text: '',
   system: {type: Boolean, default: false},
   silent: {type: Boolean, default: false},

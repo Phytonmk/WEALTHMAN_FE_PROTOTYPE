@@ -7,8 +7,9 @@ const Portfolio = require('../../models/Portfolio');
 const Web3 = require('web3');
 const Accounts = require('web3-eth-accounts');
 
-const ABI = require('../../contract_abi');
+const ABI = require('../../trading/contract_abi');
 
+const notify = require('../../helpers/notifications')
 const addPortfolio = require('../../trading/wealthman_portfolio_add');
 const deployContract = require('../../trading/wealthman_deploy');
 
@@ -63,6 +64,7 @@ module.exports = (app) => {
       });
       console.log(request);
       await request.save();
+      await notify(request.id, `Contract deploying started`)
       res.status(200);
       res.end();
     }

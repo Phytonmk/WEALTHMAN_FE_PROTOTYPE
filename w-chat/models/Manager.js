@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const ManagerScheme = mongoose.Schema({
   img: String,
-  user: Number,
+  user: String,
   name: String,
   surname: String,
 });

@@ -92,7 +92,7 @@ module.exports = (port) => {
         } else {
           chat.set({last_message});
         }
-        let seenBy = {[sessionTokens[message.token].id]: true, [message.to * 1]: false};
+        let seenBy = {[sessionTokens[message.token].id]: true, [message.to]: false};
         const newMessage = new Message({
           chat: chat.id,
           from: sessionTokens[message.token].id,
