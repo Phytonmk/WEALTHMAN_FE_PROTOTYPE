@@ -12,12 +12,12 @@ module.exports = () => new Promise(async (resolve, reject) => {
   const smartContracts = [];
   let i = 0;
   for (request of requests) {
-    const portfolio = await Portfolio.findOne({request: request.id});
+    const portfolio = await Portfolio.findOne({request: request._id});
     if (portfolio !== null && portfolio.smart_contract)
       smartContracts.push({
         address: portfolio.smart_contract,
-        portfolio: portfolio.id,
-        request: request.id
+        portfolio: portfolio._id,
+        request: request._id
       });
   }
   for (let smartContract of smartContracts) {
@@ -28,7 +28,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
     else
       console.log('no deposit');
     if (deposit) {
-      const request = await Request.findOne({id: smartContract.request});
+      const request = await Request.findById(smartContract.request);
       trade(smartContract.address, smartContract.request);
       request.set({status: 'active'});  
       await request.save();

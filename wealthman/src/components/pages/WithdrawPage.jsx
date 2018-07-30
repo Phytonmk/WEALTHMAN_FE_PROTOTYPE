@@ -33,7 +33,7 @@ class WithdrawPage extends Component {
     const contract = web3.eth.contract(portfolio_abi)
     console.log(this.state.contract_address);
     const myContractInstance = contract.at(this.state.contract_address);
-    myContractInstance.withdraw();
+    myContractInstance.withdraw(console.log);
     // let contract = web3.eth.contract(portfolio_abi, this.state.withdrawing_address);
     // console.log(contract.Withdraw);
     // contract = contract.at(this.state.withdrawing_address);

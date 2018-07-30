@@ -20,14 +20,16 @@ module.exports = () => new Promise(async (resolve, reject) => {
         case 'deployed':
           console.log(`${request.deployment_hash} deployed`);
           request.set({status: 'waiting for deposit'});
-          const portfolio = await Portfolio.findOne({state: 'active', request: request.id});
+          console.log('search for porfolio ' + request._id)
+          const portfolio = await Portfolio.findOne({state: 'active', request: request._id + ''});
+          console.log(portfolio)
           if (portfolio !== null) {
             portfolio.set({smart_contract: deployment.address}); 
             await request.save();
             await portfolio.save();
           } else {
             request.set({status: 'failed'});
-            request.save();
+            await request.save();
           }
           break;
         case 'pending':

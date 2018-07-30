@@ -56,12 +56,18 @@ const formAnswers = [];
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = defaultState;
+    this.state = Object.assign(defaultState, {authCompleted: false});
     store.subscribe(() => {
       this.state = store.getState();
       this.forceUpdate();
     });
-    auth();
+    console.log('App started')
+    window.addEventListener('auth completed', () => {
+      console.log('auth completed')
+      this.setState({authCompleted: true})
+      setTimeout(() => this.forceUpdate(), 0)
+    })
+    auth()
   }
 
   setPage(page, id) {
@@ -881,7 +887,9 @@ class App extends Component {
 
   render() {
     document.title = "Wealthman Platform";
-
+    console.log(this.state.authCompleted)
+    if (!this.state.authCompleted)
+      return 'loading...'
     const Loading = () => <div>Loading...</div>;
     // const Home = Loadable({
     //   loader: () => import('./routes/Home.js'),

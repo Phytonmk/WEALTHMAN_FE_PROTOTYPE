@@ -27,7 +27,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({investor: investor.id, _id: req.body.request});
+    const request = await Request.findOne({investor: investor._id, _id: req.body.request});
     if (request === null) {
       res.status(403);
       res.end('');
@@ -62,9 +62,13 @@ module.exports = (app) => {
         deployment_hash: deploying.hash,
         status: 'deploying'
       });
+      const portfolio = await Portfolio.findOne({request: request._id, state: 'draft'})
+      portfolio.set({state: 'active'})
+      await portfolio.save()
+      portfolio
       console.log(request);
       await request.save();
-      await notify(request.id, `Contract deploying started`)
+      await notify(request._id, `Contract deploying started`)
       res.status(200);
       res.end();
     }
@@ -83,7 +87,7 @@ module.exports = (app) => {
       return;
     }
     const request = await Request.findOne({
-      investor: investor.id,
+      investor: investor._id,
       _id: req.body.request
     });
     if (request === null) {
@@ -99,7 +103,7 @@ module.exports = (app) => {
       res.end();
     } else if (['active', 'waiting for deposit', 'revision', 'recalculated'].includes(request.status)) {
       const portfolio = await Portfolio.findOne({
-        request: request.id,
+        request: request._id,
         state: 'active'
       });
       if (portfolio === null) {

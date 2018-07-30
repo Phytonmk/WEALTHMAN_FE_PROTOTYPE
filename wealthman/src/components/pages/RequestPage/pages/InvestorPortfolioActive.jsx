@@ -25,10 +25,10 @@ export default class InvestorPortfolioActive extends Component {
           title: this.props.requestData.request.period,
           subtitle: 'Days'
         },{
-          title: new MyDate(this.props.requestData.request.contract_deployment).niceTime(),
+          title: new MyDate(this.props.requestData.request.contract_deployment || 0).niceTime(),
           subtitle: 'Start date'
         },{
-          title: new MyDate(new Date(this.props.requestData.request.contract_deployment).getTime() + 1000 * 60 * 60 * 24 * this.props.requestData.request.period).niceTime(),
+          title: new MyDate(new Date(this.props.requestData.request.contract_deployment || 0).getTime() + 1000 * 60 * 60 * 24 * this.props.requestData.request.period).niceTime(),
           subtitle: 'Finish date'
         }]}
       />

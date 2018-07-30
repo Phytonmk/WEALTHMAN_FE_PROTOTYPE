@@ -3,7 +3,7 @@ const Tx = require('ethereumjs-tx')
 const configs = require('../configs')
 const bytecode = require('./bytecode.js')
 const portfolioAbi = require('./portfolio_abi.js')
-const web3 = new Web3.providers.HttpProvider(configs.web3httpProvider)
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 const privateKey = configs.privateKey
 const _exchanger = configs.exchangerAddress
 const admin = configs.adminAddress
@@ -31,8 +31,8 @@ module.exports = (contractData) => new Promise((mainResolve, reject) => {
     if (!_prfPayoutPeriod)
       _prfPayoutPeriod = 1590710400000;
 
-
     var contract = new web3.eth.Contract(portfolioAbi);
+    console.log(contract)
     var deploy = contract.deploy({
       data: bytecode,
       arguments:[_owner,_manager,_exchanger,_admin, _endTime,_tradesMaxCount,_managmentFee,_performanceFee,_frontFee,_exitFee,_mngPayoutPeriod,_prfPayoutPeriod]

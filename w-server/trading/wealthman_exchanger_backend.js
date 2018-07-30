@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 const Tx = require('ethereumjs-tx');
 const exchangerAbi = require('./exchanger_abi.js');
-const web3 = new  Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws'))
+const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws'))
 const admin = "0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D";
 var exchange_prices = []
 var order_num;

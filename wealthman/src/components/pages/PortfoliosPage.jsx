@@ -14,8 +14,8 @@ class PortfoliosPage extends Component {
     super(props);
     this.state = {
       gotData: false,
-      portfolios: [],
-      requests: [],
+      portfolios: [{}],
+      requests: [{}],
       currentCurrencyPrices: [],
       currentCurrency: 'USD',
       currentTab: 0
@@ -24,10 +24,12 @@ class PortfoliosPage extends Component {
   componentWillMount() {
     api.post('portfolios/load')
       .then((res) => {
+        console.log(res.data)
         if (res.data.exists)
           this.setState({gotData: true, portfolios: res.data.portfolios, requests: res.data.requests});
         else
           this.setState({gotData: true, portfolios: [], requests: []});
+        setTimeout(() => this.forceUpdate(), 0)
       })
       .catch(console.log);
     api.get('stocks')
@@ -98,15 +100,16 @@ class PortfoliosPage extends Component {
         type: "unsortable"
       }
     ];
+
     let portfolios = this.state.portfolios.map((portfolio, i) => {
-      let request = this.state.requests.find(request => request.id == portfolio.request) || {};
+      let request = this.state.requests.find(request => request._id == portfolio.request) || {};
       let price = 1;
       if (this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
         price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       const value = (portfolio.value * price / (currentCurrency.price !== 0 ? currentCurrency.price : 1)).toFixed(3);
       return {
         id: portfolio._id,
-        portfolio: <b>{portfolio.id}</b>,
+        portfolio: <b>{portfolio._id}</b>,
         smart:  <div className="smart-contract-comact">{portfolio.smart_contract}</div>,
         instrument: request.service || '',
         profit: <img src="graph.png" className="graph small-graph" />,
@@ -116,7 +119,7 @@ class PortfoliosPage extends Component {
         link: 'request/' + request._id
       };
     });
-
+    console.log(portfolios)
     const subheaders = [
         // {
         //   header: "Proposed (initial)",

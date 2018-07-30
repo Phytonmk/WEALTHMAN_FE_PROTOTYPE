@@ -72,14 +72,17 @@ const defaultState = {
       label: "dashboard",
       link: "dashboard"
     }, {
-      label: "reporting",
-      link: "dashboard"
+      label: "requests",
+      link: "requests"
     }, {
       label: "clients",
       link: "investors"
     }, {
+      label: "companies",
+      link: "managers"
+    }, {
       label: "portfolio",
-      link: "requests"
+      link: "portfolios"
     }, {
       label: "profile",
       link: "account"

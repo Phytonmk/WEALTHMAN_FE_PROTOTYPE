@@ -15,7 +15,7 @@ const genToken = (user) => {
     crypto.createHash('md5')
     .update(
       salt +
-      user.id +
+      user._id +
       salt +
       (new Date).getTime() +
       salt +
@@ -43,7 +43,7 @@ module.exports = (app) => {
     await user.save();
     const token = genToken(user);
     const accessToken = new Token({
-      user: user.id,
+      user: user._id,
       token
     });
     await accessToken.save();
@@ -65,7 +65,7 @@ module.exports = (app) => {
     }
     user.set({agreed: true, type: 0});
     await user.save();
-    const investor = new Investor({user: user.id});
+    const investor = new Investor({user: user._id});
     await investor.save();
     res.sendStatus(200);
     res.end();
@@ -125,7 +125,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const user = await User.findOne({__id: token.user});
+    const user = await User.findById(token.user);
     if (user === null) {
       res.sendStatus(500);
       res.end();
@@ -133,12 +133,12 @@ module.exports = (app) => {
     }
     user.set({type: 1});
     await user.save();
-    const foundManager = await Manager.findOne({user: user.id});
+    const foundManager = await Manager.findOne({user: user._id});
     if (foundManager === null) {
-      const manager = new Manager(Object.assign(req.body, {user: user.id}));
+      const manager = new Manager(Object.assign(req.body, {user: user._id}));
       await manager.save();
     } else {
-      await Manager.findOneAndUpdate({user: user.id}, req.body);
+      await Manager.findOneAndUpdate({user: user._id}, req.body);
     }
     res.sendStatus(200);
     res.end();
@@ -156,12 +156,12 @@ module.exports = (app) => {
       return res.sendStatus(400).send('No files were uploaded.');
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/investors/');
-    req.files.file.mv(__dirname+ '/../../img/investors/' + investor.id + '.png', async (err) => {
+    req.files.file.mv(__dirname+ '/../../img/investors/' + investor._id + '.png', async (err) => {
       if (err)
         return res.sendStatus(500).send(err);
-      investor.set({img: 'investors/' + investor.id + '.png'});
+      investor.set({img: 'investors/' + investor._id + '.png'});
       await investor.save();
-      res.send('investors/' + investor.id + '.png');
+      res.send('investors/' + investor._id + '.png');
       res.end();
     });
   });
@@ -183,15 +183,15 @@ module.exports = (app) => {
     }
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/managers/');
-    req.files.file.mv(__dirname+ '/../../img/managers/' + manager.id + '.png', async (err) => {
+    req.files.file.mv(__dirname+ '/../../img/managers/' + manager._id + '.png', async (err) => {
       if (err) {
         console.log(err);
         res.sendStatus(500);;
         return;
       }
-      manager.set({img: 'managers/' + manager.id + '.png'});
+      manager.set({img: 'managers/' + manager._id + '.png'});
       await manager.save();
-      res.send('managers/' + manager.id + '.png');
+      res.send('managers/' + manager._id + '.png');
       res.end();
     });
   });
@@ -211,12 +211,12 @@ module.exports = (app) => {
       return res.sendStatus(400).send('No files were uploaded.');
     const file = req.files.file;
     await fs.ensureDir(__dirname+ '/../../img/companies/');
-    req.files.file.mv(__dirname+ '/../../img/companies/' + company.id + '.png', async (err) => {
+    req.files.file.mv(__dirname+ '/../../img/companies/' + company._id + '.png', async (err) => {
       if (err)
         return res.sendStatus(500).send(err);
-      company.set({img: 'companies/' + company.id + '.png'});
+      company.set({img: 'companies/' + company._id + '.png'});
       await company.save();
-      res.send('companies/' + company.id + '.png');
+      res.send('companies/' + company._id + '.png');
       res.end();
     });
   });
@@ -235,12 +235,12 @@ module.exports = (app) => {
     }
     user.set({type: 3});
     await user.save();
-    const foundCompany = await Company.findOne({user: user.id});
+    const foundCompany = await Company.findOne({user: user._id});
     if (foundCompany === null) {
-      const company = new Company(Object.assign(req.body, {user: user.id}));
+      const company = new Company(Object.assign(req.body, {user: user._id}));
       await company.save();
     } else {
-      await Company.findOneAndUpdate({user: user.id}, req.body);
+      await Company.findOneAndUpdate({user: user._id}, req.body);
     }
     res.sendStatus(200);
     res.end();
@@ -258,7 +258,7 @@ module.exports = (app) => {
     }
     const token = genToken(user);
     const accessToken = new Token({
-      user: user.id,
+      user: user._id,
       token
     });
     await accessToken.save();
@@ -286,13 +286,13 @@ module.exports = (app) => {
     let userData = {};
     switch (user.type) {
       case 0:
-        userData = await Investor.findOne({user: user.id});
+        userData = await Investor.findOne({user: user._id});
         break;
       case 1:
-        userData = await Manager.findOne({user: user.id});
+        userData = await Manager.findOne({user: user._id});
         break;
       case 3:
-        userData = await Company.findOne({user: user.id});
+        userData = await Company.findOne({user: user._id});
         break;
     }
     user.set({last_request: Date.now()});

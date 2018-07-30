@@ -94,7 +94,6 @@ class PortfolioCreationPage extends Component {
             });
             inputData[token.currency] = {
               percent: token.percent,
-              amount: token.amount,
               analysis: token.analysis,
               comments: token.comments,
             }
@@ -127,7 +126,6 @@ class PortfolioCreationPage extends Component {
     if (state.inputData[token.name] === undefined)
       state.inputData[token.name] = {
         percent: '',
-        amount: '',
         analysis: '',
         comments: '',
       };
@@ -149,7 +147,6 @@ class PortfolioCreationPage extends Component {
       sendData.push({
         currency: tokenName,
         percent: this.state.inputData[tokenName].percent * 1,
-        amount: this.state.inputData[tokenName].amount * 1,
         analysis: this.state.inputData[tokenName].analysis,
         comments: this.state.inputData[tokenName].comments,
       });
@@ -208,7 +205,6 @@ class PortfolioCreationPage extends Component {
             if (this.state.inputData[token.name] === undefined)
               this.state.inputData[token.name] = {
                 percent: '',
-                amount: '',
                 analysis: '',
                 comments: '',
               }
@@ -217,7 +213,6 @@ class PortfolioCreationPage extends Component {
               icon: <img src={token.icon} className="token-icon" />,
               name: token.name,
               percent: <input value={this.state.inputData[token.name].percent} onChange={(event) => this.changeTokenData(token.name, 'percent', event.target.value)} placeholder="Percent" type="number" min="0" max="100"/>,
-              amount: <input value={this.state.inputData[token.name].amount} onChange={(event) => this.changeTokenData(token.name, 'amount', event.target.value)} placeholder="Amount" type="number" min="0"/>,
               analysis: <input value={this.state.inputData[token.name].analysis} onChange={(event) => this.changeTokenData(token.name, 'analysis', event.target.value)} placeholder="Analysis" type="text"/>,
               comments: <input value={this.state.inputData[token.name].comments} onChange={(event) => this.changeTokenData(token.name, 'comments', event.target.value)} placeholder="Comments" type="text"/>,
             }
@@ -296,12 +291,6 @@ let percentHeader = [
   {
     property: 'percent',
     title: 'percent',
-    width: '100px',
-    type: 'unsortable',
-  },
-  {
-    property: 'amount',
-    title: 'amount',
     width: '100px',
     type: 'unsortable',
   },

@@ -71,7 +71,19 @@ class ManagersPage extends Component {
     // this.setState({filter: filterIndex, gotData: false});
     this.setState({gotData: false});
     console.log(`loading...`);
-    api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData._id : '?only-single-managers=true') : ''))
+    let query = 'marketplace/' + filterIndex
+    console.log(this.props.user)
+    if (this.props.user === 3) {
+      if (this.props.match.path  === '/company-managers') {
+        query += '?only-from-company=' + this.props.userData._id
+      } else {
+        query += '?only-single-managers=true'
+      }
+    } else if (this.props.user === 1) {
+      query += '?only-companies=true'
+    }
+    console.log(query)
+    api.get(query)
       .then((res) => {
         console.log(`loaded`);
         console.log(res.data);
@@ -140,13 +152,20 @@ class ManagersPage extends Component {
         width: "100px",
         type: "unsortable",
         tooltip: "Assets Under Management in the last 6 month"
-      },
-      {
-        property: "apply",
-        width: "135px",
-        type: "unsortable",
-      },
+      }
     ];
+    if (this.props.user === 0)
+      sortableHeader.push({
+          property: "apply",
+          width: "135px",
+          type: "unsortable",
+        })
+    else
+      sortableHeader.push({
+          property: "details",
+          width: "135px",
+          type: "unsortable",
+        })
     if (this.props.user === 3) { // user -- company
       sortableHeader.pop();
       if (this.props.currentPage === 'company-managers')
@@ -215,6 +234,11 @@ class ManagersPage extends Component {
             <button className="big-blue-button">
               Chat
             </button>
+          </Link>,
+        details: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin">
+            <button className="big-blue-button">
+              Details
+            </button>
           </Link>
       };
     });
@@ -234,7 +258,7 @@ class ManagersPage extends Component {
                 <Select
                   value={this.state.filter}
                   options={filters.map(filter => filter.link)}
-                  setValue={(value) => this.setState({filter: value})}
+                  setValue={(value) => {this.setState({filter: value}); setTimeout(() => this.load(), 0)}}
                   width="135px"
                 />
               </div>

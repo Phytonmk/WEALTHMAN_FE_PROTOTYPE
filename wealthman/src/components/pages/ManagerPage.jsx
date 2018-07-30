@@ -93,15 +93,15 @@ class ManagerPage extends Component {
 
             <div className="column right">
               <div className="row">
-                <Link to={"/chat"} onClick={() => this.setPage("chat")}>
+                <Link to={"/chat/" + manager.user} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
                 {inviteBtn}
               </div>
-              <div className="social-links">
+              {/*<div className="social-links">
                 <span>Social networks</span>
                 <Social links={manager.social} />
-              </div>
+              </div>*/}
             </div>
           </div>
 
@@ -110,10 +110,11 @@ class ManagerPage extends Component {
               {(manager.services || []).map((service, i) => <div className="box" key={i}>
                 <h2>
                   {filters[service.type].link}
-                  <button
-                    onClick={() => this.apply(i)}
-                    className="big-blue-button right"
-                  >Invest now</button>
+                  {this.props.user === 0 ?
+                    <button
+                      onClick={() => this.apply(i)}
+                      className="big-blue-button right"
+                    >Invest now</button> : ''}
                 </h2>
                 <p>{filters[service.type].description}</p>
                 <div className="row">
