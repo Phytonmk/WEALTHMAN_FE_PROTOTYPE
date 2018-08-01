@@ -248,7 +248,7 @@ class Form extends Component {
             </div>
           })}
         <div className="row-padding">
-          <button className="continue" onClick={() => this.submit()}>Submit</button>
+          <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
         </div>
       </div>
     );

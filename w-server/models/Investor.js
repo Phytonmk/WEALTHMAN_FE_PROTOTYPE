@@ -12,7 +12,7 @@ var investorScheme = mongoose.Schema({
   country: String,
   adress: String,
   wallet_address: String,
-  registred: {type: Date, default: Date.now}
+  registered: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('investor', investorScheme);

@@ -108,7 +108,7 @@ module.exports = (app) => {
     await kycAnswersForm.save();
     await investor.save();
     await request.save();
-    await notify(request.id, 'Request initiated by investor')
+    await notify({request: request._id, title: 'Request initiated by investor'})
     res.status(200);
     res.end();
   });
@@ -177,7 +177,7 @@ module.exports = (app) => {
     }
     request.set({status: 'declined'});
     await request.save();
-    await notify(request.id, 'Request declined')
+    await notify({request: request._id, title: 'Request declined'})
     res.status(200);
     res.end();
   });
@@ -238,7 +238,7 @@ module.exports = (app) => {
     }
     request.set({company: null, manager: manager.id});
     await request.save();
-    await notify(request.id, `Request relayed to manager ${(manager.name || '')} ${(manager.surname || '')}`)
+    await notify({request: request._id, title: `Request relayed to manager ${(manager.name || '')} ${(manager.surname || '')}`})
     res.status(200);
     res.end();
   });

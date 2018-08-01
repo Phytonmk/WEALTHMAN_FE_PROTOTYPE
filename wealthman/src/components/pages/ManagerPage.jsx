@@ -30,33 +30,44 @@ class ManagerPage extends Component {
       clients: '-',
       portfolios: '-',
       manager: null,
-      managerType: this.props.match.path.includes('company') ? 'company' : 'manager'
+      companyManagers: [],
     }
+    this.lastManagerUrl = this.state.managerType + '/' + this.props.match.params.id
   }
-  componentWillMount() {
-    api.get(this.state.managerType + '/' + this.props.match.params.id)
+  load() {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
+    api.get(managerType + '/' + this.props.match.params.id)
       .then((res) => {
-        console.log('res.data');
         this.setState({manager: res.data});
       })
       .catch(console.log);
-    api.get(this.state.managerType + '-statistics/' + this.props.match.params.id)
+    api.get(managerType + '-statistics/' + this.props.match.params.id)
       .then((res) => {
         console.log(res.data);
         this.setState({
           profitability: res.data.profitability,
           clients: res.data.clients,
           portfolios: res.data.portfolios,
+          companyManagers: res.data.managers
         });
       })
       .catch(console.log);
   }
+  componentWillMount() {
+    this.load()
+  }
   apply(filter) {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
     setCookie('service', filters[filter].link);
-    setCookie('selectedManager', this.state.managerType + '/' + this.props.match.params.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + this.state.managerType + '/' + this.props.match.params.id);
+    setCookie('selectedManager', managerType + '/' + this.props.match.params.id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + managerType + '/' + this.props.match.params.id);
   }
   render() {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
+    if (managerType + '/' + this.props.match.params.id !== this.lastManagerUrl) {
+      this.lastManagerUrl = managerType + '/' + this.props.match.params.id
+      this.load()
+    }
     var manager = this.state.manager;
     if (manager === null)
       return <div>...</div>
@@ -82,7 +93,7 @@ class ManagerPage extends Component {
             </div> */}
             <div className="main-info">
               <div className="name-row">
-                <h1>{(manager.name || manager.company_name || '') + (manager.surname || '')}</h1>
+                <h1>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
                 <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
               
@@ -148,9 +159,28 @@ class ManagerPage extends Component {
                 </div>
                 :
                 <div className="row">
-                  Lonely manager
+                  {manager.company === null ? 'Lonely manager' : 
+                  <Link to={"/company/" + manager.company}>
+                    Manager of company
+                  </Link>}
                 </div>}
               </div>
+
+              {!manager.company_name ? '' :
+                <div className="box">
+                  <div className="row">
+                    Company's managers
+                  </div>
+                  {(!this.state.companyManagers || this.state.companyManagers.length === 0) ? <small>no managers</small> : 
+                  this.state.companyManagers.map((manager, i) => 
+                    <Link to={'/manager/' + manager._id}>
+                    <div className="row comapy-managers" key={i}>
+                      <Avatar src={api.imgUrl(manager.img)} />
+                      {(manager.name || '') + ' ' + (manager.surname || '')}
+                    </div>
+                  </Link>)}
+                </div>
+              }
 
               <div className="box">
                 <h3>Statistics</h3>

@@ -239,7 +239,7 @@ class ManagersPage extends Component {
               APPLY NOW
             </button>
           </div>,
-        invite: <Link to={"/invite-manager/" + manager._id} className="no-margin">
+        invite: <Link to={"/participating/" + manager._id} className="no-margin">
             <button className="big-blue-button">
               INVITE NOW
             </button>

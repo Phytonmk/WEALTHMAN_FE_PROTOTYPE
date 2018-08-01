@@ -165,12 +165,14 @@ class PortfoliosPage extends Component {
         {
           header: "In proggress",
         },
-        // {
-        //   header: "Statistics",
-        // },
+        {
+          header: "All",
+        },
       ];
 
     const filter = (row) => {
+      if (subheaders[this.state.currentTab].header === 'All')
+        return true
       if (subheaders[this.state.currentTab].header === 'Active' && row.status === 'active')
         return true;
       else if (subheaders[this.state.currentTab].header === 'Archived' && row.status === 'archived')

@@ -72,4 +72,23 @@ module.exports = (app) => {
     res.send(investor);
     res.end();
   });
+  // app.get('/api/investor-statistics/:id', async (req, res, next) => {
+  //   console.log(req.params.id);
+  //   const investor = await Investor.findById(req.params.id);
+  //   if (investor === null) {
+  //     res.status(404);
+  //     res.end();
+  //     return;
+  //   }
+  //   const profitability = Math.ceil(Math.random() * 100);
+  //   const clients = Math.ceil(Math.random() * 100);
+  //   const portfolios = Math.ceil(Math.random() * 100);
+  //   res.status(200);
+  //   res.send({
+  //     profitability,
+  //     clients,
+  //     portfolios
+  //   });
+  //   res.end();
+  // });
 }

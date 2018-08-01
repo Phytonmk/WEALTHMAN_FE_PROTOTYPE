@@ -65,7 +65,14 @@ module.exports = (app) => {
     res.end();
   });
   app.get('/chats-api/ws', async (req, res, next) => {
-    let port = 2906;
+    let port;
+    let minimalLoad = null;
+    for (let worker of global.workersLoad) {
+      if (minimalLoad === null || worker.conncetions < minimalLoad) {
+        port = worker.port
+        minimalLoad = worker.conncetions
+      }
+    }
     res.send({ws_port: port});
     res.end();
   });

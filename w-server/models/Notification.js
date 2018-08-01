@@ -5,6 +5,7 @@ const NotificationSchema = mongoose.Schema({
   request: String,
   title: String,
   subtitle: String,
+  usersToNotify: [String],
   img: String // maybe not neccessary, not sure
 });
 

@@ -36,6 +36,7 @@ class InvestorsPage extends Component {
         property: "name",
         title: "Investor name",
         width: "156px",
+        type: "unsortable",
       },
       {
         property: "registered",
@@ -73,7 +74,13 @@ class InvestorsPage extends Component {
       return {
         id: investor._id,
         img: <div className="in-sortable-img-container"><img src={investor.img ? api.imgUrl(investor.img) : 'manager/user.svg'} className="user-icon" /></div>,
-        name: (investor.name || '') + ' ' + (investor.surname || ''),
+        name: {
+          render: <Link to={"/investor/" + investor._id} className="no-margin">
+            {(investor.name || '') + ' ' + (investor.surname || '')}
+          </Link>,
+          toLowerCase: () => (investor.name || '') + ' ' + (investor.surname || ''),
+          value: (investor.name || '') + ' ' + (investor.surname || '')
+        },
         registered: new LevDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
         aum: {
           render: Math.ceil(Math.random() * 100) + "$",

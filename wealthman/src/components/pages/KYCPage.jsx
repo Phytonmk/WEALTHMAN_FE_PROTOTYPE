@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, previousPage, getCookie } from '../helpers';
+import { api, setPage, setCurrency, previousPage, getCookie, setCookie } from '../helpers';
 
 const services = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
@@ -74,6 +74,7 @@ class KYCPage extends Component {
       kycAnswers: this.state.answers,
     })
     .then(() => {
+      setCookie('selectedManager', '')
       setPage('requests');
     })
     .catch(console.log);

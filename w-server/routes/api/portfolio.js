@@ -222,7 +222,7 @@ module.exports = (app) => {
     }
     request.set({status: 'proposed'});
     await request.save();
-    await notify(request._id, `Manager proposed portfolio`)
+    await notify({request: request._id, title: `Manager proposed portfolio`})
     res.status(200);
     res.end();
   });
@@ -259,14 +259,14 @@ module.exports = (app) => {
       request.set({revisions: request.revisions + 1});
       await updatePortfoliosState({manager: manager._id, request: request._id});
       request.set({status: 'recalculated'});
-      await notify(request._id, `Portfolio waiting for system recalculation`)
+      await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     } else if (request.service === 'Advisory') {
       request.set({status: 'revision'});
-      await notify(request._id, `Portfolio waiting for manager revision`)
+      await notify({request: request._id, title: `Portfolio waiting for manager revision`})
     } else {
       request.set({status: 'recalculated'});
       request.set({revisions: request.revisions + 1});
-      await notify(request._id, `Portfolio waiting for system recalculation`)
+      await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
       await updatePortfoliosState({manager: manager._id, request: request._id});
     }
     await request.save();
@@ -301,7 +301,7 @@ module.exports = (app) => {
     await updatePortfoliosState({investor: investor._id, request: request._id})
     request.set({status: 'recalculated'});
     await request.save();
-    await notify(request._id, `Portfolio waiting for system recalculation`)
+    await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     res.status(200);
     res.end();
   });
@@ -331,7 +331,7 @@ module.exports = (app) => {
     }
     request.set({status: 'active'});
     await request.save();
-    await notify(request._id, `New portfolio declined`)
+    await notify({request: request._id, title: `New portfolio declined`})
     res.status(200);
     res.end();
   });

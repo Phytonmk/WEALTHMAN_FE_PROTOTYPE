@@ -123,6 +123,7 @@ class ChatPage extends Component {
     chatsApi.connect()
       .then((socket) => {
         socket.on('message', msg => {
+          console.log(msg)
           if (msg.newMessage) {
             this.updateStateWithNewMessage(msg);
           }

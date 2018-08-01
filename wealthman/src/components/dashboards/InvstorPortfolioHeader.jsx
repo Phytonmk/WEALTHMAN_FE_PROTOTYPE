@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { getCookie, niceNumber } from '../helpers';
 
 export default class InvstorPortfolioHeader extends Component {
   render() {
@@ -14,11 +15,11 @@ export default class InvstorPortfolioHeader extends Component {
           <h2>{this.props.value || '???'}</h2>
           <p>Total balance</p>
         </div>
-        <Link to={this.props.buttonLink}>
+        {getCookie('usertype') != 0 ? '' : <Link to={this.props.buttonLink}>
           <button className="big-blue-button money-button">
             {this.props.dashboardMode ? 'add funds' : 'Whithdraw'}
           </button>
-        </Link>
+        </Link>}
       </div>
     </div>
   }

@@ -19,7 +19,8 @@ const ManagerScheme = mongoose.Schema({
   social: [String],
   about: String,
   wallet_address: String,
-  services: [ServiceSchema]
+  services: [ServiceSchema],
+  registered: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Manager', ManagerScheme);

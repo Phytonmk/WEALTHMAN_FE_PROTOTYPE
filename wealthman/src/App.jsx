@@ -48,6 +48,7 @@ import InviteManagerPage from './components/pages/InviteManagerPage';
 import ChatPage from './components/pages/ChatPage';
 import InvestorsPage from './components/pages/InvestorsPage';
 import FAQPage from './components/pages/FAQPage';
+import InvestorPage from './components/pages/InvestorPage';
 
 //
 
@@ -159,6 +160,7 @@ class App extends Component {
 
           <Route path="/company/:id" component={ManagerPage} />
           <Route path="/manager/:id" component={ManagerPage} />
+          <Route path="/investor/:id" component={InvestorPage} />
           <Route path="/company" component={CompanyManagmentPage} />
           <Route path="/participating/:manager" component={InviteManagerPage} />
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)} />

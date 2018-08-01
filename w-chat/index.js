@@ -24,7 +24,15 @@ mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
   if (err)
     console.log(err);
 });
-child_process.fork(__dirname + '/ws-master.js')
+const wsMaster = child_process.fork(__dirname + '/ws-master.js')
+global.workersLoad = []
+wsMaster.on('message', (msg) => {
+  if (msg.type === 'workers')
+    global.workersLoad = msg.workers
+})
+// add disconnector
+
+
 fs.readdirSync(__dirname + '/api/').forEach((file) => {
   require(`${__dirname}/api/${file.substr(0, file.indexOf('.'))}`)(app);
 });

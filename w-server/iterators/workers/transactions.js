@@ -28,7 +28,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
   }
   for (let smartContract of smartContracts) {
     console.log(`Checking ${smartContract.address} for deposit...`);
-    const deposit = await checkBalance(smartContract.address);
+    const deposit = await checkBalance(smartContract.address).catch(console.log);
     if (deposit)
       console.log('deposited');
     else

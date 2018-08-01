@@ -31,7 +31,7 @@ module.exports = (app) => {
       type: 'inviting'
     });
     await request.save();
-    await notify(request.id, `Company ${company.company_name} invited ${(manager.name || '')} ${(manager.surname || '')}`)
+    await notify({request: request._id, title: `Company ${company.company_name} invited ${(manager.name || '')} ${(manager.surname || '')}`})
     res.status(200);
     res.end();
   });
@@ -92,11 +92,11 @@ module.exports = (app) => {
     request.set({status: 'accepted'});
     await manager.save();
     await request.save();
-    await notify(request.id, `Manager ${(manager.name || '')} ${(manager.surname || '')} accepted invite of company ${company.company_name}`)
+    await notify({request: request._id, title: `Manager ${(manager.name || '')} ${(manager.surname || '')} accepted invite of company ${company.company_name}`})
     res.status(200);
     res.end();
   });
-  app.get('/api/company-statisitcs/:id', async (req, res, next) => {
+  app.get('/api/company-statistics/:id', async (req, res, next) => {
     const company = await Company.findById(req.params.id);
     if (company === null) {
       res.status(404);
@@ -106,11 +106,13 @@ module.exports = (app) => {
     const profitability = Math.ceil(Math.random() * 100);
     const clients = Math.ceil(Math.random() * 100);
     const portfolios = Math.ceil(Math.random() * 100);
+    const managers = await Manager.find({company: company._id});
     res.status(200);
     res.send({
       profitability,
       clients,
-      portfolios
+      portfolios,
+      managers
     });
     res.end();
   });
@@ -140,7 +142,7 @@ module.exports = (app) => {
       initiatedByManager: true
     });
     await request.save();
-    await notify(request.id, `Manager ${(manager.name || '')} ${(manager.surname || '')} requested to apply company ${company.company_name}`)
+    await notify({request: request._id, title: `Manager ${(manager.name || '')} ${(manager.surname || '')} requested to apply company ${company.company_name}`})
     res.status(200);
     res.end();
   });
@@ -180,7 +182,7 @@ module.exports = (app) => {
     request.set({status: 'accepted'});
     await manager.save();
     await request.save();
-    await notify(request.id, `Company ${company.company_name} accepted apply of manager ${(manager.name || '')} ${(manager.surname || '')}`)
+    await notify({request: request._id, title: `Company ${company.company_name} accepted apply of manager ${(manager.name || '')} ${(manager.surname || '')}`})
     res.status(200);
     res.end();
   });

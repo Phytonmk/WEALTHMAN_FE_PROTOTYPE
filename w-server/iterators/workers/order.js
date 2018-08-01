@@ -7,7 +7,7 @@ binance = new Binance().options({
   APIKEY: configs.binanceApi.key,
   APISECRET: configs.binanceApi.secret,
   useServerTime: true,
-  test: false
+  test: !!configs.productionMode
 });
 
 const marketBuy = (ticker, quantity, falgs) => new Promise((resolve, reject) => {

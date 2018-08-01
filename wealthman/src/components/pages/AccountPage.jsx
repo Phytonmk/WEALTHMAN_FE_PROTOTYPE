@@ -59,23 +59,23 @@ class AccountPage extends Component {
         <Subheader data={[
           {
             header: "Account Information",
-            content: <AccountInfo />,
+            content: <OldAccount />,
           },
           {
             header: "Risk Tollerance Profile",
             content: <RiskProfile />,
           },
-        //  {
-        //    header: "Investment Goals And Strategy Aims",
-        //    content: <Goals />,
-        //  },
           {
-            header: "Detailed Information",
+            header: "Goals And Aims",
+            content: <Goals />,
+          },
+          {
+            header: "Personal Information",
             content: <DetailedInfo />,
           },
           {
-            header: "Old account settings",
-            content: <OldAccount />,
+            header: "Account settings",
+            content: <AccountInfo />,
           },
         ]}
       />

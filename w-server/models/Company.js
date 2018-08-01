@@ -18,7 +18,8 @@ const CompanyScheme = mongoose.Schema({
   fb: String,
   linkedin: String,
   about: String,
-  services: [ServiceSchema]
+  services: [ServiceSchema],
+  registered: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Company', CompanyScheme);

@@ -146,7 +146,7 @@ import LevDate from '../LevDate.jsx';
 import Select from '../Select.jsx';
 import { PieChart, LineChart } from 'react-easy-chart';
 
-let pieColors = ['#00ccf1', '#ffc070', '#39a9dc', '#071e40'];
+let pieColors = ['#0378ff', '#00ccf1', '#ffc070', '#39a9dc', '#071e40'];
 
 for (let i = 0; i < 5; i++)
   pieColors = pieColors.concat(pieColors);
@@ -212,10 +212,21 @@ class SuperLine extends Component {
     }
   }
   render() {
+    let graphicData = [
+      [
+        { x: 1, y: 20 },
+        { x: 2, y: 10 },
+        { x: 3, y: 25 }
+      ], [
+        { x: 1, y: 10 },
+        { x: 2, y: 12 },
+        { x: 3, y: 4 }
+      ]
+    ]
     return  <div className="box line-chart-box">
               <div className="row">
                 <h2>{this.props.title}</h2>
-                {this.props.datasets.length > 1 ?
+                {this.props.datasets.length > 1 && !this.props.onOneGraphic ?
                   <Select
                     value={this.props.datasets[this.state.selectOption].title}
                     options={this.props.datasets.map(dataset => dataset.title)}
@@ -236,9 +247,9 @@ class SuperLine extends Component {
               </div>
               <div className="row">
                 <LineChart
+                  yTicks={10}
                   xType={'time'}
-                  yTicks={5}
-                  xTicks={this.props.datasets[this.state.selectOption].data.length}
+                  xTicks={this.props.datasets[this.state.selectOption].data.length / 2}
                   axes
                   margin={{top: 20, right: 10, bottom: 25, left: 20}}
                   grid
@@ -246,7 +257,16 @@ class SuperLine extends Component {
                   interpolate={'cardinal'}
                   width={this.props.width}
                   height={300}
-                  data={[this.props.datasets[this.state.selectOption].data.map((chunk, i) => {
+                  data={this.props.onOneGraphic ? this.props.datasets.map((dataset) => {
+                      return dataset.data.map(chunk => {
+                        return {
+                          x: chunk.title,
+                          y: chunk.value
+                        }
+                      })
+                    })
+                    :
+                    [this.props.datasets[this.state.selectOption].data.map((chunk) => {
                     return {
                       x: chunk.title,
                       y: chunk.value
@@ -265,6 +285,16 @@ export default class Graphics extends Component {
   render() {
     return (
       <div>
+        {!this.props.additional ? '' : 
+          <div className="box margin-box">
+            <SuperLine
+              title={this.props.additional.title}
+              width={800}
+              subheaders={this.props.additional.subheaders || []}
+              onOneGraphic={this.props.additional.onOneGraphic}
+              datasets={this.props.additional.datasets}
+            />
+            </div>}
         <div className="grapics-boxes-container">
           <SuperPie
             title={this.props.pie.title}
@@ -274,18 +304,10 @@ export default class Graphics extends Component {
             title={this.props.main.title}
             width={580}
             subheaders={this.props.main.subheaders || []}
+            onOneGraphic={this.props.main.onOneGraphic}
             datasets={this.props.main.datasets}
           />
         </div>
-        {!this.props.additional ? '' : 
-          <div className="box margin-box">
-            <SuperLine
-              title={this.props.additional.title}
-              width={800}
-              subheaders={this.props.additional.subheaders || []}
-              datasets={this.props.additional.datasets}
-            />
-            </div>}
       </div>)
   }
 }

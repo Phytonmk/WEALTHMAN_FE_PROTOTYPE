@@ -24,7 +24,8 @@
     "web3-eth": "^1.0.0-beta.34"
   },
   "scripts": {
-    "start": "parcel public/index.html --no-hmr",
+    "start": "parcel public/index.html",
+    "start-no-reloads": "parcel public/index.html --no-hmr",
     "build": "parcel build public/index.html"
   },
   "devDependencies": {

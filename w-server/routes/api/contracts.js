@@ -68,7 +68,7 @@ module.exports = (app) => {
       portfolio
       console.log(request);
       await request.save();
-      await notify(request._id, `Contract deploying started`)
+      await notify({request: request._id, title: `Contract deploying started`})
       res.status(200);
       res.end();
     }
