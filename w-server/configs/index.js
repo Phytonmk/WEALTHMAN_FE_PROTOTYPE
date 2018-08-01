@@ -7,7 +7,7 @@ if (process.argv.includes('--production') ||
 
 if (product)
   module.exports = Object.assign(
-    require('./dev.config'),
+    require('./prod.config'),
     {productionMode: true})
 else
   module.exports = require('./dev.config')

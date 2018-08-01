@@ -5,6 +5,7 @@ const Company = require('../../models/Company');
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 const KYCAnswersForm = require('../../models/KYCAnswersForm');
+const Notification = require('../../models/Notification');
 
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
@@ -65,6 +66,15 @@ module.exports = (app) => {
 
     const selectedService = services.find(service => service.type === servicesList.indexOf(req.body.service))
 
+    let investing_reason = '?'
+    
+    for (let kycAnswer of req.body.kycAnswers) {
+      if (kycAnswer.question === 'What is your primary reason for investing?') {
+        investing_reason = kycAnswer.answer
+        break
+      }
+    }
+
     const request = new Request({
       investor: investor.id,
       [managerType]: managerId,
@@ -81,6 +91,7 @@ module.exports = (app) => {
       managment_fee: selectedService.managment_fee,
       perfomance_fee: selectedService.perfomance_fee,
       front_fee: selectedService.front_fee,
+      investing_reason
     });
 
 
@@ -91,7 +102,7 @@ module.exports = (app) => {
 
     const kycAnswersForm = new KYCAnswersForm({
       request: request.id,
-      answers: req.body.answers
+      answers: req.body.kycAnswers
     })
     investor.set({riskprofile});
     await kycAnswersForm.save();
@@ -230,6 +241,10 @@ module.exports = (app) => {
     await notify(request.id, `Request relayed to manager ${(manager.name || '')} ${(manager.surname || '')}`)
     res.status(200);
     res.end();
+  });
+  app.get('/api/request/history/:request', async (req, res, next) => {
+    const history = await Notification.find({request: req.params.request});
+    res.send(history)
   });
   //
 }

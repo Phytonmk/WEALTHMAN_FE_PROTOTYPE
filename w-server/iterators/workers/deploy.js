@@ -19,7 +19,10 @@ module.exports = () => new Promise(async (resolve, reject) => {
           break;
         case 'deployed':
           console.log(`${request.deployment_hash} deployed`);
-          request.set({status: 'waiting for deposit'});
+          request.set({
+            status: 'waiting for deposit',
+            contract_deployment: new Date()
+          });
           console.log('search for porfolio ' + request._id)
           const portfolio = await Portfolio.findOne({state: 'active', request: request._id + ''});
           console.log(portfolio)

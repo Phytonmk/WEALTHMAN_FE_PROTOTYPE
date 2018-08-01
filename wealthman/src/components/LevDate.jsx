@@ -1,4 +1,4 @@
-export default class myDate {
+export default class LevDate {
   constructor(string, lang) {
     switch(typeof string) {
       case "undefined":
@@ -33,18 +33,18 @@ export default class myDate {
     }
   }
   setDate(date) {
-    this.dateJS = new myDate(date);
+    this.dateJS = new LevDate(date);
   }
   getTime() {
     return this.dateJS.getTime();
   }
 
   comp(date) {
-    var newDate = new myDate(date);
+    var newDate = new LevDate(date);
     return newDate.getTime() - this.dateJS.getTime();
   }
   less(date) {
-    var newDate = new myDate(date);
+    var newDate = new LevDate(date);
     return this.dateJS.getTime() < newDate.getTime();
   }
   eq(date) {
@@ -52,7 +52,7 @@ export default class myDate {
     return this.dateJS.getDate() < newDate.getDate() && this.dateJS.getMonth() < newDate.getMonth() && this.dateJS.getFullYear() < newDate.getFullYear();
   }
   sameDay(date) {
-    var newDate = new myDate(date);
+    var newDate = new LevDate(date);
     return this.day() == newDate.day() && this.month() == newDate.month() && this.year() == newDate.year();
   }
 
@@ -155,7 +155,7 @@ export default class myDate {
           return "yesterday";
       }
 
-    var today = new myDate();
+    var today = new LevDate();
     if (today.year() == this.year())
       return capitalize(this.date());
     return this.day() + " " + capitalize(this.monthStringShort()) + " " + this.year();
@@ -168,46 +168,46 @@ export default class myDate {
   }
 
   isToday() {
-    var today = new myDate();
+    var today = new LevDate();
     if (today.day() == this.day() && today.month() == this.month() && today.year() == this.year())
       return true;
     return false;
   }
   isYesterday() {
-    var today = new myDate();
+    var today = new LevDate();
     if (today.day() - 1 == this.day() && today.month() == this.month() && today.year() == this.year())
       return true;
     return false;
   }
   isTomorrow() {
-    var today = new myDate();
+    var today = new LevDate();
     if (today.day() + 1 == this.day() && today.month() == this.month() && today.year() == this.year())
       return true;
     return false;
   }
 
   pastSeconds() {
-    var today = new myDate();
+    var today = new LevDate();
     return Math.floor((today.getTime() - this.getTime()) / 8.64e7 * 24 * 60 * 60);
   }
   pastMinutes() {
-    var today = new myDate();
+    var today = new LevDate();
     return Math.floor((today.getTime() - this.getTime()) / 8.64e7 * 24 * 60);
   }
   pastHours() {
-    var today = new myDate();
+    var today = new LevDate();
     return Math.floor((today.getTime() - this.getTime()) / 8.64e7 * 24);
   }
   pastDays() {
-    var today = new myDate();
+    var today = new LevDate();
     return Math.floor((today.getTime() - this.getTime()) / 8.64e7);
   }
   pastWeeks() {
-    var today = new myDate();
+    var today = new LevDate();
     return Math.floor((today.getTime() - this.getTime()) / 8.64e7 / 7);
   }
   pastMonths() {
-    var today = new myDate();
+    var today = new LevDate();
     var months = today.month() - this.month() + (today.year() - this.year()) * 12;
     if (months > 0 && this.day() > today.day())
       return months - 1;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import Sortable2 from '../../Sortable2.jsx';
-import myDate from '../../myDate.jsx';
+import LevDate from '../../LevDate.jsx';
 
 import { api, setPage } from '../../helpers';
 

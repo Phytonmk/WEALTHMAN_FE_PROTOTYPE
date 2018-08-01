@@ -10,6 +10,7 @@ import { browserHistory } from 'react-router';
 import { default as chatsApi } from './chatsApi'
 import ChatPreview from './ChatPreview';
 import Message from './Message';
+import Avatar from '../../Avatar'
 
 let lastSelectedChat = undefined;
 class ChatPage extends Component {
@@ -173,13 +174,14 @@ class ChatPage extends Component {
                 lastMessageFromYou={chat.lastMessageFromYou}
                 lastMessage={chat.lastMessage}
                 unread={chat.unread}
+                company={chat.company}
               />)}
             </div>
           </div>
           <div className="chats-right-column">
             <div className="chats-current-compainion">
               {this.props.match.params.chat ? <div><div className="chat-pic">
-                <img src={helpersApi.imgUrl(this.state.currentChat.companionPic)} />
+                <Avatar src={helpersApi.imgUrl(this.state.currentChat.companionPic)} />
               </div>
               <div className="chats-current-compainion-name">
                 {this.state.currentChat.companionName}

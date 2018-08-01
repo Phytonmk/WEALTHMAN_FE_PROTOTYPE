@@ -21,7 +21,7 @@ export default class SmartContract extends Component {
         <p>
           <span className="smart-contract-text">{this.props.address}</span>
           <span onClick={() => this.copy()} className="copy-contract-btn" style={{opacity: this.state.copied ? 0 : 1}}>copy</span>
-          <input value={this.props.address} id={this.state.inputId} className="copy-input" />
+          <input value={this.props.address} id={this.state.inputId} onChange={() => {}} className="copy-input" />
         </p>
       </div>
     </div>

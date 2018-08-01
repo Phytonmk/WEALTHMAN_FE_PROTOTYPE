@@ -52,7 +52,7 @@ import FAQPage from './components/pages/FAQPage';
 //
 
 const formAnswers = [];
-
+let authCompleted = false
 class App extends Component {
   constructor(props) {
     super(props);
@@ -61,10 +61,9 @@ class App extends Component {
       this.state = store.getState();
       this.forceUpdate();
     });
-    console.log('App started')
     window.addEventListener('auth completed', () => {
-      console.log('auth completed')
-      this.setState({authCompleted: true})
+      //console.log('auth completed')
+      authCompleted = true
       setTimeout(() => this.forceUpdate(), 0)
     })
     auth()
@@ -887,8 +886,7 @@ class App extends Component {
 
   render() {
     document.title = "Wealthman Platform";
-    console.log(this.state.authCompleted)
-    if (!this.state.authCompleted)
+    if (!authCompleted && this.props.userData === undefined)
       return 'loading...'
     const Loading = () => <div>Loading...</div>;
     // const Home = Loadable({

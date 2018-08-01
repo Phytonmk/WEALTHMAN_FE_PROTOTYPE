@@ -11,6 +11,13 @@ const getUserData = require('./getUserData');
 
 const salt = 'super salt'
 
+const configs
+
+mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
+  if (err)
+    console.log(err)
+});
+
 const genToken = (user) => {
   const token = 
     crypto.createHash('md5')

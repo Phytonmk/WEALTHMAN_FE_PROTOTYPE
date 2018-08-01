@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 class InvestorsPage extends Component {
@@ -74,7 +74,7 @@ class InvestorsPage extends Component {
         id: investor._id,
         img: <div className="in-sortable-img-container"><img src={investor.img ? api.imgUrl(investor.img) : 'manager/user.svg'} className="user-icon" /></div>,
         name: (investor.name || '') + ' ' + (investor.surname || ''),
-        registered: new myDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
+        registered: new LevDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
         aum: {
           render: Math.ceil(Math.random() * 100) + "$",
           value: Math.ceil(Math.random() * 100)

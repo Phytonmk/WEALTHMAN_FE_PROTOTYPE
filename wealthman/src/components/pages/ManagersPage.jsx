@@ -7,6 +7,7 @@ import Select from '../Select.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
+import {AreaChart} from 'react-easy-chart';
 
 const filters = [
   {
@@ -68,30 +69,38 @@ class ManagersPage extends Component {
       case 'advisory': filterIndex = 2; break;
       default: filterIndex = 0
     }
-    // this.setState({filter: filterIndex, gotData: false});
     this.setState({gotData: false});
-    console.log(`loading...`);
-    let query = 'marketplace/' + filterIndex
-    console.log(this.props.user)
+    let query = 'marketplace/'
     if (this.props.user === 3) {
       if (this.props.match.path  === '/company-managers') {
-        query += '?only-from-company=' + this.props.userData._id
+        query += '-1?only-from-company=' + this.props.userData._id
       } else {
-        query += '?only-single-managers=true'
+        query += '-1?only-single-managers=true'
       }
     } else if (this.props.user === 1) {
-      query += '?only-companies=true'
+      query += '-1?only-companies=true'
+    } else {
+      query += filterIndex
     }
     console.log(query)
     api.get(query)
       .then((res) => {
-        console.log(`loaded`);
-        console.log(res.data);
         this.setState(res.data);
         this.setState({gotData: true});
         setTimeout(() => this.forceUpdate(), 0);
       })
       .catch(console.log);
+  }
+  genGraphData() {
+    const data = []
+    const points = 10 + Math.round(Math.random() * 40)
+    const range = 20 + Math.round(Math.random() * 60)
+    for (let i = 0; i < points; i++)
+      data.push({
+        x: i,
+        y: 10 + i + Math.round(Math.random() * (range / 2)  - range)
+      })
+    return data
   }
   componentDidMount() {
     if (!this.state.gotData)
@@ -219,7 +228,12 @@ class ManagersPage extends Component {
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
-        aum6: <img src="/graph.png" className="graph" />,
+        aum6: <AreaChart
+            margin={{top: 0, right: 0, bottom: 0, left: 0}}
+            width={80}
+            height={20}
+            data={[this.genGraphData()]}
+          />,
         apply: <div className="no-margin" onClick={() => this.applyManager(manager._id)}>
             <button className="big-blue-button">
               APPLY NOW
@@ -252,7 +266,7 @@ class ManagersPage extends Component {
         </article>
         <div className="container">
           <div className="row">
-            <div className="advisors">
+            {(this.props.user !== 1 && this.props.user !== 3) ? <div className="advisors">
               <div className="row">
                 <span>Sort by</span>
                 <Select
@@ -268,7 +282,7 @@ class ManagersPage extends Component {
                   Invest on Autopilot
                 </Link>
               </div>
-            </div>
+            </div> : ''}
             <div className="card-3">
               <div className="img" />
               <span>Total AUM, min $</span>
@@ -310,8 +324,8 @@ class ManagersPage extends Component {
             <Sortable2
               filter={row =>
                 row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
-                &&
-                row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
+                //&&
+                //row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
               }
               columns={sortableHeader}
               data={sortableManagers}

@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 import {default as RequestHeader} from '../dashboards/Person';
 import {default as RequestDetails} from './RequestPage/Details';
@@ -27,7 +27,10 @@ class PortfolioCreationPage extends Component {
       managment_fee: '',
       perfomance_fee: '',
       front_fee: '',
-      initiatedByManager: false
+      initiatedByManager: false,
+      value: '',
+      period: '',
+      comment: ''
     };
   }
   componentWillMount() {
@@ -118,17 +121,29 @@ class PortfolioCreationPage extends Component {
     const state = Object.assign({}, this.state);
     state.selected.splice(state.selectedIds.indexOf(token.id), 1);
     state.selectedIds.splice(state.selectedIds.indexOf(token.id), 1);
+    delete state.inputData[token.name]
     this.setState(state);
     setTimeout(() => this.updateButtons(), 0);
   }
   addToken(token) {
     const state = Object.assign({}, this.state);
-    if (state.inputData[token.name] === undefined)
-      state.inputData[token.name] = {
-        percent: '',
-        analysis: '',
-        comments: '',
-      };
+    let sumPercent = 0
+    let tokensAmount = 1
+    for (let token in state.inputData) {
+      sumPercent += 1 * state.inputData[token].percent
+      tokensAmount++
+    }
+    if (sumPercent === 0)
+      sumPercent = 100
+    const newPercent = Math.round(sumPercent / tokensAmount)
+    for (let token in state.inputData) {
+      state.inputData[token].percent -= Math.round(newPercent * (state.inputData[token].percent / sumPercent))
+    }
+    state.inputData[token.name] = {
+      percent: newPercent,
+      analysis: '',
+      comments: '',
+    };
     state.selected.push(Object.assign({}, token));
     state.selectedIds.push(token.id);
     this.setState(state);
@@ -159,11 +174,15 @@ class PortfolioCreationPage extends Component {
         managment_fee: this.state.managment_fee,
         perfomance_fee: this.state.perfomance_fee,
         front_fee: this.state.front_fee,
-      }
+      },
+      value: this.state.value,
+      period: this.state.period,
+      comment: this.state.comment,
+      investor: this.props.match.params.id
     })
-      .then(() => {
+      .then((res) => {
         if (typeof callback === 'function')
-          callback();
+          callback(res.data);
         else
           setPage('requests');
       })
@@ -171,8 +190,8 @@ class PortfolioCreationPage extends Component {
 
   }
   send() {
-    this.save(() => {
-      api.post(`portfolio/${this.state.activeExists ? 'review' : 'propose'}/${this.props.match.params.id}`)
+    this.save((requestId) => {
+      api.post(`portfolio/${this.state.activeExists ? 'review' : 'propose'}/${requestId}`)
         .then(() => setPage('requests'))
         .catch(console.log);
     })
@@ -210,7 +229,7 @@ class PortfolioCreationPage extends Component {
               }
             return {
               id: token.id,
-              icon: <img src={token.icon} className="token-icon" />,
+              icon: token.icon,
               name: token.name,
               percent: <input value={this.state.inputData[token.name].percent} onChange={(event) => this.changeTokenData(token.name, 'percent', event.target.value)} placeholder="Percent" type="number" min="0" max="100"/>,
               analysis: <input value={this.state.inputData[token.name].analysis} onChange={(event) => this.changeTokenData(token.name, 'analysis', event.target.value)} placeholder="Analysis" type="text"/>,
@@ -251,7 +270,28 @@ class PortfolioCreationPage extends Component {
               /> : 'Loading...'}
           </div>
           {this.state.initiatedByManager ? <div className="box">
-            Create new portfolio and set additional data to send you offer to investor
+            <div className="row">
+              Create new portfolio and set additional data to send you offer to investor
+            </div>
+            <div className="row">
+              <p>Investment size</p>
+            </div>
+            <div className="row">
+              <input type="number" value={this.state.value} min="0" step="0.1" onChange={(event) => this.setState({value: event.target.value})} /> ETH
+            </div>
+            <div className="row">
+              <p>Investment period</p>
+            </div>
+            <div className="row">
+              <input type="number" value={this.state.period} min="1" step="7" onChange={(event) => this.setState({period: event.target.value})} /> Days
+            </div>
+            <div className="row">
+              <p>Comment for Investor</p>
+            </div>
+            <div className="row">
+              <input type="text" value={this.state.comment} onChange={(event) => this.setState({comment: event.target.value})} />
+            </div>
+
           </div> : <RequestDetails request={this.state.request} />}
           <div className='box'>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'fees'})}>Fees</button>
@@ -297,13 +337,13 @@ let percentHeader = [
   {
     property: 'analysis',
     title: 'analysis',
-    width: '300px',
+    width: '190px',
     type: 'unsortable'
   },
   {
     property: 'comments',
     title: 'comments',
-    width: '300px',
+    width: '190px',
     type: 'unsortable'
   },
 ]

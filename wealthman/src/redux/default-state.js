@@ -2,7 +2,6 @@ const defaultState = {
   user: -1,
   login: "",
   password: "",
-  userData: {},
 
   currentPage: "",
   currentManager: -1,
@@ -56,24 +55,12 @@ const defaultState = {
     }, {
       label: "marketplace",
       link: "managers"
-    }, {
-      label: "account",
-      link: "account"
-    }, {
-      label: "requests",
-      link: "requests"
-    }, {
-      label: "logout",
-      link: "logout"
     }
   ],
   loggedManagerLinks: [
     {
       label: "dashboard",
       link: "dashboard"
-    }, {
-      label: "requests",
-      link: "requests"
     }, {
       label: "clients",
       link: "investors"
@@ -83,12 +70,6 @@ const defaultState = {
     }, {
       label: "portfolio",
       link: "portfolios"
-    }, {
-      label: "profile",
-      link: "account"
-    }, {
-      label: "logout",
-      link: "logout"
     }
   ],
   loggedSuplierLinks: [
@@ -99,23 +80,11 @@ const defaultState = {
   ],
   loggedCompanyLinks: [
     {
-      label: "requests",
-      link: "requests"
-    }, {
-      label: "company",
-      link: "company"
-    }, {
       label: "company managers",
       link: "company-managers"
     }, {
       label: "lonely managers",
       link: "managers"
-    }, {
-      label: "account",
-      link: "account"
-    }, {
-      label: "logout",
-      link: "logout"
     }
   ],
   unloggedLinks: [

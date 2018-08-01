@@ -24,7 +24,8 @@ const RequestSchema = mongoose.Schema({
   exit_fee: Number,
   managment_fee: Number,
   perfomance_fee: Number,
-  front_fee: Number
+  front_fee: Number,
+  investing_reason: String
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

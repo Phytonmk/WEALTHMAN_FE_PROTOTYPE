@@ -70,11 +70,13 @@ class KYCPage extends Component {
       options: {
         analysis: this.state.analysis,
         comment: this.state.manager_comment
-      }})
-      .then(() => {
-        setPage('requests');
-      })
-      .catch(console.log);
+      },
+      kycAnswers: this.state.answers,
+    })
+    .then(() => {
+      setPage('requests');
+    })
+    .catch(console.log);
   }
   render() {
     let managerConditions = '';

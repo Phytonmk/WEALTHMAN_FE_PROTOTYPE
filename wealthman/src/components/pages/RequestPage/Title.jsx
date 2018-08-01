@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import myDate from '../../myDate.jsx';
+import LevDate from '../../LevDate.jsx';
 
 class Title extends Component {
   constructor(props) {

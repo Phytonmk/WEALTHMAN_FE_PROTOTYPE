@@ -1,11 +1,16 @@
-const apiURL = 'https://api-rinkeby.etherscan.io';
-// const token = 'BNJX7XSCHMS4KBD3ZS96PSCPV7BBCF3KC4';
-
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
+const Order = require('../../models/Order');
+const Stock = require('../../models/Stock');
 
 const checkBalance = require('../../trading/wealthman_check_balance');
 const trade = require('../../trading/wealthman_trade');
+
+const tokenTitles = {}
+Stock.find({})
+  .then(stocks => 
+    stocks.forEach(stock =>
+      tokenTitles[stock.name] = stock.title))
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'waiting for deposit'});
@@ -17,7 +22,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
       smartContracts.push({
         address: portfolio.smart_contract,
         portfolio: portfolio._id,
-        request: request._id
+        request: request._id,
+        currencies: portfolio.currencies
       });
   }
   for (let smartContract of smartContracts) {
@@ -32,6 +38,15 @@ module.exports = () => new Promise(async (resolve, reject) => {
       trade(smartContract.address, smartContract.request);
       request.set({status: 'active'});  
       await request.save();
+      for (let token of smartContract.currencies) {
+        const order = new Order({
+          token_name: tokenTitles[token.currency]/*.toUpperCase()*/,
+          whole_eth_amount: request.value,
+          percent: token.percent,
+          contract_address: smartContract.address
+        });
+        await order.save();
+      }
     }
   }
 })

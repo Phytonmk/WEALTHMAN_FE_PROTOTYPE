@@ -85,10 +85,7 @@ class ManagerPage extends Component {
                 <h1>{(manager.name || manager.company_name || '') + (manager.surname || '')}</h1>
                 <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
-              <div className="fees-row">
-                <h3>Fees</h3>
-                <h3>1,5% of AUM, monthly paid</h3>
-              </div>
+              
             </div>
 
             <div className="column right">

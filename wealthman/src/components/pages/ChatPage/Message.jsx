@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import { api } from '../../helpers';
 
-import MyDate from '../../myDate';
+import LevDate from '../../LevDate';
+import Avatar from '../../Avatar'
 
 export default class Message extends Component {
   render() {
@@ -18,14 +19,14 @@ export default class Message extends Component {
         msg =
           <div className="chats-message user-message">
             <div className="chat-pic chats-message-pic-column">
-              {this.props.noPicDisplay ? '' : <img src={api.imgUrl(this.props.pic)} />}
+              {this.props.noPicDisplay ? '' : <Avatar src={api.imgUrl(this.props.pic)} />}
             </div>
             <div className="chats-message-wrapper">
               <div className="chats-message-text">
                 {this.props.text}
               </div>
-              {this.props.noDataDisplay ? '' : <div title={new MyDate(this.props.date).dateTime()} className="chats-message-date">
-                {new MyDate(this.props.date).niceTime()} {this.props.specialStatus}
+              {this.props.noDataDisplay ? '' : <div title={new LevDate(this.props.date).dateTime()} className="chats-message-date">
+                {new LevDate(this.props.date).niceTime()} {this.props.specialStatus}
               </div>}
             </div>
           </div>
@@ -37,12 +38,12 @@ export default class Message extends Component {
               <div className="chats-message-text">
                 {this.props.text}
               </div>
-              {this.props.noDataDisplay ? '' : <div title={new MyDate(this.props.date).dateTime()} className="chats-message-date">
-                {new MyDate(this.props.date).niceTime()} {this.props.specialStatus}
+              {this.props.noDataDisplay ? '' : <div title={new LevDate(this.props.date).dateTime()} className="chats-message-date">
+                {new LevDate(this.props.date).niceTime()} {this.props.specialStatus}
               </div>}
             </div>
             <div className="chat-pic chats-message-pic-column">
-              {this.props.noPicDisplay ? '' : <img src={api.imgUrl(this.props.pic)} />}
+              {this.props.noPicDisplay ? '' : <Avatar src={api.imgUrl(this.props.pic)} />}
             </div>
           </div>
       break;

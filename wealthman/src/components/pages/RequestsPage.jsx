@@ -6,10 +6,10 @@ import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
-const requests = [{}]
+const requests = []
 
 class RequestsPage extends Component {
   constructor(props) {
@@ -149,7 +149,7 @@ class RequestsPage extends Component {
         else if (this.props.user === 3)
           user = this.state.managers.find(i => i._id == request.manager) || {};
       }
-      let date = new myDate(request.date);
+      let date = new LevDate(request.date);
       let value = {render: '', value: 0};
       if (request.value)
         value = {
@@ -238,6 +238,7 @@ class RequestsPage extends Component {
             data={sortableRequests}
             navigation={true}
             maxShown={4}
+            initialSortBy={'date'}
           />
         </div>
       </div>

@@ -71,39 +71,26 @@ class MoneyPage extends Component {
       this.setState({status: 1})
     }).catch(console.log);
   }
-  finish() {
-    web3.eth.sendTransaction({
-      from: this.props.userData.wallet_address,
-      to: this.state.contractAddress,
-      value: web3.toWei(this.state.request.value.toString(), 'ether'),
-      gas: 7600000,
-      gasPrice: 1
-    }, console.log)
-    .then(function(receipt){
-      console.log(receipt);
-    });
-    
-    // var contract = web3.eth.contract(abi);
-    // var contractInstance = contract.at(this.state.contractAddress);
-    // var a = contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(), 'ether'), gas: 50000}, (err, transactionHash) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(transactionHash);
-    //     setPage('requests');
-    //   }
+  useMetaMask() {
+    // const web3 = new Web3(web3.currentProvider);
+    const contract = web3.eth.contract(abi);
+    const contractInstance = contract.at(this.state.contractAddress);
+    contractInstance.deposit({value: this.state.request.value * 100000000000000, gas: 7600000, gasPrice: 2},function(err, transactionHash) {
+      if (!err)
+        console.log(transactionHash);
+      else
+        console.log(err)
+    })
+    // web3.eth.sendTransaction({
+    //   from: this.props.userData.wallet_address,
+    //   to: this.state.contractAddress,
+    //   value: web3.toWei(this.state.request.value.toString(), 'ether'),
+    //   gas: 7600000,
+    //   gasPrice: 1
+    // }, console.log)
+    // .then(function(receipt){
+    //   console.log(receipt);
     // });
-
-    // web3 = new Web3(web3.currentProvider);
-    // var contract = web3.eth.contract(abi);
-    // var contractInstance = contract.at('0x38C937dF579406C9F2725d846e50b91880575A65');
-    // var a =contractInstance.trade(['0x0'], ["0xD626F6CdF102b18fc9FF16013443428490EC4E53"], ['1000'],function(err, transactionHash) {
-    //   if (err)
-    //     console.log(err);
-    //   else
-    //     setPage('portfolios')
-    // })
-  
   }
   render() {
     if (!this.state.gotData)
@@ -200,7 +187,7 @@ class MoneyPage extends Component {
                       <br />
                     </li>
                     <li>
-                      <button className="continue" href="" onClick={() => this.finish()}>Use MetaMask</button>
+                      <button className="continue" href="" onClick={() => this.useMetaMask()}>Use MetaMask</button>
                     </li>
                   </ul>
                 </li>

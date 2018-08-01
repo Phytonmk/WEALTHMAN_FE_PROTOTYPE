@@ -20,11 +20,27 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findById(req.body.request);
+    let request = await Request.findById(req.body.request);
     if (request === null) {
-      res.status(404);
-      res.end('');
-      return;
+      const investor = await Investor.findById(req.body.investor) //check if he is client (403)
+      if (investor === null) {
+        res.status(404);
+        res.end('');
+        return;
+      }
+      request = new Request({
+        initiatedByManager: true,
+        investing_reason: 'Not specified',
+        manager: manager._id,
+        investor: req.body.investor,
+        value: req.body.value,
+        comment: req.body.comment,
+        period: req.body.period,
+        status: 'pending'
+      })
+      // res.status(404);
+      // res.end('');
+      // return;
     }
     if (request.status === 'pending') {
       request.set({
@@ -50,7 +66,7 @@ module.exports = (app) => {
     }
     if (request.status === 'pending')
       await request.save();
-    res.status(200);
+    res.send(request._id);
     res.end();
   });
   app.post('/api/portfolio/load', async (req, res, next) => {

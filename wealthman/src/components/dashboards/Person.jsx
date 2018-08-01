@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { api, getCookie } from '../helpers'
-import myDate from '../myDate'
+import LevDate from '../LevDate'
 import Avatar from '../Avatar'
 
 export default class Header extends Component {

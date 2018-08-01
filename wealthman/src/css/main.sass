@@ -739,21 +739,22 @@ img.graph
 
 .chats-container
   display: flex
-  .chat-pic
-    width: 48px
-    height: 48px
-    border-radius: 50%
-    // border: 1px solid grey
-    // background-color: grey
-    overflow: hidden
-    display: flex
-    justify-content: center
-    align-items: center
-    img
-      max-width: 100%
-      max-height: 100%
+  // .chat-pic
+  //   width: 48px
+  //   height: 48px
+  //   border-radius: 50%
+  //   // border: 1px solid grey
+  //   // background-color: grey
+  //   overflow: hidden
+  //   display: flex
+  //   justify-content: center
+  //   align-items: center
+  //   img
+  //     max-width: 100%
+  //     max-height: 100%
   .chats-left-column
     max-width: 312px
+    height: 100%
     padding-top: 20px
     border-right: 1px solid #dfe4e8
     .chats-search
@@ -779,7 +780,9 @@ img.graph
     .chats-list
       margin-top: 42px
       overflow-y: auto
-      height: 800px
+      height: 100%
+      min-height: 400px
+      max-height: 800px
       a
         text-decoration: none
       .chat-preview
@@ -846,10 +849,12 @@ img.graph
     margin-left: 40px
     width: 100%
     .chats-messages-area
-      height: 400px
-      // max-height: 100%
+      max-height: 800px
+      height: 100%
       overflow-x: hidden
       overflow-y: scroll
+    // div#chats-messages-area:empty:before
+    //   content: 'No messages here'
     .chats-current-compainion > div
       display: flex
       align-items: center
@@ -1176,3 +1181,22 @@ a
   background-repeat: no-repeat
   background-position: 17px center
   font-weight: bold
+
+.request-history-block
+  display: flex
+  justify-content: space-between
+  padding-left: 10px
+  padding-top: 5px
+  .request-history-text
+    border-bottom: 1px solid #d2d7da
+    width: 100%
+    h4
+      font-size: 16px
+    p
+      font-size: 14px
+  .request-history-date
+    width: 200px
+    font-size: 20px
+    display: flex
+    justify-content: flex-end
+    align-items: center

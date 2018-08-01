@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
-import myDate from './myDate.jsx';
+import LevDate from './LevDate.jsx';
 import '../css/main.sass';
 import '../css/Sortable.sass';
 
@@ -77,14 +77,14 @@ class Sortable extends Component {
             </div>
           );
         case "date":
-          var date = new myDate(listing.date);
+          var date = new LevDate(listing.date);
           return (
             <div key={titleIndex} className={("date" + firstLast)}>
               {date.niceTime()}
             </div>
           );
         case "days":
-          var days = new myDate(listing.days);
+          var days = new LevDate(listing.days);
           return (
             <div key={titleIndex} className={("days" + firstLast)}>
               {days.pastNice()}
@@ -283,7 +283,7 @@ class Sortable extends Component {
     })
     .filter(listing => {
       if (listing.hasOwnProperty("date") && this.state.date !== "") {
-        var selectedDate = new myDate(this.state.date);
+        var selectedDate = new LevDate(this.state.date);
         return selectedDate.sameDay(listing.date);
       }
       return true;

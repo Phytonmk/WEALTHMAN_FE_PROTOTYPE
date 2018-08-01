@@ -142,7 +142,7 @@ Usage example
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import Select from '../Select.jsx';
 import { PieChart, LineChart } from 'react-easy-chart';
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { setReduxState } from '../../../redux';
 import { connect } from 'react-redux';
-import myDate from '../../myDate.jsx';
+import LevDate from '../../LevDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../../helpers';
 
 import DefaultPage from './pages/default'

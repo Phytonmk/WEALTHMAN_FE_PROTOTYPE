@@ -119,8 +119,8 @@ class OldAccount extends Component {
       .catch(console.log);
   }
   render() {
-    let user = 'investor';
-    switch (this.props.user) {
+    let user = '-';
+    switch (getCookie('usertype') * 1) {
       case 0:
         user = 'investor';
         break;
@@ -162,87 +162,17 @@ class OldAccount extends Component {
         }
       }
     }
-    let accountPage;
-    switch (this.state.currentAccountPage) {
-      case "personal":
-        accountPage = (
-          <div className="box">
-            <h2>Account information</h2>
-            {gotData ? <Form
-              questions={questions[user]}
-              onSubmit={(data) => this.saveData(data)}
-            /> : 'Loading... if it takes too long - reload page'}
-          </div>
-        );
-        break;
-        case "password":
-          accountPage = (
-            <div className="box">
-              <div className="half padding-side">
-                <h3 className="high">Change password</h3>
-                <input type="password" placeholder="old password" value={this.state.old_password} onChange={(event) => this.setState({old_password: event.target.value})}/>
-                <input type="password" placeholder="new password" value={this.state.new_password1} onChange={(event) => this.setState({new_password1: event.target.value})}/>
-                <input type="password" placeholder="repeat new password" value={this.state.new_password2} onChange={(event) => this.setState({new_password2: event.target.value})}/>
-              </div>
-              <div className="row-padding">
-                <button className={this.passwordChanged ? "back" : "continue"} onClick={() => this.changePassword()}>Change password</button>
-              </div>
-            </div>
-          );
-          break;
-      case "risk":
-        accountPage = (
-          <div className="box">
-            <h3>Risk Tollerance Profile</h3>
-            Your tisk profile: 25%;
-            <div className="row-padding">
-              <button className="continue">Change results</button>
-            </div>
-          </div>
-        );
-        break;
-      case "inv":
-        accountPage = (
-          <div className="box">
-            <h3>Investment goals and strategy aims</h3>
-            You are investing for:
-            <ul>
-              <li>living</li>
-              <li>journeys</li>
-            </ul>
-            <div className="row-padding">
-              <button className="continue">Change results</button>
-            </div>
-          </div>
-        );
-        break;
-    }
+     
     return (
       <div>
         {/* {this.renderBackButton()} */}
         <div className="container">
-          <h1 style={{
-            marginTop: 20,
-            marginLeft: 63,
-            marginBottom: 20,
-          }}>Account</h1>
           <div className="first-tab">
-            {accountPage}
-          </div>
-          <div className="second-tab">
-            <div className="box">
-              <button style={{width: 'auto'}} className="transactions-link" onClick={() => this.setState({ currentAccountPage: "personal" })}>Account Information</button>
-              <br />
-              <button style={{width: 'auto'}} className="transactions-link" onClick={() => this.setState({ currentAccountPage: "password" })}>Change Password</button>
-              {/* <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "personal" })}>Personal Info</button>
-              <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "address" })}>Address details</button>
-              <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "ID" })}>ID confirmation</button>
-              <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "residency" })}>Residency</button>
-              <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "forms" })}>Fill forms</button>
-              <button className="transactions-link" onClick={() => this.setState({ currentAccountPage: "kyc" })}>Know Your Criminals</button> */}
-              {/*{this.props.user == 1 ? "" : <button style={{width: 'auto'}} className="transactions-link" onClick={() => this.setState({ currentAccountPage: "risk" })}>Risk Tollerance Profile</button>}
-              {this.props.user == 1 ? "" : <button style={{width: 'auto'}} className="transactions-link" onClick={() => this.setState({ currentAccountPage: "inv" })}>Investment goals and strategy aims</button>}
-              <button style={{width: 'auto'}} className="transactions-link" onClick={() => this.setState({ currentAccountPage: "kyc" })}>Detailed information (kyc)</button>*/}
+            <div className="account-box">
+              {gotData ? <Form
+                questions={questions[user]}
+                onSubmit={(data) => this.saveData(data)}
+              /> : 'Loading...'}
             </div>
           </div>
         </div>
