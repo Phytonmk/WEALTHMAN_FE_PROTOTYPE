@@ -10,17 +10,23 @@
   background-color: rgba(7, 30, 64, 0.75)
   z-index: 1001
   cursor: pointer
+  pointer-events: none
+  opacity: 0
+  transition: opacity .3s
+  &.visible
+    opacity: 1
+    pointer-events: all
   .auth-box
     cursor: default
     width: 444px
     padding: 40px
     background-color: white
     border-radius: 5px
-    height: 520px
+    height: 500px
     position: relative
     overflow-y: auto
     &.registration-box
-      height: 645px
+      height: 605px
     .close-modal-btn
       cursor: pointer
       background-image: url('../img/close.svg')
@@ -84,7 +90,8 @@
       left: 0
       margin-top: 20px
     .footer-row
-      height: 100px
+      height: 0px
+      margin-top: 70px
       color: #79828f
       font-size: 15px
       display: flex
@@ -102,3 +109,6 @@
         line-height: 0.6
         font-weight: bold
         text-transform: uppercase
+  .auth-btn
+    float: none !important
+    margin-right: 0 !important

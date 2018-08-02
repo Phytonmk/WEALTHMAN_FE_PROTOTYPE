@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { setReduxState } from './../redux/index';
-import { api, setPage } from './helpers';
+import { api, setPage, setCookie } from './helpers';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import { connect } from 'react-redux';
@@ -29,8 +29,12 @@ class HeaderUserIcon extends Component {
           user: -1,
           userData: {}
         })
-        document.cookie = ''
-        setTimeout(() => setPage(''), 0)
+        setCookie('accessToken', '')
+        setCookie('usertype', '')
+        auth()
+        setPage('')
+        // document.cookie = ''
+        // setTimeout(() => auth(), 0)
         // auth(() => {
         //   window.location.reload(false);
         //     // this.state = store.getState();

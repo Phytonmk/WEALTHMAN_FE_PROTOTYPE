@@ -17,6 +17,7 @@ const auth = (callback=()=>{}) => {
       .catch((e) => {
         if (e.response && e.response.status === 403) {
           setCookie('accessToken', '');
+          setCookie('usertype', '');
           setPage('')
         } else {
           console.log(e);

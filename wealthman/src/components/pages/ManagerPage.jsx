@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 // import Sortable from '../Sortable.jsx';
-import { api, setPage, setCurrency, setCookie } from '../helpers';
+import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers';
 import Social from './../Social';
 import Avatar from '../Avatar.jsx';
 
@@ -59,8 +59,14 @@ class ManagerPage extends Component {
   apply(filter) {
     const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
     setCookie('service', filters[filter].link);
-    setCookie('selectedManager', managerType + '/' + this.props.match.params.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + managerType + '/' + this.props.match.params.id);
+    // setCookie('selectedManager', managerType + '/' + this.props.match.params.id);
+    if (getCookie('usertype') === '0')
+      setPage("kyc/" + managerType + '/' + this.props.match.params.id);
+    else
+      window.openSignUp(() => {
+        setPage("kyc/" + managerType + '/' + this.props.match.params.id);
+      })
+    // setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + managerType + '/' + this.props.match.params.id);
   }
   render() {
     const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
@@ -118,7 +124,7 @@ class ManagerPage extends Component {
               {(manager.services || []).map((service, i) => <div className="box" key={i}>
                 <h2>
                   {filters[service.type].link}
-                  {this.props.user === 0 ?
+                  {getCookie('usertype') != '1' && getCookie('usertype') != '3' ?
                     <button
                       onClick={() => this.apply(i)}
                       className="big-blue-button right"

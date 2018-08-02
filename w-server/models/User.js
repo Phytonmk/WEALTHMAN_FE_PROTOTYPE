@@ -5,6 +5,7 @@ const userSchema = mongoose.Schema({
   login: String,
   password_hash: String,
   agreed: {type: Boolean, default: false},
+  confirmed: {type: Boolean, default: false},
   last_request: {type: Date, default: Date.now}
 });
 

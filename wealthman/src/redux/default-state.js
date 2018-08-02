@@ -91,12 +91,6 @@ const defaultState = {
     {
       label: "About Wealthman",
       link: "https://wealthman.io/"
-    }, {
-      label: "login",
-      link: "login"
-    }, {
-      label: "join",
-      link: "register"
     }
   ],//, "login"],//, "invest"],
 

@@ -10,13 +10,16 @@ import HeaderUserIcon from './HeaderUserIcon';
 
 import '../css/Header.sass';
 
-import SignUp from './SignUp'
+import AuthWindows from './AuthWindows'
 
 class Header extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
+      openSignIn: () => {},
+      openSignUp: () => {},
     }
+    window.openSignUp = this.state.openSignUp
   }
 
   render() {
@@ -64,7 +67,14 @@ class Header extends Component {
 
     return (
       <header>
-        <SignUp />
+        <AuthWindows
+          openSignIn={(func) => this.setState({openSignIn: func})}
+          openSignUp={(func) => {
+            this.setState({openSignUp: func})
+            window.openSignUp = func
+          }}
+          forManagers={false}
+          />
         <div className="contents">
           <div className="container">
             <Link to={(this.props.user == -1 ? "/managers" : "/portfolios")}>
@@ -76,6 +86,15 @@ class Header extends Component {
             }
             <ul className="links right">
               {headerLinks}
+              {this.props.user != -1 ? '' :
+              <React.Fragment>
+                <button className="big-blue-button" onClick={() => this.state.openSignIn()}>
+                  Sign In
+                </button>
+                <button className="big-blue-button margin-left" onClick={() => this.state.openSignUp()}>
+                  Sign Up
+                </button>
+              </React.Fragment>}
             </ul>
           </div>
         </div>

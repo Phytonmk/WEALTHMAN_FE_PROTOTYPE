@@ -5,16 +5,24 @@ import Social from './Social';
 
 import '../css/Footer.sass';
 
+import AuthWindows from './AuthWindows'
+
+
 class Footer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openSignUp: () => {},
     }
   }
 
   render() {
     return (
       <div className="footer">
+        <AuthWindows
+          openSignUp={(func) => this.setState({openSignUp: func})}
+          forManagers={true}
+        />
         <div className="container">
           <span>
             Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
@@ -33,7 +41,7 @@ class Footer extends Component {
           <Link to={"faq"} className="right">
             <button className="big-blue-button">FAQ</button>
           </Link>
-          {this.props.user === -1 ? <Link to={"/manager-reg"} className="right">
+          {this.props.user === -1 ? <Link to={'#'} onClick={() => this.state.openSignUp()} className="right">
             <button className="big-blue-button">Registration for managers</button>
           </Link> : ''}
         </div>

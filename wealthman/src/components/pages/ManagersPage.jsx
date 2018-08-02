@@ -6,7 +6,7 @@ import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
-import { api, setPage, setCurrency, setCookie } from '../helpers';
+import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers';
 import {AreaChart} from 'react-easy-chart';
 
 const filters = [
@@ -49,8 +49,14 @@ class ManagersPage extends Component {
     });
     const manager = this.state.offers.find(i => i._id === managerID);
     setCookie('service', this.state.filter);
-    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    // setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    // console.log(getCookie('usertype'))
+    if (getCookie('usertype') === '0')
+      setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    else
+      window.openSignUp(() => {
+        setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+      })
   }
   load(filter) {
     this.setState({
@@ -71,13 +77,13 @@ class ManagersPage extends Component {
     }
     this.setState({gotData: false});
     let query = 'marketplace/'
-    if (this.props.user === 3) {
+    if (getCookie('usertype') == 3) {
       if (this.props.match.path  === '/company-managers') {
         query += '-1?only-from-company=' + this.props.userData._id
       } else {
         query += '-1?only-single-managers=true'
       }
-    } else if (this.props.user === 1) {
+    } else if (getCookie('usertype') == 1) {
       query += '-1?only-companies=true'
     } else {
       query += filterIndex
@@ -163,7 +169,7 @@ class ManagersPage extends Component {
         tooltip: "Assets Under Management in the last 6 month"
       }
     ];
-    if (this.props.user === 0)
+    if (getCookie('usertype') != 1 && getCookie('usertype') != 3)
       sortableHeader.push({
           property: "apply",
           width: "135px",
@@ -175,7 +181,7 @@ class ManagersPage extends Component {
           width: "135px",
           type: "unsortable",
         })
-    if (this.props.user === 3) { // user -- company
+    if (getCookie('usertype') == 3) { // user -- company
       sortableHeader.pop();
       if (this.props.currentPage === 'company-managers')
         sortableHeader.push({
@@ -266,7 +272,7 @@ class ManagersPage extends Component {
         </article>
         <div className="container">
           <div className="row">
-            {(this.props.user !== 1 && this.props.user !== 3) ? <div className="advisors">
+            {(getCookie('usertype') != 1 &&  getCookie('usertype') != 3) ? <div className="advisors">
               <div className="row">
                 <span>Sort by</span>
                 <Select

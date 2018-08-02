@@ -152,7 +152,7 @@ class Form extends Component {
                     </div> : ''}
                   <div>
                     <div className="row">
-                      <input type="file" name="file" onChange={(event) => this.state[question.property].file = event.target.files[0]}/>
+                      <input className="file-upload" type="file" name="file" onChange={(event) => this.state[question.property].file = event.target.files[0]}/>
                       <br />
                       <button className="back" onClick={() => this.uploadPhoto(question.property, question.uploadFor, this.state[question.property].file)}>{this.state[question.property].photo_uploaded ? 'Upload new' : 'Upload'}</button>
                       <br />
@@ -171,7 +171,7 @@ class Form extends Component {
                     Your private key, save it to safe place
                   </div> 
                   <div className="row" style={this.state[question.property].privateKey && this.state[question.property].wallet_address === this.state[question.property].generated_wallet ? {display: 'block'} : {display: 'none'}}>
-                     <input type="text" value={this.state[question.property].privateKey}   />
+                     <input type="text" value={this.state[question.property].privateKey} onChange={() => {}} />
                      <br />
                      <b>Notice</b>: Wealthman does not save your private keys in the datadase. Keep your private key in secret.
                   </div> 

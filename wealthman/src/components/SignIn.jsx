@@ -1,19 +1,49 @@
-import React, { Component } from 'react';
-import { setReduxState } from '../redux/index';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { setReduxState } from '../redux/index'
+import { Link } from 'react-router-dom'
 
-import '../css/AuthWindows.sass';
+import { api, setCookie, getCookie } from './helpers'
+import auth from './auth'
+import '../css/AuthWindows.sass'
 
 export default class SignIn extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
+      login: '',
+      password: '',
+      wrongPassword: false
     }
   }
-
+  hide(event, forced=false) {
+    if (forced || event.target.classList.contains('close-modal-btn') || 
+          event.target.classList.contains('modal-wrapper'))
+      this.props.hide()
+  }
+  login() {
+    api.post('login', {
+      login: this.state.login,
+      password: this.state.password,
+    })
+      .then((res) => {
+        setCookie('accessToken', res.data.accessToken)
+        setCookie('usertype', res.data.usertype)
+        auth()
+        this.setState({login: '', password: ''})
+        this.hide(null, true)
+        if (typeof this.props.callback === 'function')
+          this.props.callback()
+      })
+      .catch((e) => {
+        console.log(e)
+        if (e.response && e.response.status === 403) {
+          this.setState({wrongPassword: true})
+        }
+      })
+  }
   render() {
     return (
-      <div className="modal-wrapper">
+      <div onClick={(event) => this.hide(event)} className={this.props.visible ? 'modal-wrapper visible' : 'modal-wrapper'}>
         <div className="auth-box">
           <div className="close-modal-btn">
           </div>
@@ -21,17 +51,17 @@ export default class SignIn extends Component {
           <small>Enter your details below.</small>
           <div className="row firts-input-row">
             <label>Email address</label>
-            <input type="text" placeholder="username@email.com" />
+            <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" />
           </div>
           <div className="row">
             <label>Password</label>
             <Link to={'#'} className="forgot-password-link">
               Forgot password?
             </Link>
-            <input type="text" placeholder="Enter your password" />
+            <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" />
           </div>
           <div className="row submit-row">
-            <button className="big-blue-button auth-btn">Sign in</button>
+            <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>
             <div>
               <Link to="supported-browsers">Supported browsers</Link>
             </div>
@@ -39,10 +69,10 @@ export default class SignIn extends Component {
           <div className="devider"></div>
           <div className="row footer-row">
             Don’t have an account?
-            <Link to="" className="another-auth-window-link">Register now</Link>
+            <a onClick={() => this.props.openSignIn()} className="another-auth-window-link">Register now</a>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
