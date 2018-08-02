@@ -205,7 +205,7 @@ class ManagersPage extends Component {
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin no-link-style">
-            {name}
+            <b>{name}</b>
           </Link>,
           value: name
         },
