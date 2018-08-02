@@ -16,7 +16,8 @@ export default class SignUp extends Component {
       login: '',
       password: '',
       passwordRepeat: '',
-      register: this.props.forManagers ? '' : 'investor'
+      register: this.props.forManagers ? '' : 'investor',
+      notConfirmed: false
     }
   }
   hide(event, forced=false) {
@@ -43,11 +44,19 @@ export default class SignUp extends Component {
       .then((res) => {
         console.log('res.data')
         this.setState({step: 2})
-        auth()
-        if (typeof this.props.callback === 'function')
-          this.props.callback()
       })
       .catch(console.log);
+  }
+  confirm() {
+    auth(confirmed => {
+      if (confirmed) {
+        this.hide()
+        if (typeof this.props.callback === 'function')
+          this.props.callback()
+      } else {
+        this.setState({notConfirmed: true})
+      }
+    })
   }
 
   render() {
@@ -100,10 +109,13 @@ export default class SignUp extends Component {
           }
          </div>}
          {this.state.step !== 2 ? '' : <div>
-            {false && /[^\.@]+@[^\.]+\..+/.test(this.state.login) ?
+            {/[^\.@]+@[^\.]+\..+/.test(this.state.login) ?
             <div>
               <div className="row">
                 Email send to <b>{this.state.login}</b>
+              </div>
+              <div className="row">
+                Confirm your email and then push the button below
               </div>
               <div className="row">
                 <a href={'https://' + this.state.login.substr(this.state.login.indexOf('.'))}>Go to {this.state.login.substr(this.state.login.indexOf('.'))}</a>
@@ -116,10 +128,11 @@ export default class SignUp extends Component {
               <div className="row">
                 Your login is not a valid email so to confirm it go to <a href={'http://platform.wealthman.io:8080/api/confirm-email/' + this.state.confirmToken}>link</a>
               </div>
-              <div className="row">
-                <button className="big-blue-button auth-btn" onClick={() => this.props.hide()}>I have comfirmed</button>
-              </div>
             </div>}
+            <div className="row">
+              <button className="big-blue-button auth-btn" onClick={() => this.confirm()}>I have comfirmed</button>
+            </div>
+            {!this.state.notConfirmed ? '' : <small>Seems like you haven't</small>}
          </div>}
         </div>
       </div>

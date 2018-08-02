@@ -28,11 +28,12 @@ export default class SignIn extends Component {
       .then((res) => {
         setCookie('accessToken', res.data.accessToken)
         setCookie('usertype', res.data.usertype)
-        auth()
-        this.setState({login: '', password: ''})
-        this.hide(null, true)
-        if (typeof this.props.callback === 'function')
-          this.props.callback()
+        auth(() => {
+          this.setState({login: '', password: ''})
+          this.hide(null, true)
+          if (typeof this.props.callback === 'function')
+            this.props.callback()
+        })
       })
       .catch((e) => {
         console.log(e)

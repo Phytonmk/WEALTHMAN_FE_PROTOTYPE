@@ -1,6 +1,5 @@
 const crypto = require('crypto')
 const fs = require('fs-extra')
-const sendEmail = require('send-email')
 
 const User = require('../../models/User')
 const Token = require('../../models/accessToken')
@@ -10,6 +9,8 @@ const Company = require('../../models/Company')
 const AnswersForm = require('../../models/AnswersForm')
 const KYCAnswersForm = require('../../models/KYCAnswersForm')
 const EmailConfirmation = require('../../models/EmailConfirmation')
+
+const mailer = require('../../helpers/mailer')
 
 const currentDomain = 'platform.wealthman.io'
 const salt = 'super salt'
@@ -52,13 +53,15 @@ module.exports = (app) => {
     })
 
     const confirmToken = crypto.createHash('md5').update(token + salt + token + salt).digest("hex")
-    // const email = {
-    //   'to': 'test@email.com',
-    //   'subject': 'Confirm your email',
-    //   'html': `To confirm your email follow <a href="http://${currentDomain}/api/confirm-email/${confirmToken}">this link</a>`,
-    //   'from': `<no-reply@${currentDomain}>`
-    // } 
-    // await sendEmail(email).catch(console.log)
+    if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
+      const email = {
+        'to': req.body.login,
+        'subject': 'Confirm your email',
+        'html': `To confirm your email follow <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>`,
+        'from': `no-reply@${currentDomain}`
+      } 
+      await mailer(email).catch(console.log)
+    }
 
     const emailConfirmation = new EmailConfirmation({
       user: user._id,
@@ -86,8 +89,8 @@ module.exports = (app) => {
     }
     user.set({confirmed: true})
     await user.save()
-    await EmailConfirmation.findByIdAndRemove({token: req.params.token})
-    res.status(200)
+    await EmailConfirmation.findOneAndRemove({token: req.params.token})
+    res.send('Your email has been successfully verified')
     res.end()
   })
   app.post('/api/investor/agree', async (req, res, next) => {
@@ -328,6 +331,10 @@ module.exports = (app) => {
       res.sendStatus(500)
       res.end()
       return
+    }
+    if (!user.confirmed) {
+      res.send(401)
+      res.end()
     }
     let userData = {}
     switch (user.type) {

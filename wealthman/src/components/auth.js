@@ -11,7 +11,7 @@ const auth = (callback=()=>{}) => {
       .then(res => {
         if (/[0-9]+/.test(res.data.usertype))
           setReduxState({user: res.data.usertype, userData: res.data.userData || {}});
-        callback();
+        callback(true);
         window.dispatchEvent(authEvent);
       })
       .catch((e) => {
@@ -20,6 +20,7 @@ const auth = (callback=()=>{}) => {
           setCookie('usertype', '');
           setPage('')
         } else {
+          callback(false)
           console.log(e);
         }
         callback();
@@ -28,7 +29,7 @@ const auth = (callback=()=>{}) => {
   } else {
     console.log('logout');
     setReduxState({user: -1});
-    callback();
+    callback(false);
     window.dispatchEvent(authEvent);
   }
 }

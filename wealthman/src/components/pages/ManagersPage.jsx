@@ -287,6 +287,7 @@ class ManagersPage extends Component {
                   width="135px"
                 />
               <br />
+              </div>
               <div className="row margin">
                 <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
                   Invest on Autopilot
@@ -326,7 +327,9 @@ class ManagersPage extends Component {
                   : ""
                 }
               </h4>
+            
             </div>
+          </div>
         </div>
         <div className="container">
           {this.state.gotData ?
