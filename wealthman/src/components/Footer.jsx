@@ -35,7 +35,7 @@ class Footer extends Component {
               "https://bitcointalk.org/index.php?topic=2006205"
             ]} />
           </div>
-          <Link to={"https://wealthman.io/contact/"} className="right">
+          <Link to={"contact"} className="right">
             <button className="big-blue-button">CONTACT US</button>
           </Link>
           <Link to={"faq"} className="right">

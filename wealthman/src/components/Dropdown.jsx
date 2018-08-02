@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from "react-dom";
 
 import '../css/Dropdown.sass';
 
@@ -43,23 +44,41 @@ class Dropdown extends Component {
   render() {
     if (this.state.error != "")
       return "error: " + this.state.error;
+
     return (
       <div
         className={"dropdown " + (this.state.opened ? "opened" : "")}
         style={{
           width: (this.props.width ? this.props.width : ""),
         }}
+        //to open menu when clicked on arrow (which overlays input)
+        onClick={() => {
+          let dropdown = ReactDOM.findDOMNode(this);
+          if (dropdown instanceof HTMLElement)
+            dropdown.getElementsByTagName("input")[0].focus()
+        }}
       >
         <input
           value={this.state.inputValue}
           onChange={event => {
             this.setState({inputValue: event.target.value});
-            if (this.state.inputValue != this.props.value)
+            //invalidate window when correct spelling wass changed
+            if (event.target.value != this.props.value)
               this.props.setValue("");
+            //validate if existing option was inputed (not selected)
+            let correctOptionInputed = this.props.options
+              .map(option => option.toLowerCase())
+              .indexOf(event.target.value.toLowerCase());
+            // alert(correctOptionInputed + event.target.value.toLowerCase() + ": " + this.props.options.map(option => option.toLowerCase()));
+            if (correctOptionInputed != -1) {
+              this.props.setValue(this.props.options[correctOptionInputed]);
+              this.setState({inputValue: this.props.options[correctOptionInputed]});
+            }
           }}
           placeholder={this.props.placeholder}
           onFocus={() => this.setState({opened: true})}
-          onBlur={() => setTimeout(() => this.setState({opened: false}), 400)}
+          //timeout needed to actually click on option, before menu closes
+          onBlur={() => setTimeout(() => this.setState({opened: false}), 100)}
           className={(this.state.inputValue != this.props.value) && !this.state.opened ? "error" : ""}
         />
         {

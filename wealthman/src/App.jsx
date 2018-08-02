@@ -11,6 +11,7 @@ import Footer from './components/Footer.jsx';
 
 import './css/main.sass';
 import './css/design.sass';
+import './css/modificators.sass';
 
 import { api, setPage } from './components/helpers';
 
@@ -48,8 +49,9 @@ import InviteManagerPage from './components/pages/InviteManagerPage';
 import ChatPage from './components/pages/ChatPage';
 import InvestorsPage from './components/pages/InvestorsPage';
 import FAQPage from './components/pages/FAQPage';
+import SupportedBrowsersPage from './components/pages/SupportedBrowsersPage';
+import ContactPage from './components/pages/ContactPage';
 import InvestorPage from './components/pages/InvestorPage';
-
 //
 
 const formAnswers = [];
@@ -113,20 +115,6 @@ class App extends Component {
     })
   }
 
-  renderBackButton() {
-    if (this.state.prevousPages.length == 0)
-      return;
-
-    var prevousPage = capitalize(this.state.prevousPages[this.state.prevousPages.length - 1]);
-
-    return (
-      <div className="third-header">
-        <div className="container">
-          <button className="back" onClick={() => this.prevousPage()}>Back to {prevousPage}</button>
-        </div>
-      </div>
-    );
-  }
   renderProgressBar() {
     var pages = ["register", "email", "agreement", "static form", "dynamic form", "manager form", "kyc", "thanks2", "accept", "signagreement", "money", , "investor register"];
     var progress = pages.indexOf(this.state.currentPage.toLowerCase()) + 2;
@@ -192,7 +180,7 @@ class App extends Component {
           <Route path="/decline/:id" component={DeclinePage} />
           <Route path="/faq" component={FAQPage} />
           <Route path="/team" render={() => this.renderTeamPage()} />
-          <Route path="/contact" render={() => this.renderContactPage()} />
+          <Route path="/contact" component={ContactPage} />
           <Route path="/investor-ua" render={() => this.renderInvestorUserAgreementPage()} />
           <Route path="/manager-ua" render={() => this.renderManagerUserAgreementPage()} />
 
@@ -203,7 +191,7 @@ class App extends Component {
           <Route path="/special-offer/:id" component={PortfolioCreationPage} />
           <Route path="/portfoliocreation/:id" component={PortfolioCreationPage} />
           <Route path="/signagreement" component={AgreementPage} />
-          <Route path="/supported-browsers" render={() => this.renderSupportedBrowsersPage()} />
+          <Route path="/supported-browsers" component={SupportedBrowsersPage} />
 
           <Route path="/manager-reg" component={ManagerRegPage} />
           <Route path="/manager-detailing" component={ManagerDetailingPage} />
@@ -339,7 +327,6 @@ class App extends Component {
 
     return (
       <div>
-        {/* {this.renderBackButton()} */}
         <div className="container">
           <div className="box">
             <h3>{alg.name}</h3>
@@ -379,7 +366,6 @@ class App extends Component {
 
     return (
       <div>
-        {/* {this.renderBackButton()} */}
         {this.renderProgressBar()}
         <div className="container">
           <div className="box">
@@ -430,7 +416,6 @@ class App extends Component {
 
   //     return (
   //       <div>
-  //         {/* {this.renderBackButton()} */}
   //         {this.renderProgressBar()}
   //         <div className="container">
   //           <div className="box">
@@ -459,7 +444,6 @@ class App extends Component {
   renderThanksPage() {
     return(
       <div>
-        {/* {this.renderBackButton()} */}
         {this.renderProgressBar()}
         <div className="container">
           <div className="box">
@@ -479,7 +463,6 @@ class App extends Component {
   renderThanks2Page() {
     return(
       <div>
-        {/* {this.renderBackButton()} */}
         {this.renderProgressBar()}
         <div className="container">
           <div className="box">
@@ -547,7 +530,6 @@ class App extends Component {
 
     return(
       <div>
-        {/* {this.renderBackButton()} */}
         {this.renderProgressBar()}
         <div className="second-header">
           <div className="container">
@@ -600,7 +582,7 @@ class App extends Component {
               }
             /> */}
 
-            {/* <div className="user-agreement">
+            {/* <div>
               <h4>User Agreement</h4>
               <ul>
                 <li>U pay 5% to site</li>
@@ -674,10 +656,10 @@ class App extends Component {
     return (
       <div className="container">
         <h1>Algorythms page</h1>
-        <div className="first-tab">
+        <div className="main-column">
           {currentPage}
         </div>
-        <div className="second-tab">
+        <div className="second-column">
           <div className="box">
             <button className="transactions-link" onClick={() => setReduxState({ currentAlgorythmsPage: "uploaded" })}>Current Algorythms</button>
             <button className="transactions-link" onClick={() => setReduxState({ currentAlgorythmsPage: "upload" })}>Upload new</button>
@@ -770,40 +752,9 @@ class App extends Component {
     );
   }
 
-  renderContactPage() {
-    return (
-      <div className="container">
-        <div className="box">
-          <h2>CONTACT US</h2>
-          <p>Follow us:</p>
-          <a className="telegram" href="https://t.me/wealthman_global">Telegram</a>
-          <a className="bitcointalk" href="https://bitcointalk.org/index.php?topic=2006205">Bitcointalk</a>
-          <a className="facebook" href="https://www.facebook.com/WealthMan.io/">Facebook</a>
-          <a className="instagram" href="https://www.instagram.com/wealthman.io/">Instagram</a>
-          <a className="medium" href="https://medium.com/@Wealthman">Medium</a>
-          <a className="reddit" href="https://www.reddit.com/r/Wealthman/">Reddit</a>
-          <a className="twitter" href="https://twitter.com/wealthman_io">Twitter</a>
-          <a className="linkedin" href="https://www.linkedin.com/company/wealthman-io">Linkedin</a>
-          <a className="youtube" href="https://www.youtube.com/c/wealthman">YouTube</a>
-          <h3>Have some questions?</h3>
-          <p>If you have any questions regarding the Wealthman project do not hesitate to contact us using the contact form! We will be glad to answer any questions about our project.</p>
-          <p>General questions: info@wealthman.io</p>
-          <p> ICO, Media\PR inquiries: office@wealthman.io</p>
-          <p>Get in touch with the Wealthman team:</p>
-          <input placeholder="Your Name" />
-          <input placeholder="Your e-mail" />
-          <input type="textarea" placeholder="Message" />
-          <button className="continue">Submit</button>
-        </div>
-      </div>
-    );
-  }
-
-
   renderChatPage() {
     return (
       <div>
-        {/* {this.renderBackButton()} */}
         <div className="container">
           <div className="box">
             <h3>Chat page</h3>
@@ -877,13 +828,6 @@ class App extends Component {
         </div>
       </div>
     );
-  }
-
-
-  renderSupportedBrowsersPage() {
-    return <div className="container">
-      Google Chrome, Safari, Mozilla Firefox.
-    </div>;
   }
 
   render() {

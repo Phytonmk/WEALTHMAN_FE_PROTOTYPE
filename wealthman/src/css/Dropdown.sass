@@ -16,13 +16,14 @@
     height: 8px
     right: 17px
     top: 21px
-    transition: transform .3s
+    transition: transform .2s
   &.opened::after
     transform: rotate(180deg)
   input
     position: relative
     padding-right: 48px
     width: 100%
+    cursor: pointer
   .options
     // display: table
     overflow-y: auto
@@ -31,7 +32,7 @@
     border: 1px solid #e6e6e6
     box-shadow: 0px 2px 6px 0 rgba(0, 0, 0, 0.15)
     position: absolute
-    top: 50px
+    top: 51px
     left: 0
     z-index: 1001
     width: 100%
@@ -43,5 +44,6 @@
       line-height: 1
       background: white
       cursor: pointer
+      color: #071e40
       &:hover
         background: #f5f5f5

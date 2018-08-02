@@ -96,7 +96,6 @@ class RequestsPage extends Component {
             value={this.state.status}
             options={["All", "Declined", "Accepted", "Cancelled", "Pending"]}
             setValue={(value) => this.setState({status: value})}
-            width="135px"
           />
         </div>,
         width: "130px",

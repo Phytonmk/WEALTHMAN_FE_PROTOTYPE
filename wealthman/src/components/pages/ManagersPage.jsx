@@ -123,48 +123,56 @@ class ManagersPage extends Component {
       {
         property: "name",
         title: "Manager name",
-        width: "156px",
+        // width: "156px",
+        width: "106px",
       },
       {
         property: "rating",
         title: "Success rate",
-        width: "85px",
+        // width: "85px",
+        width: "70px",
         type: "number",
       },
       {
         property: "min",
         title: "min. investment",
-        width: "103px",
+        // width: "103px",
+        width: "90px",
         type: "number",
       },
       {
         property: "aum",
         title: "AUM, mln $",
-        width: "82px",
+        // width: "82px",
+        width: "70px",
         type: "number",
         tooltip: "Assets Under Management in millions of $"
       },
       {
         property: "services",
         title: "Services",
-        width: "150px",
+        // width: "150px",
+        width: "100px",
         type: "unsortable",
       },
       {
         property: "perfomance",
         title: "performance fee",
-        width: "103px",
+        // width: "103px",
+        width: "90px",
         type: "number",
       },
       {
         property: "clients",
         title: "Number of clients",
-        width: "82px",
+        // width: "82px",
+        width: "70px",
       },
       {
         property: "aum6",
         title: "6m aum graph",
-        width: "100px",
+        // width: "100px",
+        width: "90px",
         type: "unsortable",
         tooltip: "Assets Under Management in the last 6 month"
       }
@@ -199,14 +207,11 @@ class ManagersPage extends Component {
     let sortableManagers = this.state.offers.map((manager, index) => {
       const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '');
       return {
-        // id: manager.id,
-        // почему-то айдишники иногда совпадают, из-за этого рисуется некорректно
-        id: index,
-        // img: <div className="in-sortable-img-container"><img src={manager.img ? api.imgUrl(manager.img) : 'manager/user.svg'} className="user-icon" /></div>,
+        id: manager.id,
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin no-link-style">
-            {name}
+            <b>{name}</b>
           </Link>,
           value: name
         },
@@ -281,7 +286,6 @@ class ManagersPage extends Component {
                   setValue={(value) => {this.setState({filter: value}); setTimeout(() => this.load(), 0)}}
                   width="135px"
                 />
-              </div>
               <br />
               <div className="row margin">
                 <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
@@ -323,7 +327,6 @@ class ManagersPage extends Component {
                 }
               </h4>
             </div>
-          </div>
         </div>
         <div className="container">
           {this.state.gotData ?
