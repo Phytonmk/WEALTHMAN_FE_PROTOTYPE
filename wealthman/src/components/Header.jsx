@@ -10,6 +10,8 @@ import HeaderUserIcon from './HeaderUserIcon';
 
 import '../css/Header.sass';
 
+import SignUp from './SignUp'
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +64,7 @@ class Header extends Component {
 
     return (
       <header>
+        <SignUp />
         <div className="contents">
           <div className="container">
             <Link to={(this.props.user == -1 ? "/managers" : "/portfolios")}>

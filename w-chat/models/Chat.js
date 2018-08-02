@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 var ChatScheme = mongoose.Schema({
-  users: [Number],
+  users: [String],
   last_message: {
-    sender_id: Number,
+    sender_id: String,
     pics: [String, String],
     names: [String, String],
     date: Date,

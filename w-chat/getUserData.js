@@ -21,11 +21,11 @@ module.exports = (user) => new Promise(async (resolve, reject) => {
     });
     return;
   } 
-  const comapny = await Comapny.findOne({user});
-  if (comapny !== null) {
+  const company = await Company.findOne({user});
+  if (company !== null) {
     resolve({
-      name: comapny.comapny_name,
-      img: comapny.img,
+      name: company.company_name,
+      img: company.img,
       userId: user
     });
     return;

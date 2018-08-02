@@ -28,8 +28,8 @@ class PortfolioPage extends Component {
     var portfolio = this.props.portfolios.find(p => p.request == this.props.match.params.id);
     if (portfolio === undefined)
       return <div className="box loading"><p>Loading</p></div>
-    var investor = this.props.investors.find(i => i.id == portfolio.investor);
-    var manager = this.props.managers.find(m => m.id == portfolio.manager);
+    var investor = this.props.investors.find(i => i._id == portfolio.investor);
+    var manager = this.props.managers.find(m => m._id == portfolio.manager);
     var image = <img />;//this.props.user == 0 ? <img src={"../manager/" + manager.img} className="avatar" /> : <img src={"../investor/" + investor.img} className="avatar" />;
     var info;
     if (this.props.user == 0){
@@ -41,7 +41,7 @@ class PortfolioPage extends Component {
           <h4>{manager.name} {manager.surname}</h4>
           {/* <p>New client. 1   days on platform</p> */}
           <p>{manager.age} years old</p>
-          <p>manager id 50{manager.id}00{manager.id}</p>
+          <p>manager id {manager._id}</p>
         </div>
       );
     } else{
@@ -66,7 +66,7 @@ class PortfolioPage extends Component {
       var price = (this.props.currentCurrencyPrices.find(c => c.name == currency.currency) || {price: 0}).price;
 
       return {
-        id: currency.id,
+        id: currency._id,
         type: currency.type,
         number: "",
         currency: currency.currency,

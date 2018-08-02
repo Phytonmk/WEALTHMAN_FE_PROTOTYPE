@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import MyDate from '../../../MyDate';
+import LevDate from '../../../LevDate';
 
 import { Link } from 'react-router-dom';
 import Cards from '../../../dashboards/Cards';
@@ -15,7 +15,7 @@ import InvstorPortfolioHeader from '../../../dashboards/InvstorPortfolioHeader';
 export default class InvestorPortfolioActive extends Component {
   render() {
     return <div>
-      <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request.id} />
+      <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request._id} />
       <Cards
         whiteBg={true}
         cards={[{
@@ -25,10 +25,10 @@ export default class InvestorPortfolioActive extends Component {
           title: this.props.requestData.request.period,
           subtitle: 'Days'
         },{
-          title: new MyDate(this.props.requestData.request.contract_deployment).niceTime(),
+          title: new LevDate(this.props.requestData.request.contract_deployment || 0).date(),
           subtitle: 'Start date'
         },{
-          title: new MyDate(new Date(this.props.requestData.request.contract_deployment).getTime() + 1000 * 60 * 60 * 24 * this.props.requestData.request.period).niceTime(),
+          title: new LevDate(new Date(this.props.requestData.request.contract_deployment || 0).getTime() + 1000 * 60 * 60 * 24 * this.props.requestData.request.period).date(),
           subtitle: 'Finish date'
         }]}
       />
@@ -92,7 +92,7 @@ export default class InvestorPortfolioActive extends Component {
      />
       <PageDevider />
       <Person requestData={this.props.requestData}/>
-      <ReportsAndDocuments />
+      <ReportsAndDocuments request={this.props.requestData.request._id}/>
     </div>
   }
 }

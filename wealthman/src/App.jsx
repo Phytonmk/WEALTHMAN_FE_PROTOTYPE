@@ -51,20 +51,25 @@ import InvestorsPage from './components/pages/InvestorsPage';
 import FAQPage from './components/pages/FAQPage';
 import SupportedBrowsersPage from './components/pages/SupportedBrowsersPage';
 import ContactPage from './components/pages/ContactPage';
-
+import InvestorPage from './components/pages/InvestorPage';
 //
 
 const formAnswers = [];
-
+let authCompleted = false
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = defaultState;
+    this.state = Object.assign(defaultState, {authCompleted: false});
     store.subscribe(() => {
       this.state = store.getState();
       this.forceUpdate();
     });
-    auth();
+    window.addEventListener('auth completed', () => {
+      //console.log('auth completed')
+      authCompleted = true
+      setTimeout(() => this.forceUpdate(), 0)
+    })
+    auth()
   }
 
   setPage(page, id) {
@@ -143,6 +148,7 @@ class App extends Component {
 
           <Route path="/company/:id" component={ManagerPage} />
           <Route path="/manager/:id" component={ManagerPage} />
+          <Route path="/investor/:id" component={InvestorPage} />
           <Route path="/company" component={CompanyManagmentPage} />
           <Route path="/participating/:manager" component={InviteManagerPage} />
           <Route path="/algorythm/:id" render={({match}) => this.renderAlgorythmPage(match)} />
@@ -182,6 +188,7 @@ class App extends Component {
           <Route path="/metamask" render={() => this.renderMetamaskPage()} />
           <Route path="/logout" component={ManagersPage} />
 
+          <Route path="/special-offer/:id" component={PortfolioCreationPage} />
           <Route path="/portfoliocreation/:id" component={PortfolioCreationPage} />
           <Route path="/signagreement" component={AgreementPage} />
           <Route path="/supported-browsers" component={SupportedBrowsersPage} />
@@ -825,7 +832,8 @@ class App extends Component {
 
   render() {
     document.title = "Wealthman Platform";
-
+    if (!authCompleted && this.props.userData === undefined)
+      return 'loading...'
     const Loading = () => <div>Loading...</div>;
     // const Home = Loadable({
     //   loader: () => import('./routes/Home.js'),

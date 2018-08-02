@@ -19,10 +19,13 @@ const api = {
         reject(err);
       })
   }),
-  get: (url, data={}, options) => new Promise((resolve, reject) => {
+  get: (url, options={}) => new Promise((resolve, reject) => {
+    if (options.headers === undefined)
+      options.headers = getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}
+    else
+      options.headers = Object.assign(options.headers, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {})
     axios.get(
       apiUrl + url,
-      Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}),
       options
      ).then(resolve)
       .catch(err => {
@@ -187,6 +190,27 @@ const previousPage = () => {
   document.location.href = url;
 }
 
+const niceNumber = (number) => {
+  if (number < 10 ** 3)
+    return number
+  else if (number < 10 ** 9)
+    return Math.round((number / (10 ** 3)) * 100) / 100 + ' Th'
+  else if (number < 10 ** 12)
+    return Math.round((number / (10 ** 6)) * 100) / 100 + ' Ml'
+  else if (number < 10 ** 15)
+    return Math.round((number / (10 ** 12)) * 100) / 100 + ' Bl'
+  else if (number < 10 ** 18)
+    return Math.round((number / (10 ** 15)) * 100) / 100 + ' Tr'
+  else if (number < 10 ** 21)
+    return Math.round((number / (10 ** 18)) * 100) / 100 + ' Qd'
+  else if (number < 10 ** 24)
+    return Math.round((number / (10 ** 21)) * 100) / 100 + ' Qn'
+  else if (number < 10 ** 27)
+    return Math.round((number / (10 ** 24)) * 100) / 100 + ' Sx'
+  else
+    return '∞'
+}
+
 const camelize = (string) => {
   return string
   .split(" ")
@@ -194,4 +218,5 @@ const camelize = (string) => {
   .reduce((a, b) => a + b);
 }
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage};
+
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber };

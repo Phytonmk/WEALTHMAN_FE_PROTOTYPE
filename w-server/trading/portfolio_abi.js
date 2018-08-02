@@ -69,6 +69,20 @@ var abi =[
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_to",
+				"type": "address"
+			}
+		],
+		"name": "transferEth",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "endTime",
@@ -101,8 +115,8 @@ var abi =[
 		"inputs": [],
 		"name": "withdraw",
 		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -499,24 +513,6 @@ var abi =[
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_to",
-				"type": "address"
-			},
-			{
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transferEth",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{

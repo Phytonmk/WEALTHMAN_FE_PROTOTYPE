@@ -4,13 +4,7 @@ const Portfolio = require('../../models/Portfolio');
 const checkDeployment = require('../../trading/wealthman_check_deploy');
 const trade = require('../../trading/wealthman_trade');
 
-let workingProcess = false;
-
-const work = async () => {
-  if (workingProcess)
-    return false;
-  workingProcess = true;
-
+module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'deploying'});
   for (request of requests) {
     if (request.deployment_hash) {
@@ -25,15 +19,20 @@ const work = async () => {
           break;
         case 'deployed':
           console.log(`${request.deployment_hash} deployed`);
-          request.set({status: 'waiting for deposit'});
-          const portfolio = await Portfolio.findOne({state: 'active', request: request.id});
+          request.set({
+            status: 'waiting for deposit',
+            contract_deployment: new Date()
+          });
+          console.log('search for porfolio ' + request._id)
+          const portfolio = await Portfolio.findOne({state: 'active', request: request._id + ''});
+          console.log(portfolio)
           if (portfolio !== null) {
             portfolio.set({smart_contract: deployment.address}); 
             await request.save();
             await portfolio.save();
           } else {
             request.set({status: 'failed'});
-            request.save();
+            await request.save();
           }
           break;
         case 'pending':
@@ -42,10 +41,4 @@ const work = async () => {
       }
     }
   }
-  workingProcess = false;
-}
-
-
-
-work();
-let interval = setInterval(work, 1000 * 60 * 3);
+})

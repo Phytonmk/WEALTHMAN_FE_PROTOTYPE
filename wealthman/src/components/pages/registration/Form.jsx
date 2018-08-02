@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency } from '../../helpers';
-
+import Avatar from '../../Avatar'
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
 class Form extends Component {
@@ -146,7 +146,9 @@ class Form extends Component {
                   </div>
                   {this.state[question.property].photo_uploaded ?
                     <div className="row">
-                      <img className="uploaded-photo" src={this.state[question.property].photo_url ? api.imgUrl(this.state[question.property].photo_url) : ''} />
+                      <br />
+                      <Avatar size="150px" src={this.state[question.property].photo_url ? api.imgUrl(this.state[question.property].photo_url) : ''} />
+                      <br />
                     </div> : ''}
                   <div>
                     <div className="row">
@@ -246,7 +248,7 @@ class Form extends Component {
             </div>
           })}
         <div className="row-padding">
-          <button className="continue" onClick={() => this.submit()}>Submit</button>
+          <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
         </div>
       </div>
     );

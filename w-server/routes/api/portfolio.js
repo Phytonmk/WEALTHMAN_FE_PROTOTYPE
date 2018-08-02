@@ -4,6 +4,8 @@ const Manager = require('../../models/Manager');
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 
+const notify = require('../../helpers/notifications')
+
 module.exports = (app) => {
   app.post('/api/portfolio/save', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
@@ -18,11 +20,27 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({id: req.body.request});
+    let request = await Request.findById(req.body.request);
     if (request === null) {
-      res.status(404);
-      res.end('');
-      return;
+      const investor = await Investor.findById(req.body.investor) //check if he is client (403)
+      if (investor === null) {
+        res.status(404);
+        res.end('');
+        return;
+      }
+      request = new Request({
+        initiatedByManager: true,
+        investing_reason: 'Not specified',
+        manager: manager._id,
+        investor: req.body.investor,
+        value: req.body.value,
+        comment: req.body.comment,
+        period: req.body.period,
+        status: 'pending'
+      })
+      // res.status(404);
+      // res.end('');
+      // return;
     }
     if (request.status === 'pending') {
       request.set({
@@ -32,12 +50,10 @@ module.exports = (app) => {
         front_fee: req.body.fees.front_fee,
       });
     }
-    const existsPortfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
+    const existsPortfolio = await Portfolio.findOne({request: request._id, state: 'draft'});
     if (existsPortfolio === null) {
-      const portfolioID = await Portfolio.countDocuments({});
       const portfolio = new Portfolio({
-        id: portfolioID,
-        request: request.id,
+        request: request._id,
         manager: request.manager,
         investor: request.investor,
         currencies: req.body.currencies,
@@ -50,7 +66,7 @@ module.exports = (app) => {
     }
     if (request.status === 'pending')
       await request.save();
-    res.status(200);
+    res.send(request._id);
     res.end();
   });
   app.post('/api/portfolio/load', async (req, res, next) => {
@@ -70,21 +86,21 @@ module.exports = (app) => {
         return;
       } else {
         user = 'manager';
-        userID = manager.id;
+        userID = manager._id;
       }
     } else {
       user = 'investor';
-      userID = investor.id;
+      userID = investor._id;
     }
-    const request = await Request.findOne({id: req.body.request, [user]: userID});
-    if (request === null) {
+    const request = await Request.findById(req.body.request);
+    if (request === null || request.user === userID) {
       res.status(404);
       res.end('');
       return;
     }
-    let portfolio = await Portfolio.findOne({request: request.id, state: (req.body.state ? req.body.state : 'active')});
+    let portfolio = await Portfolio.findOne({request: request._id, state: (req.body.state ? req.body.state : 'active')});
     if (portfolio === null)
-      portfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
+      portfolio = await Portfolio.findOne({request: request._id, state: 'draft'});
     if (portfolio === null) {
       res.send({exists: false})
     } else {
@@ -110,20 +126,20 @@ module.exports = (app) => {
         return;
       } else {
         user = 'manager';
-        userID = manager.id;
+        userID = manager._id;
       }
     } else {
       user = 'investor';
-      userID = investor.id;
+      userID = investor._id;
     }
-    const request = await Request.findOne({id: req.body.request, [user]: userID});
-    if (request === null) {
+    const request = await Request.findById(req.body.request);
+    if (request === null || request.user !== userID) {
       res.status(404);
       res.end('');
       return;
     }
-    const activePortfolio = await Portfolio.findOne({request: request.id, state: 'active'});
-    let portfolio = await Portfolio.findOne({request: request.id, state: 'draft'});
+    const activePortfolio = await Portfolio.findOne({request: request._id, state: 'active'});
+    let portfolio = await Portfolio.findOne({request: request._id, state: 'draft'});
     let activeExists = false;
     if (portfolio === null) {
       portfolio = activePortfolio;
@@ -132,7 +148,6 @@ module.exports = (app) => {
     }
     if (portfolio === null) {
       if (activePortfolio) {
-        const portfolioID = await Portfolio.countDocuments({});
         portfolio = portfolio.toObject();
         portfolio.state = 'draft';
         portfolio._id = undefined;
@@ -165,11 +180,11 @@ module.exports = (app) => {
         return;
       } else {
         user = 'manager';
-        userID = manager.id;
+        userID = manager._id;
       }
     } else {
       user = 'investor';
-      userID = investor.id;
+      userID = investor._id;
     }
     const portfolios = await Portfolio.find({[user]: userID, state: 'active'});
     const requests = await Request.find({[user]: userID, type: 'portfolio'});
@@ -193,13 +208,13 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({manager: manager.id, id: req.params.request, status: 'pending'});
+    const request = await Request.findOne({manager: manager._id, _id: req.params.request, status: 'pending'});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({manager: manager.id, request: request.id});
+    const portfolio = await Portfolio.findOne({manager: manager._id, request: request._id});
     if (portfolio === null) {
       res.status(403);
       res.end('');
@@ -207,6 +222,7 @@ module.exports = (app) => {
     }
     request.set({status: 'proposed'});
     await request.save();
+    await notify({request: request._id, title: `Manager proposed portfolio`})
     res.status(200);
     res.end();
   });
@@ -222,13 +238,13 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({manager: manager.id, id: req.params.request});
+    const request = await Request.findOne({manager: manager._id, _id: req.params.request});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({manager: manager.id, request: request.id});
+    const portfolio = await Portfolio.findOne({manager: manager._id, request: request._id});
     if (portfolio === null) {
       res.status(403);
       res.end('');
@@ -241,14 +257,17 @@ module.exports = (app) => {
     }
     if (request.service === 'Discretionary') {
       request.set({revisions: request.revisions + 1});
-      await updatePortfoliosState({manager: manager.id, request: request.id});
+      await updatePortfoliosState({manager: manager._id, request: request._id});
       request.set({status: 'recalculated'});
+      await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     } else if (request.service === 'Advisory') {
       request.set({status: 'revision'});
+      await notify({request: request._id, title: `Portfolio waiting for manager revision`})
     } else {
       request.set({status: 'recalculated'});
       request.set({revisions: request.revisions + 1});
-      await updatePortfoliosState({manager: manager.id, request: request.id});
+      await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
+      await updatePortfoliosState({manager: manager._id, request: request._id});
     }
     await request.save();
     res.status(200);
@@ -266,22 +285,23 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({investor: investor.id, id: req.params.request, status: 'revision'});
+    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'revision'});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({investor: investor.id, request: request.id});
+    const portfolio = await Portfolio.findOne({investor: investor._id, request: request._id});
     if (portfolio === null) {
       res.status(403);
       res.end('');
       return;
     }
     request.set({revisions: request.revisions + 1});
-    await updatePortfoliosState({investor: investor.id, request: request.id})
+    await updatePortfoliosState({investor: investor._id, request: request._id})
     request.set({status: 'recalculated'});
     await request.save();
+    await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     res.status(200);
     res.end();
   });
@@ -297,13 +317,13 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({investor: investor.id, id: req.params.request, status: 'revision'});
+    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'revision'});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const portfolio = await Portfolio.findOne({investor: investor.id, request: request.id});
+    const portfolio = await Portfolio.findOne({investor: investor._id, request: request._id});
     if (portfolio === null) {
       res.status(403);
       res.end('');
@@ -311,6 +331,7 @@ module.exports = (app) => {
     }
     request.set({status: 'active'});
     await request.save();
+    await notify({request: request._id, title: `New portfolio declined`})
     res.status(200);
     res.end();
   });
@@ -336,14 +357,14 @@ module.exports = (app) => {
   //       return;
   //     } else {
   //       user = 'manager';
-  //       userID = manager.id;
+  //       userID = manager._id;
   //     }
   //   } else {
   //     user = 'investor';
-  //     userID = investor.id;
+  //     userID = investor._id;
   //   }
-  //   console.log({[user]: userID, id: req.params.id});
-  //   const request = await Request.findOne({[user]: userID, id: req.params.id});
+  //   console.log({[user]: userID, _id: req.params._id});
+  //   const request = await Request.findOne({[user]: userID, _id: req.params._id});
   //   if (request === null) {
   //     res.status(404);
   //     res.end('');
@@ -374,11 +395,11 @@ module.exports = (app) => {
   //       return;
   //     } else {
   //       user = 'manager';
-  //       userID = manager.id;
+  //       userID = manager._id;
   //     }
   //   } else {
   //     user = 'investor';
-  //     userID = investor.id;
+  //     userID = investor._id;
   //   }
   //   const requests = await Request.find({[user]: userID});
   //   res.send(requests);
@@ -404,13 +425,13 @@ module.exports = (app) => {
   //       return;
   //     } else {
   //       user = 'manager';
-  //       userID = manager.id;
+  //       userID = manager._id;
   //     }
   //   } else {
   //     user = 'investor';
-  //     userID = investor.id;
+  //     userID = investor._id;
   //   }
-  //   const request = await Request.findOne({[user]: userID, id: req.params.id});
+  //   const request = await Request.findOne({[user]: userID, _id: req.params._id});
   //   if (request === null) {
   //     res.status(404);
   //     res.end('');

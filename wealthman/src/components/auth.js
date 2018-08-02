@@ -22,11 +22,13 @@ const auth = (callback=()=>{}) => {
           console.log(e);
         }
         callback();
+        window.dispatchEvent(authEvent);
       });
   } else {
     console.log('logout');
     setReduxState({user: -1});
     callback();
+    window.dispatchEvent(authEvent);
   }
 }
 

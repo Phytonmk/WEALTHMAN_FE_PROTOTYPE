@@ -6,7 +6,7 @@ import Person from '../../../dashboards/Person';
 
 export default class InvestorPortfolioRecalculated extends Component {
   acceptPortfolio() {
-    setPage('signagreement/' + this.state.request.id);
+    setPage('signagreement/' + this.state.request._id);
   }
   render() {
     return <div>

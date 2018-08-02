@@ -5,6 +5,9 @@ import io from 'socket.io-client';
 const apiUrl = 'http://platform.wealthman.io:2905/chats-api/'
 const socketsHost = 'ws://platform.wealthman.io';
 
+// const apiUrl = 'http://localhost:2905/chats-api/'
+// const socketsHost = 'ws://localhost';
+
 const api = {};
 
 
@@ -30,7 +33,7 @@ api.connect = () => new Promise((resolve, reject) => {
             aleradyConnected = true;
             currentWsToken = message.token;
             currentWs = ws;
-            console.log('connected to sockets');
+            console.log('connected to sockets on port ' + res.data.ws_port);
             resolve(ws);
           } else {
             reject(message);

@@ -7,8 +7,9 @@ const Portfolio = require('../../models/Portfolio');
 const Web3 = require('web3');
 const Accounts = require('web3-eth-accounts');
 
-const ABI = require('../../contract_abi');
+const ABI = require('../../trading/contract_abi');
 
+const notify = require('../../helpers/notifications')
 const addPortfolio = require('../../trading/wealthman_portfolio_add');
 const deployContract = require('../../trading/wealthman_deploy');
 
@@ -26,13 +27,13 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({investor: investor.id, id: req.body.request});
+    const request = await Request.findOne({investor: investor._id, _id: req.body.request});
     if (request === null) {
       res.status(403);
       res.end('');
       return;
     }
-    const manager = await Manager.findOne({id: request.manager});
+    const manager = await Manager.findById(request.manager);
     if (manager === null) {
       res.status(404);
       res.end('');
@@ -61,8 +62,13 @@ module.exports = (app) => {
         deployment_hash: deploying.hash,
         status: 'deploying'
       });
+      const portfolio = await Portfolio.findOne({request: request._id, state: 'draft'})
+      portfolio.set({state: 'active'})
+      await portfolio.save()
+      portfolio
       console.log(request);
       await request.save();
+      await notify({request: request._id, title: `Contract deploying started`})
       res.status(200);
       res.end();
     }
@@ -81,8 +87,8 @@ module.exports = (app) => {
       return;
     }
     const request = await Request.findOne({
-      investor: investor.id,
-      id: req.body.request
+      investor: investor._id,
+      _id: req.body.request
     });
     if (request === null) {
       res.status(404);
@@ -97,7 +103,7 @@ module.exports = (app) => {
       res.end();
     } else if (['active', 'waiting for deposit', 'revision', 'recalculated'].includes(request.status)) {
       const portfolio = await Portfolio.findOne({
-        request: request.id,
+        request: request._id,
         state: 'active'
       });
       if (portfolio === null) {

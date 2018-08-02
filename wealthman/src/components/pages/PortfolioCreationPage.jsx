@@ -3,7 +3,7 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 import {default as RequestHeader} from '../dashboards/Person';
 import {default as RequestDetails} from './RequestPage/Details';
@@ -27,6 +27,10 @@ class PortfolioCreationPage extends Component {
       managment_fee: '',
       perfomance_fee: '',
       front_fee: '',
+      initiatedByManager: false,
+      value: '',
+      period: '',
+      comment: ''
     };
   }
   componentWillMount() {
@@ -56,7 +60,27 @@ class PortfolioCreationPage extends Component {
           front_fee: res.data.request.front_fee,
         });
       })
-      .catch(console.log);
+      .catch((e) => {
+        if (e.response && e.response.status === 404) {
+          api.get('investor/' + this.props.match.params.id)
+            .then((res) => {
+              this.setState({
+                initiatedByManager: true,
+                investor: res.data,
+                exit_fee: 12,
+                managment_fee: 12,
+                perfomance_fee: 12,
+                front_fee: 12,
+                request: {
+                  status: 'not created'
+                }
+              })
+            })
+            .catch(() => console.log('fuck'))
+        } else {
+          console.log(e)
+        }
+      });
     api.post('portfolio/load-draft', {
       request: this.props.match.params.id,
     })
@@ -73,7 +97,6 @@ class PortfolioCreationPage extends Component {
             });
             inputData[token.currency] = {
               percent: token.percent,
-              amount: token.amount,
               analysis: token.analysis,
               comments: token.comments,
             }
@@ -98,18 +121,29 @@ class PortfolioCreationPage extends Component {
     const state = Object.assign({}, this.state);
     state.selected.splice(state.selectedIds.indexOf(token.id), 1);
     state.selectedIds.splice(state.selectedIds.indexOf(token.id), 1);
+    delete state.inputData[token.name]
     this.setState(state);
     setTimeout(() => this.updateButtons(), 0);
   }
   addToken(token) {
     const state = Object.assign({}, this.state);
-    if (state.inputData[token.name] === undefined)
-      state.inputData[token.name] = {
-        percent: '',
-        amount: '',
-        analysis: '',
-        comments: '',
-      };
+    let sumPercent = 0
+    let tokensAmount = 1
+    for (let token in state.inputData) {
+      sumPercent += 1 * state.inputData[token].percent
+      tokensAmount++
+    }
+    if (sumPercent === 0)
+      sumPercent = 100
+    const newPercent = Math.round(sumPercent / tokensAmount)
+    for (let token in state.inputData) {
+      state.inputData[token].percent -= Math.round(newPercent * (state.inputData[token].percent / sumPercent))
+    }
+    state.inputData[token.name] = {
+      percent: newPercent,
+      analysis: '',
+      comments: '',
+    };
     state.selected.push(Object.assign({}, token));
     state.selectedIds.push(token.id);
     this.setState(state);
@@ -128,7 +162,6 @@ class PortfolioCreationPage extends Component {
       sendData.push({
         currency: tokenName,
         percent: this.state.inputData[tokenName].percent * 1,
-        amount: this.state.inputData[tokenName].amount * 1,
         analysis: this.state.inputData[tokenName].analysis,
         comments: this.state.inputData[tokenName].comments,
       });
@@ -141,11 +174,15 @@ class PortfolioCreationPage extends Component {
         managment_fee: this.state.managment_fee,
         perfomance_fee: this.state.perfomance_fee,
         front_fee: this.state.front_fee,
-      }
+      },
+      value: this.state.value,
+      period: this.state.period,
+      comment: this.state.comment,
+      investor: this.props.match.params.id
     })
-      .then(() => {
+      .then((res) => {
         if (typeof callback === 'function')
-          callback();
+          callback(res.data);
         else
           setPage('requests');
       })
@@ -153,8 +190,8 @@ class PortfolioCreationPage extends Component {
 
   }
   send() {
-    this.save(() => {
-      api.post(`portfolio/${this.state.activeExists ? 'review' : 'propose'}/${this.props.match.params.id}`)
+    this.save((requestId) => {
+      api.post(`portfolio/${this.state.activeExists ? 'review' : 'propose'}/${requestId}`)
         .then(() => setPage('requests'))
         .catch(console.log);
     })
@@ -163,12 +200,13 @@ class PortfolioCreationPage extends Component {
     let page = '';
     switch(this.state.page) {
       case 'fees':
+        let changingAvalible = this.state.request.status === 'pending' || this.state.request.status === 'not created'
         page = <div>
-          <div className="row">{this.state.request.status === 'pending' ? 'Request is pending, so you can set custom fees, investor may accept or decline them' : 'Request is not pending, so you unable to change them'}</div>
-          <div className="row">Exit fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.exit_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({exit_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({managment_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({perfomance_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => this.state.request.status === 'pending' ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">{changingAvalible ? 'Request is pending, so you can set custom fees, investor may accept or decline them' : 'Request is not pending, so you unable to change them'}</div>
+          <div className="row">Exit fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.exit_fee} onChange={(event) => changingAvalible ? this.setState({exit_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => changingAvalible ? this.setState({managment_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => changingAvalible ? this.setState({perfomance_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => changingAvalible ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
         </div>
       break;
       case 'select': 
@@ -186,16 +224,14 @@ class PortfolioCreationPage extends Component {
             if (this.state.inputData[token.name] === undefined)
               this.state.inputData[token.name] = {
                 percent: '',
-                amount: '',
                 analysis: '',
                 comments: '',
               }
             return {
               id: token.id,
-              icon: <img src={token.icon} className="token-icon" />,
+              icon: token.icon,
               name: token.name,
               percent: <input value={this.state.inputData[token.name].percent} onChange={(event) => this.changeTokenData(token.name, 'percent', event.target.value)} placeholder="Percent" type="number" min="0" max="100"/>,
-              amount: <input value={this.state.inputData[token.name].amount} onChange={(event) => this.changeTokenData(token.name, 'amount', event.target.value)} placeholder="Amount" type="number" min="0"/>,
               analysis: <input value={this.state.inputData[token.name].analysis} onChange={(event) => this.changeTokenData(token.name, 'analysis', event.target.value)} placeholder="Analysis" type="text"/>,
               comments: <input value={this.state.inputData[token.name].comments} onChange={(event) => this.changeTokenData(token.name, 'comments', event.target.value)} placeholder="Comments" type="text"/>,
             }
@@ -233,13 +269,36 @@ class PortfolioCreationPage extends Component {
                 requestData={{investor: this.state.investor, request: this.state.request}}
               /> : 'Loading...'}
           </div>
-          <RequestDetails request={this.state.request} />
+          {this.state.initiatedByManager ? <div className="box">
+            <div className="row">
+              Create new portfolio and set additional data to send you offer to investor
+            </div>
+            <div className="row">
+              <p>Investment size</p>
+            </div>
+            <div className="row">
+              <input type="number" value={this.state.value} min="0" step="0.1" onChange={(event) => this.setState({value: event.target.value})} /> ETH
+            </div>
+            <div className="row">
+              <p>Investment period</p>
+            </div>
+            <div className="row">
+              <input type="number" value={this.state.period} min="1" step="7" onChange={(event) => this.setState({period: event.target.value})} /> Days
+            </div>
+            <div className="row">
+              <p>Comment for Investor</p>
+            </div>
+            <div className="row">
+              <input type="text" value={this.state.comment} onChange={(event) => this.setState({comment: event.target.value})} />
+            </div>
+
+          </div> : <RequestDetails request={this.state.request} />}
           <div className='box'>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'fees'})}>Fees</button>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'select'})}>Tokens selecting</button>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'percent'})}>Tokens percent changing</button>
             <button className='big-blue-button right' style={{marginLeft: 20}} onClick={() => this.send()}>Send</button>
-            <button className='big-blue-button right' onClick={() => this.save()}>Save</button>
+            {this.state.initiatedByManager ? '' : <button className='big-blue-button right' onClick={() => this.save()}>Save</button>}
           </div>
           <div className='box'>
             {page || 'Loading...'}
@@ -276,21 +335,15 @@ let percentHeader = [
     type: 'unsortable',
   },
   {
-    property: 'amount',
-    title: 'amount',
-    width: '100px',
-    type: 'unsortable',
-  },
-  {
     property: 'analysis',
     title: 'analysis',
-    width: '300px',
+    width: '190px',
     type: 'unsortable'
   },
   {
     property: 'comments',
     title: 'comments',
-    width: '300px',
+    width: '190px',
     type: 'unsortable'
   },
 ]

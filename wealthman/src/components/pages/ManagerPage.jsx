@@ -30,33 +30,44 @@ class ManagerPage extends Component {
       clients: '-',
       portfolios: '-',
       manager: null,
-      managerType: this.props.match.path.includes('company') ? 'company' : 'manager'
+      companyManagers: [],
     }
+    this.lastManagerUrl = this.state.managerType + '/' + this.props.match.params.id
   }
-  componentWillMount() {
-    api.get(this.state.managerType + '/' + this.props.match.params.id)
+  load() {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
+    api.get(managerType + '/' + this.props.match.params.id)
       .then((res) => {
-        console.log('res.data');
         this.setState({manager: res.data});
       })
       .catch(console.log);
-    api.get(this.state.managerType + '-statistics/' + this.props.match.params.id)
+    api.get(managerType + '-statistics/' + this.props.match.params.id)
       .then((res) => {
         console.log(res.data);
         this.setState({
           profitability: res.data.profitability,
           clients: res.data.clients,
           portfolios: res.data.portfolios,
+          companyManagers: res.data.managers
         });
       })
       .catch(console.log);
   }
+  componentWillMount() {
+    this.load()
+  }
   apply(filter) {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
     setCookie('service', filters[filter].link);
-    setCookie('selectedManager', this.state.managerType + '/' + this.props.match.params.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + this.state.managerType + '/' + this.props.match.params.id);
+    setCookie('selectedManager', managerType + '/' + this.props.match.params.id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + managerType + '/' + this.props.match.params.id);
   }
   render() {
+    const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
+    if (managerType + '/' + this.props.match.params.id !== this.lastManagerUrl) {
+      this.lastManagerUrl = managerType + '/' + this.props.match.params.id
+      this.load()
+    }
     var manager = this.state.manager;
     if (manager === null)
       return <div>...</div>
@@ -64,11 +75,11 @@ class ManagerPage extends Component {
     let inviteBtn = '';
 
     if (this.props.user === 3 && manager.company_name === undefined && (manager.company === -1 || manager.company === null))
-      inviteBtn = <Link to={"/participating/" + manager.id}>
+      inviteBtn = <Link to={"/participating/" + manager._id}>
                     <button className="big-blue-button right">Invite now</button>
                   </Link>
     else if (this.props.user === 1 && manager.company_name !== undefined && (this.props.userData.company === -1 || this.props.userData.company === null))
-      inviteBtn = <Link to={"/participating/" + manager.id}>
+      inviteBtn = <Link to={"/participating/" + manager._id}>
                     <button className="big-blue-button right">Apply to be in</button>
                   </Link>
     return (
@@ -82,26 +93,23 @@ class ManagerPage extends Component {
             </div> */}
             <div className="main-info">
               <div className="name-row">
-                <h1>{(manager.name || manager.company_name || '') + (manager.surname || '')}</h1>
+                <h1>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
                 <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
-              <div className="fees-row">
-                <h3>Fees</h3>
-                <h3>1,5% of AUM, monthly paid</h3>
-              </div>
+              
             </div>
 
             <div className="column right">
               <div className="row">
-                <Link to={"/chat"} onClick={() => this.setPage("chat")}>
+                <Link to={"/chat/" + manager.user} onClick={() => this.setPage("chat")}>
                   <button className="big-transparent-button right">CONTACT</button>
                 </Link>
                 {inviteBtn}
               </div>
-              <div className="social-links">
+              {/*<div className="social-links">
                 <span>Social networks</span>
                 <Social links={manager.social} />
-              </div>
+              </div>*/}
             </div>
           </div>
 
@@ -110,10 +118,11 @@ class ManagerPage extends Component {
               {(manager.services || []).map((service, i) => <div className="box" key={i}>
                 <h2>
                   {filters[service.type].link}
-                  <button
-                    onClick={() => this.apply(i)}
-                    className="big-blue-button right"
-                  >Invest now</button>
+                  {this.props.user === 0 ?
+                    <button
+                      onClick={() => this.apply(i)}
+                      className="big-blue-button right"
+                    >Invest now</button> : ''}
                 </h2>
                 <p>{filters[service.type].description}</p>
                 <div className="row">
@@ -150,9 +159,28 @@ class ManagerPage extends Component {
                 </div>
                 :
                 <div className="row">
-                  Lonely manager
+                  {manager.company === null ? 'Lonely manager' : 
+                  <Link to={"/company/" + manager.company}>
+                    Manager of company
+                  </Link>}
                 </div>}
               </div>
+
+              {!manager.company_name ? '' :
+                <div className="box">
+                  <div className="row">
+                    Company's managers
+                  </div>
+                  {(!this.state.companyManagers || this.state.companyManagers.length === 0) ? <small>no managers</small> : 
+                  this.state.companyManagers.map((manager, i) => 
+                    <Link to={'/manager/' + manager._id}>
+                    <div className="row comapy-managers" key={i}>
+                      <Avatar src={api.imgUrl(manager.img)} />
+                      {(manager.name || '') + ' ' + (manager.surname || '')}
+                    </div>
+                  </Link>)}
+                </div>
+              }
 
               <div className="box">
                 <h3>Statistics</h3>

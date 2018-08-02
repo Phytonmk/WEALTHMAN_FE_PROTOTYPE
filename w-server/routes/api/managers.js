@@ -9,7 +9,7 @@ module.exports = (app) => {
   });
   app.get('/api/manager/:id', async (req, res, next) => {
     console.log(req.params.id);
-    const manager = await Manager.findOne({id: req.params.id});
+    const manager = await Manager.findById(req.params.id);
     if (manager === null) {
       res.status(404);
       res.end();
@@ -19,9 +19,9 @@ module.exports = (app) => {
     res.send(manager);
     res.end();
   });
-  app.get('/api/manager-statisitcs/:id', async (req, res, next) => {
+  app.get('/api/manager-statistics/:id', async (req, res, next) => {
     console.log(req.params.id);
-    const manager = await Manager.findOne({id: req.params.id});
+    const manager = await Manager.findById(req.params.id);
     if (manager === null) {
       res.status(404);
       res.end();

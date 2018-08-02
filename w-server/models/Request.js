@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
 const RequestSchema = mongoose.Schema({
-  id: Number,
   type: {type: String, default: 'portfolio'},
-  investor: Number,
-  manager: Number,
-  company: Number,
+  investor: String,
+  manager: String,
+  company: String,
   date: {type: Date, default: Date.now},
   status: {type: String, default: 'pending'},
   value: Number,
@@ -25,7 +24,8 @@ const RequestSchema = mongoose.Schema({
   exit_fee: Number,
   managment_fee: Number,
   perfomance_fee: Number,
-  front_fee: Number
+  front_fee: Number,
+  investing_reason: String
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

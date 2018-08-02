@@ -7,6 +7,7 @@ import Select from '../Select.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
+import {AreaChart} from 'react-easy-chart';
 
 const filters = [
   {
@@ -46,10 +47,10 @@ class ManagersPage extends Component {
     setReduxState({
       currentManager: managerID,
     });
-    const manager = this.state.offers.find(i => i.id === managerID);
+    const manager = this.state.offers.find(i => i._id === managerID);
     setCookie('service', this.state.filter);
-    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
-    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager.id);
+    setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
   }
   load(filter) {
     this.setState({
@@ -68,19 +69,38 @@ class ManagersPage extends Component {
       case 'advisory': filterIndex = 2; break;
       default: filterIndex = 0
     }
-    // this.setState({filter: filterIndex, gotData: false});
     this.setState({gotData: false});
-    console.log(`loading...`);
-    // console.log('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''));
-    api.get('marketplace/' + filterIndex + (this.props.user === 3 ? (this.props.currentPage === 'company-managers' ? '?only-from-company=' + this.props.userData.id : '?only-single-managers=true') : ''))
+    let query = 'marketplace/'
+    if (this.props.user === 3) {
+      if (this.props.match.path  === '/company-managers') {
+        query += '-1?only-from-company=' + this.props.userData._id
+      } else {
+        query += '-1?only-single-managers=true'
+      }
+    } else if (this.props.user === 1) {
+      query += '-1?only-companies=true'
+    } else {
+      query += filterIndex
+    }
+    console.log(query)
+    api.get(query)
       .then((res) => {
-        console.log(`loaded`);
-        console.log(res.data);
         this.setState(res.data);
         this.setState({gotData: true});
         setTimeout(() => this.forceUpdate(), 0);
       })
       .catch(console.log);
+  }
+  genGraphData() {
+    const data = []
+    const points = 10 + Math.round(Math.random() * 40)
+    const range = 20 + Math.round(Math.random() * 60)
+    for (let i = 0; i < points; i++)
+      data.push({
+        x: i,
+        y: 10 + i + Math.round(Math.random() * (range / 2)  - range)
+      })
+    return data
   }
   componentDidMount() {
     if (!this.state.gotData)
@@ -149,13 +169,20 @@ class ManagersPage extends Component {
         width: "90px",
         type: "unsortable",
         tooltip: "Assets Under Management in the last 6 month"
-      },
-      {
-        property: "apply",
-        width: "135px",
-        type: "unsortable",
-      },
+      }
     ];
+    if (this.props.user === 0)
+      sortableHeader.push({
+          property: "apply",
+          width: "135px",
+          type: "unsortable",
+        })
+    else
+      sortableHeader.push({
+          property: "details",
+          width: "135px",
+          type: "unsortable",
+        })
     if (this.props.user === 3) { // user -- company
       sortableHeader.pop();
       if (this.props.currentPage === 'company-managers')
@@ -206,13 +233,18 @@ class ManagersPage extends Component {
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
-        aum6: <img src="/graph.png" className="graph" />,
-        apply: <div className="no-margin" onClick={() => this.applyManager(manager.id)}>
+        aum6: <AreaChart
+            margin={{top: 0, right: 0, bottom: 0, left: 0}}
+            width={80}
+            height={20}
+            data={[this.genGraphData()]}
+          />,
+        apply: <div className="no-margin" onClick={() => this.applyManager(manager._id)}>
             <button className="big-blue-button">
               APPLY NOW
             </button>
           </div>,
-        invite: <Link to={"/invite-manager/" + manager.id} className="no-margin">
+        invite: <Link to={"/participating/" + manager._id} className="no-margin">
             <button className="big-blue-button">
               INVITE NOW
             </button>
@@ -220,6 +252,11 @@ class ManagersPage extends Component {
         chat: <Link to={"/chat/" + manager.user} className="no-margin">
             <button className="big-blue-button">
               Chat
+            </button>
+          </Link>,
+        details: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin">
+            <button className="big-blue-button">
+              Details
             </button>
           </Link>
       };
@@ -233,12 +270,14 @@ class ManagersPage extends Component {
           </div>
         </article>
         <div className="container">
-            <div className="advisors">
+          <div className="row">
+            {(this.props.user !== 1 && this.props.user !== 3) ? <div className="advisors">
+              <div className="row">
                 <span>Sort by</span>
                 <Select
                   value={this.state.filter}
                   options={filters.map(filter => filter.link)}
-                  setValue={(value) => this.setState({filter: value})}
+                  setValue={(value) => {this.setState({filter: value}); setTimeout(() => this.load(), 0)}}
                   width="135px"
                 />
               <br />
@@ -247,7 +286,7 @@ class ManagersPage extends Component {
                   Invest on Autopilot
                 </Link>
               </div>
-            </div>
+            </div> : ''}
             <div className="card-3">
               <div className="img" />
               <span>Total AUM, min $</span>
@@ -288,8 +327,8 @@ class ManagersPage extends Component {
             <Sortable2
               filter={row =>
                 row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
-                &&
-                row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
+                //&&
+                //row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
               }
               columns={sortableHeader}
               data={sortableManagers}

@@ -21,23 +21,26 @@ class Avatar extends Component {
     this.state = {
       imageLoaded: true,
       orientation: "landscape",
+      transform: 'translateX(0%) translateY(0%)'
     };
   }
 
-  componentWillReceiveProps() {
-    if (this.props.src) {
-      let avatarComponent = this;
+  componentDidMount() {
+    // if (this.props.src) {
       let image = new Image();
 
       image.src = " ";
       image.onload = () => {
-        avatarComponent.setState({
+        const landscape = image.width > image.height
+        console.log(image.width, image.height)
+        this.setState({
           imageLoaded: true,
-          orientation: (image.width > image.height ? "landscape" : "portrait"),
+          orientation: landscape ? "landscape" : "portrait",
+          transform: `translate${landscape ? 'X' : 'Y'}(-${(landscape ? (image.width / image.height) : (image.height / image.width)) * 10}%)`
         });
       };
       image.src = this.props.src;
-    }
+    // }
   }
 
   render() {
@@ -59,6 +62,7 @@ class Avatar extends Component {
         {
           this.props.src ?
             <img
+              style={{transform: this.state.transform}}
               src={this.props.src}
               className={this.state.imageLoaded ?
                 ("loaded " + this.state.orientation)

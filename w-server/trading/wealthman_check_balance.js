@@ -1,5 +1,6 @@
-var config = require('./connection_settings')
-var web3 = config.web3
+const configs = require('../configs')
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
   try {
     var portfolioAbi = require('./portfolio_abi.js');

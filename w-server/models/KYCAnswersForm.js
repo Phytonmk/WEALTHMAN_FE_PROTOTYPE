@@ -2,8 +2,7 @@
 const mongoose = require('mongoose');
 
 const KYCAnswersFormScheme = mongoose.Schema({
-  id: Number,
-  request: Number,
+  request: String,
   answers: Object,
   date: {type: Date, default: Date.now}
 });

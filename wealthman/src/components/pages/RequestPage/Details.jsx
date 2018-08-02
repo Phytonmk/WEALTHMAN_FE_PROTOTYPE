@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import myDate from '../../myDate.jsx';
+import LevDate from '../../LevDate.jsx';
 
 import { api } from '../../helpers';
 
@@ -15,7 +15,7 @@ class Header extends Component {
   componentWillMount() {
     if (this.props.request)
       api.post('portfolio/load', {
-        request: this.props.request.id,
+        request: this.props.request._id,
         state: 'active'
       })
         .then((res) => {

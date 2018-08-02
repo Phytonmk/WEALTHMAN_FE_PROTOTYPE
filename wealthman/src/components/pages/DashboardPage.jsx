@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { api, setPage, setCurrency, previousPage } from '../helpers';
+import { api, setPage, getCookie, setCurrency, previousPage, niceNumber } from '../helpers';
 // import Sortable from '../Sortable'
 
 import InvstorPortfolioHeader from '../dashboards/InvstorPortfolioHeader'
@@ -18,167 +18,121 @@ class DashboardPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      clients: '?',
+      clientsApplications: '?',
+      profileViews: '?',
+      aum: {
+        value: 0,
+        earning: 0,
+        change: 0,
+        grpahic: []
+      },
+      portfolios: [],
     }
+  }
+  componentWillMount() {
+    let usertype = ''
+    switch (getCookie('usertype') * 1) {
+      case 0:
+        usertype = 'investor'
+        break
+      case 1:
+        usertype = 'manager'
+        break
+      case 3:
+        usertype = 'company'
+        break
+    }
+    api.get('my-dashboard')
+      .then((res) => {
+        console.log(res.data)
+        this.setState(res.data)
+      }).catch(console.log)
   }
   render() {
     return <div className="container">
-      <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} />
+      {getCookie('usertype') == 0 ? <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} /> : ''}
+      {getCookie('usertype') == 1 ? <h1>Dashboard Manager</h1> : ''}
       <Cards
         whiteBg={true}
         cards={[{
-          title: '10',
-          subtitle: 'Portfolios (hardcode)'
+          title: this.state.clients,
+          subtitle: 'Clients'
         },{
-          title: '10',
-          subtitle: 'New requests'
+          title: this.state.clientsApplications,
+          subtitle: 'Client applications'
         },{
-          title: '10',
-          subtitle: 'Some stuff'
-        }]}
-      />
-      <Cards
-        cards={[{
-          title: '?',
-          subtitle: 'Primary reason for investing'
-        },{
-          title: '?',
-          subtitle: 'Balance portfolio'
-        },{
-          title: '? %',
-          subtitle: 'Change (24h)'
-        },{
-          title: '? $',
-          subtitle: 'Total earnings'
+          title: this.state.profileViews,
+          subtitle: 'Profile views'
         }]}
       />
       {/*<SmartContract address={this.state.requestData.portfolio.smart_contract} />*/}
       <Graphics
         pie={{
-          title: 'Portfolios',
+          title: 'Current portfolios allocation',
           datasets: [{
-            title: 'All time',
-            inCircleValue: '10', // if not specified calculates as a sum of all values of the dataset
             inCircleTitle: 'All',
-            data: [{
-              header: 'Active',
-              value: 25
-            },{
-              header: 'Archived',
-              value: 75
-            },{
-              header: 'In progress',
-              value: 85
-            }]
-          }, {
-            title: 'Yesterday',
-            inCircleTitle: 'All',
-            data: [{
-              header: 'Active',
-              value: 25
-            },{
-              header: 'Archived',
-              value: 75
-            },{
-              header: 'In progress',
-              value: 85
-            },{
-              header: 'Bumped',
-              value: 50
-            }]
+            data: this.state.portfolios.length === 0 ? [] :
+              [{
+                header: 'Active',
+                value: this.state.portfolios[this.state.portfolios.length - 1].active
+              },{
+                header: 'Archived',
+                value: this.state.portfolios[this.state.portfolios.length - 1].archived
+              },{
+                header: 'In progress',
+                value: this.state.portfolios[this.state.portfolios.length - 1].inProgress
+              }]
           }]
         }}
         main={{
-          title: 'Portfolio value (all graphics hardcoded)',
+          title: 'Portfolios allocation history',
+          onOneGraphic: true,
           datasets: [{
-            title: 'Jun 22 - Jul 16, 2018',
-            data: [{
-              value: 1,
-              title: '1-Jul-15'
-            },{
-              value: 2,
-              title: '2-Jul-15'
-            },{
-              value: 3,
-              title: '3-Jul-15'
-            },{
-              value: 8,
-              title: '4-Jul-15'
-            },{
-              value: 5,
-              title: '5-Jul-15'
-            },{
-              value: 3,
-              title: '6-Jul-15'
-            },{
-              value: 7,
-              title: '7-Jul-15'
-            },]
-          },{
-            title: 'May 29 - Jun 22, 2018',
-            data: [{
-              value: 11,
-              title: '1-Jun-15'
-            },{
-              value: 2,
-              title: '2-Jun-15'
-            },{
-              value: 13,
-              title: '3-Jun-15'
-            },{
-              value: 18,
-              title: '4-Jun-15'
-            },{
-              value: 5,
-              title: '5-Jun-15'
-            },{
-              value: 13,
-              title: '6-Jun-15'
-            },{
-              value: 17,
-              title: '7-Jun-15'
-            },]
+            data: this.state.portfolios.map((portfolio, i) => {
+              return {
+                value: portfolio.active,
+                title: i + '-Jun-15'
+              }
+            })
+          }, {
+            data: this.state.portfolios.map((portfolio, i) => {
+              return {
+                value: portfolio.archived,
+                title: i + '-Jun-15'
+              }
+            })
+          }, {
+            data: this.state.portfolios.map((portfolio, i) => {
+              return {
+                value: portfolio.inProgress,
+                title: i + '-Jun-15'
+              }
+            })
           }]
         }}
         additional={{
           title: 'Aum Dinamics',
           subheaders: [{
-            value: '100B $',
+            value: niceNumber(this.state.aum.value) + ' $',
             title: 'AUM',
             state: 'normal'
           },{
-            value: '13B $',
+            value: niceNumber(this.state.aum.earning) + ' $',
             title: 'Earning',
-            state: 'bad'
           },{
-            value: '13.1%',
+            value: this.state.aum.change + '%',
             title: 'Change (1y)',
-            state: 'good'
+            state: this.state.aum.change < 0 ? 'bad' : 'good'
           }],
           datasets: [{
             title: 'Jun 22 - Jul 16, 2018',
-            data: [{
-              value: 1,
-              title: '1-Jun-15'
-            },{
-              value: 2,
-              title: '2-Jun-15'
-            },{
-              value: 3,
-              title: '3-Jun-15'
-            },{
-              value: 8,
-              title: '4-Jun-15'
-            },{
-              value: 5,
-              title: '5-Jun-15'
-            },{
-              value: 3,
-              title: '6-Jun-15'
-            },{
-              value: 7,
-              title: '7-Jun-15'
-            },]
+            data: this.state.aum.grpahic.map((chunk) => {
+              return {
+                value: chunk.y,
+                title: chunk.x + '-Jun-15'
+              }
+            })
           }]
         }}
       />

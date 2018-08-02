@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 var investorScheme = mongoose.Schema({
-  id: Number,
   img: String,
-  user: Number,
+  user: String,
   name: String,
   surname : String,
   riskprofile: Number,
@@ -13,7 +12,7 @@ var investorScheme = mongoose.Schema({
   country: String,
   adress: String,
   wallet_address: String,
-  registred: {type: Date, default: Date.now}
+  registered: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('investor', investorScheme);

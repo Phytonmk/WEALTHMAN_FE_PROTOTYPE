@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import { api, setPage, setCurrency } from '../helpers';
+
 import QRCode from 'qrcode.react';
+import {AreaChart} from 'react-easy-chart';
 
 import Subheader from './../Subheader';
 import Select from './../Select';
@@ -14,8 +16,8 @@ class PortfoliosPage extends Component {
     super(props);
     this.state = {
       gotData: false,
-      portfolios: [],
-      requests: [],
+      portfolios: [{}],
+      requests: [{}],
       currentCurrencyPrices: [],
       currentCurrency: 'USD',
       currentTab: 0
@@ -24,10 +26,12 @@ class PortfoliosPage extends Component {
   componentWillMount() {
     api.post('portfolios/load')
       .then((res) => {
+        console.log(res.data)
         if (res.data.exists)
           this.setState({gotData: true, portfolios: res.data.portfolios, requests: res.data.requests});
         else
           this.setState({gotData: true, portfolios: [], requests: []});
+        setTimeout(() => this.forceUpdate(), 0)
       })
       .catch(console.log);
     api.get('stocks')
@@ -35,6 +39,17 @@ class PortfoliosPage extends Component {
         this.setState({currentCurrencyPrices: res.data.map(stock => {return {name: stock.title, price: stock.last_price}})});
       })
       .catch(console.log);
+  }
+  genGraphData() {
+    const data = []
+    const points = 10 + Math.round(Math.random() * 40)
+    const range = 20 + Math.round(Math.random() * 60)
+    for (let i = 0; i < points; i++)
+      data.push({
+        x: i,
+        y: 10 + i + Math.round(Math.random() * (range / 2)  - range)
+      })
+    return data
   }
   render() {
     if (!this.state.gotData)
@@ -98,25 +113,39 @@ class PortfoliosPage extends Component {
         type: "unsortable"
       }
     ];
+
     let portfolios = this.state.portfolios.map((portfolio, i) => {
-      let request = this.state.requests.find(request => request.id == portfolio.request) || {};
+      let request = this.state.requests.find(request => request._id == portfolio.request) || {};
       let price = 1;
       if (this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
         price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       const value = (portfolio.value * price / (currentCurrency.price !== 0 ? currentCurrency.price : 1)).toFixed(3);
+      
+      const profitGraph =  <AreaChart
+        margin={{top: 0, right: 0, bottom: 0, left: 0}}
+        width={80}
+        height={20}
+        data={[this.genGraphData()]}
+      />
+      const costGraph =  <AreaChart
+        margin={{top: 0, right: 0, bottom: 0, left: 0}}
+        width={80}
+        height={20}
+        data={[this.genGraphData()]}
+      />
       return {
-        id: portfolio.id,
-        portfolio: <b>{portfolio.id}</b>,
+        id: portfolio._id,
+        portfolio: <b>{portfolio._id}</b>,
         smart:  <div className="smart-contract-comact">{portfolio.smart_contract}</div>,
         instrument: request.service || '',
-        profit: <img src="graph.png" className="graph small-graph" />,
+        profit: profitGraph,
         value: (value != 'NaN' ? value : '-') + " " + currentCurrency.name,
         status: request.status,
-        cost: <img src="graph.png" className="graph small-graph" />,//(portfolio.cost * price / currentCurrency.price).toFixed(3) + " " + currentCurrency.name,
-        link: 'request/' + request.id
+        cost: costGraph,
+        link: 'request/' + request._id
       };
     });
-
+    console.log(portfolios)
     const subheaders = [
         // {
         //   header: "Proposed (initial)",
@@ -137,11 +166,13 @@ class PortfoliosPage extends Component {
           header: "In proggress",
         },
         {
-          header: "Statistics",
+          header: "All",
         },
       ];
 
     const filter = (row) => {
+      if (subheaders[this.state.currentTab].header === 'All')
+        return true
       if (subheaders[this.state.currentTab].header === 'Active' && row.status === 'active')
         return true;
       else if (subheaders[this.state.currentTab].header === 'Archived' && row.status === 'archived')

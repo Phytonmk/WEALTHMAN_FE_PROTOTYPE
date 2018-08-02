@@ -1,9 +1,10 @@
-const Web3 = require('web3');
-const Tx = require('ethereumjs-tx');
+const Web3 = require('web3')
+const Tx = require('ethereumjs-tx')
+const configs = require('../configs')
 const exchangerAbi = require('./exchanger_abi.js');
-const web3 = new  Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/5c95df77f8994b7bb81f9d7dcf1dc252'))
-const admin = "0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D";
-const exchanger_adress = "0x2318fdfaa7182875e9278cd3ffe01435afe27726";
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
+const exchanger_adress = configs.exchangerAddress
+const admin = configs.adminAddress
 module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
   var exchanger_contract = new web3.eth.Contract(exchangerAbi, exchanger_adress);
   exchanger_contract.methods.isPortfolio(portfolio_adress).call().then(function(receipt){

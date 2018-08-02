@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+
 import Dropdown from '../../Dropdown.jsx';
+import { api } from '../../helpers'
 
 class RiskProfile extends Component {
   constructor(props) {
@@ -16,7 +18,22 @@ class RiskProfile extends Component {
       country: "",
     }
   }
-
+  saveData() {
+    api.post('personal-data/save', this.state)
+      .then(() => {alert('Saved')})
+      .catch(console.log);
+  }
+  componentDidMount() {
+    api.post('personal-data/load')
+      .then((res) => {
+        const data = res.data.personalData
+        delete data._id
+        delete data._v
+        console.log(data)
+        this.setState(data)
+      })
+      .catch(console.log)
+  }
   render() {
     return (
       <div>
@@ -41,7 +58,7 @@ class RiskProfile extends Component {
             setValue={(value) => this.setState({nationality: value})}
             width="320px"
           />
-          <button className="big-blue-button save">
+          <button onClick={() => this.saveData()} className="big-blue-button save">
             Save changes
           </button>
         </div>
@@ -80,7 +97,7 @@ class RiskProfile extends Component {
             setValue={(value) => this.setState({country: value})}
             width="320px"
           />
-          <button className="big-blue-button save">
+          <button onClick={() => this.saveData()} className="big-blue-button save">
             Save changes
           </button>
         </div>

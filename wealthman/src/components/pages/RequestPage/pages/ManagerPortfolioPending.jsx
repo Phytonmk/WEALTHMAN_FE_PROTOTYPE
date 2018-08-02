@@ -13,10 +13,10 @@ export default class ManagerPortfolioPending extends Component {
       <Cards
         whiteBg={true}
         cards={[{
-          title: <Link to={'/decline/' + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
+          title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
           state: 'bad'
         }, {
-          title: <Link to={"/portfoliocreation/" + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Create portfolio</Link>,
+          title: <Link to={"/portfoliocreation/" + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Create portfolio</Link>,
           state: 'good'
         }]}
       />

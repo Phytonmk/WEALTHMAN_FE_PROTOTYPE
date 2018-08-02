@@ -1,4 +1,4 @@
-var exchanger_abi = [
+module.exports = [
 	{
 		"anonymous": false,
 		"inputs": [
@@ -354,4 +354,3 @@ var exchanger_abi = [
 		"type": "function"
 	}
 ]
-module.exports = exchanger_abi;

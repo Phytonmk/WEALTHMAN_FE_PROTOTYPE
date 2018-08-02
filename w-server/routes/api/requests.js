@@ -5,8 +5,11 @@ const Company = require('../../models/Company');
 const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 const KYCAnswersForm = require('../../models/KYCAnswersForm');
+const Notification = require('../../models/Notification');
 
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
+
+const notify = require('../../helpers/notifications')
 
 module.exports = (app) => {
   app.post('/api/request', async (req, res, next) => {
@@ -25,20 +28,20 @@ module.exports = (app) => {
     let managerType;
     let managerId;
     let services = null;
-    if (req.body.manager) {
-      const manager = await Manager.findOne({id: req.body.manager});
+    if (req.body.manager !== undefined) {
+      const manager = await Manager.findById(req.body.manager);
       if (manager === null) {
-        res.status(403);
+        res.status(404);
         res.end('');
         return;
       }
       managerType = 'manager';
       managerId = manager.id;
       services = manager.services;
-    } else if (req.body.company) {
-      const company = await Company.findOne({id: req.body.company});
+    } else if (req.body.company !== undefined) {
+      const company = await Company.findById(req.body.company);
       if (company === null) {
-        res.status(403);
+        res.status(404);
         res.end('');
         return;
       }
@@ -46,7 +49,7 @@ module.exports = (app) => {
       managerId = company.id;
       services = company.services;
     } else {
-      res.status(403);
+      res.status(404);
       res.end('');
       return;
     }
@@ -63,9 +66,16 @@ module.exports = (app) => {
 
     const selectedService = services.find(service => service.type === servicesList.indexOf(req.body.service))
 
-    const requestID = await Request.countDocuments({});
+    let investing_reason = '?'
+    
+    for (let kycAnswer of req.body.kycAnswers) {
+      if (kycAnswer.question === 'What is your primary reason for investing?') {
+        investing_reason = kycAnswer.answer
+        break
+      }
+    }
+
     const request = new Request({
-      id: requestID,
       investor: investor.id,
       [managerType]: managerId,
       value: req.body.value,
@@ -81,6 +91,7 @@ module.exports = (app) => {
       managment_fee: selectedService.managment_fee,
       perfomance_fee: selectedService.perfomance_fee,
       front_fee: selectedService.front_fee,
+      investing_reason
     });
 
 
@@ -89,17 +100,15 @@ module.exports = (app) => {
 
     // console.log('riskprofile', riskprofile)
 
-    const kycAnswersFormId = await KYCAnswersForm.countDocuments({});
     const kycAnswersForm = new KYCAnswersForm({
-      id: kycAnswersFormId,
       request: request.id,
-      answers: req.body.answers
+      answers: req.body.kycAnswers
     })
-    await kycAnswersForm.save();
     investor.set({riskprofile});
+    await kycAnswersForm.save();
     await investor.save();
-    res.status(200);
     await request.save();
+    await notify({request: request._id, title: 'Request initiated by investor'})
     res.status(200);
     res.end();
   });
@@ -115,15 +124,15 @@ module.exports = (app) => {
         res.status(err);
         res.end();
       });
-    const request = await Request.findOne(Object.assign(requestQuery, {id: req.params.id}));
+    const request = await Request.findOne(Object.assign(requestQuery, {_id: req.params.id}));
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const investor = await Investor.findOne({id: request.investor});
-    const manager = await Manager.findOne({id: request.manager});
-    const company = await Company.findOne({id: request.company});
+    const investor = await Investor.findById(request.investor);
+    const manager = await Manager.findById(request.manager);
+    const company = await Company.findById(request.company);
     const portfolio = await Portfolio.findOne({request: request.id});
     res.send({request, investor, manager, company, portfolio});
     res.status(200);
@@ -160,7 +169,7 @@ module.exports = (app) => {
         res.status(err);
         res.end();
       });
-    const request = await Request.findOne(Object.assign(requestQuery, {id: req.body.request}));
+    const request = await Request.findOne(Object.assign(requestQuery, {_id: req.body.request}));
     if (request === null) {
       res.status(404);
       res.end('');
@@ -168,6 +177,7 @@ module.exports = (app) => {
     }
     request.set({status: 'declined'});
     await request.save();
+    await notify({request: request._id, title: 'Request declined'})
     res.status(200);
     res.end();
   });
@@ -184,7 +194,7 @@ module.exports = (app) => {
   //     res.status(403);
   //     res.end('');
   //   }
-  //   const request = await Request.findOne({manager: manager.id, id: req.params.id});
+  //   const request = await Request.findOne({manager: manager.id, _id: req.params.id});
   //   if (request === null) {
   //     res.status(404);
   //     res.end('');
@@ -214,13 +224,13 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({company: company.id, id: req.body.request});
+    const request = await Request.findOne({company: company.id, _id: req.body.request});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const manager = await Manager.findOne({company: company.id, id: req.body.manager});
+    const manager = await Manager.findOne({company: company.id, _id: req.body.manager});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -228,8 +238,13 @@ module.exports = (app) => {
     }
     request.set({company: null, manager: manager.id});
     await request.save();
+    await notify({request: request._id, title: `Request relayed to manager ${(manager.name || '')} ${(manager.surname || '')}`})
     res.status(200);
     res.end();
+  });
+  app.get('/api/request/history/:request', async (req, res, next) => {
+    const history = await Notification.find({request: req.params.request});
+    res.send(history)
   });
   //
 }

@@ -9,8 +9,8 @@ import { api, setPage } from '../../../helpers'
 export default class ManagerInvitingPending extends Component {
   acceptInviting() {
     api.post('company/accept-inviting', {
-      company: this.props.requestData.company.id,
-      request: this.props.requestData.request.id
+      company: this.props.requestData.company._id,
+      request: this.props.requestData.request._id
     })
       .then(() => {
         setPage('account');
@@ -28,7 +28,7 @@ export default class ManagerInvitingPending extends Component {
       <Cards
         whiteBg={true}
         cards={[{
-          title: <Link to={'/decline/' + this.props.requestData.request.id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
+          title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
           state: 'bad'
         }, {
           title: <Link to={"#"} onClick={() => this.acceptInviting()} style={{color: 'inherit', textDecoration: 'none'}}>Accept inviting</Link>,

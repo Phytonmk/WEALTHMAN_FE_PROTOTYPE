@@ -6,10 +6,10 @@ import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
-import myDate from '../myDate.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
-const requests = [{}]
+const requests = []
 
 class RequestsPage extends Component {
   constructor(props) {
@@ -134,21 +134,21 @@ class RequestsPage extends Component {
       if (request.type === 'portfolio') {
         if (this.props.user === 0)
           user = request.company ?
-          this.state.companies.find(i => i.id == request.company) || {} :
-          this.state.managers.find(i => i.id == request.manager) || {}
+          this.state.companies.find(i => i._id == request.company) || {} :
+          this.state.managers.find(i => i._id == request.manager) || {}
         else if (this.props.user === 1)
           user = request.company ?
-          this.state.companies.find(i => i.id == request.company) || {} :
-          this.state.investors.find(i => i.id == request.investor) || {}
+          this.state.companies.find(i => i._id == request.company) || {} :
+          this.state.investors.find(i => i._id == request.investor) || {}
         else if (this.props.user === 3)
-          user = this.state.investors.find(i => i.id == request.investor) || {}
+          user = this.state.investors.find(i => i._id == request.investor) || {}
       } else if (request.type === 'inviting') {
         if (this.props.user === 1)
-          user = this.state.companies.find(i => i.id == request.company) || {}
+          user = this.state.companies.find(i => i._id == request.company) || {}
         else if (this.props.user === 3)
-          user = this.state.managers.find(i => i.id == request.manager) || {};
+          user = this.state.managers.find(i => i._id == request.manager) || {};
       }
-      let date = new myDate(request.date);
+      let date = new LevDate(request.date);
       let value = {render: '', value: 0};
       if (request.value)
         value = {
@@ -178,10 +178,10 @@ class RequestsPage extends Component {
         break;
       }
       return {
-        id: request.id,
+        id: request._id,
         img: <Avatar src={user.img ? api.imgUrl(user.img) : ""} size="40px" />,
         name: {
-          render: <Link to={userLink + user.id} className="no-margin no-link-style">
+          render: <Link to={userLink + user._id} className="no-margin no-link-style">
             {user.name || user.company_name || '' + " " + user.surname || ''}
           </Link>,
           value: user.name || '' + " " + user.surname || ''
@@ -206,7 +206,7 @@ class RequestsPage extends Component {
           CHAT
         </button>,
         details:
-        <Link to={"request/" + request.id}>
+        <Link to={"request/" + request._id}>
           <button className="big-blue-button">
             DETAILS
           </button>
@@ -237,6 +237,7 @@ class RequestsPage extends Component {
             data={sortableRequests}
             navigation={true}
             maxShown={4}
+            initialSortBy={'date'}
           />
         </div>
       </div>

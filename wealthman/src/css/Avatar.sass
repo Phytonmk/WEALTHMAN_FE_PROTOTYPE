@@ -1,9 +1,6 @@
 .avatar
   overflow: hidden
   position: relative
-  display: flex
-  justify-content: center
-  align-items: center
   .default-avatar-user,
   .default-avatar-company,
   img
@@ -25,7 +22,7 @@
     height: 100%
   img
     opacity: 0
-    transition: opacity 1s
+    transition: opacity 1s, translateX 0.3s, translateY 0.3s
     &.loaded
       opacity: 1
     &.landscape

@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 
 const AnswersFormScheme = mongoose.Schema({
-  id: Number,
-  user: Number,
+  id: String,
+  user: String,
   answers: Object,
   date: {type: Date, default: Date.now}
 });

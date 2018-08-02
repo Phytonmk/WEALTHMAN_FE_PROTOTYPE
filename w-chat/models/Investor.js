@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 var investorScheme = mongoose.Schema({
   img: String,
-  user: Number,
+  user: String,
   name: String,
   surname : String,
 });

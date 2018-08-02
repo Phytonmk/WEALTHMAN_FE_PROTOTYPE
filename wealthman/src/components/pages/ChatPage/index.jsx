@@ -10,6 +10,7 @@ import { browserHistory } from 'react-router';
 import { default as chatsApi } from './chatsApi'
 import ChatPreview from './ChatPreview';
 import Message from './Message';
+import Avatar from '../../Avatar'
 
 let lastSelectedChat = undefined;
 class ChatPage extends Component {
@@ -91,7 +92,7 @@ class ChatPage extends Component {
         .catch(console.log);
   }
   loadChats() {
-    this.loadMessages(this.props.match.params.chat * 1);
+    this.loadMessages(this.props.match.params.chat);
     chatsApi.chatsList()
       .then(res => {
         console.log(res.data);
@@ -122,6 +123,7 @@ class ChatPage extends Component {
     chatsApi.connect()
       .then((socket) => {
         socket.on('message', msg => {
+          console.log(msg)
           if (msg.newMessage) {
             this.updateStateWithNewMessage(msg);
           }
@@ -139,7 +141,7 @@ class ChatPage extends Component {
   }
   sendMessage() {
     let msgText = this.state.typingMsg;
-    let toId = this.props.match.params.chat * 1;
+    let toId = this.props.match.params.chat;
     let toName = this.state.currentChat.name;
     let toPic = this.state.currentChat.pic;
     chatsApi.sendMessage(toId, msgText)
@@ -151,8 +153,8 @@ class ChatPage extends Component {
   }
   render() {
     if (lastSelectedChat != this.props.match.params.chat) {
-      lastSelectedChat = this.props.match.params.chat * 1;
-      this.loadMessages(this.props.match.params.chat * 1);
+      lastSelectedChat = this.props.match.params.chat;
+      this.loadMessages(this.props.match.params.chat);
     }
     return (
       <div>
@@ -173,13 +175,14 @@ class ChatPage extends Component {
                 lastMessageFromYou={chat.lastMessageFromYou}
                 lastMessage={chat.lastMessage}
                 unread={chat.unread}
+                company={chat.company}
               />)}
             </div>
           </div>
           <div className="chats-right-column">
             <div className="chats-current-compainion">
               {this.props.match.params.chat ? <div><div className="chat-pic">
-                <img src={helpersApi.imgUrl(this.state.currentChat.companionPic)} />
+                <Avatar src={helpersApi.imgUrl(this.state.currentChat.companionPic)} />
               </div>
               <div className="chats-current-compainion-name">
                 {this.state.currentChat.companionName}

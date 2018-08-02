@@ -1,12 +1,13 @@
+// module.exports = () => new Promise((resolve, reject) => setTimeout(resolve, 60 * 20 * 1000))
 const Binance = require('node-binance-api');
 const Order = require('../../models/Order');
-const connection_settings = require('../../trading/connection_settings');
+const configs = require('../../configs');
 
 binance = new Binance().options({
-  APIKEY: connection_settings.binanceApi.key,
-  APISECRET: connection_settings.binanceApi.secret,
+  APIKEY: configs.binanceApi.key,
+  APISECRET: configs.binanceApi.secret,
   useServerTime: true,
-  test:false
+  test: !!configs.productionMode
 });
 
 const marketBuy = (ticker, quantity, falgs) => new Promise((resolve, reject) => {
@@ -31,14 +32,10 @@ const flags = { type: 'MARKET', newOrderRespType: 'FULL' };
 
 let workingProcess = false;
 
-const work = async () => {
-  if (workingProcess)
-    return false;
-  workingProcess = true;
-
+module.exports = () => new Promise(async (resolve, reject) => {
   const orders = await Order.find({$or: [{status: 'created'}, {status: 'token bouthg'}]});
   for (let order of orders) {
-    const quantity = 1; // update it
+    const quantity = 90; // update it
     if (order.status === 'created') {
       const ticker = order.token_name + 'ETH';
       const buyingResult = await marketBuy(ticker, quantity, flags)
@@ -71,11 +68,4 @@ const work = async () => {
       }
     }
   }
-
-  workingProcess = false;
-}
-
-
-
-work();
-let interval = setInterval(work, 1000 * 60 * 3);
+})

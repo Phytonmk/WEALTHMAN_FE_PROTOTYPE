@@ -4,9 +4,8 @@ const mongoose = require('mongoose');
 const ServiceSchema = require('../schemas/ServiceSchema');
 
 const CompanyScheme = mongoose.Schema({
-  id: Number,
   img: String,
-  user: Number,
+  user: String,
   company: String,
   company_name: String,
   company_link: String,
@@ -19,7 +18,8 @@ const CompanyScheme = mongoose.Schema({
   fb: String,
   linkedin: String,
   about: String,
-  services: [ServiceSchema]
+  services: [ServiceSchema],
+  registered: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Company', CompanyScheme);

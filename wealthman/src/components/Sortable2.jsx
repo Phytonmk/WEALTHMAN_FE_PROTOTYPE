@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import myDate from './myDate.jsx';
+import LevDate from './LevDate.jsx';
 import '../css/Sortable2.sass';
 
 {/*
@@ -66,27 +66,23 @@ class Sortable2 extends Component {
       rowProperties: undefined,
     }
   }
-
   componentWillMount() {
     //check for errors
-    if (!(this.props.columns && this.props.columns.length > 0))
-      this.setState({error: this.state.error + "no columns; "});
-    if (!(this.props.data && this.props.data.length > 0))
-      this.setState({error: this.state.error + "no data; "});
-    else {
-      //FOR DEBBAGING PURPOSES: comment this when finished
-      this.props.columns.forEach(column => {
-        if (!this.props.data[0].hasOwnProperty(column.property))
-          this.setState({error: this.state.error + "Error: rows doesn\'t have \"" + column.property + "\" property; "});
-      });
-      if (!this.props.data[0].hasOwnProperty("id"))
-        this.setState({error: this.state.error + "data objects doesn't have id; "});
-      if (this.props.linkProperty && !this.props.data[0].hasOwnProperty(this.props.linkProperty))
-        this.setState({error: this.state.error + "data objects doesn't have \"" + this.props.linkProperty + "\"property; "});
-    }
+    // if (!(this.props.columns && this.props.columns.length > 0))
+    //   this.setState({error: this.state.error + "no columns; "});
+    // else {
+    //   //FOR DEBBAGING PURPOSES: comment this when finished
+    //   this.props.columns.forEach(column => {
+    //     if (!this.props.data[0].hasOwnProperty(column.property))
+    //       this.setState({error: this.state.error + "Error: rows doesn\'t have \"" + column.property + "\" property; "});
+    //   });
+    //   if (!this.props.data[0].hasOwnProperty("id"))
+    //     this.setState({error: this.state.error + "data objects doesn't have id; "});
+    //   if (this.props.linkProperty && !this.props.data[0].hasOwnProperty(this.props.linkProperty))
+    //     this.setState({error: this.state.error + "data objects doesn't have \"" + this.props.linkProperty + "\"property; "});
+    // }
     if (this.state.error != "")
       return;
-
     //set width for columns
     this.setState({
       rowProperties: this.props.columns.map(column => {
@@ -98,7 +94,7 @@ class Sortable2 extends Component {
     });
     //set sortBy
     if (this.props.initialSortBy)
-      this.setState({sortBy: this.props.sortBy});
+      this.setState({sortBy: this.props.initialSortBy});
     else {
       let firstSortableColumn = this.props.columns.find(column => column.type != "unsortable");
 
@@ -124,7 +120,7 @@ class Sortable2 extends Component {
       <ul className="listings">
         {
           this.props.data
-          .filter(this.props.filter ? this.props.filter : i => true)
+          .filter(this.props.filter ? this.props.filter : (i => true))
           .sort((a, b) => {
             let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("value") ?
               a[this.state.sortBy].value : a[this.state.sortBy];
@@ -135,7 +131,7 @@ class Sortable2 extends Component {
               case "number":
                 return this.state.order ? Number(sortableA) - Number(sortableB) : Number(sortableB) - Number(sortableA);
               case "date":
-                let dateA = new myDate(sortableA);
+                let dateA = new LevDate(sortableA);
                 return this.state.order ? dateA.less(sortableB) : !dateA.less(sortableB);
               case "unsortable":
                 return true;
@@ -211,7 +207,7 @@ class Sortable2 extends Component {
   }
 
   renderNavigation() {
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i => true)).length;
 
     if (this.state.maxShown >= length)
       return;
@@ -246,7 +242,7 @@ class Sortable2 extends Component {
   }
 
   renderShowMore() {
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i => true)).length;
 
     if (this.state.offset + this.state.maxShown >= length)
       return;
@@ -261,6 +257,8 @@ class Sortable2 extends Component {
   }
 
   render() {
+    if (!(this.props.data && this.props.data.length > 0))
+      return <p>this list is empty</p>
     if (this.state.error != "")
       return (
         <div className="sortable">

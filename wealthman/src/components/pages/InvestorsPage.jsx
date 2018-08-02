@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import Sortable2 from '../Sortable2.jsx';
 import Select from '../Select.jsx';
 import Search from '../Search.jsx';
-import myDate from '../myDate.jsx';
 import Avatar from '../Avatar.jsx';
+import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 
 class InvestorsPage extends Component {
@@ -21,12 +21,9 @@ class InvestorsPage extends Component {
   componentDidMount() {
     api.post('investors-list')
       .then((res) => {
-        // console.log(res.data);
         this.setState({gotData: true, investors: res.data});
       })
       .catch(console.log);
-    // if (!this.state.gotData)
-    //   this.load();
   }
   render() {
     let sortableHeader = [
@@ -40,6 +37,7 @@ class InvestorsPage extends Component {
         property: "name",
         title: "Investor name",
         width: "156px",
+        type: "unsortable",
       },
       {
         property: "registered",
@@ -65,15 +63,26 @@ class InvestorsPage extends Component {
         property: 'chat',
         width: "105px",
         type: "unsortable",
+      },
+      {
+        property: 'offer',
+        width: "155px",
+        type: "unsortable",
       }
     ];
     let sortableInvestors = this.state.investors.map((investor, i) => {
       const name = (investor.name || '') + " " + (investor.surname || '');
       return {
-        id: investor.id,
+        id: investor._id,
         img: <Avatar src={investor.img ? api.imgUrl(investor.img) : ""} size="40px" />,
-        name: (investor.name || '') + ' ' + (investor.surname || ''),
-        registered: new myDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
+        name: {
+          render: <Link to={"/investor/" + investor._id} className="no-margin">
+            {(investor.name || '') + ' ' + (investor.surname || '')}
+          </Link>,
+          toLowerCase: () => (investor.name || '') + ' ' + (investor.surname || ''),
+          value: (investor.name || '') + ' ' + (investor.surname || '')
+        },
+        registered: new LevDate(investor.registred || (Date.now() - 1000 * 60 * 600)).niceTime(),
         aum: {
           render: Math.ceil(Math.random() * 100) + "$",
           value: Math.ceil(Math.random() * 100)
@@ -82,6 +91,11 @@ class InvestorsPage extends Component {
         chat: <Link to={"/chat/" + investor.user} className="no-margin">
             <button className="big-blue-button">
               Chat
+            </button>
+          </Link>,
+        offer: <Link to={"/special-offer/" + investor._id} className="no-margin">
+            <button className="big-blue-button">
+              Offer
             </button>
           </Link>
       };
