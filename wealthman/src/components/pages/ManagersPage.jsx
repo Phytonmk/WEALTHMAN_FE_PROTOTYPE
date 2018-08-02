@@ -204,8 +204,8 @@ class ManagersPage extends Component {
         id: manager.id,
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
-          render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager.id}>
-            <b>{name}</b>
+          render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin no-link-style">
+            {name}
           </Link>,
           value: name
         },
@@ -270,9 +270,7 @@ class ManagersPage extends Component {
           </div>
         </article>
         <div className="container">
-          <div className="row">
             {(this.props.user !== 1 && this.props.user !== 3) ? <div className="advisors">
-              <div className="row">
                 <span>Sort by</span>
                 <Select
                   value={this.state.filter}
