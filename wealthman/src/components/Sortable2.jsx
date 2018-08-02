@@ -133,7 +133,6 @@ class Sortable2 extends Component {
 
             switch (this.props.columns.find(column => column.property == this.state.sortBy).type) {
               case "number":
-                // alert(sortableA + sortableB);
                 return this.state.order ? Number(sortableA) - Number(sortableB) : Number(sortableB) - Number(sortableA);
               case "date":
                 let dateA = new myDate(sortableA);

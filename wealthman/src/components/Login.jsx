@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
+import { camelize } from './../helpers'
+
 import '../css/Login.sass';
 
 class Login extends Component {

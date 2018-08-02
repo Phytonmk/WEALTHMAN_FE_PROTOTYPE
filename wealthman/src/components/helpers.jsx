@@ -187,4 +187,11 @@ const previousPage = () => {
   document.location.href = url;
 }
 
+const camelize = (string) => {
+  return string
+  .split(" ")
+  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+  .reduce((a, b) => a + b);
+}
+
 export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage};

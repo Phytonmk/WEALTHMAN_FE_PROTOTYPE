@@ -160,7 +160,6 @@ class SuperPie extends Component {
   }
   render() {
     return  <div className="pie-chart-box">
-              <div className="row">
                 <h2>{this.props.title}</h2>
                 {this.props.datasets.length > 1 ?
                   <Select
@@ -174,7 +173,6 @@ class SuperPie extends Component {
                         }
                     }}
                    />: ''}
-              </div>
               <div className="row">
                 <PieChart
                   size={180}
@@ -213,7 +211,6 @@ class SuperLine extends Component {
   }
   render() {
     return  <div className="box line-chart-box">
-              <div className="row">
                 <h2>{this.props.title}</h2>
                 {this.props.datasets.length > 1 ?
                   <Select
@@ -227,7 +224,6 @@ class SuperLine extends Component {
                         }
                     }}
                    />: ''}
-              </div>
               <div className="row line-chart-subheaders">
                 {this.props.subheaders.map((subheader, i) => <div key={i} className="line-chart-subheader">
                   <h3 style={{color: subheader.state === 'good' ? '#47bf6f' : (subheader.state === 'bad' ? '#f7080a' : '#071e40')}}>{subheader.value}</h3>
@@ -277,7 +273,7 @@ export default class Graphics extends Component {
             datasets={this.props.main.datasets}
           />
         </div>
-        {!this.props.additional ? '' : 
+        {!this.props.additional ? '' :
           <div className="box margin-box">
             <SuperLine
               title={this.props.additional.title}
