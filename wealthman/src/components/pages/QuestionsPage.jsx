@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 
 import ProgressBar3 from './../ProgressBar3';
 import Question from './../Question';
-import { dasherize } from './../helpers';
+import { camelize, dasherize } from './../helpers';
 
 class QuestionsPage extends Component {
   constructor(props) {
     super(props);
-  }
-  render() {
-    let questions = [
+
+    const questions = [
       {
         question: "What is your current age?",
         type: "slider",
+        required: true,
         typeSpecific: {
           from: 18,
           to: 100,
@@ -21,6 +21,7 @@ class QuestionsPage extends Component {
       {
         question: "What of the following best describes your household?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["Single income, no dependents", "Single income, at least one dependent", "Dual income, no dependents", "Dual income, at least one dependent", "Retired or financially independent"]
         }
@@ -28,6 +29,7 @@ class QuestionsPage extends Component {
       {
         question: "What is your primary reason for investing?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["General Savings", "Retirement", "Colledge savings", "Other"]
         }
@@ -35,6 +37,7 @@ class QuestionsPage extends Component {
       {
         question: "What is your annual pre-tax income?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -42,6 +45,7 @@ class QuestionsPage extends Component {
       {
         question: "What is the total value of your cash in liquid investments?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -49,6 +53,7 @@ class QuestionsPage extends Component {
       {
         question: "What is the total amount of money you want to invest?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -56,6 +61,7 @@ class QuestionsPage extends Component {
       {
         question: "When deciding how to invest your money, wich do you care about more?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["Maximizing gains", "Minimizing looses", "Both equally"]
         }
@@ -63,17 +69,27 @@ class QuestionsPage extends Component {
       {
         question: "The global stock market is often volatile. If your entire investement portfolio lost 10% of its value in a month during a market decline, what would you do?",
         type: "radio",
+        required: true,
         typeSpecific: {
           answers: ["Sell all of your investments", "Sell some", "Keep all", "Buy more"]
         }
       },
     ];
-    let questionsToPages = questions.map(question => {
+
+    let stateObj = {};
+    stateObj["questions"] = questions;
+    questions.forEach(question => stateObj[camelize(question.question)] = "");
+    this.state = stateObj;
+  }
+  render() {
+    let questionsToPages = this.state.questions.map(question => {
       return {
+        id: camelize(question.question),
         link: dasherize(question.question),
+        allowContinue: this.state[camelize(question.question)] != "",
         component: <Question
-          value={"A"}
-          setValue={() => {}}
+          value={typeof this.state[camelize(question.question)] == "undefined" ? "" : this.state[camelize(question.question)]}
+          setValue={(value) => {this.setState({[camelize(question.question)]: value})}}
           title={question.question}
           description={question.description}
           type={question.type}

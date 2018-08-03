@@ -58,6 +58,22 @@ class ProgressBar3 extends Component {
         .slice(0, currentPageIndex)
         .reduce((a, b) => a + b);
 
+    let continueButton = currentPage.allowContinue ?
+      <Link to={
+        currentPageIndex + 1 == this.props.pages.length ?
+          this.props.finishLink
+          :
+          this.props.pages[currentPageIndex + 1].link
+        }>
+        <button className="big-blue-button">
+          {currentPageIndex + 1 == this.props.pages.length ? "Finish" : "Continue"}
+        </button>
+      </Link>
+      :
+      <button className="big-grey-button">
+        {currentPageIndex + 1 == this.props.pages.length ? "Finish" : "Continue"}
+      </button>;
+
     return (
       <div className="progress-bar-3">
         <div className="container">
@@ -65,16 +81,7 @@ class ProgressBar3 extends Component {
             <div className="row">
               {currentPage.component}
             </div>
-            <Link to={
-              currentPageIndex + 1 == this.props.pages.length ?
-                this.props.finishLink
-                :
-                this.props.pages[currentPageIndex + 1].link
-            }>
-              <button className="big-blue-button">
-                {currentPageIndex + 1 == this.props.pages.length ? "Finish" : "Continue"}
-              </button>
-            </Link>
+            {continueButton}
           </div>
           <div className="bar-column">
             <div className="grey-bar">

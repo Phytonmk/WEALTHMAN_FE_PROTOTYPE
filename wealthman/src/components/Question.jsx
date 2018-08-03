@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 import TextInput from './TextInput';
+import Textarea from './Textarea';
 import Radio from './Radio';
+import Checkboxes from './Checkboxes';
 import Slider from './Slider';
 
 import '../css/Question.sass';
@@ -17,8 +19,12 @@ class Question extends Component {
     switch(this.props.type) {
       case "text":
         return this.renderText();
+      case "textarea":
+        return this.renderTextarea();
       case "radio":
         return this.renderRadio();
+      case "checkboxes":
+        return this.renderCheckboxes();
       case "slider":
         return this.renderSlider();
     }
@@ -29,12 +35,31 @@ class Question extends Component {
       <TextInput
         value={this.props.value}
         setValue={this.props.setValue}
+        placeholder={this.props.typeSpecific.placeholder}
+      />
+    );
+  }
+  renderTextarea() {
+    return (
+      <Textarea
+        value={this.props.value}
+        setValue={this.props.setValue}
+        placeholder={this.props.typeSpecific.placeholder}
       />
     );
   }
   renderRadio() {
     return (
       <Radio
+        value={this.props.value}
+        setValue={this.props.setValue}
+        options={this.props.typeSpecific.answers}
+      />
+    );
+  }
+  renderCheckboxes() {
+    return (
+      <Checkboxes
         value={this.props.value}
         setValue={this.props.setValue}
         options={this.props.typeSpecific.answers}
@@ -48,7 +73,6 @@ class Question extends Component {
         setValue={this.props.setValue}
         from={this.props.typeSpecific.from}
         to={this.props.typeSpecific.to}
-        initial={this.props.typeSpecific.initial}
         step={this.props.typeSpecific.step}
       />
     );
@@ -58,7 +82,7 @@ class Question extends Component {
     return (
       <div className="question">
         <h1>{this.props.title}</h1>
-        <h3 className="grey">{this.props.description}</h3>
+        <h3>{this.props.description}</h3>
         {this.renderInput()}
       </div>
     );

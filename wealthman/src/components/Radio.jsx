@@ -12,7 +12,18 @@ class Radio extends Component {
   render() {
     return (
       <div className="radio">
-        radio component in development
+        <div className="options">
+          {
+            this.props.options.map(option =>
+              <div
+                className={"option " + (this.props.value == option ? "selected" : "")}
+                onClick={() => this.props.setValue(option)}
+              >
+                {option}
+              </div>
+            )
+          }
+        </div>
       </div>
     );
   }

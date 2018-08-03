@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import '../css/TextInput.sass';
+import '../css/Textarea.sass';
 
-class TextInput extends Component {
+class Textarea extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +11,7 @@ class TextInput extends Component {
 
   render() {
     return (
-      <input
+      <textarea
         value={this.props.value}
         onChange={(event) => this.props.setValue(event.target.value)}
         placeholder={this.props.placeholder}
@@ -20,4 +20,4 @@ class TextInput extends Component {
   }
 }
 
-export default TextInput;
+export default Textarea;

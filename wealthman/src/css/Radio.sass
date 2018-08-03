@@ -1,0 +1,34 @@
+.radio
+  .options
+    .option
+      display: table
+      margin-bottom: 20px
+      padding-left: 32px
+      cursor: pointer
+      position: relative
+      font-size: 16px
+      line-height: 20px
+      &::before
+        box-sizing: border-box
+        position: absolute
+        content: ""
+        top: 0
+        left: 0
+        width: 20px
+        height: 20px
+        border: 2px solid #79828f
+        border-radius: 10px
+      &:hover::before,
+      &.selected::before
+        border: 2px solid #39a9dc
+      &.selected::after
+        position: absolute
+        content: ""
+        top: 5px
+        left: 5px
+        width: 10px
+        height: 10px
+        background-color: #39a9dc
+        border-radius: 10px
+      &.selected:hover::after
+        opacity: .6
