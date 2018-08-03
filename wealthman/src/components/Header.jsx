@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { setReduxState } from './../redux/index';
 
-import { api } from './helpers';
 
 import logo from './../img/logo.svg';
 
-import HeaderUserIcon from './HeaderUserIcon';
 
 import '../css/Header.sass';
 
+import { default as chatsApi } from './pages/ChatPage/chatsApi'
+import { api } from './helpers';
+import HeaderUserIcon from './HeaderUserIcon';
 import AuthWindows from './AuthWindows'
+
 
 class Header extends Component {
   constructor(props) {
@@ -20,6 +22,18 @@ class Header extends Component {
       openSignUp: () => {},
     }
     window.openSignUp = this.state.openSignUp
+  }
+
+  componentDidMount() {
+    chatsApi.connect()
+      .then((socket) => {
+        socket.on('message', msg => {
+          console.log(msg)
+          const newMsgEvent = new CustomEvent('new message from chats', {detail: {msg: msg}})
+          window.dispatchEvent(newMsgEvent)
+        });
+      })
+      .catch(console.log)
   }
 
   render() {

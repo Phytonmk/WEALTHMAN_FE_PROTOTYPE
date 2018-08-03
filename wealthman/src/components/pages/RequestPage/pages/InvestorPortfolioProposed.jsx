@@ -5,9 +5,15 @@ import Cards from '../../../dashboards/Cards';
 import Person from '../../../dashboards/Person';
 import Graphics from '../../../dashboards/Graphics';
 
+import { api, setPage } from '../../../helpers'
+
 export default class InvestorPortfolioProposed extends Component {
-  acceptPortfolio() {
-    setPage('signagreement/' + this.state.request._id);
+  requestAnother() {
+    api.post('portfolio/request-another/' + this.props.requestData.request._id)
+      .then(() => {
+        setPage('requests')
+      })
+      .catch(console.log)
   }
   render() {
     return <div>
@@ -64,8 +70,7 @@ export default class InvestorPortfolioProposed extends Component {
           title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
           state: 'bad'
         }, {
-          title: 'Request another portfolio',
-          subtitle: '(don\'t work yet)'
+          title: <a style={{cursor: 'pointer'}} onClick={() => this.requestAnother()}>Request another portfolio</a>,
         }, {
           title: <Link to={'/signagreement/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Accept</Link>,
           state: 'good'

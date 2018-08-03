@@ -27,11 +27,6 @@ class KYCPage extends Component {
       answers: [],
       formComplited: false
     };
-    if (this.props.match.params.manager === undefined) {
-      let managerString = getCookie('selectedManager');
-      this.props.match.params.manager = managerString.split('/')[0];
-      this.props.match.params.id = managerString.split('/')[1];
-    }
   }
   componentWillMount() {
     let manager = '';
@@ -40,6 +35,7 @@ class KYCPage extends Component {
     else if (this.props.match.params.manager === 'company')
       manager = 'company';
     this.setState({manager, service: (getCookie('service') || '')});
+    console.log(this.props.match.params)
     api.get(manager + '/' + this.props.match.params.id)
       .then((res) => {
         console.log(res.data.name, res.data.surname)

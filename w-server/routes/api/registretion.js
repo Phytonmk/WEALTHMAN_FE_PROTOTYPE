@@ -5,6 +5,7 @@ const User = require('../../models/User')
 const Token = require('../../models/accessToken')
 const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
+const ManagerStatistic = require('../../models/ManagerStatistic')
 const Company = require('../../models/Company')
 const AnswersForm = require('../../models/AnswersForm')
 const KYCAnswersForm = require('../../models/KYCAnswersForm')
@@ -55,10 +56,12 @@ module.exports = (app) => {
     const confirmToken = crypto.createHash('md5').update(token + salt + token + salt).digest("hex")
     if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
       const email = {
-        'to': req.body.login,
-        'subject': 'Confirm your email',
-        'html': `To confirm your email follow <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>`,
-        'from': `no-reply@${currentDomain}`
+        Recipients: [{ Email: req.body.login }],
+        Subject: 'Confirm your email',
+        'Text-part': `To confirm your email follow this link http://${currentDomain}:8080/api/confirm-email/${confirmToken}`,
+        'Html-part': `To confirm your email follow <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>`,
+        FromEmail: `no-reply@${currentDomain}`,
+        FromName: 'Wealthman registration'
       } 
       await mailer(email).catch(console.log)
     }
@@ -182,13 +185,25 @@ module.exports = (app) => {
     }
     user.set({type: 1})
     await user.save()
-    const foundManager = await Manager.findOne({user: user._id})
-    if (foundManager === null) {
-      const manager = new Manager(Object.assign(req.body, {user: user._id}))
-      await manager.save()
+    let manager = await Manager.findOne({user: user._id})
+    if (manager === null) {
+      manager = new Manager(Object.assign(req.body, {user: user._id}))
     } else {
-      await Manager.findOneAndUpdate({user: user._id}, req.body)
+      manager.set(req.body)
     }
+    await manager.save()
+    const managerStatistic = new ManagerStatistic({
+      manager: manager._id,
+      lastUpdate: Date.now(),
+      dates: [Date.now()],
+      aum: [0],
+      portfolios: [{
+        active: 0,
+        archived: 0,
+        inProgress: 0
+      }]
+    })
+    await managerStatistic.save()
     res.sendStatus(200)
     res.end()
   })

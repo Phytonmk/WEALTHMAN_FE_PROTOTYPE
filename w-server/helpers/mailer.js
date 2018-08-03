@@ -1,14 +1,14 @@
 
-const sendmail = require('sendmail')();
+const configs = require('../configs')
+
+const mailjet = require('node-mailjet')
+  .connect(configs.mailjet.key, configs.mailjet.secret)
 
 module.exports = (options) => new Promise((resolve, reject) => {
   console.log(options)
-  resolve()
-  // sendmail(options, (err, reply) => {
-  //     console.log(err, reply)
-  //     if (err)
-  //       reject(err)
-  //     else
-  //       resolve(reply)
-  // });
+  const request = mailjet
+    .post('send')
+    .request(options)
+    .then(resolve)
+    .catch(reject)
 })

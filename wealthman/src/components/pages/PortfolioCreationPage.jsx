@@ -27,10 +27,11 @@ class PortfolioCreationPage extends Component {
       managment_fee: '',
       perfomance_fee: '',
       front_fee: '',
+      max_deviation: '',
       initiatedByManager: false,
       value: '',
       period: '',
-      comment: ''
+      comment: '',
     };
   }
   componentWillMount() {
@@ -58,6 +59,7 @@ class PortfolioCreationPage extends Component {
           managment_fee: res.data.request.managment_fee,
           perfomance_fee: res.data.request.perfomance_fee,
           front_fee: res.data.request.front_fee,
+          max_deviation: res.data.request.max_deviation,
         });
       })
       .catch((e) => {
@@ -71,6 +73,7 @@ class PortfolioCreationPage extends Component {
                 managment_fee: 12,
                 perfomance_fee: 12,
                 front_fee: 12,
+                max_deviation: 10,
                 request: {
                   status: 'not created'
                 }
@@ -175,6 +178,7 @@ class PortfolioCreationPage extends Component {
         perfomance_fee: this.state.perfomance_fee,
         front_fee: this.state.front_fee,
       },
+      max_deviation: this.state.max_deviation,
       value: this.state.value,
       period: this.state.period,
       comment: this.state.comment,
@@ -207,6 +211,8 @@ class PortfolioCreationPage extends Component {
           <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => changingAvalible ? this.setState({managment_fee: event.target.value}) : ''}/> %</div>
           <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => changingAvalible ? this.setState({perfomance_fee: event.target.value}) : ''}/> %</div>
           <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => changingAvalible ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
+          <br />
+          <div className="row">Max deviation:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.max_deviation} onChange={(event) => changingAvalible ? this.setState({max_deviation: event.target.value}) : ''}/> %</div>
         </div>
       break;
       case 'select': 

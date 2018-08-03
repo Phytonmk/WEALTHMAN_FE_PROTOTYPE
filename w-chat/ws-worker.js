@@ -265,8 +265,10 @@ module.exports = (port) => {
         })
         socket.on('disconnecting', () => {
           // console.log(usersOfThisWorker, '----------', sessionTokens, '----------', socket.sessionToken)
-          delete usersOfThisWorker[sessionTokens[socket.sessionToken]._id]
-          delete sessionTokens[socket.sessionToken]
+          if (sessionTokens[socket.sessionToken] !== undefined) {
+            delete usersOfThisWorker[sessionTokens[socket.sessionToken]._id]
+            delete sessionTokens[socket.sessionToken]
+          }
           connections--
         })
       })

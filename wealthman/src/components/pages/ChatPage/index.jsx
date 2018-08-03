@@ -114,26 +114,35 @@ class ChatPage extends Component {
   authEventListener() {
     this.loadChats();
   }
+  msgEventListener(event) {
+    console.log(event.detail)
+    if (event.detail) {
+      const msg = event.detail.msg
+      if (msg.newMessage)
+        this.updateStateWithNewMessage(msg);
+    }
+  }
   componentDidMount() {
     if (this.props.userData.user === undefined) {
       window.addEventListener('auth completed', this.authEventListener.bind(this));
     } else {
       this.loadChats();
     }
-    chatsApi.connect()
-      .then((socket) => {
-        socket.on('message', msg => {
-          console.log(msg)
-          if (msg.newMessage) {
-            this.updateStateWithNewMessage(msg);
-          }
-        });
-        // chatsApi.sendMessage(0, 'Hello world')
-      })
-      .catch(console.log)
+    window.addEventListener('new message from chats', this.msgEventListener.bind(this))
+    // chatsApi.connect()
+    //   .then((socket) => {
+    //     socket.on('message', msg => {
+    //       console.log(msg)
+    //       if (msg.newMessage) {
+    //         this.updateStateWithNewMessage(msg);
+    //       }
+    //     });
+    //   })
+    //   .catch(console.log)
   }
   componentWillUnmount() {
     window.removeEventListener('auth completed', this.authEventListener);
+    window.removeEventListener('new message from chats', this.msgEventListener);
   }
   checkIfEnter(event) {
     if (event.keyCode === 13)

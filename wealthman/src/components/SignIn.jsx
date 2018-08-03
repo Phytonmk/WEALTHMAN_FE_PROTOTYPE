@@ -64,7 +64,7 @@ export default class SignIn extends Component {
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>
             <div>
-              <Link to="supported-browsers">Supported browsers</Link>
+              <Link to="/supported-browsers" target="_blank">Supported browsers</Link>
             </div>
           </div>
           <div className="devider"></div>

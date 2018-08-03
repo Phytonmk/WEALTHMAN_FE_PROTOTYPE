@@ -1,5 +1,6 @@
 const Token = require('../../models/accessToken')
 const Manager = require('../../models/Manager')
+const ManagerStatistic = require('../../models/ManagerStatistic')
 const Investor = require('../../models/Investor')
 const Request = require('../../models/Request')
 const Company = require('../../models/Company')
@@ -35,10 +36,12 @@ module.exports = (app) => {
     }
     switch(user) {
       case 'manager':
+        const statistic = await ManagerStatistic.find({manager: userID})
         const clients = await Request.aggregate([  
           {
             $match: {
-              type: 'portfolio'
+              type: 'portfolio',
+              manager: userID
             }
           },
           {
@@ -52,7 +55,8 @@ module.exports = (app) => {
           {
             $match: {
               type: 'portfolio',
-              status: 'pending'
+              status: 'pending',
+              manager: userID
             }
           },
           {
@@ -66,15 +70,9 @@ module.exports = (app) => {
           value: genRandom(5, 15) ** genRandom(5, 15),
           earning: genRandom(5, 15) * (10 ** genRandom(5, 15)),
           change: genRandom(-30, 30),
-          grpahic: genGraphData()
+          grpahic: ManagerStatistic.aum
         }
-        const portfolios = []
-        for (let i = 0; i < 20; i++)
-          portfolios.push({
-            active: genRandom(),
-            archived: genRandom(),
-            inProgress: genRandom(),
-          })
+        const portfolios = ManagerStatistic.portfolios
         res.send({
           clients: clients.length,
           clientsApplications: clientsApplications.length,

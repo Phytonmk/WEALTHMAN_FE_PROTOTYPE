@@ -170,7 +170,6 @@ class App extends Component {
           <Route path="/thanks2" render={() => this.renderThanks2Page()} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/money/:id" component={MoneyPage} />
-          <Route path="/kyc" component={KYCPage} />
           <Route path="/kyc/:manager/:id" component={KYCPage} />
           <Route path="/investor register" component={InvestorRegistorPage} />
           <Route path="/accept" render={() => this.renderAcceptPage()} />

@@ -36,7 +36,8 @@ module.exports = (app) => {
         value: req.body.value,
         comment: req.body.comment,
         period: req.body.period,
-        status: 'pending'
+        status: 'pending',
+        max_deviation: req.body.max_deviation,
       })
       // res.status(404);
       // res.end('');
@@ -48,6 +49,7 @@ module.exports = (app) => {
         managment_fee: req.body.fees.managment_fee,
         perfomance_fee: req.body.fees.perfomance_fee,
         front_fee: req.body.fees.front_fee,
+        max_deviation: req.body.max_deviation,
       });
     }
     const existsPortfolio = await Portfolio.findOne({request: request._id, state: 'draft'});
@@ -332,6 +334,30 @@ module.exports = (app) => {
     request.set({status: 'active'});
     await request.save();
     await notify({request: request._id, title: `New portfolio declined`})
+    res.status(200);
+    res.end();
+  });
+  app.post('/api/portfolio/request-another/:request', async (req, res, next) => {
+    const token = await Token.findOne({token: req.body.accessToken});
+    if (token === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    const investor = await Investor.findOne({user: token.user});
+    if (investor === null) {
+      res.status(403);
+      res.end('');
+    }
+    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'proposed'});
+    if (request === null) {
+      res.status(404);
+      res.end('');
+      return;
+    }
+    request.set({status: 'pending'});
+    await request.save();
+    await notify({request: request._id, title: `Intesor requested another portfolio`})
     res.status(200);
     res.end();
   });

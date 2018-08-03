@@ -31,8 +31,8 @@ class HeaderUserIcon extends Component {
         })
         setCookie('accessToken', '')
         setCookie('usertype', '')
-        auth()
         setPage('')
+        auth()
         // document.cookie = ''
         // setTimeout(() => auth(), 0)
         // auth(() => {

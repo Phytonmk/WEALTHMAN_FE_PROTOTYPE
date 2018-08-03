@@ -304,15 +304,6 @@ export default class Graphics extends Component {
             datasets={this.props.main.datasets}
           />
         </div>
-        {!this.props.additional ? '' :
-          <div className="box margin-box">
-            <SuperLine
-              title={this.props.additional.title}
-              width={800}
-              subheaders={this.props.additional.subheaders || []}
-              datasets={this.props.additional.datasets}
-            />
-            </div>}
       </div>)
   }
 }

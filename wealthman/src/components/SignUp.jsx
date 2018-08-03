@@ -20,7 +20,7 @@ export default class SignUp extends Component {
       notConfirmed: false
     }
   }
-  hide(event, forced=false) {
+  hide(event=({target: {classList: {contains: () => false}}}), forced=false) {
     if (forced || event.target.classList.contains('close-modal-btn') || 
           event.target.classList.contains('modal-wrapper'))
       this.props.hide()
@@ -32,6 +32,7 @@ export default class SignUp extends Component {
     })
       .then((res) => {
         setCookie('accessToken', res.data.token)
+        auth()
         if (res.data.confirmToken)
           this.setState({confirmToken: res.data.confirmToken})
         this.sendDetails(data)
@@ -48,9 +49,10 @@ export default class SignUp extends Component {
       .catch(console.log);
   }
   confirm() {
-    auth(confirmed => {
+    auth((confirmed) => {
+      console.log(confirmed)
       if (confirmed) {
-        this.hide()
+        this.hide(null, true)
         if (typeof this.props.callback === 'function')
           this.props.callback()
       } else {
@@ -109,7 +111,7 @@ export default class SignUp extends Component {
           }
          </div>}
          {this.state.step !== 2 ? '' : <div>
-            {/[^\.@]+@[^\.]+\..+/.test(this.state.login) ?
+            {/^[^@]+@{1}[^\.]+\.{1}.+$/.test(this.state.login) ?
             <div>
               <div className="row">
                 Email send to <b>{this.state.login}</b>
@@ -118,7 +120,7 @@ export default class SignUp extends Component {
                 Confirm your email and then push the button below
               </div>
               <div className="row">
-                <a href={'https://' + this.state.login.substr(this.state.login.indexOf('.'))}>Go to {this.state.login.substr(this.state.login.indexOf('.'))}</a>
+                <a target="_blank" href={'https://' + this.state.login.substr(this.state.login.indexOf('@') + 1)}>Go to {this.state.login.substr(this.state.login.indexOf('@') + 1)}</a>
               </div>
             </div> :
             <div>
@@ -126,7 +128,7 @@ export default class SignUp extends Component {
                 <small>It is availible only in developer version!</small>
               </div>
               <div className="row">
-                Your login is not a valid email so to confirm it go to <a href={'http://platform.wealthman.io:8080/api/confirm-email/' + this.state.confirmToken}>link</a>
+                Your login is not a valid email so to confirm it go to <a target="_blank" href={'http://platform.wealthman.io:8080/api/confirm-email/' + this.state.confirmToken}>link</a>
               </div>
             </div>}
             <div className="row">
