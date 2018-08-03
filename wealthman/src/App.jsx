@@ -52,6 +52,7 @@ import FAQPage from './components/pages/FAQPage';
 import SupportedBrowsersPage from './components/pages/SupportedBrowsersPage';
 import ContactPage from './components/pages/ContactPage';
 import InvestorPage from './components/pages/InvestorPage';
+import QuestionsPage from './components/pages/QuestionsPage';
 //
 
 const formAnswers = [];
@@ -197,6 +198,9 @@ class App extends Component {
           <Route path="/manager-detailing" component={ManagerDetailingPage} />
           <Route path="/withdraw/:request" component={WithdrawPage} />
           <Route path="/investors" component={InvestorsPage} />
+
+          <Route path="/questions/:id" component={QuestionsPage} />
+          <Route path="/questions" render={({history}) => { history.push('/questions/first-question'); return null;}} />
 
         </Switch>
     );

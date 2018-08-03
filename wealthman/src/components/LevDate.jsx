@@ -5,12 +5,20 @@ export default class LevDate {
         this.dateJS = new Date();
         break;
       case "string":
+        if (string.length == 0) {
+          this.dateJS = new Date();
+          break;
+        }
+
+        let newString;
+
         if (string[2] == '.' || string[2] == '/' || string[2] == '-')
-          this.dateJS = new Date(string.substring(6, 10) + '/' + string.substring(3, 5) + '/' + string.substring(0, 2));
+          newString = string.substring(3, 5) + '/' + string.substring(0, 2) + '/' + string.substring(6, 10);
         else if (string[2] == ':' && (string[8] == '.' || string[8] == '/' || string[8] == '-'))
-          this.dateJS = new Date(string.substring(0, 6) + string.substring(12, 16) + '/' + string.substring(9, 11) + '/' + string.substring(6, 8));
+          newString = string.substring(0, 6) + string.substring(9, 11) + '/' + string.substring(6, 8) + '/' + string.substring(12, 16);
         else
-          this.dateJS = new Date(string);
+          newString = string;
+        this.dateJS = new Date(Date.parse(newString));
         break;
       case "number":
         this.dateJS = new Date(string);

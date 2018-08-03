@@ -90,7 +90,7 @@ class HeaderUserIcon extends Component {
         <Avatar
           size="58px"
           src={this.props.userData ? api.imgUrl(this.props.userData.img) : ''}
-          />
+        />
       </div>
     );
   }
