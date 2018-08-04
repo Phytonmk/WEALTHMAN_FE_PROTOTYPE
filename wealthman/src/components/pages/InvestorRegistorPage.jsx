@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import auth from '../auth.js';
 import { api, getCookie, setPage } from '../helpers';
 
+import Input from '../Input';
+
 // const Eth = require('web3-eth');
 let uploadFile;
 
@@ -61,25 +63,25 @@ class InvestorRegistorPage extends Component {
     return (
       <div className="container">
           <div className="box">
-            <h2>Personal information</h2> 
+            <h2>Personal information</h2>
             <div className="row">
               First name
             </div>
             <div className="row">
-               <input type="text" value={this.state.name} onChange={(event) => {this.setState({name: event.target.value})}} placeholder="First name" />
-            </div> 
+               <Input value={this.state.name} setValue={value => {this.setState({name: value})}} placeholder="First name" />
+            </div>
             <div className="row">
               Last name
             </div>
             <div className="row">
-               <input type="text" value={this.state.surname} onChange={(event) => {this.setState({surname: event.target.value})}} placeholder="Last name" />
-            </div> 
+               <Input value={this.state.surname} setValue={value => {this.setState({surname: value})}} placeholder="Last name" />
+            </div>
             <div className="row">
               Age
             </div>
             <div className="row">
                <input type="number" value={this.state.age} onChange={(event) => {this.setState({age: event.target.value})}} placeholder="Age" />
-            </div> 
+            </div>
             <div className="row">
               {this.state.photo_uploaded === '' ? 'Upload photo' : 'Uploaded photo'}
             </div>
@@ -101,34 +103,34 @@ class InvestorRegistorPage extends Component {
               Phone number
             </div>
             <div className="row">
-               <input type="text" value={this.state.phone_number} onChange={(event) => {this.setState({phone_number: event.target.value})}} placeholder="Phone number" />
-            </div> 
+               <Input value={this.state.phone_number} setValue={value => {this.setState({phone_number: value})}} placeholder="Phone number" />
+            </div>
             <div className="row">
               Country
             </div>
             <div className="row">
-               <input type="text" value={this.state.country} onChange={(event) => {this.setState({country: event.target.value})}} placeholder="Country" />
-            </div> 
+               <Input value={this.state.country} setValue={value => {this.setState({country: value})}} placeholder="Country" />
+            </div>
             <div className="row">
               Address
             </div>
             <div className="row">
-               <input type="text" value={this.state.address} onChange={(event) => {this.setState({address: event.target.value})}} placeholder="Address" />
-            </div> 
+               <Input value={this.state.address} setValue={value => {this.setState({address: value})}} placeholder="Address" />
+            </div>
             <div className="row">
               Wallet address
             </div>
             <div className="row">
-               <input type="text" value={this.state.wallet_address} onChange={(event) => {this.setState({wallet_address: event.target.value})}} placeholder="Wallet address" />
+               <Input value={this.state.wallet_address} setValue={value => {this.setState({wallet_address: value})}} placeholder="Wallet address" />
             </div>
             <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet  ? {display: 'block'} : {display: 'none'}}>
               Your private key, save it to safe place
-            </div> 
+            </div>
             <div className="row" style={this.state.privateKey && this.state.wallet_address === this.state.generated_wallet ? {display: 'block'} : {display: 'none'}}>
-               <input type="text" value={this.state.privateKey}   />
+               <Input value={this.state.privateKey}   />
                <br />
                <b>Notice</b>: Wealthman does not save your private keys in the datadase. Keep your private key in secret.
-            </div> 
+            </div>
             <div className="row" style={this.state.wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
                In case you have not got Ethereum Wallet push the button below
             </div>

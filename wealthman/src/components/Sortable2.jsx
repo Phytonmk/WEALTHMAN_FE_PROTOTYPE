@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import LevDate from './LevDate.jsx';
+import myDate from './LevDate.jsx';
 import '../css/Sortable2.sass';
 
 {/*
@@ -62,48 +62,63 @@ class Sortable2 extends Component {
       order: false,
       offset: 0,
       maxShown: 10,
-      error: "",
       rowProperties: undefined,
+      error: "",
     }
   }
+
   componentWillMount() {
+    this.initialize(this.props);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.initialize(nextProps);
+  }
+
+  columnsDefined(props) {
+    return props.columns && props.columns.length > 0;
+  }
+  dataDefined(props) {
+    return props.data && props.data.length > 0;
+  }
+
+  initialize(props) {
     //check for errors
-    // if (!(this.props.columns && this.props.columns.length > 0))
-    //   this.setState({error: this.state.error + "no columns; "});
-    // else {
-    //   //FOR DEBBAGING PURPOSES: comment this when finished
-    //   this.props.columns.forEach(column => {
-    //     if (!this.props.data[0].hasOwnProperty(column.property))
-    //       this.setState({error: this.state.error + "Error: rows doesn\'t have \"" + column.property + "\" property; "});
-    //   });
-    //   if (!this.props.data[0].hasOwnProperty("id"))
-    //     this.setState({error: this.state.error + "data objects doesn't have id; "});
-    //   if (this.props.linkProperty && !this.props.data[0].hasOwnProperty(this.props.linkProperty))
-    //     this.setState({error: this.state.error + "data objects doesn't have \"" + this.props.linkProperty + "\"property; "});
-    // }
-    if (this.state.error != "")
+    if (this.columnsDefined(props) && this.dataDefined(props)) {
+      props.columns.forEach(column => {
+        if (!props.data[0].hasOwnProperty(column.property))
+          this.setState({error: this.state.error + "Error: data objects doesn\'t have \"" + column.property + "\" property; "});
+      });
+      if (!props.data[0].hasOwnProperty("id"))
+        this.setState({error: this.state.error + "data objects doesn't have id; "});
+      if (props.linkProperty && !props.data[0].hasOwnProperty(props.linkProperty))
+        this.setState({error: this.state.error + "data objects doesn't have \"" + props.linkProperty + "\"property; "});
+    }
+
+    if (this.state.error != "" || !this.columnsDefined(props))
       return;
+
     //set width for columns
     this.setState({
-      rowProperties: this.props.columns.map(column => {
+      rowProperties: props.columns.map(column => {
         return {
           name: column.property,
-          width: (column.width ? column.width : (99 / this.props.columns.length) + "%"),
+          width: (column.width ? column.width : (99 / props.columns.length) + "%"),
         };
       })
     });
+
     //set sortBy
-    if (this.props.initialSortBy)
-      this.setState({sortBy: this.props.initialSortBy});
+    if (props.initialSortBy)
+      this.setState({sortBy: props.initialSortBy});
     else {
-      let firstSortableColumn = this.props.columns.find(column => column.type != "unsortable");
+      let firstSortableColumn = props.columns.find(column => column.type != "unsortable");
 
       if (firstSortableColumn)
         this.setState({sortBy: firstSortableColumn.property});
     }
 
-    if (this.props.maxShown)
-      this.setState({maxShown: this.props.maxShown});
+    if (props.maxShown)
+      this.setState({maxShown: props.maxShown});
   }
 
   setSortBy(sortBy) {
@@ -116,11 +131,25 @@ class Sortable2 extends Component {
   }
 
   renderListings() {
+    if (!this.dataDefined(this.props))
+      return <ul className="listings">
+        <li className="listing">
+          <div className="cell">no data</div>
+        </li>
+      </ul>;
+
+    if (!this.columnsDefined(this.props))
+      return <ul className="listings">
+        <li className="listing">
+          <div className="cell">no columns defined;</div>
+        </li>
+      </ul>;
+
     return (
       <ul className="listings">
         {
           this.props.data
-          .filter(this.props.filter ? this.props.filter : (i => true))
+          .filter(this.props.filter ? this.props.filter : i => true)
           .sort((a, b) => {
             let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("value") ?
               a[this.state.sortBy].value : a[this.state.sortBy];
@@ -131,7 +160,7 @@ class Sortable2 extends Component {
               case "number":
                 return this.state.order ? Number(sortableA) - Number(sortableB) : Number(sortableB) - Number(sortableA);
               case "date":
-                let dateA = new LevDate(sortableA);
+                let dateA = new myDate(sortableA);
                 return this.state.order ? dateA.less(sortableB) : !dateA.less(sortableB);
               case "unsortable":
                 return true;
@@ -177,6 +206,9 @@ class Sortable2 extends Component {
   }
 
   renderHeader() {
+    if (!this.columnsDefined(this.props))
+      return <div className="header" />;
+
     return (
       <div className="header">
         {
@@ -207,7 +239,7 @@ class Sortable2 extends Component {
   }
 
   renderNavigation() {
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i => true)).length;
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
 
     if (this.state.maxShown >= length)
       return;
@@ -242,7 +274,10 @@ class Sortable2 extends Component {
   }
 
   renderShowMore() {
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i => true)).length;
+    if (!this.columnsDefined(this.props) || !this.dataDefined(this.props))
+      return;
+
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
 
     if (this.state.offset + this.state.maxShown >= length)
       return;
@@ -257,8 +292,6 @@ class Sortable2 extends Component {
   }
 
   render() {
-    if (!(this.props.data && this.props.data.length > 0))
-      return <p>this list is empty</p>
     if (this.state.error != "")
       return (
         <div className="sortable">

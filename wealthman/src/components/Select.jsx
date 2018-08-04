@@ -23,20 +23,22 @@ import '../css/Select.sass';
 class Select extends Component {
   constructor(props) {
     super(props);
+
+    let error = "";
+    if (typeof props.value == "undefined")
+      error += "you must define 'value' prop; ";
+    if (typeof props.options == "undefined")
+      error += "you must define 'options' prop; ";
+    if (typeof props.setValue == "undefined")
+      error += "you must define 'setValue' prop; ";
+
     this.state = {
       opened: false,
-      error: "",
+      error: error,
     }
   }
 
   componentWillMount() {
-    if (typeof this.props.value == "undefined")
-      this.setState({error: this.state.error + "you must define 'value' prop; "});
-    if (typeof this.props.options == "undefined")
-      this.setState({error: this.state.error + "you must define 'options' prop; "});
-    if (typeof this.props.setValue == "undefined")
-      this.setState({error: this.state.error + "you must define 'setValue' prop; "});
-
     $(window).click(event => {
       if (!event.target.className.includes("select"))
         this.setState({opened: false});

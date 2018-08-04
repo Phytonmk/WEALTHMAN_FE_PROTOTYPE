@@ -20,12 +20,27 @@
   &.opened::after
     transform: rotate(180deg)
   input
+    width: 100%
+    height: 50px
+    font-size: 15px
+    line-height: 50px
+    color: #79828f
+    margin-bottom: 24px
+    border: 1px solid #dfe4e8
+    border-radius: 2px
+    padding: 0 17px
+    transition: box-shadow .3s, border-color .3s
     position: relative
     padding-right: 48px
     width: 100%
     cursor: pointer
+    &:focus
+      box-shadow: 0 0 0 1px #39a9dc
+      border-color: #39a9dc
+    &:required, &.error
+      box-shadow: 0 0 0 1px #f70000
+      border-color: #f70000
   .options
-    // display: table
     overflow-y: auto
     border-radius: 2px
     background: white

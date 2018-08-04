@@ -24,9 +24,9 @@ class Footer extends Component {
           forManagers={true}
         />
         <div className="container">
-          <span>
+          <p>
             Copyright © 2018 Wealthman. All Rights Reserved. Privacy Policy
-          </span>
+          </p>
           <div className="right">
             <Social links={[
               "https://t.me/wealthman_global",

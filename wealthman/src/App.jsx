@@ -20,9 +20,6 @@ import defaultState from './redux/default-state';
 import auth from './components/auth.js';
 
 // pages
-import loginPage from './components/pages/loginPage';
-import login2Page from './components/pages/Login2Page';
-import RegisterPage from './components/pages/RegisterPage';
 import InvestorRegistorPage from './components/pages/registration/InvestorRegistorPage';
 import AgreementPage from './components/pages/AgreementPage';
 import ManagerRegPage from './components/pages/ManagerRegPage';
@@ -133,8 +130,6 @@ class App extends Component {
         <Switch>
 
           <Route exact path="/" component={this.state.user === -1 || this.state.user === 0 ? ManagersPage : RequestsPage} />
-          <Route path="/login" component={loginPage} />
-          <Route path="/totallydifferentlogin"  component={login2Page} />
           <Route path="/account" component={AccountPage} />
           <Route path="/about" render={() => this.renderAboutUsPage()} />
           <Route path="/origin" render={() => this.renderOriginPage()} />
@@ -169,7 +164,6 @@ class App extends Component {
           <Route path="/signagreement/:id" component={SignAgreementPage} />
           <Route path="/thanks" render={() => this.renderThanksPage()} />
           <Route path="/thanks2" render={() => this.renderThanks2Page()} />
-          <Route path="/register" component={RegisterPage} />
           <Route path="/money/:id" component={MoneyPage} />
           <Route path="/kyc" component={KYCPage} />
           <Route path="/kyc/:manager/:id" component={KYCPage} />

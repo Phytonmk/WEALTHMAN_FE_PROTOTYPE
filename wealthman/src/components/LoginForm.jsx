@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { setReduxState } from '../redux';
 import { Link } from 'react-router-dom'
 
+import Input from './Input';
+
 const logoWhite = '../img/logo.svg';
 const logoBlue = '../img/logo_blue.svg';
 
@@ -21,9 +23,9 @@ class LoginForm extends Component {
         </div>
         <h3>{this.props.title}</h3>
         <b>Email Address:</b>
-        <input type="text" value={this.state.login} onChange={(event) => this.setState({ login: event.target.value })} placeholder="Enter email" />
+        <Input type="text" value={this.state.login} setValue={(value) => this.setState({ login: value })} placeholder="Enter email" />
         <b>Password:</b>
-        <input type="password" value={this.state.password} onChange={(event) => this.setState({ password: event.target.value })} placeholder="Enter password" />
+        <Input type="password" value={this.state.password} setValue={(value) => this.setState({ password: value })} placeholder="Enter password" />
         <Link to="#">
           <button className="login" onClick={() => this.props.tryLogin(this.state.login, this.state.password)}>Log in</button>
         </Link>

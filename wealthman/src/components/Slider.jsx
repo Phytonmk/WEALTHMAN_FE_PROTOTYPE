@@ -2,16 +2,31 @@ import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 
 import { clamp } from './helpers';
-import TextInput from './TextInput';
 
 import '../css/Slider.sass';
+
+{/*
+  //  //  //              USAGE EXAMPLE              //  //  //
+
+  <Slider
+    //(REQUIRED) value to show
+    value={this.props.value}
+    //(REQUIRED) function that sets the value
+    setValue={this.props.setValue}
+    //(REQUIRED) minimum value
+    from={this.props.typeSpecific.from}
+    //(REQUIRED) maximum value
+    to={this.props.typeSpecific.to}
+    //(OPTIONAL) minimum value change (default 1)
+    step={this.props.typeSpecific.step}
+  />
+*/}
 
 class Slider extends Component {
   constructor(props) {
     super(props);
     this.state = {
       draggable: false,
-      value: props.value,
       step: props.step ? props.step : 1,
     };
   }
@@ -42,7 +57,6 @@ class Slider extends Component {
       let value = (event.clientX - rect.left) / (rect.right - rect.left) * (this.props.to - this.props.from) + this.props.from;
       let clippedValue = Math.round(clamp(value, this.props.from, this.props.to) / this.state.step) * this.state.step;
       this.props.setValue(clippedValue);
-      this.setState({value: clippedValue});
     }
   }
 
@@ -54,49 +68,26 @@ class Slider extends Component {
 
     return (
       <div className="slider">
-        <div className="input-column">
-          <div className="row">
-            <small>Age</small>
-          </div>
-          <TextInput
-            value={this.state.value}
-            setValue={(value) => {
-              let number = value.replace(/[^0-9]/g, '');
-
-              if (number >= this.props.from && number <= this.props.to) {
-                this.props.setValue(number);
-                this.setState({value: number});
-              }
-              else {
-                this.props.setValue("");
-                this.setState({value: number});
-              }
-            }}
-          />
+        <div className="row">
+          <small className="left">{this.props.from}</small>
+          <small className="right">{this.props.to}</small>
         </div>
-        <div className="bar-column">
-          <div className="row">
-            <small className="left">{this.props.from}</small>
-            <small className="right">{this.props.to}</small>
-          </div>
-          <div className="bar-row">
+        <div className="bar-row">
+          <div
+            className="grey-bar"
+            onMouseDown={(event) => this.handleMouseDown(event)}
+          >
             <div
-              className="grey-bar"
+              className="blue-bar"
               onMouseDown={(event) => this.handleMouseDown(event)}
-            >
-              <div
-                className="blue-bar"
-                onMouseDown={(event) => this.handleMouseDown(event)}
-                style={{width: lineWidth}}
-              />
-            </div>
-            <div
-              className="dot"
-              onMouseDown={(event) => this.handleMouseDown(event)}
-              style={{left: dotOffset}}
+              style={{width: lineWidth}}
             />
           </div>
-          <small>Adjust slider or enter a value</small>
+          <div
+            className="dot"
+            onMouseDown={(event) => this.handleMouseDown(event)}
+            style={{left: dotOffset}}
+          />
         </div>
       </div>
     );

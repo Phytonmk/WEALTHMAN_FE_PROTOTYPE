@@ -3,6 +3,21 @@ import { Link } from 'react-router-dom';
 
 import '../css/ProgressBar3.sass';
 
+{/*
+  //  //  //              USAGE EXAMPLE              //  //  //
+
+<ProgressBar3
+  //(REQUIRED) prop passed from React Router
+  match = {this.props.match}
+  //(REQUIRED) page that will be shown after progress bar reaches 100%
+  finishLink = "/agreement"
+  //(REQUIRED) pages to show (ProgressBar3 notices, when number of pages change and renders progress bar correctly)
+  pages={questionsToPages}
+  //(OPTIONAL) approximate number of pages
+  approxLength={8}
+/>
+*/}
+
 class ProgressBar3 extends Component {
   constructor(props) {
     super(props);

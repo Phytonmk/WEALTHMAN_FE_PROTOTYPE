@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { api } from '../../helpers'
 
+import Input from '../../Input';
+
 class AccountInfo extends Component {
   constructor(props) {
     super(props);
@@ -46,15 +48,15 @@ class AccountInfo extends Component {
         <div className="account-box">
           <small className="blue">1. CONTACT INFORMATION</small>
           <small>YOUR EMAIL</small>
-          <input
+          <Input
             value={this.state.email}
-            onChange={event => this.setState({email: event.target.value})}
+            setValue={value => this.setState({email: value})}
             placeholder="username@email.com"
           />
           <small>PHONE NUMBER</small>
-          <input
+          <Input
             value={this.state.phone}
-            onChange={event => this.setState({phone: event.target.value})}
+            setValue={value => this.setState({phone: value})}
             placeholder="+7 (___) ___ - __ - __"
           />
           <button onClick={() => this.saveData()} className="big-blue-button save">
@@ -64,21 +66,21 @@ class AccountInfo extends Component {
         <div className="account-box last">
           <small className="blue">2. CHANGE PASSWORD</small>
           <small>CURRENT PASSWORD</small>
-          <input
+          <Input
             value={this.state.currentPassword}
-            onChange={event => this.setState({currentPassword: event.target.value})}
+            setValue={value => this.setState({currentPassword: value})}
             placeholder="Enter your current password"
           />
           <small>NEW PASSWORD</small>
-          <input
+          <Input
             value={this.state.newPassword}
-            onChange={event => this.setState({newPassword: event.target.value})}
+            setValue={value => this.setState({newPassword: value})}
             placeholder="Enter password"
           />
           <small>REPEAT NEW PASSWORD</small>
-          <input
+          <Input
             value={this.state.repeatNewPassword}
-            onChange={event => this.setState({repeatNewPassword: event.target.value})}
+            setValue={value => this.setState({repeatNewPassword: value})}
             placeholder="Enter password"
           />
           <button onClick={() => this.changePassword()} className="big-blue-button save">

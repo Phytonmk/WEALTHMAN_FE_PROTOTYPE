@@ -81,7 +81,7 @@ class Form extends Component {
         front_fee: 12,
         recalculation: 365,
         min: 10000000,
-        metodology: '',
+        methodology: '',
         philosofy: '',
       });
     this.setState(state);
@@ -139,7 +139,7 @@ class Form extends Component {
           let input;
           switch(question.type) {
             case 'photo_upload':
-              input = 
+              input =
                 <div>
                   <div className="row">
                     {!this.state[question.property].photo_uploaded ? 'Upload photo' : 'Uploaded photo'}
@@ -162,19 +162,19 @@ class Form extends Component {
                 </div>
             break;
             case 'wallet_address':
-              input = 
+              input =
                 <div>
                   <div className="row">
                      <input type="text" value={this.state[question.property].wallet_address} onChange={(event) => this.changeWalletAddress(question.property, event.target.value)} placeholder={question.placeholder !== undefined ? question.placeholder : 'Wallet address'} />
                   </div>
                   <div className="row" style={this.state[question.property].privateKey && this.state[question.property].wallet_address === this.state[question.property].generated_wallet  ? {display: 'block'} : {display: 'none'}}>
                     Your private key, save it to safe place
-                  </div> 
+                  </div>
                   <div className="row" style={this.state[question.property].privateKey && this.state[question.property].wallet_address === this.state[question.property].generated_wallet ? {display: 'block'} : {display: 'none'}}>
                      <input type="text" value={this.state[question.property].privateKey} onChange={() => {}} />
                      <br />
                      <b>Notice</b>: Wealthman does not save your private keys in the datadase. Keep your private key in secret.
-                  </div> 
+                  </div>
                   <div className="row" style={this.state[question.property].wallet_address !== '' ? {display: 'none'} : {display: 'block'}}>
                      In case you have not got Ethereum Wallet push the button below
                   </div>
@@ -215,11 +215,11 @@ class Form extends Component {
                   <br />
                   <input type="number" placeholder="Minimal investment" value={service.min} onChange={(event) => this.setServiceData(question.property, event, i, 'min')}/>
                   <br />
-                  Metodology
+                  Methodology
                   <br />
-                  <input type="text" placeholder="Metodology" value={service.metodology} onChange={(event) => this.setServiceData(question.property, event, i, 'metodology')}/>
+                  <input type="text" placeholder="Methodology" value={service.methodology} onChange={(event) => this.setServiceData(question.property, event, i, 'methodology')}/>
                   <br />
-                  Philosofy 
+                  Philosofy
                   <br />
                   <input type="text" placeholder="Philosofy" value={service.philosofy} onChange={(event) => this.setServiceData(question.property, event, i, 'philosofy')}/>
                   <br />
@@ -233,7 +233,7 @@ class Form extends Component {
               </div>
             break;
             default:
-              input = 
+              input =
                 <input
                   type={question.type === 'number' ? 'number' : 'text'}
                   placeholder={question.placeholder ? question.placeholder : question.title}

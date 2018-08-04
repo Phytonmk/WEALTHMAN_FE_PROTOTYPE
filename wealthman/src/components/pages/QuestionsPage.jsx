@@ -11,8 +11,7 @@ class QuestionsPage extends Component {
     const questions = [
       {
         question: "What is your current age?",
-        type: "slider",
-        required: true,
+        type: "age-slider",
         typeSpecific: {
           from: 18,
           to: 100,
@@ -21,7 +20,6 @@ class QuestionsPage extends Component {
       {
         question: "What of the following best describes your household?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["Single income, no dependents", "Single income, at least one dependent", "Dual income, no dependents", "Dual income, at least one dependent", "Retired or financially independent"]
         }
@@ -29,7 +27,6 @@ class QuestionsPage extends Component {
       {
         question: "What is your primary reason for investing?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["General Savings", "Retirement", "Colledge savings", "Other"]
         }
@@ -37,7 +34,6 @@ class QuestionsPage extends Component {
       {
         question: "What is your annual pre-tax income?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -45,7 +41,6 @@ class QuestionsPage extends Component {
       {
         question: "What is the total value of your cash in liquid investments?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -53,7 +48,6 @@ class QuestionsPage extends Component {
       {
         question: "What is the total amount of money you want to invest?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
         }
@@ -61,7 +55,6 @@ class QuestionsPage extends Component {
       {
         question: "When deciding how to invest your money, wich do you care about more?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["Maximizing gains", "Minimizing looses", "Both equally"]
         }
@@ -69,7 +62,6 @@ class QuestionsPage extends Component {
       {
         question: "The global stock market is often volatile. If your entire investement portfolio lost 10% of its value in a month during a market decline, what would you do?",
         type: "radio",
-        required: true,
         typeSpecific: {
           answers: ["Sell all of your investments", "Sell some", "Keep all", "Buy more"]
         }
@@ -102,7 +94,7 @@ class QuestionsPage extends Component {
         <ProgressBar3
           match = {this.props.match}
           finishLink = "/contact"
-          approxLength={10}
+          approxLength={8}
           pages={questionsToPages}
         />
       </div>
