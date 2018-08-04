@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { setReduxState } from './../redux/index';
 
+import HeaderUserIcon from './HeaderUserIcon';
+import AuthWindows from './AuthWindows'
 import { api } from './helpers';
 
 import logo from './../img/logo.svg';
 
-import HeaderUserIcon from './HeaderUserIcon';
-
 import '../css/Header.sass';
-
-import AuthWindows from './AuthWindows'
 
 class Header extends Component {
   constructor(props) {
@@ -24,23 +22,74 @@ class Header extends Component {
 
   render() {
     let headerLinks = [];
+
+    const loggedInvestorLinks = [
+      {
+        label: "summary",
+        link: "dashboard"
+      }, {
+        label: "portfolio",
+        link: "portfolios",
+      }, {
+        label: "marketplace",
+        link: "managers"
+      }
+    ];
+    const loggedManagerLinks = [
+      {
+        label: "dashboard",
+        link: "dashboard"
+      }, {
+        label: "clients",
+        link: "investors"
+      }, {
+        label: "companies",
+        link: "managers"
+      }, {
+        label: "portfolio",
+        link: "portfolios"
+      }
+    ]
+    const loggedSuplierLinks = [
+      {
+        label: "some page",
+        link: "sone"
+      }
+    ];
+    const loggedCompanyLinks = [
+      {
+        label: "company managers",
+        link: "company-managers"
+      }, {
+        label: "lonely managers",
+        link: "managers"
+      }
+    ];
+    const unloggedLinks = [
+      {
+        label: "About Wealthman",
+        link: "about"
+      }
+    ];//, "login"],//, "invest"];
+
     switch(this.props.user) {
       case -1:
-        headerLinks = this.props.unloggedLinks;
+        headerLinks = unloggedLinks;
         break;
       case 0:
-        headerLinks = this.props.loggedInvestorLinks;
+        headerLinks = loggedInvestorLinks;
         break;
       case 1:
-        headerLinks = this.props.loggedManagerLinks;
+        headerLinks = loggedManagerLinks;
         break;
       case 2:
-        headerLinks = this.props.loggedSuplierLinks;
+        headerLinks = loggedSuplierLinks;
         break;
       case 3:
-        headerLinks = this.props.loggedCompanyLinks;
+        headerLinks = loggedCompanyLinks;
         break;
     }
+
     headerLinks = headerLinks.map((link, i) => {
       if (link.link.includes("https://"))
         return (
@@ -54,13 +103,14 @@ class Header extends Component {
         return;
       return (
         <li key={i} className="link" onClick={() => this.setPage(link.link)}>
-          <Link
+          <NavLink
             to={"/" + link.link}
             className={link.link == "login" || link.link == "register" ? "big-blue-button" : "link"}
             onClick={() => {(link.link == "logout" ? this.logout() : "")}}
+            activeClassName="selected"
           >
             {capitalize(link.label)}
-          </Link>
+          </NavLink>
         </li>
       );
     });
@@ -77,9 +127,12 @@ class Header extends Component {
           />
         <div className="contents">
           <div className="container">
-            <Link to={(this.props.user == -1 ? "/managers" : "/portfolios")}>
+            <NavLink
+              to={(this.props.user == -1 ? "/managers" : "/portfolios")}
+              activeClassName="selected"
+            >
               <img src={logo} className="logo"/>
-            </Link>
+            </NavLink>
             {
               this.props.user != -1 ?
                 <HeaderUserIcon /> : ""

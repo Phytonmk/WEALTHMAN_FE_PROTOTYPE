@@ -1,0 +1,211 @@
+#chats-page
+  flex-grow: 1
+  overflow-y: auto
+  flex-shrink: 0
+
+  display: flex
+  flex-direction: column
+  align-items: stretch
+
+  min-height: 400px
+  .container
+    flex-grow: 1
+    overflow-y: auto
+    flex-shrink: 0
+    position: relative
+  .chats-left-column
+    width: 312px
+    height: 100%
+    position: absolute
+    left: 0
+    top: 0
+    padding-top: 20px
+    border-right: 1px solid #dfe4e8
+    .chats-search
+      width: 291px
+      height: 50px
+      border-radius: 2px
+      background-color: #d5dade
+      position: relative
+      float: left
+      .search-field
+        height: 50px
+        input[type="text"]
+          width: 60%
+          line-height: 100%
+          left: 50px
+        button.search
+          left: 20px
+          top: 16px
+        button.cancel
+          right: 20px
+          top: 16px
+    .chats-list
+      position: absolute
+      width: 100%
+      height: calc(100% - 90px)
+      top: 90px
+      left: 0
+      overflow-y: scroll
+      a
+        text-decoration: none
+      .chat-preview
+        position: relative
+        width: 100%
+        height: 72px
+        display: flex
+        border-bottom: 1px solid #dfe4e8
+        background-color: rgba(0, 0, 0, 0)
+        transition: 0.3s background-color
+        &.current-chat-preview
+          background-color: #39a9dc
+          .chat-preview-username
+            color: white !important
+          .chat-preview-date, .chat-preview-text
+            color: white !important
+        .chat-unreads
+          position: absolute
+          background-color: #ffa726
+          padding-top: 2px
+          color: white
+          // font-weight: bold
+          border: 0px
+          box-shadow: 0px 3px 10px grey
+          width: 30px
+          height: 30px
+          border-radius: 50%
+          text-align: center
+          left: 5px
+          display: block
+          bottom: 2px
+        .chat-pic
+          margin-left: 16px
+          margin-right: 20px
+          display: flex
+          align-items: center
+          margin-top: 13px
+
+        .chat-preview-data
+          width: 210px
+          display: flex
+          justify-content: center
+          flex-direction: column
+          .chat-preview-row
+            display: flex
+            justify-content: space-between
+            width: 100%
+          .chat-preview-username
+            color: #071e40
+            font-size: 18px
+          .chat-preview-date, .chat-preview-text
+            font-size: 13px
+            color: #79828f
+            b
+              font-weight: bold
+              margin-right: 5px
+          .chat-preview-text
+            display: block
+            white-space: nowrap
+            overflow-x: hidden
+            text-overflow: ellipsis
+  .chats-right-column
+    padding-top: 20px
+    // width: 100%
+    width: 648px
+    height: 100%
+    position: absolute
+    right: 0
+    top: 0
+    .chats-messages-area
+      position: absolute
+      top: 90px
+      left: 0
+      width: 100%
+      height: calc(100% - 90px - 50px)
+      overflow-y: scroll
+    // div#chats-messages-area:empty:before
+    //   content: 'No messages here'
+    // .chats-current-compainion > div
+    //   display: flex
+    //   align-items: center
+    //   font-size: 18px
+    //   color: #071e40
+    //   .chats-current-compainion-name
+    //     margin-left: 17px
+    .chats-current-compainion
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 90px
+    .chats-message
+      &.system-message
+        display: block
+        text-decoration: none
+        border-radius: 1px
+        background-color: #f6f4ca
+        padding: 25px 30px
+        font-size: 15px
+        color: #071e40
+        margin: 30px 0
+      &.chats-message-from-you
+        text-align: right
+        .chats-message-text
+          background-color: #39a9dc !important
+          color: white !important
+      &.user-message
+        .chats-message-pic-column
+          display: inline-flex
+          margin-left: 10px
+          margin-right: 10px
+        .chats-message-wrapper
+          vertical-align: top
+          margin-top: 7px
+          display: inline-block
+          width: auto
+          max-width: 430px
+          text-align: left
+          .chats-message-text
+            display: inline-block
+            background-color: white
+            padding: 19px 20px 16px 20px
+          .chats-message-date
+            color: #79828f
+            font-size: 13px
+            margin-bottom: 30px
+    .chats-input
+      height: 50px
+      width: 100%
+      border-radius: 2px
+      background-color: #d5dade
+      position: absolute
+      bottom: 0
+      left: 0
+      input
+        width: calc(100% - 142px)
+        height: 100%
+        position: absolute
+        left: 71px
+        top: 0
+        background-color: rgba(0, 0, 0, 0)
+        border: 0
+        outline: none
+        font-size: 15px
+      button.attach-photo
+        background-image: url('../img/chats/icon-photo.svg')
+        width: 21px
+        left: 30px
+      button.send
+        background-image: url('../img/chats/icon-send.svg')
+        width: 18px
+        right: 30px
+      button.attach-photo,
+      button.send
+        height: 18px
+        background-repeat: no-repeat
+        background-size: contain
+        position: absolute
+        top: 16px
+        opacity: .8
+        &:hover
+          opacity: 1

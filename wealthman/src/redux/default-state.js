@@ -45,55 +45,6 @@ const defaultState = {
 
   prevousPages: [],
 
-  loggedInvestorLinks: [
-    {
-      label: "summary",
-      link: "dashboard"
-    }, {
-      label: "portfolio",
-      link: "portfolios",
-    }, {
-      label: "marketplace",
-      link: "managers"
-    }
-  ],
-  loggedManagerLinks: [
-    {
-      label: "dashboard",
-      link: "dashboard"
-    }, {
-      label: "clients",
-      link: "investors"
-    }, {
-      label: "companies",
-      link: "managers"
-    }, {
-      label: "portfolio",
-      link: "portfolios"
-    }
-  ],
-  loggedSuplierLinks: [
-    {
-      label: "some page",
-      link: "sone"
-    }
-  ],
-  loggedCompanyLinks: [
-    {
-      label: "company managers",
-      link: "company-managers"
-    }, {
-      label: "lonely managers",
-      link: "managers"
-    }
-  ],
-  unloggedLinks: [
-    {
-      label: "About Wealthman",
-      link: "https://wealthman.io/"
-    }
-  ],//, "login"],//, "invest"],
-
   investors: [/*
     {
       type: "investor",
@@ -712,12 +663,12 @@ contract Portfolio {
     uint public withdrawAmount;
     bool public wasWithdraw = false;
 
-    modifier inRunning { 
-        require(isRunning); 
-        _; 
+    modifier inRunning {
+        require(isRunning);
+        _;
     }
     modifier onlyOwner {
-        require(msg.sender == owner); 
+        require(msg.sender == owner);
         _;
     }
     modifier onlyManager {

@@ -53,7 +53,7 @@ export default class SignIn extends Component {
           </div>
           <h2>Sign in to WealthMan.</h2>
           <span>Enter your details below.</span>
-          <div className="row firts-input-row">
+          <div className="row first-input-row">
             <label>Email address</label>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" /> */}
             <Input value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />

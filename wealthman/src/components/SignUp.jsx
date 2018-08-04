@@ -70,7 +70,7 @@ export default class SignUp extends Component {
           <h2>Sign up to WealthMan{this.props.forManagers ? ' as manager.' : '.'}</h2>
           <span>Enter your details below.</span>
           {this.state.step !== 0 ? '' : <React.Fragment>
-          <div className="row firts-input-row">
+          <div className="row first-input-row">
             <label>Email address</label>
             <Input value={this.state.login} setValue={value => this.setState({login: value})} placeholder="username@email.com" />
           </div>
@@ -84,7 +84,7 @@ export default class SignUp extends Component {
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.state.password === this.state.passwordRepeat ? this.setState({step: 1}) : alert('Passwords are not equal')}>Continue</button>
             <br />
-            <small>By clicking “Continue” I agree to <a href="http://google.com" target="_blank">Terms of Service</a> and <a href="http://google.com" target="_blank">Privacy Policy</a></small>
+            <small>By clicking “Continue” I agree to <Link to="/user-agreement" target="_blank">Terms of Service</Link> and <Link to="/user-agreement" target="_blank">Privacy Policy</Link></small>
           </div>
           <div className="devider"></div>
           <div className="row footer-row">

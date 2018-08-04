@@ -76,7 +76,6 @@ class QuestionsPage extends Component {
   render() {
     let questionsToPages = this.state.questions.map(question => {
       return {
-        id: camelize(question.question),
         link: dasherize(question.question),
         allowContinue: this.state[camelize(question.question)] != "",
         component: <Question
@@ -93,7 +92,7 @@ class QuestionsPage extends Component {
       <div id="questions-page">
         <ProgressBar3
           match = {this.props.match}
-          finishLink = "/contact"
+          finishLink = "/user-agreement"
           approxLength={8}
           pages={questionsToPages}
         />

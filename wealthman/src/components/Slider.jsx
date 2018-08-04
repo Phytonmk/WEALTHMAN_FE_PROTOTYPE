@@ -14,11 +14,11 @@ import '../css/Slider.sass';
     //(REQUIRED) function that sets the value
     setValue={this.props.setValue}
     //(REQUIRED) minimum value
-    from={this.props.typeSpecific.from}
+    from={0}
     //(REQUIRED) maximum value
-    to={this.props.typeSpecific.to}
+    to={100}
     //(OPTIONAL) minimum value change (default 1)
-    step={this.props.typeSpecific.step}
+    step={1}
   />
 */}
 

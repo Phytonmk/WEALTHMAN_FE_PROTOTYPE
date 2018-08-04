@@ -11,13 +11,6 @@ li.link
   width: 1000px
   padding: 10px 0
 
-article.page
-  min-height: 100vh
-  background-color: none
-  display: flex
-  flex-direction: column
-  align-items: stretch
-
 .login-box
   width: 355px
   float: left
@@ -136,16 +129,16 @@ img.logo
   h4
     margin-bottom: 20px
 
-button.send
-  font-size: 16px
-  width: 100%
-  height: 40px
-  text-align: center
-  background-color: #48a8da
-  color: white
-  margin-top: 20px
-  &:hover
-    background-color: #193665
+// button.send
+//   font-size: 16px
+//   width: 100%
+//   height: 40px
+//   text-align: center
+//   background-color: #48a8da
+//   color: white
+//   margin-top: 20px
+//   &:hover
+//     background-color: #193665
 
 .second-header
   width: 100%
@@ -385,193 +378,6 @@ img.graph
   height: 200px
   background-size: cover
 
-
-.chats-container
-  display: flex
-  // .chat-pic
-  //   width: 48px
-  //   height: 48px
-  //   border-radius: 50%
-  //   // border: 1px solid grey
-  //   // background-color: grey
-  //   overflow: hidden
-  //   display: flex
-  //   justify-content: center
-  //   align-items: center
-  //   img
-  //     max-width: 100%
-  //     max-height: 100%
-  .chats-left-column
-    max-width: 312px
-    height: 100%
-    padding-top: 20px
-    border-right: 1px solid #dfe4e8
-    .chats-search
-      margin-right: 20px
-      width: 291px
-      height: 50px
-      border-radius: 2px
-      background-color: #d5dade
-      display: flex
-      align-items: center
-      background-image: url('../img/chats/icon-search.svg')
-      background-repeat: no-repeat
-      background-position: 18px center
-      input
-        background-color: rgba(0, 0, 0, 0)
-        border: 0px
-        color: #66666a
-        padding-left: 49px
-        padding-right: 10px
-        width: 291px
-        height: 100px
-        outline: none
-    .chats-list
-      margin-top: 42px
-      overflow-y: auto
-      height: 100%
-      min-height: 400px
-      max-height: 800px
-      a
-        text-decoration: none
-      .chat-preview
-        position: relative
-        width: 100%
-        height: 72px
-        display: flex
-        border-bottom: 1px solid #dfe4e8
-        background-color: rgba(0, 0, 0, 0)
-        transition: 0.3s background-color
-        &.current-chat-preview
-          background-color: #39a9dc
-          .chat-preview-username
-            color: white !important
-          .chat-preview-date, .chat-preview-text
-            color: white !important
-        .chat-unreads
-          position: absolute
-          background-color: #ffa726
-          padding-top: 2px
-          color: white
-          // font-weight: bold
-          border: 0px
-          box-shadow: 0px 3px 10px grey
-          width: 30px
-          height: 30px
-          border-radius: 50%
-          text-align: center
-          left: 5px
-          display: block
-          bottom: 2px
-        .chat-pic
-          margin-left: 16px
-          margin-right: 20px
-          display: flex
-          align-items: center
-          margin-top: 13px
-
-        .chat-preview-data
-          width: 210px
-          display: flex
-          justify-content: center
-          flex-direction: column
-          .chat-preview-row
-            display: flex
-            justify-content: space-between
-            width: 100%
-          .chat-preview-username
-            color: #071e40
-            font-size: 18px
-          .chat-preview-date, .chat-preview-text
-            font-size: 13px
-            color: #79828f
-            b
-              font-weight: bold
-              margin-right: 5px
-          .chat-preview-text
-            display: block
-            white-space: nowrap
-            overflow-x: hidden
-            text-overflow: ellipsis
-  .chats-right-column
-    padding-top: 20px
-    margin-left: 40px
-    width: 100%
-    height: 100%
-    .chats-messages-area
-      min-height: 400px
-      max-height: 800px
-      height: 100%
-      overflow-x: hidden
-      overflow-y: scroll
-    // div#chats-messages-area:empty:before
-    //   content: 'No messages here'
-    .chats-current-compainion > div
-      display: flex
-      align-items: center
-      font-size: 18px
-      color: #071e40
-      .chats-current-compainion-name
-        margin-left: 17px
-    .chats-message
-      &.system-message
-        display: block
-        text-decoration: none
-        border-radius: 1px
-        background-color: #f6f4ca
-        padding: 25px 30px
-        font-size: 15px
-        color: #071e40
-        margin: 30px 0
-      &.chats-message-from-you
-        text-align: right
-        .chats-message-text
-          background-color: #39a9dc !important
-          color: white !important
-      &.user-message
-        .chats-message-pic-column
-          display: inline-flex
-          margin-left: 10px
-          margin-right: 10px
-        .chats-message-wrapper
-          vertical-align: top
-          margin-top: 7px
-          display: inline-block
-          width: auto
-          max-width: 430px
-          text-align: left
-          .chats-message-text
-            display: inline-block
-            background-color: white
-            padding: 19px 20px 16px 20px
-          .chats-message-date
-            color: #79828f
-            font-size: 13px
-            margin-bottom: 30px
-    .chats-input
-      height: 50px
-      width: calc(100% + 40px)
-      margin-left: -40px
-      border-radius: 2px
-      background-color: #d5dade
-      input
-        width: calc(100% - 90px)
-        height: 100%
-        background-color: rgba(0, 0, 0, 0)
-        border: 0
-        // padding: 18px 0 17px 71px
-        padding: 18px 0 17px 41px
-        outline: none
-        vertical-align: middle
-      .chats-send-btn
-        background-image: url('../img/chats/icon-send.svg')
-        background-repeat: no-repeat
-        background-position: center center
-        display: inline-block
-        width: 90px
-        height: 100%
-        vertical-align: middle
-        cursor: pointer
 .smart-contract-comact
   word-break: break-all
   line-height: 15px
@@ -863,8 +669,8 @@ b
   margin-top: 15px
   & > div
     margin-right: 15px
-.container > h1
-  margin-top: 30px
+// .container > h1
+//   margin-top: 30px
 
 .file-upload
   // width: 150px !important

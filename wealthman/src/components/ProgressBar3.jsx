@@ -12,7 +12,21 @@ import '../css/ProgressBar3.sass';
   //(REQUIRED) page that will be shown after progress bar reaches 100%
   finishLink = "/agreement"
   //(REQUIRED) pages to show (ProgressBar3 notices, when number of pages change and renders progress bar correctly)
-  pages={questionsToPages}
+  pages={[
+    {
+      //(REQUIRED) link for this page
+      link: "page1",
+      //(OPTIONAL) while allowContinue is false, user can't continue to the next page
+      allowContinue: page1.value != "",
+      //(REQUIRED) component to render on this page
+      component: <Page1 />,
+    },
+    {
+      link: "page2",
+      allowContinue: page2.value != "",
+      component: <Page2 />,
+    },
+  ]}
   //(OPTIONAL) approximate number of pages
   approxLength={8}
 />

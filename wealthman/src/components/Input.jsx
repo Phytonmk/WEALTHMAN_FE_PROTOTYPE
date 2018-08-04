@@ -7,13 +7,15 @@ import '../css/Input.sass';
 
 <Input
   //(REQUIRED) value to show
-  value={this.state.status}
+  value={this.state.password}
   //(REQUIRED) function that sets the value
-  setValue={(value) => this.setState({status: value})}
+  setValue={(value) => this.setState({password: value})}
   //(OPTIONAL) type of the input (text or password for now)
-  type={this.props.type}
+  type={"password"}
   //(OPTIONAL) placeholder for the input
-  placeholder={this.props.placeholder}
+  placeholder={"enter password"}
+  //(OPTIONAL) error message when value is incorrect (if error undefined, field is normal, if error is "" or anything else, field is red)
+  error={this.state.incorrectPassword ? "incorrect password" : undefined}
 />
 */}
 
@@ -31,7 +33,7 @@ class Input extends Component {
         onChange={(event) => this.props.setValue(event.target.value)}
         type={this.props.type}
         placeholder={this.props.placeholder}
-        className="default"
+        className={"default " + (this.props.error ? "error" : "")}
       />
     );
   }

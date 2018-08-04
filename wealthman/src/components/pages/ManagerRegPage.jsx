@@ -26,8 +26,8 @@ class RegisterPage extends Component {
       alert('You should fill all Inputs to continue registration');
   }
   previousPage() {
-    var previousPages = thisvaluepreviousPages.slice();
-    if (previousPages0)
+    var previousPages = this.value.previousPages.slice();
+    if (previousPages.length == 0)
       return;
     var currentPage = previousPages.pop();
 

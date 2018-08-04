@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import myDate from './LevDate.jsx';
+import LevDate from './LevDate.jsx';
 import '../css/Sortable2.sass';
 
 {/*
@@ -101,6 +101,7 @@ class Sortable2 extends Component {
     this.setState({
       rowProperties: props.columns.map(column => {
         return {
+          key: column.property,
           name: column.property,
           width: (column.width ? column.width : (99 / props.columns.length) + "%"),
         };
@@ -160,7 +161,7 @@ class Sortable2 extends Component {
               case "number":
                 return this.state.order ? Number(sortableA) - Number(sortableB) : Number(sortableB) - Number(sortableA);
               case "date":
-                let dateA = new myDate(sortableA);
+                let dateA = new LevDate(sortableA);
                 return this.state.order ? dateA.less(sortableB) : !dateA.less(sortableB);
               case "unsortable":
                 return true;
@@ -171,7 +172,7 @@ class Sortable2 extends Component {
           .slice(this.state.offset, this.state.offset + this.state.maxShown)
           .map(row => {
             if (this.props.linkProperty)
-              return <Link to={row[this.props.linkProperty]}>
+              return <Link to={row[this.props.linkProperty]} key={row.id}>
                 {this.renderListing(row)}
               </Link>;
             return this.renderListing(row)
@@ -194,7 +195,7 @@ class Sortable2 extends Component {
               <div
                 className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
                 style={{width: property.width}}
-                key={property.name}
+                key={row.id + property.name}
               >
                 {(cell.hasOwnProperty("render") && cell.hasOwnProperty("value") ? cell.render : (cell))}
               </div>
@@ -217,7 +218,7 @@ class Sortable2 extends Component {
               className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
               style={{"width": this.state.rowProperties[index].width}}
               title={column.tooltip ? column.tooltip : column.title}
-              key={column.property}
+              key={"header" + column.property}
             >
               {
                 typeof column.title == "string" ?
