@@ -120,7 +120,7 @@ class PortfoliosPage extends Component {
       if (this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
         price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
       const value = (portfolio.value * price / (currentCurrency.price !== 0 ? currentCurrency.price : 1)).toFixed(3);
-      
+
       const profitGraph =  <AreaChart
         margin={{top: 0, right: 0, bottom: 0, left: 0}}
         width={80}
@@ -222,7 +222,7 @@ class PortfoliosPage extends Component {
           data={subheaders}
           initialTab={this.state.currentTab}
           onChange={(tab) => this.setState({currentTab: tab})}
-        />      
+        />
       </div>
     );
   }

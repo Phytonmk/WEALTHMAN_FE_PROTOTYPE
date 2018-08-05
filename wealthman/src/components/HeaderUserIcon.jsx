@@ -44,14 +44,14 @@ class HeaderUserIcon extends Component {
       });
   }
 
-  // componentWillMount() {
-    // $(window).click(event => {
-      // if (this.state.opened && !event.target.className.includes("header-user-icon") && !event.target.className.includes("default-avatar-user")) {
-        // this.setState({opened: false});
-        // alert(event.target.className);
-      // }
-    // });
-  // }
+  componentWillMount() {
+    $(window).click(event => {
+      if (this.state.opened &&
+        !event.target.className.includes("header-user-icon") &&
+        !event.target.className.includes("default-avatar-user"))
+        this.setState({opened: false});
+    });
+  }
 
   render() {
     if (!this.props.userData)
@@ -65,32 +65,34 @@ class HeaderUserIcon extends Component {
       >
         {
           this.state.opened ?
-          <div className="options" style={{width: 150}}>
-            <Link to={'/account'} style={{textDecoration: 'none'}}>
+          <div className="options">
+            <Link to={'/account'}>
               <div className="option">
                 {this.props.userData ? (this.props.userData.name || this.props.userData.company_name || '') + ' ' + (this.props.userData.surname || '') : 'Account settings'}
               </div>
             </Link>
-            <Link to={'/chats'} style={{textDecoration: 'none'}}>
+            <Link to={'/chats'}>
               <div className="option">
                 Chats
               </div>
             </Link>
-            <Link to={'/requests'} style={{textDecoration: 'none'}}>
+            <Link to={'/requests'}>
               <div className="option">
                 My requests
               </div>
             </Link>
-            <div className="option" onClick={() => this.logout()}>
-              Log out
-            </div>
+            <Link to={'/'}>
+              <div className="option" onClick={() => this.logout()}>
+                Log out
+              </div>
+            </Link>
           </div>
           : ""
         }
         <Avatar
           size="58px"
           src={this.props.userData ? api.imgUrl(this.props.userData.img) : ''}
-          />
+        />
       </div>
     );
   }

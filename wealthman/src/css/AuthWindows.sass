@@ -22,11 +22,11 @@
     padding: 40px
     background-color: white
     border-radius: 5px
-    height: 520px
+    // height: 520px
     position: relative
     overflow-y: auto
     &.registration-box
-      height: 635px
+      // height: 635px
     .close-modal-btn
       cursor: pointer
       background-image: url('../img/close.svg')
@@ -40,22 +40,28 @@
     h2
       font-size: 22px
       color: #071e40
-      font-weight: bold
+      font-weight: 500
+      margin-bottom: 10px
     small
-      font-size: 15px
+      font-size: 13px
+      margin-bottom: 10px
       a
         text-transform: none !important
         color: #79828f !important
         text-decoration: underline !important
+    span
+      color: #79828f
     .row
-      margin-top: 24px
-      &.firts-input-row
+      // margin-top: 24px
+      &.first-input-row
         margin-top: 34px
     label
       font-size: 13px
       color: #071e40
       margin-bottom: 11px
       text-transform: uppercase
+      display: table
+      float: left
     input
       width: 100%
       padding: 17px
@@ -69,12 +75,14 @@
       float: right
       font-size: 13px
       color: #39a9dc
+      display: table
+      padding-top: 10px
+      margin-bottom: 11px
     .submit-row
       text-align: center
-      button
-        padding-left: 49px 
-        padding-right: 49px 
-        margin-bottom: 5px
+      .big-blue-button
+        padding: 0 49px
+        margin: 16px 0
       a
         font-size: 13px
         color: #39a9dc
@@ -90,7 +98,7 @@
       left: 0
       margin-top: 20px
     .footer-row
-      height: 0px
+      // height: 0px
       margin-top: 70px
       color: #79828f
       font-size: 15px
@@ -107,8 +115,10 @@
         background-color: white
         height: 36px
         line-height: 0.6
-        font-weight: bold
+        font-weight: 500
         text-transform: uppercase
   .auth-btn
     float: none !important
     margin-right: 0 !important
+  .another-auth-window-link
+    cursor: pointer

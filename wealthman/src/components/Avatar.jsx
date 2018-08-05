@@ -10,7 +10,7 @@ import '../css/Avatar.sass';
   src="/img/avatar.jpg"
   //(OPTIONAL) width and height of the Avatar (default 40 px)
   size="100px"
-  //(OPTIONAL) avatar icon for "user" or "company" (default "user")
+  //(OPTIONAL) avatar icon for "user"/"company"/"admin" (default "user")
   type="company"
 />
 */}
@@ -19,31 +19,50 @@ class Avatar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageLoaded: true,
+      imageLoaded: false,
       orientation: "landscape",
       transform: 'translateX(0%) translateY(0%)'
     };
   }
 
-  componentDidMount() {
-    // if (this.props.src) {
-      let image = new Image();
+  componentWillMount() {
+    this.handleImageLoad(this.props.src);
+  }
 
-      image.src = " ";
-      image.onload = () => {
-        const landscape = image.width > image.height
-        console.log(image.width, image.height)
-        this.setState({
-          imageLoaded: true,
-          orientation: landscape ? "landscape" : "portrait",
-          transform: `translate${landscape ? 'X' : 'Y'}(-${(landscape ? (image.width / image.height) : (image.height / image.width)) * 10}%)`
-        });
-      };
-      image.src = this.props.src;
-    // }
+  componentWillReceiveProps(nextProps) {
+    this.handleImageLoad(nextProps.src);
+  }
+
+  handleImageLoad(src) {
+    let image = new Image();
+
+    image.src = " ";
+    image.onload = () => {
+      const landscape = image.width > image.height
+      console.log(image.width, image.height)
+      this.setState({
+        imageLoaded: true,
+        orientation: landscape ? "landscape" : "portrait",
+        transform: `translate${landscape ? 'X' : 'Y'}(-${(landscape ? (image.width / image.height) : (image.height / image.width)) * 10}%)`
+      });
+    };
+    image.src = src;
   }
 
   render() {
+    let defaultAvatar;
+    switch(this.props.type) {
+      case "company":
+        defaultAvatar = <div className="default-avatar-company" />;
+        break;
+      case "admin":
+        defaultAvatar = <div className="default-avatar-admin" />;
+        break;
+      default:
+        defaultAvatar = <div className="default-avatar-user" />;
+        break;
+    }
+
     return (
       <div
         className="avatar"
@@ -53,12 +72,7 @@ class Avatar extends Component {
           borderRadius: this.props.size ? this.props.size : "40px",
         }}
       >
-        {
-          this.props.type == "company" ?
-            <div className="default-avatar-company" />
-            :
-            <div className="default-avatar-user" />
-        }
+        {defaultAvatar}
         {
           this.props.src ?
             <img

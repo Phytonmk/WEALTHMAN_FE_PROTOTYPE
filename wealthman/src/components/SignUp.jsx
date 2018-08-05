@@ -7,6 +7,8 @@ import auth from './auth'
 import '../css/AuthWindows.sass';
 import Form from './pages/registration/Form';
 import questions from './pages/registration/questions';
+import Input from './Input'
+
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -21,7 +23,7 @@ export default class SignUp extends Component {
     }
   }
   hide(event=({target: {classList: {contains: () => false}}}), forced=false) {
-    if (forced || event.target.classList.contains('close-modal-btn') || 
+    if (forced || event.target.classList.contains('close-modal-btn') ||
           event.target.classList.contains('modal-wrapper'))
       this.props.hide()
   }
@@ -68,23 +70,23 @@ export default class SignUp extends Component {
           <div className="close-modal-btn">
           </div>
           <h2>Sign up to WealthMan{this.props.forManagers ? ' as manager.' : '.'}</h2>
-          <small>Enter your details below.</small>
+          <span>Enter your details below.</span>
           {this.state.step !== 0 ? '' : <React.Fragment>
-          <div className="row firts-input-row">
+          <div className="row first-input-row">
             <label>Email address</label>
-            <input value={this.state.login} onChange={(event) => this.setState({login: event.target.value})} type="text" placeholder="username@email.com" />
+            <Input value={this.state.login} setValue={value => this.setState({login: value})} placeholder="username@email.com" />
           </div>
           <div className="row">
             <label>Password</label>
-            <input value={this.state.password} onChange={(event) => this.setState({password: event.target.value})} type="password" placeholder="Enter your password" />
+            <Input value={this.state.password} setValue={value => this.setState({password: value})} type="password" placeholder="Enter your password" />
           </div>
           <div className="row">
-            <input value={this.state.passwordRepeat} onChange={(event) => this.setState({passwordRepeat: event.target.value})} type="password" placeholder="Repeat your password" />
+            <Input value={this.state.passwordRepeat} setValue={value => this.setState({passwordRepeat: value})} type="password" placeholder="Repeat your password" />
           </div>
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.state.password === this.state.passwordRepeat ? this.setState({step: 1}) : alert('Passwords are not equal')}>Continue</button>
             <br />
-            <small>By clicking “Continue” I agree to <a href="http://google.com" target="_blank">Terms of Service</a> and <a href="http://google.com" target="_blank">Privacy Policy</a></small>
+            <small>By clicking “Continue” I agree to <Link to="/user-agreement" target="_blank">Terms of Service</Link> and <Link to="/user-agreement" target="_blank">Privacy Policy</Link></small>
           </div>
           <div className="devider"></div>
           <div className="row footer-row">

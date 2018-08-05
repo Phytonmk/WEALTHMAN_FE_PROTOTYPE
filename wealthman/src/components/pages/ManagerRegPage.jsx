@@ -23,10 +23,10 @@ class RegisterPage extends Component {
           setPage("manager-detailing")})
         .catch(console.log);
     else
-      alert('You should fill all inputs to continue registration');
+      alert('You should fill all Inputs to continue registration');
   }
   previousPage() {
-    var previousPages = this.props.previousPages.slice();
+    var previousPages = this.value.previousPages.slice();
     if (previousPages.length == 0)
       return;
     var currentPage = previousPages.pop();
@@ -48,13 +48,13 @@ class RegisterPage extends Component {
                 <b>Email</b>
               </div>
               <div className="row">
-                <input type="text" value={this.state.login} onChange={(event) => this.setState({ login: event.target.value })} placeholder="me@example.com" />
+                <Input value={this.state.login} setValue={value => this.setState({ login: value })} placeholder="me@example.com" />
               </div>
               <div className="row">
                 <b>Password</b>
               </div>
               <div className="row">
-                <input type="password" value={this.state.password} onChange={(event) => this.setState({ password: event.target.value })} placeholder="password" />
+                <Input type="password" value={this.state.password} setValue={value => this.setState({ password: value })} placeholder="password" />
               </div>
               <div className="row-padding">
               <Link to={("/manager" + this.props.currentManager)}>

@@ -102,7 +102,7 @@ class ManagerPage extends Component {
                 <h1>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
                 <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
               </div>
-              
+
             </div>
 
             <div className="column right">
@@ -150,7 +150,7 @@ class ManagerPage extends Component {
                   <b>Minimal investment:</b> {service.min} $
                 </div>
                 <div className="row">
-                  <b>Metodology:</b> {service.metodology}
+                  <b>Methodology:</b> {service.methodology}
                 </div>
                 <div className="row">
                   <b>Philosofy:</b> {service.philosofy}
@@ -165,7 +165,7 @@ class ManagerPage extends Component {
                 </div>
                 :
                 <div className="row">
-                  {manager.company === null ? 'Lonely manager' : 
+                  {manager.company === null ? 'Lonely manager' :
                   <Link to={"/company/" + manager.company}>
                     Manager of company
                   </Link>}
@@ -177,8 +177,8 @@ class ManagerPage extends Component {
                   <div className="row">
                     Company's managers
                   </div>
-                  {(!this.state.companyManagers || this.state.companyManagers.length === 0) ? <small>no managers</small> : 
-                  this.state.companyManagers.map((manager, i) => 
+                  {(!this.state.companyManagers || this.state.companyManagers.length === 0) ? <small>no managers</small> :
+                  this.state.companyManagers.map((manager, i) =>
                     <Link to={'/manager/' + manager._id}>
                     <div className="row comapy-managers" key={i}>
                       <Avatar src={api.imgUrl(manager.img)} />

@@ -213,10 +213,22 @@ const niceNumber = (number) => {
 
 const camelize = (string) => {
   return string
-  .split(" ")
+  .replace(/[^A-Za-z -]/g, '')
+  .split(/ |-/)
   .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
   .reduce((a, b) => a + b);
 }
 
+const dasherize = (string) => {
+  return string
+  .replace(/[^A-Za-z -]/g, '')
+  .replace(/ /g, '-')
+  .toLowerCase();
+}
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber };
+const clamp = (number, min, max) => {
+  return Math.max(min, Math.min(number, max));
+}
+
+
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, camelize, dasherize, clamp };

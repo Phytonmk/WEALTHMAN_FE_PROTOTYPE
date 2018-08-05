@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import Dropdown from '../../Dropdown.jsx';
+import Dropdown from '../../Dropdown';
+import Input from '../../Input';
 import { api } from '../../helpers'
 
 class RiskProfile extends Component {
@@ -40,15 +41,15 @@ class RiskProfile extends Component {
         <div className="account-box">
           <small className="blue">1. PERSONAL INFORMATION</small>
           <small>FIRST NAME</small>
-          <input
+          <Input
             value={this.state.firstName}
-            onChange={event => this.setState({firstName: event.target.value})}
+            setValue={value => this.setState({firstName: value})}
             placeholder="Enter your name"
           />
           <small>LAST NAME</small>
-          <input
+          <Input
             value={this.state.lastName}
-            onChange={event => this.setState({lastName: event.target.value})}
+            setValue={value => this.setState({lastName: value})}
             placeholder="Enter last name"
           />
           <small>NATIONALITY</small>
@@ -66,15 +67,15 @@ class RiskProfile extends Component {
         <div className="account-box">
           <small className="blue">2. ADDRESS INFORMATION</small>
           <small>STREET ADDRESS</small>
-          <input
+          <Input
             value={this.state.address}
-            onChange={event => this.setState({address: event.target.value})}
+            setValue={value => this.setState({address: value})}
             placeholder="Enter your address"
           />
           <small>POSTAL CODE</small>
-          <input
+          <Input
             value={this.state.postalCode}
-            onChange={event => this.setState({postalCode: event.target.value})}
+            setValue={value => this.setState({postalCode: value})}
           />
           <small>CITY</small>
           <Dropdown

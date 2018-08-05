@@ -70,6 +70,7 @@ class InvestorsPage extends Component {
         type: "unsortable",
       }
     ];
+
     let sortableInvestors = this.state.investors.map((investor, i) => {
       const name = (investor.name || '') + " " + (investor.surname || '');
       return {

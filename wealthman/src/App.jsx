@@ -7,7 +7,6 @@ import Loadable from 'react-loadable';
 
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
-// import Sortable from './components/Sortable.jsx';
 
 import './css/main.sass';
 import './css/design.sass';
@@ -20,9 +19,6 @@ import defaultState from './redux/default-state';
 import auth from './components/auth.js';
 
 // pages
-import loginPage from './components/pages/loginPage';
-import login2Page from './components/pages/Login2Page';
-import RegisterPage from './components/pages/RegisterPage';
 import InvestorRegistorPage from './components/pages/registration/InvestorRegistorPage';
 import AgreementPage from './components/pages/AgreementPage';
 import ManagerRegPage from './components/pages/ManagerRegPage';
@@ -52,6 +48,9 @@ import FAQPage from './components/pages/FAQPage';
 import SupportedBrowsersPage from './components/pages/SupportedBrowsersPage';
 import ContactPage from './components/pages/ContactPage';
 import InvestorPage from './components/pages/InvestorPage';
+import QuestionsPage from './components/pages/QuestionsPage';
+import UserAgreementPage from './components/pages/UserAgreementPage';
+import AboutPage from './components/pages/AboutPage';
 //
 
 const formAnswers = [];
@@ -132,10 +131,8 @@ class App extends Component {
         <Switch>
 
           <Route exact path="/" component={this.state.user === -1 || this.state.user === 0 ? ManagersPage : RequestsPage} />
-          <Route path="/login" component={loginPage} />
-          <Route path="/totallydifferentlogin"  component={login2Page} />
           <Route path="/account" component={AccountPage} />
-          <Route path="/about" render={() => this.renderAboutUsPage()} />
+          <Route path="/about" component={AboutPage} />
           <Route path="/origin" render={() => this.renderOriginPage()} />
           <Route path="/invest" render={() => this.renderInvestPage()} />
           <Route path="/dashboard" component={DashboardPage} />
@@ -168,7 +165,6 @@ class App extends Component {
           <Route path="/signagreement/:id" component={SignAgreementPage} />
           <Route path="/thanks" render={() => this.renderThanksPage()} />
           <Route path="/thanks2" render={() => this.renderThanks2Page()} />
-          <Route path="/register" component={RegisterPage} />
           <Route path="/money/:id" component={MoneyPage} />
           <Route path="/kyc/:manager/:id" component={KYCPage} />
           <Route path="/investor register" component={InvestorRegistorPage} />
@@ -180,8 +176,6 @@ class App extends Component {
           <Route path="/faq" component={FAQPage} />
           <Route path="/team" render={() => this.renderTeamPage()} />
           <Route path="/contact" component={ContactPage} />
-          <Route path="/investor-ua" render={() => this.renderInvestorUserAgreementPage()} />
-          <Route path="/manager-ua" render={() => this.renderManagerUserAgreementPage()} />
 
           <Route path="/email" render={() => this.renderEmailPage()} />
           <Route path="/metamask" render={() => this.renderMetamaskPage()} />
@@ -197,6 +191,10 @@ class App extends Component {
           <Route path="/withdraw/:request" component={WithdrawPage} />
           <Route path="/investors" component={InvestorsPage} />
 
+          <Route path="/questions/:id" component={QuestionsPage} />
+          <Route path="/questions" render={({history}) => { history.push('/questions/first-question'); return null;}} />
+          <Route path="/user-agreement" component={UserAgreementPage} />
+
         </Switch>
     );
   }
@@ -204,26 +202,6 @@ class App extends Component {
 
   renderManagerAccountPage() {
     this.setPage("account");
-  }
-
-  renderAboutUsPage() {
-    var text = "Wealthman is a decentralized platform for development, execution and marketing of wealth management service. The platform is embedded with strong antifraud features allowing autonomous robo-advisors and human-driven digital asset management services to be secure for investors.\n\nMarketplace of wealth management service with efficiency metrics.\n\nInvestment portfolio is being rebalanced by chosen wealth manager through Wealthman DApp.\n\nManaged assets could be observed and accessed by private key at any time."
-    return (
-      <div className="container">
-        <div className="box">
-          <h2>About us</h2>
-          <p>{newLines(text)}</p>
-          <h4>High competency</h4>
-          <p>Wealthman evaluates the degree to which the robo-advisors and wealth managers meet objectives set by investors. Ranking based on such findings makes service effectiveness transparent and motivates the demand for quality. Competition lead to the benefit of the quality of wealth management service</p>
-          <h4>Assets security</h4>
-          <p>Wealthman embedded with strong antifraud desing, that protects against deception. Decentralized service execution and assets storage eliminate capital risks caused by errors/vulnerability of central party.</p>
-          <h4>Trustfull</h4>
-          <p>Being decentralized, Wealthman wins in situations where there is lack of trust of investor in wealth manager’s competency, honesty, and infrastructure reliability.</p>
-          <h4>Our vision</h4>
-          <p>In our long-term vision WealthMan is the most intelligent, safest and fastest platform for wealth management that gains accepted industry-wide. It is our belief that decentralized autonomous robo-advisors based on smart contracts will dislodge centralized robo-advisors and human-driven wealth management service. Registers of global assets will be decentralized. Thus, the decentralized robo-advisors will dominate the market of wealth management services.</p>
-        </div>
-      </div>
-    );
   }
 
   renderOriginPage() {
@@ -762,30 +740,6 @@ class App extends Component {
       </div>
     );
   }
-  renderInvestorUserAgreementPage() {
-    return (
-      <div>
-        <div className="container">
-          <div className="box">
-            <h3>Investor User Agreement</h3>
-            {newLines(this.state.agreement)}
-          </div>
-        </div>
-      </div>
-    );
-  }
-  renderManagerUserAgreementPage() {
-    return (
-      <div>
-        <div className="container">
-          <div className="box">
-            <h3>Manager User Agreement</h3>
-            {newLines(this.state.agreement)}
-          </div>
-        </div>
-      </div>
-    );
-  }
   renderMetamaskPage() {
     return (
       <div>
@@ -844,11 +798,6 @@ class App extends Component {
         <article className="page">
           <Header
             user={this.state.user}
-            unloggedLinks={this.state.unloggedLinks}
-            loggedInvestorLinks={this.state.loggedInvestorLinks}
-            loggedManagerLinks={this.state.loggedManagerLinks}
-            loggedSuplierLinks={this.state.loggedSuplierLinks}
-            loggedCompanyLinks={this.state.loggedCompanyLinks}
           />
           <div className="content">
             {this.renderPage()}

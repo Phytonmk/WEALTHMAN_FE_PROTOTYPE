@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 
 import { api, setCookie, getCookie } from './helpers'
 import auth from './auth'
+
+import Input from './Input'
+
 import '../css/AuthWindows.sass'
 
 export default class SignIn extends Component {
@@ -16,7 +19,7 @@ export default class SignIn extends Component {
     }
   }
   hide(event, forced=false) {
-    if (forced || event.target.classList.contains('close-modal-btn') || 
+    if (forced || event.target.classList.contains('close-modal-btn') ||
           event.target.classList.contains('modal-wrapper'))
       this.props.hide()
   }
@@ -49,17 +52,19 @@ export default class SignIn extends Component {
           <div className="close-modal-btn">
           </div>
           <h2>Sign in to WealthMan.</h2>
-          <small>Enter your details below.</small>
-          <div className="row firts-input-row">
+          <span>Enter your details below.</span>
+          <div className="row first-input-row">
             <label>Email address</label>
-            <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" />
+            {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" /> */}
+            <Input value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />
           </div>
           <div className="row">
             <label>Password</label>
             <Link to={'#'} className="forgot-password-link">
               Forgot password?
             </Link>
-            <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" />
+            {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" /> */}
+            <Input type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
           </div>
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>
@@ -69,7 +74,7 @@ export default class SignIn extends Component {
           </div>
           <div className="devider"></div>
           <div className="row footer-row">
-            Don’t have an account?
+            <span>Don’t have an account?</span>
             <a onClick={() => this.props.openSignIn()} className="another-auth-window-link">Register now</a>
           </div>
         </div>

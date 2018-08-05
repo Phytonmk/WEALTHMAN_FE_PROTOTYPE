@@ -11,6 +11,9 @@ import { default as chatsApi } from './chatsApi'
 import ChatPreview from './ChatPreview';
 import Message from './Message';
 import Avatar from '../../Avatar'
+import Search from '../../Search'
+
+import '../../../css/chats.sass'
 
 let lastSelectedChat = undefined;
 class ChatPage extends Component {
@@ -49,13 +52,13 @@ class ChatPage extends Component {
     this.setState({chats, messages, typingMsg: ''});
     this.scrollDown();
   }
-  scrollDown() {
-    setTimeout(() => {
-      const msgArea = document.querySelector('#chats-messages-area');
-      if (msgArea !== null)
-        msgArea.scrollTop = msgArea.scrollHeight;
-    }, 0)
-  }
+  // scrollDown() {
+  //   setTimeout(() => {
+  //     const msgArea = document.querySelector('#chats-messages-area');
+  //     if (msgArea !== null)
+  //       msgArea.scrollTop = msgArea.scrollHeight;
+  //   }, 0)
+  // }
   loadMessages(chat, offset) {
     if (/[0-9]+/.test(chat))
       chatsApi.getMessages(chat, offset)
@@ -80,7 +83,7 @@ class ChatPage extends Component {
               else
                 from = 'system';
               return {
-                from, 
+                from,
                 text: message.text,
                 date: message.date,
                 link: message.link
@@ -166,11 +169,14 @@ class ChatPage extends Component {
       this.loadMessages(this.props.match.params.chat);
     }
     return (
-      <div>
-        <div className="container chats-container">
+      <div id="chats-page">
+        <div className="container">
           <div className="chats-left-column">
             <div className="chats-search">
-              <input type="text" value={this.state.searchQuery} placeholder="Search" onChange={(event) => this.setState({searchQuery: event.target.value})}/>
+              <Search
+                value={this.state.searchQuery}
+                setValue={value => this.setState({searchQuery: value})}
+              />
             </div>
             <div className="chats-list">
               {this.state.chats.map((chat, i) => <ChatPreview
@@ -219,7 +225,8 @@ class ChatPage extends Component {
             </div>
             <div className="chats-input">
               <input onKeyDown={(event) => this.checkIfEnter(event)} type="text" value={this.state.typingMsg} placeholder="Type something to send..." onChange={(event) => this.setState({typingMsg: event.target.value})}/>
-              <div className="chats-send-btn" onClick={() => this.sendMessage()}></div>
+              <button className="attach-photo" />
+              <button className="send" onClick={() => this.sendMessage()} />
             </div>
           </div>
         </div>
