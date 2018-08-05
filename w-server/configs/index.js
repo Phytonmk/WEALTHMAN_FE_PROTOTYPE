@@ -5,9 +5,17 @@ if (process.argv.includes('--production') ||
     process.argv.includes('--product'))
   product = true
 
+const 
+  productConfigs = require('./prod.config'),
+  devConfigs = require('./dev.config'),
+  commonConfigs = require('./common.configs')
+
 if (product)
   module.exports = Object.assign(
-    require('./prod.config'),
+    commonConfigs,
+    productConfigs,
     {productionMode: true})
 else
-  module.exports = require('./dev.config')
+  module.exports = Object.assign(
+    commonConfigs,
+    devConfigs)

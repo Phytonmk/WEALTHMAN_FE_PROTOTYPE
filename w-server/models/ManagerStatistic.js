@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const ManagerStatisticSchema = mongoose.Schema({
   manager: String,
-  lastUpdate: Date,
   dates: [Date],
   aum: [Number],
   portfolios: [{

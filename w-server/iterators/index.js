@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const timeTable = {
-  default: 60 * 3
+
+const timeTable = { //seconds
+  default: 10,
+  stocks: 60 * 60 * 12
 }
 const timeout = 60 * 25
 
@@ -18,12 +20,13 @@ module.exports = (app) => {
       workEnd: 0
     })
   });
-  setInterval(() => {
+  const interval = () => { 
     for (let worker of workers) {
+      // console.log(`Wordker ${worker.name} workingProcess: ${worker.workingProcess}`)
       if (!worker.workingProcess &&
        worker.workEnd + (timeTable[worker.name] || timeTable.default) * 1000 < Date.now()) {
+        worker.workingProcess = true
         worker.workStart = Date.now()
-        // console.log(`  -Iterator "${worker.name}" started`)
         worker.module()
           .then(() => console.log(`  -Iterator ${worker.name} completed work`))
           .catch((err) => console.log(`  -Iterator ${worker.name} failed`, err))
@@ -35,5 +38,6 @@ module.exports = (app) => {
         worker.workingProcess = false
       }
     }
-  }, 1000 * 5)
+  }
+  setInterval(interval, 1000 * 5)
 };

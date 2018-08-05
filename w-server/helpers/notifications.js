@@ -4,20 +4,21 @@ const io = require('socket.io-client')
 
 const Notification = require('../models/Notification')
 const Request = require('../models/Request')
-const User = require('../models/User')
 const Investor = require('../models/Investor')
 const Manager = require('../models/Manager')
 const Company = require('../models/Company')
-
-const mailer = require('../helpers/mailer')
-
+// const socket = require('socket.io-client')(configs.chatsAccess.url)
 let socket = null
 axios.get('http://' + configs.chatsAccess.host + ':2905/chats-api/ws')
   .then((res) => {
     socket = io('ws://' + configs.chatsAccess.host + ':' + res.data.ws_port)
+    // socket.on('connect', () => console.log('connected to sockets'))
+    // socket.on('disconnect', () => console.log('disconnected from sockets'));
   })
   .catch((e) => console.log('Unabe to connect to chats'))
 module.exports = (notificationData) => new Promise (async (resolve, reject) => {
+  // if (request === undefined || title === undefined)
+  //   reject('Request or title undfined: ', request, title)
   if (!notificationData.title)
     notificationData.title = 'No title'
 
@@ -43,22 +44,8 @@ module.exports = (notificationData) => new Promise (async (resolve, reject) => {
   
   await notification.save()
 
-  const link = notification.request ? '/request/' + notification.request : ''
-
   if (notification.important) {
-    for (let recipeint of notification.usersToNotify) {
-      const user = User.findById(recipeint)
-      if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(user.login)) {
-        await mailer({
-          Recipients: [{ Email: user.login }],
-          Subject: 'Confirm your email',
-          'Text-part': `You have an important notfication on platform.wealthman.io\n\n${notification.title}\n${notification.subtitle}\n${link ? `\nLearn more ${link}` : ''}`,
-          'Html-part': `You have an important notfication on platform.wealthman.io\n\n<b>${notification.title}</b>\n${notification.subtitle}\n${link ? `\n<a href="${link}">Learn more</a>` : ''}`,
-          FromEmail: `no-reply@${currentDomain}`,
-          FromName: 'Wealthman notification'
-        })
-      }
-    }
+    // send to email
   }
   console.log(socket)
   if (socket !== null) {
@@ -66,7 +53,7 @@ module.exports = (notificationData) => new Promise (async (resolve, reject) => {
       type: 'system_message',
       password: configs.chatsAccess.password,
       text: notification.title + (notification.subtitle ? ('\n' + notification.subtitle) : ''),
-      link,
+      link: notification.request ? '/request/' + notification.request : '',
       firstId: notification.usersToNotify[0] || '0',
       secondId: notification.usersToNotify[1] || '0',
     })

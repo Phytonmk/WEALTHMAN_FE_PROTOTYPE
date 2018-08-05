@@ -29,4 +29,5 @@ module.exports = () => new Promise(async (resolve, reject) => {
     })
     await statistic.save()
   }
+  resolve()
 })

@@ -11,6 +11,7 @@ Stock.find({})
   .then(stocks => 
     stocks.forEach(stock =>
       tokenTitles[stock.name] = stock.title))
+setTimeout(() => console.log(tokenTitles), 1000)
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'waiting for deposit'});
@@ -40,7 +41,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       await request.save();
       for (let token of smartContract.currencies) {
         const order = new Order({
-          token_name: tokenTitles[token.currency]/*.toUpperCase()*/,
+          token_name: tokenTitles[token.currency],
           whole_eth_amount: request.value,
           percent: token.percent,
           contract_address: smartContract.address
@@ -49,4 +50,5 @@ module.exports = () => new Promise(async (resolve, reject) => {
       }
     }
   }
+  resolve()
 })

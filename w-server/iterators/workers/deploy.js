@@ -41,4 +41,5 @@ module.exports = () => new Promise(async (resolve, reject) => {
       }
     }
   }
+  resolve()
 })

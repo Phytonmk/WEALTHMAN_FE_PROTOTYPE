@@ -38,6 +38,7 @@ module.exports = (app) => {
         period: req.body.period,
         status: 'pending',
         max_deviation: req.body.max_deviation,
+        commissions_frequency: req.body.commissions_frequency
       })
       // res.status(404);
       // res.end('');
@@ -50,6 +51,7 @@ module.exports = (app) => {
         perfomance_fee: req.body.fees.perfomance_fee,
         front_fee: req.body.fees.front_fee,
         max_deviation: req.body.max_deviation,
+        commissions_frequency: req.body.commissions_frequency
       });
     }
     const existsPortfolio = await Portfolio.findOne({request: request._id, state: 'draft'});

@@ -27,7 +27,8 @@ class PortfolioCreationPage extends Component {
       managment_fee: '',
       perfomance_fee: '',
       front_fee: '',
-      max_deviation: '',
+      max_deviation: '10',
+      commissions_frequency: '7',
       initiatedByManager: false,
       value: '',
       period: '',
@@ -39,7 +40,7 @@ class PortfolioCreationPage extends Component {
       .then((res) => {
         const tokens = res.data.map((token, i) => { return {
           id: i,
-          icon: <img src={token.token_img} className="token-icon" />,
+          icon: <img src={token.token_img ? api.imgUrl(token.token_img) : ''} className="token-icon" />,
           name: token.name,
           volume: token.volume,
           price: token.last_price,
@@ -60,6 +61,7 @@ class PortfolioCreationPage extends Component {
           perfomance_fee: res.data.request.perfomance_fee,
           front_fee: res.data.request.front_fee,
           max_deviation: res.data.request.max_deviation,
+          commissions_frequency: res.data.request.commissions_frequency,
         });
       })
       .catch((e) => {
@@ -74,6 +76,7 @@ class PortfolioCreationPage extends Component {
                 perfomance_fee: 12,
                 front_fee: 12,
                 max_deviation: 10,
+                commissions_frequency: 7,
                 request: {
                   status: 'not created'
                 }
@@ -179,6 +182,7 @@ class PortfolioCreationPage extends Component {
         front_fee: this.state.front_fee,
       },
       max_deviation: this.state.max_deviation,
+      commissions_frequency: this.state.commissions_frequency,
       value: this.state.value,
       period: this.state.period,
       comment: this.state.comment,
@@ -213,6 +217,7 @@ class PortfolioCreationPage extends Component {
           <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => changingAvalible ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
           <br />
           <div className="row">Max deviation:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.max_deviation} onChange={(event) => changingAvalible ? this.setState({max_deviation: event.target.value}) : ''}/> %</div>
+          <div className="row">frequency of commission payments:</div><div className="row"><input type="number" step="5" min="0" value={this.state.commissions_frequency} onChange={(event) => changingAvalible ? this.setState({commissions_frequency: event.target.value}) : ''}/> Days</div>
         </div>
       break;
       case 'select': 

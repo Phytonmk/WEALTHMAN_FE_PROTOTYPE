@@ -7,7 +7,8 @@ const OrderSchema = mongoose.Schema({
   whole_eth_amount: Number,
   percent: Number,
   contract_address: String,
-  cost: Number
+  cost: Number,
+  quantity: Number
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

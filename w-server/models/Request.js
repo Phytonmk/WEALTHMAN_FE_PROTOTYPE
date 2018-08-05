@@ -25,8 +25,9 @@ const RequestSchema = mongoose.Schema({
   managment_fee: Number,
   perfomance_fee: Number,
   front_fee: Number,
-  investing_reason: String,
+  commissions_frequency: {type: Number, default: 7},
   max_deviation: {type: Number, default: 10},
+  investing_reason: String
 });
 
 module.exports = mongoose.model('Request', RequestSchema);
