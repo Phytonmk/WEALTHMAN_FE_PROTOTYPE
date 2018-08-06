@@ -16,8 +16,6 @@ const mailer = require('../../helpers/mailer')
 const currentDomain = 'platform.wealthman.io'
 const salt = 'super salt'
 
-
-
 const genToken = (user) => {
   const token = 
     crypto.createHash('md5')
@@ -75,6 +73,62 @@ module.exports = (app) => {
     await emailConfirmation.save()
     res.send({token, confirmToken}) // remove confirmToken from response
     console.log('reg compelted')
+    res.end()
+  })
+  app.post('/api/register-new-client', async (req, res, next) => {
+    const ManagersAccessToken = await Token.findOne({token: req.body.accessToken});
+    if (ManagersAccessToken === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    const manager = await Manager.findOne({user: ManagersAccessToken.user});
+    if (manager === null) {
+      res.status(403);
+      res.end('');
+      return;
+    }
+    if (!req.body.login) {
+      res.sendStatus(500)
+      res.end()
+      return
+    }
+    const alphabet = '123456789qwertyuiopasdfghjklzxvbnm'
+    let password = ''
+    while (password.length < 12)
+      password += (Math.random() > 0.5 ? alphabet : alphabet.toUpperCase())[Math.floor(Math.random() * alphabet.length)]
+    const user = new User({
+      login: req.body.login,
+      password_hash: password_hash(password),
+      invited: manager.user
+    })
+    const token = genToken(user)
+    const accessToken = new Token({
+      user: user._id,
+      token
+    })
+    const confirmToken = crypto.createHash('md5').update(token + salt + token + salt).digest("hex")
+    if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
+      const email = {
+        Recipients: [{ Email: req.body.login }],
+        Subject: 'Confirm your email',
+        'Text-part': `Manager ${(manager.name || '') + (manager.surname ? ' ' + manager.surname : '')} offer you to become his new client on wealthman.io\n\nTo start investing, conifrm you email via this link http://${currentDomain}:8080/api/confirm-email/${confirmToken}, then use your new login and password on platform.wealthman.io\n\nlogin: ${req.body.login}\npassword: ${password}\n(you can change it any time)\n\nAnd contact this manager http://platform.wealthman.io/manager/${manager._id}`,
+        'Html-part': `Manager ${(manager.name || '') + (manager.surname ? ' ' + manager.surname : '')} offer you to become his new client on wealthman.io<br><br>To start investing, conifrm you email via <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>, then use your new login and password on <a href="http://platform.wealthman.io">platform.wealthman.io</a><br><br>login: ${req.body.login}<br>password: ${password}<br>(you can change it any time)<br><br>And contact <a href="http://platform.wealthman.io/manager/${manager._id}">this manager</a>`,
+        FromEmail: `no-reply@${currentDomain}`,
+        FromName: 'Wealthman registration'
+      } 
+      await mailer(email).catch(console.log)
+    }
+
+    const emailConfirmation = new EmailConfirmation({
+      user: user._id,
+      token: confirmToken
+    })
+    await user.save()
+    await accessToken.save()
+    await emailConfirmation.save()
+    console.log('reg compelted')
+    res.send({token})
     res.end()
   })
   app.get('/api/confirm-email/:token', async (req, res, next) => {

@@ -80,7 +80,7 @@ class RequestsPage extends Component {
       },
       {
         property: "name",
-        title: "Manager name",
+        title: "",
         width: "156px",
       },
       {
@@ -117,7 +117,7 @@ class RequestsPage extends Component {
       //   width: '50px'
       // },
       {
-        property: "chat",
+        property: "profile",
         title: "",
         width: "130px",
         type: "unsortable",
@@ -202,9 +202,12 @@ class RequestsPage extends Component {
           </span>,
           value: request.status
         },
-        chat: <button className="big-blue-button chat">
-          CHAT
-        </button>,
+        profile:
+        <Link to={userLink + user._id}>
+          <button className="big-blue-button">
+            PROFILE
+          </button>
+        </Link>,
         details:
         <Link to={"request/" + request._id}>
           <button className="big-blue-button">

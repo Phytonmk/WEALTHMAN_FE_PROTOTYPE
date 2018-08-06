@@ -8,8 +8,10 @@ import '../css/Input.sass';
 <Input
   //(REQUIRED) value to show
   value={this.state.password}
-  //(REQUIRED) function that sets the value
+  //(OPTIONAL) function that sets the value
   setValue={(value) => this.setState({password: value})}
+  //(OPTIONAL) function that listen to changes
+  onChange={(event) => this.setState({password: event.target.value})}
   //(OPTIONAL) type of the input (text or password for now)
   type={"password"}
   //(OPTIONAL) placeholder for the input
@@ -30,7 +32,12 @@ class Input extends Component {
     return (
       <input
         value={this.props.value}
-        onChange={(event) => this.props.setValue(event.target.value)}
+        onChange={(event) => {
+          if (typeof this.props.onChange === 'function')
+            this.props.onChange(event)
+          if (typeof this.props.setValue === 'function')
+            this.props.setValue(event.target.value)
+        }}
         type={this.props.type}
         placeholder={this.props.placeholder}
         className={"default " + (this.props.error ? "error" : "")}

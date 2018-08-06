@@ -8,6 +8,7 @@ wealthman/.cache
 wealthman/node_modules/
 w-server/node_modules/
 w-server/trading/connection_settings.js
+w-server/img/*
 w-chat/node_modules/
 
 # Files

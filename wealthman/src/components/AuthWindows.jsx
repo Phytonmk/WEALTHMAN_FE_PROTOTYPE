@@ -44,6 +44,7 @@ export default class AuthWindows extends Component {
         callback={this.state.callback}/>
       <SignUp
         forManagers={this.props.forManagers}
+        registerNewClient={this.props.registerNewClient}
         visible={this.state.signUpVisible}
         hide={() => this.setState({signUpVisible: false})}
         openSignIn={() => {

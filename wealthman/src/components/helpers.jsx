@@ -10,7 +10,7 @@ const api = {
   post: (url, data={}, options) => new Promise((resolve, reject) => {
     axios.post(
       apiUrl + url,
-      Object.assign(data, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}),
+      Object.assign(getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}, data),
       options
      ).then(resolve)
       .catch(err => {
@@ -23,7 +23,7 @@ const api = {
     if (options.headers === undefined)
       options.headers = getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}
     else
-      options.headers = Object.assign(options.headers, getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {})
+      options.headers = Object.assign(getCookie('accessToken') ? {accessToken: getCookie('accessToken')} : {}, options.headers)
     axios.get(
       apiUrl + url,
       options

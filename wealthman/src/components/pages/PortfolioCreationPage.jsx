@@ -96,11 +96,12 @@ class PortfolioCreationPage extends Component {
         if (res.data.exists) {
           let i = 0;
           for (let token of res.data.portfolio.currencies) {
-            selected.push({
-              name: token.currency,
-              id: i++,
-              icon: '',
-            });
+            // selected.push({
+            //   name: token.currency,
+            //   id: i++,
+            //   icon: '',
+            // });
+            selected.push(Object.assign({}, this.state.tokens.find(a => a.name === token.currency)))
             inputData[token.currency] = {
               percent: token.percent,
               analysis: token.analysis,
@@ -116,9 +117,9 @@ class PortfolioCreationPage extends Component {
     const state = Object.assign({}, this.state);
     state.tokens.map(token => {
       if (this.state.selectedIds.includes(token.id))
-        token.action = <button className="big-red-button" onClick={() => this.removeToken(token)}>Remove</button>
+        token.action = <button style={{width: 100}} className="big-red-button" onClick={() => this.removeToken(token)}>Remove</button>
       else
-        token.action = <button className="big-blue-button" onClick={() => this.addToken(token)}>Add</button>
+        token.action = <button style={{width: 100}} className="big-blue-button" onClick={() => this.addToken(token)}>Add</button>
       return token;
     });
     this.setState(state);
@@ -162,11 +163,12 @@ class PortfolioCreationPage extends Component {
     setTimeout(() => this.forceUpdate(), 0);
   }
   save(callback) {
-    const sendData = [];
+    const currencies = [];
     for (let token in this.state.selected) {
       const tokenName = this.state.selected[token].name;
-      sendData.push({
+      currencies.push({
         currency: tokenName,
+        last_price: this.state.selected[token].price,
         percent: this.state.inputData[tokenName].percent * 1,
         analysis: this.state.inputData[tokenName].analysis,
         comments: this.state.inputData[tokenName].comments,
@@ -174,7 +176,7 @@ class PortfolioCreationPage extends Component {
     }
     api.post('portfolio/save', {
       request: this.props.match.params.id,
-      currencies: sendData,
+      currencies,
       fees: {
         exit_fee: this.state.exit_fee,
         managment_fee: this.state.managment_fee,
@@ -375,7 +377,7 @@ let selectHeader = [
   {
     property: 'name',
     title: 'Token',
-    width: '100px',
+    width: '300px',
   },
   {
     property: 'volume',

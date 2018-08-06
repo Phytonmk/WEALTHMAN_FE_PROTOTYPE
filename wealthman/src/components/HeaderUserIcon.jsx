@@ -48,6 +48,7 @@ class HeaderUserIcon extends Component {
     $(window).click(event => {
       if (this.state.opened &&
         !event.target.className.includes("header-user-icon") &&
+        !event.target.className.includes("loaded") && // "loaded" img of avatar
         !event.target.className.includes("default-avatar-user"))
         this.setState({opened: false});
     });
@@ -56,8 +57,6 @@ class HeaderUserIcon extends Component {
   render() {
     if (!this.props.userData)
       return '...'
-    else
-      console.log(this.props.userData)
     return (
       <div
         className="header-user-icon"

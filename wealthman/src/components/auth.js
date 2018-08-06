@@ -11,17 +11,18 @@ const auth = (callback=()=>{}) => {
       .then(res => {
         if (/[0-9]+/.test(res.data.usertype))
           setReduxState({user: res.data.usertype, userData: res.data.userData || {}})
+        setCookie('usertype', res.data.usertype)
         console.log(true)
         callback(true)
         window.dispatchEvent(authEvent)
       })
       .catch((e) => {
         if (e.response && e.response.status === 401) {
-          if (confirm('Seems like you haven\'t confirmed you email\nLog out?')) {
-            setCookie('accessToken', '')
-            setCookie('usertype', '')
-            setPage('')
-          }
+          // if (confirm('Seems like you haven\'t confirmed you email\nLog out?')) {
+          //   setCookie('accessToken', '')
+          //   setCookie('usertype', '')
+          //   setPage('')
+          // }
         }
         if (e.response && e.response.status === 403) {
           setCookie('accessToken', '')

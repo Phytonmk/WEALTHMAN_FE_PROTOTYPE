@@ -13,7 +13,7 @@ module.exports = (app) => {
       res.end('')
       return
     }
-    let user, manager, company
+    let user = null, manager, company
     const investor = await Investor.findOne({user: token.user})
     if (investor === null) {
       manager = await Manager.findOne({user: token.user})
@@ -34,6 +34,7 @@ module.exports = (app) => {
       user = 'investor'
       userID = investor.id
     }
+    console.log(user)
     switch(user) {
       case 'manager':
         const statistic = await ManagerStatistic.find({manager: userID})

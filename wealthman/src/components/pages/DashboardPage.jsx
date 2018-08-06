@@ -88,7 +88,7 @@ class DashboardPage extends Component {
         main={{
           title: 'Portfolios allocation history',
           onOneGraphic: true,
-          datasets: [{
+          datasets: !this.state.portfolios ? [] : [{
             data: this.state.portfolios.map((portfolio, i) => {
               return {
                 value: portfolio.active,
@@ -127,10 +127,10 @@ class DashboardPage extends Component {
           }],
           datasets: [{
             title: 'Jun 22 - Jul 16, 2018',
-            data: this.state.aum.grpahic.map((chunk) => {
+            data: !this.state.aum.grpahic ? [] : this.state.aum.grpahic.map((chunk, i) => {
               return {
-                value: chunk.y,
-                title: chunk.x + '-Jun-15'
+                value: chunk,
+                title: i + '-Jun-15'
               }
             })
           }]

@@ -11,7 +11,6 @@ Stock.find({})
   .then(stocks => 
     stocks.forEach(stock =>
       tokenTitles[stock.name] = stock.title))
-setTimeout(() => console.log(tokenTitles), 1000)
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'waiting for deposit'});
@@ -37,7 +36,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
     if (deposit) {
       const request = await Request.findById(smartContract.request);
       trade(smartContract.address, smartContract.request);
-      request.set({status: 'active'});  
+      request.set({status: 'active'});
       await request.save();
       for (let token of smartContract.currencies) {
         const order = new Order({

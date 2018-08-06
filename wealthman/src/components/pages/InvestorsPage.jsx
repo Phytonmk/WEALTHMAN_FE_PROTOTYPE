@@ -8,6 +8,7 @@ import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
 import LevDate from '../LevDate.jsx';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
+import AuthWindows from '../AuthWindows'
 
 class InvestorsPage extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class InvestorsPage extends Component {
     this.state = {
       searchName: "",
       gotData: false,
-      investors: []
+      investors: [],
+      openSignUp: () => {}
     }
   }
   componentDidMount() {
@@ -104,12 +106,19 @@ class InvestorsPage extends Component {
 
     return (
       <div>
+        <AuthWindows
+          openSignUp={(func) => this.setState({openSignUp: func})}
+          forManagers={false}
+          registerNewClient={true}
+        />
         <article className="long-text-input">
           <div className="container">
             <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
           </div>
         </article>
         <div className="container">
+          <br />
+          <button onClick={() => this.state.openSignUp()} className="big-blue-button right">Add new client</button>
           {this.state.gotData ?
             <Sortable2
               filter={row =>

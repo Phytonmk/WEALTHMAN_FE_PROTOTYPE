@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency } from '../../helpers';
 import Avatar from '../../Avatar'
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
+import Input from '../../Input' 
 
 class Form extends Component {
   constructor(props) {
@@ -165,13 +166,13 @@ class Form extends Component {
               input =
                 <div>
                   <div className="row">
-                     <input type="text" value={this.state[question.property].wallet_address} onChange={(event) => this.changeWalletAddress(question.property, event.target.value)} placeholder={question.placeholder !== undefined ? question.placeholder : 'Wallet address'} />
+                     <Input type="text" value={this.state[question.property].wallet_address} setValue={(value) => this.changeWalletAddress(question.property, value)} placeholder={question.placeholder !== undefined ? question.placeholder : 'Wallet address'} />
                   </div>
                   <div className="row" style={this.state[question.property].privateKey && this.state[question.property].wallet_address === this.state[question.property].generated_wallet  ? {display: 'block'} : {display: 'none'}}>
                     Your private key, save it to safe place
                   </div>
                   <div className="row" style={this.state[question.property].privateKey && this.state[question.property].wallet_address === this.state[question.property].generated_wallet ? {display: 'block'} : {display: 'none'}}>
-                     <input type="text" value={this.state[question.property].privateKey} onChange={() => {}} />
+                     <Input type="text" value={this.state[question.property].privateKey} />
                      <br />
                      <b>Notice</b>: Wealthman does not save your private keys in the datadase. Keep your private key in secret.
                   </div>
@@ -193,35 +194,35 @@ class Form extends Component {
                   <br />
                   Exit fee
                   <br />
-                  <input type="number" placeholder="Exit fee" value={service.exit_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'exit_fee')}/>
+                  <Input type="number" placeholder="Exit fee" value={service.exit_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'exit_fee')}/>
                   <br />
                   Managment fee
                   <br />
-                  <input type="number" placeholder="Managment fee" value={service.managment_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'managment_fee')}/>
+                  <Input type="number" placeholder="Managment fee" value={service.managment_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'managment_fee')}/>
                   <br />
                   Perfomance fee
                   <br />
-                  <input type="number" placeholder="Perfomance fee" value={service.perfomance_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'perfomance_fee')}/>
+                  <Input type="number" placeholder="Perfomance fee" value={service.perfomance_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'perfomance_fee')}/>
                   <br />
                   Font fee
                   <br />
-                  <input type="number" placeholder="Font fee" value={service.front_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'front_fee')}/>
+                  <Input type="number" placeholder="Font fee" value={service.front_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'front_fee')}/>
                   <br />
                   Recalculation
                   <br />
-                  <input type="number" placeholder="recalculation" value={service.recalculation} onChange={(event) => this.setServiceData(question.property, event, i, 'recalculation')}/>
+                  <Input type="number" placeholder="recalculation" value={service.recalculation} onChange={(event) => this.setServiceData(question.property, event, i, 'recalculation')}/>
                   <br />
                   Minimal investment
                   <br />
-                  <input type="number" placeholder="Minimal investment" value={service.min} onChange={(event) => this.setServiceData(question.property, event, i, 'min')}/>
+                  <Input type="number" placeholder="Minimal investment" value={service.min} onChange={(event) => this.setServiceData(question.property, event, i, 'min')}/>
                   <br />
                   Methodology
                   <br />
-                  <input type="text" placeholder="Methodology" value={service.methodology} onChange={(event) => this.setServiceData(question.property, event, i, 'methodology')}/>
+                  <Input type="text" placeholder="Methodology" value={service.methodology} onChange={(event) => this.setServiceData(question.property, event, i, 'methodology')}/>
                   <br />
                   Philosofy
                   <br />
-                  <input type="text" placeholder="Philosofy" value={service.philosofy} onChange={(event) => this.setServiceData(question.property, event, i, 'philosofy')}/>
+                  <Input type="text" placeholder="Philosofy" value={service.philosofy} onChange={(event) => this.setServiceData(question.property, event, i, 'philosofy')}/>
                   <br />
                   <button className="back" onClick={() => this.removeService(question.property, i)}>Remove {servicesList[service.type]} from list</button>
                   <br />
@@ -234,11 +235,11 @@ class Form extends Component {
             break;
             default:
               input =
-                <input
+                <Input
                   type={question.type === 'number' ? 'number' : 'text'}
                   placeholder={question.placeholder ? question.placeholder : question.title}
                   value={this.state[question.property]}
-                  onChange={(event) => this.change(question.property, event.target.value)}
+                  setValue={(value) => this.change(question.property, value)}
                 />
             break;
            }

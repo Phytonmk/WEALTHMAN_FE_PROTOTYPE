@@ -19,6 +19,7 @@ export default class SignUp extends Component {
       password: '',
       passwordRepeat: '',
       register: this.props.forManagers ? '' : 'investor',
+      registerNewClient: this.props.registerNewClient,
       notConfirmed: false
     }
   }
@@ -28,25 +29,30 @@ export default class SignUp extends Component {
       this.props.hide()
   }
   sendAllForms(data) {
-    api.post('register', {
+    api.post(this.state.registerNewClient ? 'register-new-client' : 'register', {
       login: this.state.login,
       password: this.state.password,
     })
       .then((res) => {
-        setCookie('accessToken', res.data.token)
-        auth()
-        if (res.data.confirmToken)
-          this.setState({confirmToken: res.data.confirmToken})
-        this.sendDetails(data)
+        if (!this.state.registerNewClient) {
+          setCookie('accessToken', res.data.token)
+          auth()
+          if (res.data.confirmToken)
+            this.setState({confirmToken: res.data.confirmToken})
+        } 
+        this.sendDetails(data, res.data.token)
       })
       .catch(console.log);
   }
-  sendDetails(data) {
+  sendDetails(data, token) {
     console.log('sendDetails')
-    api.post(this.state.register + '/data', data)
+    api.post(this.state.registerNewClient ? 'investor/data' : (this.state.register + '/data'), this.state.registerNewClient ? Object.assign(data, {accessToken: token}): data)
       .then((res) => {
         console.log('res.data')
-        this.setState({step: 2})
+        if (this.state.registerNewClient)
+          this.props.hide()
+        else
+          this.setState({step: 2})
       })
       .catch(console.log);
   }
@@ -69,42 +75,46 @@ export default class SignUp extends Component {
         <div className="auth-box registration-box">
           <div className="close-modal-btn">
           </div>
-          <h2>Sign up to WealthMan{this.props.forManagers ? ' as manager.' : '.'}</h2>
-          <span>Enter your details below.</span>
+          <h2>{this.state.registerNewClient ? 'Register new client to WealthMan' : ('Sign up to WealthMan' + (this.props.forManagers ? ' as manager.' : '.'))}</h2>
+          <span>Enter{this.state.registerNewClient ? '' : ' your'} details below.</span>
           {this.state.step !== 0 ? '' : <React.Fragment>
           <div className="row first-input-row">
             <label>Email address</label>
             <Input value={this.state.login} setValue={value => this.setState({login: value})} placeholder="username@email.com" />
           </div>
-          <div className="row">
-            <label>Password</label>
-            <Input value={this.state.password} setValue={value => this.setState({password: value})} type="password" placeholder="Enter your password" />
-          </div>
-          <div className="row">
-            <Input value={this.state.passwordRepeat} setValue={value => this.setState({passwordRepeat: value})} type="password" placeholder="Repeat your password" />
-          </div>
+          {this.state.registerNewClient ? '' : 
+            <React.Fragment>
+              <div className="row">
+                <label>Password</label>
+                <Input value={this.state.password} setValue={value => this.setState({password: value})} type="password" placeholder="Enter your password" />
+              </div>
+              <div className="row">
+                <Input value={this.state.passwordRepeat} setValue={value => this.setState({passwordRepeat: value})} type="password" placeholder="Repeat your password" />
+              </div>
+            </React.Fragment>
+          }
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.state.password === this.state.passwordRepeat ? this.setState({step: 1}) : alert('Passwords are not equal')}>Continue</button>
             <br />
             <small>By clicking “Continue” I agree to <Link to="/user-agreement" target="_blank">Terms of Service</Link> and <Link to="/user-agreement" target="_blank">Privacy Policy</Link></small>
           </div>
-          <div className="devider"></div>
-          <div className="row footer-row">
+          {this.state.registerNewClient ? '' : <div className="devider"></div>}
+          {this.state.registerNewClient ? '' : <div className="row footer-row">
             Already have an account?
             <a onClick={() => this.props.openSignIn()} className="another-auth-window-link">Sign in</a>
-          </div>
+          </div>}
         </React.Fragment>}
          {this.state.step !== 1 ? '' : <div>
             {this.state.register !== '' ? <Form
               questions={questions[this.state.register]}
               onSubmit={(data) => this.sendAllForms(data)}
             /> : <React.Fragment>
-              <div className="row">
+              <div className="row-padding">
                 <button className="big-blue-button auth-btn" onClick={() => this.setState({register: 'manager'})}>
                   Register manager
                 </button>
               </div>
-              <div className="row">
+              <div className="row-padding">
                 <button className="big-blue-button auth-btn" onClick={() => this.setState({register: 'company'})}>
                   Register company
                 </button>

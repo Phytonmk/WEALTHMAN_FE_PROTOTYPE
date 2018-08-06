@@ -9,7 +9,8 @@ const ServiceSchema = mongoose.Schema({
   recalculation: Number, // - in days
   min: Number, // in dollars
   metodology: String,
-  philosofy: String  
+  philosofy: String,
+  last_price: Number
 });
 
 module.exports = ServiceSchema;

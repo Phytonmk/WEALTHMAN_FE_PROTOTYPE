@@ -5,10 +5,6 @@ const ManagerStatistic = require('../../models/ManagerStatistic')
 module.exports = () => new Promise(async (resolve, reject) => {
   const date = new Date()
   const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
-  // const statistics = await ManagerStatistic.aggregate([
-  //    { $project: { id: 1, dates: 1, aum: 1, portfolios: 1, date: { $slice: [ "$dates", -1 ] } } },
-  //    { $match: { date: { $lt: currentDay } } }
-  // ]);
   const statistics = await ManagerStatistic.find({ lastUpdate: { $lt: endOfPreviusDay } })
   for (let statistic of statistics) {
     const dates = [...statistic.dates]
