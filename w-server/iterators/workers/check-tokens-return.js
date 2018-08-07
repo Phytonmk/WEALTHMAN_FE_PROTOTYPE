@@ -5,7 +5,7 @@ const Stock = require('../../models/Stock');
 
 const checkBalance = require('../../trading/wealthman_check_balance');
 const trade = require('../../trading/wealthman_trade');
-
+.
 const tokenTitles = {}
 Stock.find({})
   .then(stocks => 
@@ -13,7 +13,7 @@ Stock.find({})
       tokenTitles[stock.name] = stock.title))
 
 module.exports = () => new Promise(async (resolve, reject) => {
-  const requests = await Request.find({status: 'waiting for deposit'});
+  const requests = await Request.find({status: 'recalculation'});
   const smartContracts = [];
   let i = 0;
   for (request of requests) {
@@ -27,15 +27,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
       });
   }
   for (let smartContract of smartContracts) {
-    console.log(`Checking ${smartContract.address} for deposit...`);
-    const deposit = await checkBalance(smartContract.address).catch(console.log);
-    if (deposit)
-      console.log('deposited');
-    else
-      console.log('no deposit');
-    if (deposit) {
+    const tokensReturnToExchange = await checkBalance(smartContract.address).catch(console.log);
+    if (tokensReturnToExchange) {
       const request = await Request.findById(smartContract.request);
-      trade(smartContract.address, smartContract.request);
       request.set({status: 'active'});
       await request.save();
       for (let token of smartContract.currencies) {
@@ -43,7 +37,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
           token_name: tokenTitles[token.currency],
           whole_eth_amount: request.value,
           percent: token.percent,
-          contract_address: smartContract.address
+          contract_address: smartContract.address,
+          rebuild: false
         });
         await order.save();
       }

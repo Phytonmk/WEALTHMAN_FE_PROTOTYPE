@@ -1,25 +1,6 @@
 var abi =[
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "usedToken",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
 		"name": "tradesWasCount",
 		"outputs": [
@@ -44,42 +25,6 @@ var abi =[
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "fromToken",
-				"type": "address"
-			},
-			{
-				"name": "toToken",
-				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transferTimeExpired",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_to",
-				"type": "address"
-			}
-		],
-		"name": "transferEth",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -115,8 +60,8 @@ var abi =[
 		"inputs": [],
 		"name": "withdraw",
 		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -145,15 +90,6 @@ var abi =[
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "calculateRewards",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -201,20 +137,6 @@ var abi =[
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "exchanger",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
 		"name": "managmentReward",
 		"outputs": [
 			{
@@ -228,8 +150,22 @@ var abi =[
 	},
 	{
 		"constant": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"name": "tokens",
+				"type": "address[]"
+			}
+		],
 		"name": "endPortfolio",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "transferEth",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -393,22 +329,14 @@ var abi =[
 		"constant": false,
 		"inputs": [
 			{
-				"name": "fromToken",
-				"type": "address"
-			},
-			{
-				"name": "toToken",
-				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
+				"name": "tokens",
+				"type": "address[]"
 			}
 		],
-		"name": "transferCanceled",
+		"name": "transferAllToEth",
 		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -443,95 +371,24 @@ var abi =[
 		"constant": false,
 		"inputs": [
 			{
-				"name": "fromToken",
-				"type": "address"
+				"name": "portfolioTokens",
+				"type": "address[]"
 			},
 			{
-				"name": "toToken",
-				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"name": "rate",
-				"type": "uint256"
+				"name": "values",
+				"type": "uint256[]"
 			}
 		],
-		"name": "transferCompleted",
+		"name": "calculateRewards",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "portfolioTokens",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"constant": false,
 		"inputs": [],
 		"name": "deposit",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_fromTokens",
-				"type": "address[]"
-			},
-			{
-				"name": "_toTokens",
-				"type": "address[]"
-			},
-			{
-				"name": "_amounts",
-				"type": "uint256[]"
-			}
-		],
-		"name": "trade",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "exchanger_adr",
-				"type": "address"
-			},
-			{
-				"name": "token_adr",
-				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transferToken",
 		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
@@ -645,12 +502,12 @@ var abi =[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "fromToken",
 				"type": "address"
 			},
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "toToken",
 				"type": "address"
 			},
@@ -667,12 +524,12 @@ var abi =[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "fromToken",
 				"type": "address"
 			},
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "toToken",
 				"type": "address"
 			},
@@ -689,12 +546,12 @@ var abi =[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "fromToken",
 				"type": "address"
 			},
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "toToken",
 				"type": "address"
 			},
@@ -722,6 +579,18 @@ var abi =[
 			}
 		],
 		"name": "Withdraw",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Reward",
 		"type": "event"
 	}
 ]

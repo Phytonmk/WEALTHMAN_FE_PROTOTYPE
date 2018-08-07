@@ -262,13 +262,13 @@ module.exports = (app) => {
     if (request.service === 'Discretionary') {
       request.set({revisions: request.revisions + 1});
       await updatePortfoliosState({manager: manager._id, request: request._id});
-      request.set({status: 'recalculated'});
+      request.set({status: 'recalculation'});
       await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     } else if (request.service === 'Advisory') {
       request.set({status: 'revision'});
       await notify({request: request._id, title: `Portfolio waiting for manager revision`})
     } else {
-      request.set({status: 'recalculated'});
+      request.set({status: 'recalculation'});
       request.set({revisions: request.revisions + 1});
       await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
       await updatePortfoliosState({manager: manager._id, request: request._id});
@@ -303,7 +303,7 @@ module.exports = (app) => {
     }
     request.set({revisions: request.revisions + 1});
     await updatePortfoliosState({investor: investor._id, request: request._id})
-    request.set({status: 'recalculated'});
+    request.set({status: 'recalculation'});
     await request.save();
     await notify({request: request._id, title: `Portfolio waiting for system recalculation`})
     res.status(200);

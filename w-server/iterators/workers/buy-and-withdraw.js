@@ -1,8 +1,10 @@
-const Binance = require('node-binance-api');
-const Order = require('../../models/Order');
-const Stock = require('../../models/Stock');
-const configs = require('../../configs');
+const Binance = require('node-binance-api')
+const Order = require('../../models/Order')
+const Stock = require('../../models/Stock')
+const configs = require('../../configs')
 const ccxt = require('ccxt')
+
+const sendAllEth = require('../../trading/send_all_eth')
 
 const exchanges = []
 for (let exchange of configs.exchanges) {
@@ -15,10 +17,10 @@ for (let exchange of configs.exchanges) {
 }
 
 module.exports = () => new Promise(async (resolve, reject) => {
-  const orders = await Order.find({$or: [{status: 'created'}, {status: 'token bouthg'}]});
+  const orders = await Order.find({$or: [{status: 'buy'}, {status: 'token bouthg'}]})
   for (let order of orders) {
-    if (order.status === 'created') {
-      const symbol = order.token_name + '/ETH';
+    if (order.status === 'buy') {
+      const symbol = order.token_name + '/ETH'
       const stock = await Stock.findOne({title: order.token_name})
       let lowestPrice = {
         price: null,
@@ -40,9 +42,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const quantity = Math.floor((order.percent / price) * order.whole_eth_amount)
       const purchase = await lowestPrice.exchange.api.createOrder(symbol, 'market', 'buy', quantity + fee)
         .catch(async (e) => {
-          console.log(e);
-          order.set({status: 'failed to buy token'});
-          await order.save();
+          console.log(e)
+          order.set({status: 'failed to buy token'})
+          await order.save()
         })
       if (purchase) {
         console.log(purchase)
@@ -50,22 +52,21 @@ module.exports = () => new Promise(async (resolve, reject) => {
           cost: price.last,
           status: 'token bouthg',
           quantity
-        });
-        await order.save();
+        })
+        await order.save()
       }
     } else if (order.status === 'token bouthg') {
       const withdrawing = await withdraw(order.token_name, order.contract_address, order.quantity)
         .catch( async (e) => {
-          console.log(e);
-          order.set({status: 'failed to withdraw'});
-          await order.save();
-        }); 
+          console.log(e)
+          order.set({status: 'failed to withdraw'})
+          await order.save()
+        }) 
       if (withdrawing) {
-        console.log(withdrawing);
         order.set({
           status: 'completed'
-        });
-        await order.save();
+        })
+        await order.save()
       }
     }
   }
