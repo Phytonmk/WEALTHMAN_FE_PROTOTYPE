@@ -13,6 +13,8 @@ import PageDevider from '../dashboards/PageDevider'
 import Person from '../dashboards/Person'
 import ReportsAndDocuments from '../dashboards/ReportsAndDocuments'
 
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -28,6 +30,7 @@ class DashboardPage extends Component {
         grpahic: []
       },
       portfolios: [],
+      dates: []
     }
   }
   componentWillMount() {
@@ -47,9 +50,11 @@ class DashboardPage extends Component {
       .then((res) => {
         console.log(res.data)
         this.setState(res.data)
+
       }).catch(console.log)
   }
   render() {
+    console.log('render')
     return <div className="container">
       {getCookie('usertype') == 0 ? <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} /> : ''}
       {getCookie('usertype') == 1 ? <h1>Dashboard Manager</h1> : ''}
@@ -92,21 +97,21 @@ class DashboardPage extends Component {
             data: this.state.portfolios.map((portfolio, i) => {
               return {
                 value: portfolio.active,
-                title: i + '-Jun-15'
+                title: `${new Date(this.state.dates[i]).getDate()}-${monthNames[new Date(this.state.dates[i]).getMonth()]}-${new Date(this.state.dates[i]).getFullYear().toString().substr(2)}`
               }
             })
           }, {
             data: this.state.portfolios.map((portfolio, i) => {
               return {
                 value: portfolio.archived,
-                title: i + '-Jun-15'
+                title: `${new Date(this.state.dates[i]).getDate()}-${monthNames[new Date(this.state.dates[i]).getMonth()]}-${new Date(this.state.dates[i]).getFullYear().toString().substr(2)}`
               }
             })
           }, {
             data: this.state.portfolios.map((portfolio, i) => {
               return {
                 value: portfolio.inProgress,
-                title: i + '-Jun-15'
+                title: `${new Date(this.state.dates[i]).getDate()}-${monthNames[new Date(this.state.dates[i]).getMonth()]}-${new Date(this.state.dates[i]).getFullYear().toString().substr(2)}`
               }
             })
           }]

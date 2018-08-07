@@ -497,6 +497,19 @@ b
   .select
     margin-bottom: 20px
     width: 200px
+  .line-chart-subheaders
+    display: flex
+    .line-chart-subheader
+      margin-right: 49px
+      h3
+        font-size: 21px
+        font-weight: bold
+      p
+        font-size: 14px
+        color: #66666a
+        margin-left: 0
+  svg path.line
+    stroke-width: 4 !important
 svg
   path.area
     fill: #0378ff47 !important
@@ -513,22 +526,12 @@ svg
   path.line:nth-of-type(5)
     stroke: #071e40 !important
   path.line
+    opacity: 1 !important
     stroke-width: 4
     stroke-linecap: round
   text
     font-size: 12px
     fill: #66666a
-  .line-chart-subheaders
-    display: flex
-    .line-chart-subheader
-      margin-right: 49px
-      h3
-        font-size: 21px
-        font-weight: bold
-      p
-        font-size: 14px
-        color: #66666a
-        margin-left: 0
 .margin-box
   margin-top: 30px
 .page-devider

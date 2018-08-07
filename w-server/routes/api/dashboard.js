@@ -37,7 +37,7 @@ module.exports = (app) => {
     console.log(user)
     switch(user) {
       case 'manager':
-        const statistic = await ManagerStatistic.find({manager: userID})
+        const statistic = await ManagerStatistic.findOne({manager: userID})
         const clients = await Request.aggregate([  
           {
             $match: {
@@ -71,15 +71,17 @@ module.exports = (app) => {
           value: genRandom(5, 15) ** genRandom(5, 15),
           earning: genRandom(5, 15) * (10 ** genRandom(5, 15)),
           change: genRandom(-30, 30),
-          grpahic: ManagerStatistic.aum
+          grpahic: statistic.aum
         }
-        const portfolios = ManagerStatistic.portfolios
+        const portfolios = statistic.portfolios
+        const dates = statistic.dates
         res.send({
           clients: clients.length,
           clientsApplications: clientsApplications.length,
           profileViews: '?',
           aum,
           portfolios,
+          dates
         })
         res.end()
       break

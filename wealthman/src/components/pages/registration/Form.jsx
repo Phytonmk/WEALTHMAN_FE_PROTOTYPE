@@ -244,7 +244,7 @@ class Form extends Component {
             break;
            }
            return <div key={i} className="row">
-              <p>{question.title}</p>
+              <small>{question.title}</small>
               {input}
             </div>
           })}

@@ -248,7 +248,7 @@ module.exports = (app) => {
     await manager.save()
     const managerStatistic = new ManagerStatistic({
       manager: manager._id,
-      lastUpdate: Date.now(),
+      last_update: Date.now(),
       dates: [Date.now()],
       aum: [0],
       portfolios: [{

@@ -210,17 +210,6 @@ class SuperLine extends Component {
     }
   }
   render() {
-    let graphicData = [
-      [
-        { x: 1, y: 20 },
-        { x: 2, y: 10 },
-        { x: 3, y: 25 }
-      ], [
-        { x: 1, y: 10 },
-        { x: 2, y: 12 },
-        { x: 3, y: 4 }
-      ]
-    ]
     return  <div className="box line-chart-box">
                 <h2>{this.props.title}</h2>
                 {this.props.datasets.length > 1 && !this.props.onOneGraphic ?
@@ -247,7 +236,7 @@ class SuperLine extends Component {
                   xType={'time'}
                   xTicks={this.props.datasets[this.state.selectOption].data.length / 2}
                   axes
-                  margin={{top: 20, right: 10, bottom: 25, left: 20}}
+                  margin={{top: 20, right: 20, bottom: 45, left: 40}}
                   grid
                   verticalGrid
                   interpolate={'cardinal'}
