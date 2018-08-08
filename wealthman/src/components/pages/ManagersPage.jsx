@@ -298,34 +298,39 @@ class ManagersPage extends Component {
             <div className="card-3">
               <div className="img" />
               <span>Total AUM, min $</span>
-              {/* <h4>{this.state.totalAum}</h4> */}
               <h4>
                 {
-                  this.state.offers.length > 0 ?
-                  this.state.offers
-                  .map(manager => manager.aum)
-                  .reduce((a, b) => a + b)
-                  : ""
+                  this.state.gotData ?
+                    this.state.offers.length > 0 ?
+                    this.state.offers
+                    .map(manager => manager.aum)
+                    .reduce((a, b) => a + b)
+                    : 0
+                  : 0
                 }
               </h4>
             </div>
             <div className="card-2">
               <div className="img" />
               <span>Total managers</span>
-              {/* <h4>{this.state.totalManagers}</h4> */}
-              <h4>{this.state.offers.length}</h4>
+              <h4>
+                {
+                  this.state.gotData ? this.state.offers.length : 0
+                }
+              </h4>
             </div>
             <div className="card-1">
               <div className="img" />
               <span>Total investors</span>
-              {/* <h4>{this.state.totalInvestors}</h4> */}
               <h4>
                 {
-                  this.state.offers.length > 0 ?
-                  this.state.offers
-                  .map(manager => manager.clients)
-                  .reduce((a, b) => a + b)
-                  : ""
+                  this.state.gotData ?
+                    this.state.offers.length > 0 ?
+                    this.state.offers
+                    .map(manager => manager.clients)
+                    .reduce((a, b) => a + b)
+                    : 0
+                  : 0
                 }
               </h4>
 

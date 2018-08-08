@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
 import Social from './../Social';
+import Input from './../Input';
+import Textarea from './../Textarea';
 
 class ContactPage extends Component {
   constructor(props) {
@@ -44,21 +46,21 @@ class ContactPage extends Component {
               <div className="box">
                 <h2><b>Get in touch with the Wealthman team</b></h2>
                 <small>NAME</small>
-                <input
+                <Input
                   value={this.state.name}
-                  onChange={event => this.setState({name: event.target.value})}
+                  setValue={value => this.setState({name: value})}
                   placeholder="Your full name"
                 />
                 <small>EMAIL ADDRESS</small>
-                <input
+                <Input
                   value={this.state.email}
-                  onChange={event => this.setState({email: event.target.value})}
+                  setValue={value => this.setState({email: value})}
                   placeholder="username@email.com"
                 />
                 <small>MESSAGE</small>
-                <textarea
+                <Textarea
                   value={this.state.message}
-                  onChange={event => this.setState({message: event.target.value})}
+                  setValue={value => this.setState({message: value})}
                   placeholder="Tell us something"
                 />
                 <button className="big-blue-button">Send</button>
