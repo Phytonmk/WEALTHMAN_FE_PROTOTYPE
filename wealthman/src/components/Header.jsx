@@ -78,10 +78,10 @@ class Header extends Component {
       }
     ];
     const unloggedLinks = [
-      {
-        label: "About Wealthman",
-        link: "about"
-      }
+      // {
+      //   label: "About Wealthman",
+      //   link: "about"
+      // }
     ];//, "login"],//, "invest"];
 
     switch(this.props.user) {
