@@ -8,6 +8,7 @@ import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
 import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers';
 import {AreaChart} from 'react-easy-chart';
+import Subheader from './../Subheader.jsx';
 
 const filters = [
   {
@@ -278,7 +279,7 @@ class ManagersPage extends Component {
         <div className="container">
           <div className="row">
             {(getCookie('usertype') != 1 &&  getCookie('usertype') != 3) ? <div className="advisors">
-              <div className="row">
+              {/* <div className="row">
                 <span>Sort by</span>
                 <Select
                   value={this.state.filter}
@@ -287,8 +288,8 @@ class ManagersPage extends Component {
                   width="135px"
                 />
               <br />
-              </div>
-              <div className="row margin">
+              </div> */}
+              <div className="row">
                 <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
                   Invest on Autopilot
                 </Link>
@@ -327,27 +328,63 @@ class ManagersPage extends Component {
                   : ""
                 }
               </h4>
-            
+
             </div>
           </div>
         </div>
-        <div className="container">
-          {this.state.gotData ?
-            <Sortable2
-              filter={row =>
-                row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
-                //&&
-                //row.services.value.toLowerCase().includes(this.state.filter.toLowerCase())
-              }
-              columns={sortableHeader}
-              data={sortableManagers}
-              navigation={true}
-              maxShown={5}
-            />
-            :
-            <div className="loading"><p>Loading</p></div>
-          }
-        </div>
+        <Subheader data={[
+          {
+            header: "Robo-advisor",
+            content: this.state.gotData ?
+              <Sortable2
+                filter={row =>
+                  row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
+                  &&
+                  row.services.value.toLowerCase().includes(("Robo-advisor").toLowerCase())
+                }
+                columns={sortableHeader}
+                data={sortableManagers}
+                navigation={true}
+                maxShown={5}
+              />
+              :
+              <div className="loading"><p>Loading</p></div>,
+          },
+          {
+            header: "Discretionary",
+            content: this.state.gotData ?
+              <Sortable2
+                filter={row =>
+                  row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
+                  &&
+                  row.services.value.toLowerCase().includes(("Discretionary").toLowerCase())
+                }
+                columns={sortableHeader}
+                data={sortableManagers}
+                navigation={true}
+                maxShown={5}
+              />
+              :
+              <div className="loading"><p>Loading</p></div>,
+          },
+          {
+            header: "Advisory",
+            content: this.state.gotData ?
+              <Sortable2
+                filter={row =>
+                  row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
+                  &&
+                  row.services.value.toLowerCase().includes(("Advisory").toLowerCase())
+                }
+                columns={sortableHeader}
+                data={sortableManagers}
+                navigation={true}
+                maxShown={5}
+              />
+              :
+              <div className="loading"><p>Loading</p></div>,
+          },
+        ]} />
       </div>
     );
   }
