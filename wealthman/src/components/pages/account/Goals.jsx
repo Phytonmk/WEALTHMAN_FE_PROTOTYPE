@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class RiskProfile extends Component {
   constructor(props) {
@@ -16,9 +17,11 @@ class RiskProfile extends Component {
             <li>Living</li>
             <li>Journeys</li>
           </ul>
-          <button className="big-blue-button">
-            change results
-          </button>
+          <Link to="/questions">
+            <button className="big-blue-button">
+              change results
+            </button>
+          </Link>
         </div>
       </div>
     );
