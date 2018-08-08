@@ -1,10 +1,11 @@
+const configs = require('../../configs')
 const Request = require('../../models/Request')
 const Order = require('../../models/Order')
 const Stock = require('../../models/Stock')
-const Porfolio = require('../../models/Porfolio')
+const Portfolio = require('../../models/Portfolio')
 const PaidCommisions = require('../../models/PaidCommisions')
 
-const callCommisionsPay = require('../../trading/call_commisions')
+const callCommisionsPay = require('../../trading/call_commissions')
 
 const ccxt = require('ccxt')
 
@@ -35,11 +36,11 @@ module.exports = () => new Promise(async (resolve, reject) => {
   if (true || (new Date()).getHours() === 12) {
     const requests = await Request.find({})
     for (let request of requests) {
-      const daysFromDeplyment = Math.floor((new Date().getTime() - (request.contract_deployment).getTime()) / (1000 * 60 * 60 * 24))
+      const daysFromDeplyment = Math.floor((new Date().getTime() - (new Date(request.contract_deployment)).getTime()) / (1000 * 60 * 60 * 24))
       const lastPay = await PaidCommisions.findOne({})
-      const daysFromLastPay = Math.floor((new Date().getTime() - (lastPay.date).getTime()) / (1000 * 60 * 60 * 24))
+      const daysFromLastPay = lastPay ? Math.floor((new Date().getTime() - (new Date(lastPay.date)).getTime()) / (1000 * 60 * 60 * 24)) : null
       if (lastPay === null && daysFromDeplyment > request.commissions_frequency || daysFromLastPay > request.commissions_frequency) {
-        const portfolio = await Porfolio.findOne({request: request._id})
+        const portfolio = await Portfolio.findOne({request: request._id})
         const tokens = []
         const values = []
         for (let token of portfolio.currencies) {

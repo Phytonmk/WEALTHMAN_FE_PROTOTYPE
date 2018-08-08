@@ -12,7 +12,7 @@ import '../css/Input.sass';
   setValue={(value) => this.setState({password: value})}
   //(OPTIONAL) function that listen to changes
   onChange={(event) => this.setState({password: event.target.value})}
-  //(OPTIONAL) type of the input (text or password for now)
+  //(OPTIONAL) type of the input (text or password for now) (! Also you can use type="textarea" !)
   type={"password"}
   //(OPTIONAL) placeholder for the input
   placeholder={"enter password"}
@@ -29,20 +29,36 @@ class Input extends Component {
   }
 
   render() {
-    return (
-      <input
-        value={this.props.value}
-        onChange={(event) => {
-          if (typeof this.props.onChange === 'function')
-            this.props.onChange(event)
-          if (typeof this.props.setValue === 'function')
-            this.props.setValue(event.target.value)
-        }}
-        type={this.props.type}
-        placeholder={this.props.placeholder}
-        className={"default " + (this.props.error ? "error" : "")}
-      />
-    );
+    if (this.props.type === 'textarea')  
+      return (
+        <textarea
+          value={this.props.value}
+          onChange={(event) => {
+            if (typeof this.props.onChange === 'function')
+              this.props.onChange(event)
+            if (typeof this.props.setValue === 'function')
+              this.props.setValue(event.target.value)
+          }}
+          type={this.props.type}
+          placeholder={this.props.placeholder}
+          className={"default " + (this.props.error ? "error" : "")}
+        />
+      );
+    else  
+      return (
+        <input
+          value={this.props.value}
+          onChange={(event) => {
+            if (typeof this.props.onChange === 'function')
+              this.props.onChange(event)
+            if (typeof this.props.setValue === 'function')
+              this.props.setValue(event.target.value)
+          }}
+          type={this.props.type}
+          placeholder={this.props.placeholder}
+          className={"default " + (this.props.error ? "error" : "")}
+        />
+      );
   }
 }
 

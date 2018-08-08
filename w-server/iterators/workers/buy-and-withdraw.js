@@ -4,8 +4,6 @@ const Stock = require('../../models/Stock')
 const configs = require('../../configs')
 const ccxt = require('ccxt')
 
-const sendAllEth = require('../../trading/send_all_eth')
-
 const exchanges = []
 for (let exchange of configs.exchanges) {
   exchange.api = new ccxt[exchange.name]({
@@ -40,6 +38,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const ethPrice = 1//(await lowestPrice.exchange.api.fetchTicker('ETH/USDT')).last
       const fee = Math.ceil((ethPrice * feeRate) / price)
       const quantity = Math.floor((order.percent / price) * order.whole_eth_amount)
+      console.log(`Buying ${quantity} + ${fee} = ${(quantity + fee)} tokens "${symbol}"...`)
       const purchase = await lowestPrice.exchange.api.createOrder(symbol, 'market', 'buy', quantity + fee)
         .catch(async (e) => {
           console.log(e)
@@ -56,7 +55,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
         await order.save()
       }
     } else if (order.status === 'token bouthg') {
-      const withdrawing = await withdraw(order.token_name, order.contract_address, order.quantity)
+      const withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity, order.contract_address)
         .catch( async (e) => {
           console.log(e)
           order.set({status: 'failed to withdraw'})

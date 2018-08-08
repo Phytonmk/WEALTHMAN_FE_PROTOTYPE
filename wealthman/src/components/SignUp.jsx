@@ -75,8 +75,7 @@ export default class SignUp extends Component {
         <div className="auth-box registration-box">
           <div className="close-modal-btn">
           </div>
-          <h2>{this.state.registerNewClient ? 'Register new client to WealthMan' : ('Sign up to WealthMan' + (this.props.forManagers ? ' as manager.' : '.'))}</h2>
-          <span>Enter{this.state.registerNewClient ? '' : ' your'} details below.</span>
+          <h2>{this.state.registerNewClient ? 'Register new client to Wealthman' : ('Sign up to Wealthman' + (this.props.forManagers ? ' as manager.' : '.'))}</h2>
           {this.state.step !== 0 ? '' : <React.Fragment>
           <div className="row first-input-row">
             <label>Email address</label>

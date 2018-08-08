@@ -1,8 +1,8 @@
 const Portfolio = require('../models/Portfolio');
-const configs = require('../configss')
+const configs = require('../configs')
 const portfolioAbi = require('./portfolio_abi.js');
 const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider(configss.web3httpProvider))
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 const Tx = configs.tx
 const privateKey = configs.privatekey
 const admin = configs.admin_adress;

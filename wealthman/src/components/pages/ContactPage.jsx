@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Social from './../Social';
+import Input from './../Input';
 
 class ContactPage extends Component {
   constructor(props) {
@@ -44,19 +45,20 @@ class ContactPage extends Component {
               <div className="box">
                 <h2><b>Get in touch with the Wealthman team</b></h2>
                 <small>NAME</small>
-                <input
+                <Input
                   value={this.state.name}
                   onChange={event => this.setState({name: event.target.value})}
                   placeholder="Your full name"
                 />
                 <small>EMAIL ADDRESS</small>
-                <input
+                <Input
                   value={this.state.email}
                   onChange={event => this.setState({email: event.target.value})}
                   placeholder="username@email.com"
                 />
                 <small>MESSAGE</small>
-                <textarea
+                <Input
+                  type="textarea"
                   value={this.state.message}
                   onChange={event => this.setState({message: event.target.value})}
                   placeholder="Tell us something"

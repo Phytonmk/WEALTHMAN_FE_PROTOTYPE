@@ -51,8 +51,7 @@ export default class SignIn extends Component {
         <div className="auth-box">
           <div className="close-modal-btn">
           </div>
-          <h2>Sign in to WealthMan.</h2>
-          <span>Enter your details below.</span>
+          <h2>Sign in to Wealthman.</h2>
           <div className="row first-input-row">
             <label>Email address</label>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" /> */}

@@ -5,7 +5,6 @@ const Stock = require('../../models/Stock');
 
 const checkBalance = require('../../trading/wealthman_check_balance');
 const trade = require('../../trading/wealthman_trade');
-.
 const tokenTitles = {}
 Stock.find({})
   .then(stocks => 
