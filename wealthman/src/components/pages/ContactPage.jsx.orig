@@ -1,7 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
-import Social from './../Social'
-import Input from './../Input'
+import Social from './../Social';
+import Input from './../Input';
+<<<<<<< HEAD
+=======
+import Textarea from './../Textarea';
+>>>>>>> 1cf81a719b7ab79be18da9877180af383f215fd8
 
 class ContactPage extends Component {
   constructor(props) {
@@ -57,8 +61,12 @@ class ContactPage extends Component {
                   placeholder="username@email.com"
                 />
                 <small>MESSAGE</small>
+<<<<<<< HEAD
                 <Input
                   type="textarea"
+=======
+                <Textarea
+>>>>>>> 1cf81a719b7ab79be18da9877180af383f215fd8
                   value={this.state.message}
                   setValue={value => this.setState({message: value})}
                   placeholder="Tell us something"

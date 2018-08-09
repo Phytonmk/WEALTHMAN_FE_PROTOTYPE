@@ -8,10 +8,6 @@ import Loadable from 'react-loadable';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 
-import './css/main.sass';
-import './css/design.sass';
-import './css/modificators.sass';
-
 import { api, setPage } from './components/helpers';
 
 import defaultState from './redux/default-state';
@@ -114,17 +110,6 @@ class App extends Component {
     })
   }
 
-  renderProgressBar() {
-    var pages = ["register", "email", "agreement", "static form", "dynamic form", "manager form", "kyc", "thanks2", "accept", "signagreement", "money", , "investor register"];
-    var progress = pages.indexOf(this.state.currentPage.toLowerCase()) + 2;
-    var total = pages.length + 1;
-
-    return (
-      <div className="progress-bar">
-        <div className="progress" style={{width: (100 / total * progress) + "%"}}></div>
-      </div>
-    );
-  }
           // <Route exact path="/" render={() => (this.state.user == -1 ? this.renderManagersPage() : this.renderPortfoliosPage())}/>
   renderPage() {
     return (
@@ -343,7 +328,6 @@ class App extends Component {
 
     return (
       <div>
-        {this.renderProgressBar()}
         <div className="container">
           <div className="box">
             <div className="container">
@@ -393,7 +377,6 @@ class App extends Component {
 
   //     return (
   //       <div>
-  //         {this.renderProgressBar()}
   //         <div className="container">
   //           <div className="box">
   //             <div className="container">
@@ -421,7 +404,6 @@ class App extends Component {
   renderThanksPage() {
     return(
       <div>
-        {this.renderProgressBar()}
         <div className="container">
           <div className="box">
             <h2>Thanks for your investment</h2>
@@ -440,7 +422,6 @@ class App extends Component {
   renderThanks2Page() {
     return(
       <div>
-        {this.renderProgressBar()}
         <div className="container">
           <div className="box">
             <h2>Thanks for filling forms</h2>
@@ -507,7 +488,6 @@ class App extends Component {
 
     return(
       <div>
-        {this.renderProgressBar()}
         <div className="second-header">
           <div className="container">
             <div className="title">

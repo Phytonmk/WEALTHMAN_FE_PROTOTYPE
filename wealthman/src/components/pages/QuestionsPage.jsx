@@ -32,17 +32,37 @@ class QuestionsPage extends Component {
         }
       },
       {
-        question: "What is your annual pre-tax income?",
+        question: "What is your annual income?",
         type: "radio",
         typeSpecific: {
-          answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
+          answers: ["Under $25k", "$25k - $50k", "$51k - $100k", "$101k - $300k", "$301k - $1.2m", "Over $1.2m"]
         }
       },
       {
-        question: "What is the total value of your cash in liquid investments?",
-        type: "radio",
+        question: "What is the size of your liquid assets?",
+        description: "Add up your assets from checking, savings accounts, investment portfolios, even the cash under your mattress - but exclude assets, like your home or car. An estimate will work.",
+        type: "slider",
         typeSpecific: {
-          answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
+          from: 0,
+          to: 999999999,
+        }
+      },
+      {
+        question: "What is the value of other property you own?",
+        description: "Add up the value of your home, car, or other valuables you own. An estimate will work.",
+        type: "slider",
+        typeSpecific: {
+          from: 0,
+          to: 999999999,
+        }
+      },
+      {
+        question: "What about your debts?",
+        description: "Add up any mortgages, loans, leases or credit card debt. An estimate will work.",
+        type: "slider",
+        typeSpecific: {
+          from: 0,
+          to: 999999999,
         }
       },
       {
@@ -50,6 +70,13 @@ class QuestionsPage extends Component {
         type: "radio",
         typeSpecific: {
           answers: ["100-500$", "501-1000$", "1001-5000$", "5001-10000$", "10001-100000$", "100001$ or more"]
+        }
+      },
+      {
+        question: "How long have you been an investor in the stock market?",
+        type: "radio",
+        typeSpecific: {
+          answers: ["I've never invested in the stock market before", "Less than 5 years", "Between 5 and 10 years", "More than 10 years"]
         }
       },
       {
@@ -63,7 +90,7 @@ class QuestionsPage extends Component {
         question: "The global stock market is often volatile. If your entire investement portfolio lost 10% of its value in a month during a market decline, what would you do?",
         type: "radio",
         typeSpecific: {
-          answers: ["Sell all of your investments", "Sell some", "Keep all", "Buy more"]
+          answers: ["Buy more", "Hold investments", "Sell investments"]
         }
       },
     ];
