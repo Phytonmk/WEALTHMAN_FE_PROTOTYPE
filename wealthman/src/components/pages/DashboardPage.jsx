@@ -54,7 +54,6 @@ class DashboardPage extends Component {
       }).catch(console.log)
   }
   render() {
-    console.log('render')
     return <div className="container">
       {getCookie('usertype') == 0 ? <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} /> : ''}
       {getCookie('usertype') == 1 ? <h1>Dashboard Manager</h1> : ''}

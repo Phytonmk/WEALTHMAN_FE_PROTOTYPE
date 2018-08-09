@@ -7,6 +7,7 @@ const apiUrl = 'http://159.89.17.248:8080/api/';
 // const apiUrl = 'http://localhost:8080/api/';
 
 const api = {
+  domain: apiUrl.replace(/:[0-9\/api]+$/, ''),
   post: (url, data={}, options) => new Promise((resolve, reject) => {
     axios.post(
       apiUrl + url,

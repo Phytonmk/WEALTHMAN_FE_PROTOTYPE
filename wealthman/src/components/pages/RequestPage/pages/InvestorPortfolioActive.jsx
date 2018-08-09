@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import LevDate from '../../../LevDate';
+import LevDate from '../../../LevDate'
 
-import { Link } from 'react-router-dom';
-import Cards from '../../../dashboards/Cards';
-import Person from '../../../dashboards/Person';
-import PageDevider from '../../../dashboards/PageDevider';
-import Graphics from '../../../dashboards/Graphics';
-import ReportsAndDocuments from '../../../dashboards/ReportsAndDocuments';
-import SmartContract from '../../../dashboards/SmartContract';
-import InvstorPortfolioHeader from '../../../dashboards/InvstorPortfolioHeader';
+import { Link } from 'react-router-dom'
+import Cards from '../../../dashboards/Cards'
+import Person from '../../../dashboards/Person'
+import PageDevider from '../../../dashboards/PageDevider'
+import PortfolioPreview from '../PortfolioPreview'
+import ReportsAndDocuments from '../../../dashboards/ReportsAndDocuments'
+import SmartContract from '../../../dashboards/SmartContract'
+import InvstorPortfolioHeader from '../../../dashboards/InvstorPortfolioHeader'
 
 
 export default class InvestorPortfolioActive extends Component {
+  constructor(props) {
+    super(props)
+  }
   render() {
     return <div>
       <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request._id} />
@@ -48,48 +51,7 @@ export default class InvestorPortfolioActive extends Component {
         }]}
       />
       <SmartContract address={this.props.requestData.portfolio.smart_contract} />
-      <Graphics
-       pie={{
-         title: 'Portfolio allocation',
-         datasets: [{
-           title: 'Current',
-           inCircleValue: this.props.requestData.request.value,
-           inCircleTitle: 'Eth',
-           data: this.props.requestData.portfolio.currencies.sort((a, b) => a.percent > b.percent ? -1 : 1).map(currency => { return {
-             header: currency.percent + '% ' + currency.currency,
-             value: currency.percent
-           }})
-         }]
-       }}
-       main={{
-         title: 'Portfolio value (hardcode)',
-         datasets: [{
-           title: 'Jun 22 - Jul 16, 2018',
-           data: [{
-             value: 1,
-             title: '1-Jul-15'
-           },{
-             value: 2,
-             title: '2-Jul-15'
-           },{
-             value: 3,
-             title: '3-Jul-15'
-           },{
-             value: 8,
-             title: '4-Jul-15'
-           },{
-             value: 5,
-             title: '5-Jul-15'
-           },{
-             value: 3,
-             title: '6-Jul-15'
-           },{
-             value: 7,
-             title: '7-Jul-15'
-           },]
-         }]
-       }}
-     />
+      <PortfolioPreview requestData={this.props.requestData} />
       <PageDevider />
       <Person requestData={this.props.requestData}/>
       <ReportsAndDocuments request={this.props.requestData.request._id}/>

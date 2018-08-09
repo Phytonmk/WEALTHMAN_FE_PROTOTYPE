@@ -39,7 +39,6 @@ class Avatar extends Component {
     image.src = " ";
     image.onload = () => {
       const landscape = image.width > image.height
-      console.log(image.width, image.height)
       this.setState({
         imageLoaded: true,
         orientation: landscape ? "landscape" : "portrait",

@@ -139,7 +139,8 @@ export default class SignUp extends Component {
                 <small>It is availible only in developer version!</small>
               </div>
               <div className="row">
-                Your login is not a valid email so to confirm it go to <a target="_blank" href={'http://platform.wealthman.io:8080/api/confirm-email/' + this.state.confirmToken}>link</a>
+                Your login is not a valid email so to confirm it go to <b><ins><a target="_blank" href={'http://platform.wealthman.io:8080/api/confirm-email/' + this.state.confirmToken}>link</a></ins></b>
+                <br />
               </div>
             </div>}
             <div className="row">

@@ -12,7 +12,6 @@ const auth = (callback=()=>{}) => {
         if (/[0-9]+/.test(res.data.usertype))
           setReduxState({user: res.data.usertype, userData: res.data.userData || {}})
         setCookie('usertype', res.data.usertype)
-        console.log(true)
         callback(true)
         window.dispatchEvent(authEvent)
       })

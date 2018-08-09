@@ -89,7 +89,6 @@ class ManagersPage extends Component {
     } else {
       query += filterIndex
     }
-    console.log(query)
     api.get(query)
       .then((res) => {
         this.setState(res.data);

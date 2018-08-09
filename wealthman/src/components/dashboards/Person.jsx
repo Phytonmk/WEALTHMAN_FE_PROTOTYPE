@@ -27,7 +27,6 @@ export default class Header extends Component {
       this.loadCompany(person.subtitle.replace(/[^0-9]/g));
       person.subtitle = '';
     }
-    console.log(person)
     return (
         <div className="person-details">
             <Link to={'/' + person.type + '/' + person._id}>

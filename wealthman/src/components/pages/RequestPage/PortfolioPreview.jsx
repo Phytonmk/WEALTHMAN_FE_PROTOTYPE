@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
-import Sortable2 from '../../Sortable2.jsx';
-import LevDate from '../../LevDate.jsx';
-
+import Sortable2 from '../../Sortable2.jsx'
+import LevDate from '../../LevDate.jsx'
+import portfolioValues from '../../portfolioValues'
+import Graphics from '../../dashboards/Graphics';
 
 let sortableHeader = [
   {
@@ -13,12 +14,6 @@ let sortableHeader = [
     type: "number",
   },
   {
-    property: "icon",
-    title: "icon",
-    width: "41px",
-    type: "unsortable",
-  },
-  {
     property: "currency",
     title: "currency",
     width: "100px",
@@ -26,12 +21,6 @@ let sortableHeader = [
   {
     property: "percent",
     title: "percent",
-    width: "100px",
-    type: "number",
-  },
-  {
-    property: "amount",
-    title: "amount",
     width: "100px",
     type: "number",
   },
@@ -49,47 +38,79 @@ let sortableHeader = [
 
 class PortfolioPreview extends Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.state = {
+      portfolioValues: [],
+      requestedPorfolios: false
+    }
   }
   render() {
-    const portfolios = [];
-    let i = 0;
-    for (let portfolio of this.props.portfolios) {
-      for (let property in portfolio) {
-        if (!portfolio[property]) {
+    if (!this.state.requestedPorfolios && this.props.requestData && this.props.requestData.portfolio) {
+      this.state.requestedPorfolios = true // mutation (sic!)
+      portfolioValues(this.props.requestData.portfolio.currencies, (graphic) => {
+        const portfolioValues = [...this.state.portfolioValues]
+        portfolioValues.push(graphic)
+        this.setState({portfolioValues})   
+      })
+    }
+    const portfolio = []
+    const tokens = [...this.props.requestData.portfolio.currencies]
+    let i = 0
+    for (let token of tokens) {
+      for (let property in token) {
+        if (!token[property]) {
           switch (property) {
             case 'analysis':
-              portfolio[property] = 'no analysis';
-            break;
+              token[property] = 'no analysis'
+            break
             case 'comments':
-              portfolio[property] = 'no comment';
-            break;
-            case 'amount':
-              portfolio[property] = '0';
-            break;
+              token[property] = 'no comment'
+            break
             case 'percent':
-              portfolio[property] = '0';
-            break;
+              token[property] = '0'
+            break
             default:
-              portfolio[property] = '';
+              token[property] = ''
           }
         }
-        if (property === 'percent' && portfolio[property].toString().indexOf('%') === -1)
-          portfolio[property] += ' %';
+        if (property === 'percent' && token[property].toString().indexOf('%') === -1)
+          token[property] += ' %'
       }
-      portfolio.id = ++i;
-      portfolios.push(portfolio);
+      token.id = ++i
+      token.number = token.id
+      portfolio.push(token)
     }
     return (
-      <div className="box">
-        <Sortable2
-          columns={sortableHeader}
-          data={portfolios}
-          navigation={true}
-          maxShown={5}
-        />
-      </div>)
+      <React.Fragment>
+          <Graphics
+           pie={{
+             title: 'Portfolio allocation',
+             datasets: [{
+               title: 'Current',
+               inCircleValue: this.props.requestData.request.value,
+               inCircleTitle: 'Eth',
+               data: this.props.requestData.portfolio.currencies.sort((a, b) => a.percent > b.percent ? -1 : 1).map(currency => {return {
+                 header: currency.percent.replace(/[^0-9]/g, '') + '% ' + currency.currency,
+                 value: currency.percent.replace(/[^0-9]/g, '')
+               }})
+             }]
+           }}
+           main={{
+             title: 'Portfolio value',
+             datasets: this.state.portfolioValues
+           }}
+         />
+         <br/>
+        <div className="box">
+          <Sortable2
+            columns={sortableHeader}
+            data={portfolio}
+            navigation={true}
+            maxShown={5}
+          />
+        </div>
+      </React.Fragment>)
   }
 }
 
-export default PortfolioPreview;
+export default PortfolioPreview

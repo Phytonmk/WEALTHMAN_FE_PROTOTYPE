@@ -232,9 +232,8 @@ class SuperLine extends Component {
               </div>
               <div className="row">
                 <LineChart
-                  yTicks={10}
+                  xTicks={Math.round(this.props.width / 60)}
                   xType={'time'}
-                  xTicks={this.props.datasets[this.state.selectOption].data.length / 2}
                   axes
                   margin={{top: 20, right: 20, bottom: 45, left: 40}}
                   grid
@@ -251,7 +250,7 @@ class SuperLine extends Component {
                       })
                     })
                     :
-                    [this.props.datasets[this.state.selectOption].data.map((chunk) => {
+                    [(this.props.datasets[this.state.selectOption] || {data: []}).data.map((chunk) => {
                     return {
                       x: chunk.title,
                       y: chunk.value
@@ -268,31 +267,30 @@ export default class Graphics extends Component {
     super(props);
   }
   render() {
-    return (
-      <div>
-        {!this.props.additional ? '' :
-          <div className="box margin-box">
-            <SuperLine
-              title={this.props.additional.title}
-              width={800}
-              subheaders={this.props.additional.subheaders || []}
-              onOneGraphic={this.props.additional.onOneGraphic}
-              datasets={this.props.additional.datasets}
-            />
-            </div>}
-        <div className="grapics-boxes-container">
-          <SuperPie
-            title={this.props.pie.title}
-            datasets={this.props.pie.datasets}
-          />
-          <SuperLine
-            title={this.props.main.title}
-            width={580}
-            subheaders={this.props.main.subheaders || []}
-            onOneGraphic={this.props.main.onOneGraphic}
-            datasets={this.props.main.datasets}
-          />
-        </div>
-      </div>)
+    return  <div>
+              {!this.props.additional ? '' :
+                <div className="box margin-box">
+                  <SuperLine
+                    title={this.props.additional.title}
+                    width={800}
+                    subheaders={this.props.additional.subheaders || []}
+                    onOneGraphic={this.props.additional.onOneGraphic}
+                    datasets={this.props.additional.datasets}
+                  />
+                  </div>}
+              <div className="grapics-boxes-container">
+                <SuperPie
+                  title={this.props.pie.title}
+                  datasets={this.props.pie.datasets}
+                />
+                <SuperLine
+                  title={this.props.main.title}
+                  width={580}
+                  subheaders={this.props.main.subheaders || []}
+                  onOneGraphic={this.props.main.onOneGraphic}
+                  datasets={this.props.main.datasets}
+                />
+              </div>
+            </div>
   }
 }

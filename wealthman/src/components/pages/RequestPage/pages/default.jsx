@@ -10,8 +10,6 @@ import ReportsAndDocuments from '../../../dashboards/ReportsAndDocuments';
 
 export default class DefaultPage extends Component {
   render() {
-    console.log(this.props.requestData);
-    console.log(this.props.requestData);
     return <div>
       <Person requestData={this.props.requestData}/>
       <Details request={this.props.requestData.request} />

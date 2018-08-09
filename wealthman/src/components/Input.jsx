@@ -16,6 +16,8 @@ import '../css/Input.sass';
   type={"password"}
   //(OPTIONAL) placeholder for the input
   placeholder={"enter password"}
+  //(OPTIONAL) tabindex for the input
+  tabindex={1}
   //(OPTIONAL) error message when value is incorrect (if error undefined, field is normal, if error is "" or anything else, field is red)
   error={this.state.incorrectPassword ? "incorrect password" : undefined}
 />
@@ -42,6 +44,7 @@ class Input extends Component {
           type={this.props.type}
           placeholder={this.props.placeholder}
           className={"default " + (this.props.error ? "error" : "")}
+          tabIndex={this.props.tabindex}
         />
       );
     else  
@@ -57,6 +60,7 @@ class Input extends Component {
           type={this.props.type}
           placeholder={this.props.placeholder}
           className={"default " + (this.props.error ? "error" : "")}
+          tabIndex={this.props.tabindex}
         />
       );
   }

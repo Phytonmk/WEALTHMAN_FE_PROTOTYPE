@@ -57,7 +57,6 @@ class OldAccount extends Component {
       this.setState({user});
     if (this.state.userData) {
       for (let question in questions[user]) {
-        console.log(question)
         switch(questions[user][question].type) {
           case 'photo_upload':
             if (this.state.userData.img) {

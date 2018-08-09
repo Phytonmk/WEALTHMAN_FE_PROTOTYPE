@@ -55,7 +55,7 @@ export default class SignIn extends Component {
           <div className="row first-input-row">
             <label>Email address</label>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" /> */}
-            <Input value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />
+            <Input tabindex="0" value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />
           </div>
           <div className="row">
             <label>Password</label>
@@ -63,7 +63,7 @@ export default class SignIn extends Component {
               Forgot password?
             </Link>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" /> */}
-            <Input type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
+            <Input tabindex="1" type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
           </div>
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>

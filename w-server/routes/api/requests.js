@@ -134,7 +134,8 @@ module.exports = (app) => {
     const manager = await Manager.findById(request.manager);
     const company = await Company.findById(request.company);
     const portfolio = await Portfolio.findOne({request: request.id});
-    res.send({request, investor, manager, company, portfolio});
+    const oldPortfolios = await Portfolio.find({request: request.id, status: 'old'});
+    res.send({request, investor, manager, company, portfolio, oldPortfolios});
     res.status(200);
     res.end();
   });

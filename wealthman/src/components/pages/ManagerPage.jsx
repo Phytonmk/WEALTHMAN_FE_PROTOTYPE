@@ -43,7 +43,6 @@ class ManagerPage extends Component {
       .catch(console.log);
     api.get(managerType + '-statistics/' + this.props.match.params.id)
       .then((res) => {
-        console.log(res.data);
         this.setState({
           profitability: res.data.profitability,
           clients: res.data.clients,

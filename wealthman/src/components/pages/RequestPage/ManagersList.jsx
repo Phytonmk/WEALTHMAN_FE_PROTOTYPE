@@ -109,7 +109,6 @@ class ManagersList extends Component {
           </Link>
       };
     });
-    console.log(sortableManagers);
     return (
       <div className="box">
         {sortableManagers.length > 0 ? <Sortable2

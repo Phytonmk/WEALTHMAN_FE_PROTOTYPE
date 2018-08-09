@@ -94,10 +94,8 @@ class Form extends Component {
   }
   setServiceData(property, event, serviceIndex, serviceProperty) {
     const state = Object.assign({}, this.state);
-    console.log(property);
     state[property].services[serviceIndex][serviceProperty] = event.target.value;
     this.setState(state);
-    console.log(this.state[property]);
     this.forceUpdate();
   }
   submit() {

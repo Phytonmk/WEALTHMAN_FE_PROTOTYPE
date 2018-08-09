@@ -30,7 +30,6 @@ class RiskProfile extends Component {
         const data = res.data.personalData
         delete data._id
         delete data._v
-        console.log(data)
         this.setState(data)
       })
       .catch(console.log)

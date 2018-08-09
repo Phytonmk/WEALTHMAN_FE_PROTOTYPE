@@ -167,8 +167,8 @@ var abi =[
 		"inputs": [],
 		"name": "transferEth",
 		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
