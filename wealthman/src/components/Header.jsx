@@ -136,7 +136,7 @@ class Header extends Component {
             window.openSignUp = func
           }}
           forManagers={false}
-          />
+        />
         <div className="contents">
           <div className="container">
             <NavLink

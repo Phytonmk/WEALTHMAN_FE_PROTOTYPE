@@ -39,7 +39,7 @@ export default class SignUp extends Component {
           auth()
           if (res.data.confirmToken)
             this.setState({confirmToken: res.data.confirmToken})
-        } 
+        }
         this.sendDetails(data, res.data.token)
       })
       .catch(console.log);
@@ -81,7 +81,7 @@ export default class SignUp extends Component {
             <label>Email address</label>
             <Input value={this.state.login} setValue={value => this.setState({login: value})} placeholder="username@email.com" />
           </div>
-          {this.state.registerNewClient ? '' : 
+          {this.state.registerNewClient ? '' :
             <React.Fragment>
               <div className="row">
                 <label>Password</label>
@@ -106,7 +106,7 @@ export default class SignUp extends Component {
          {this.state.step !== 1 ? '' : <div>
             {this.state.register !== '' ? <Form
               questions={questions[this.state.register]}
-              onSubmit={(data) => this.sendAllForms(data)}
+              onSubmit={(data) => {this.sendAllForms(data); this.props.hide()}}
             /> : <React.Fragment>
               <div className="row-padding">
                 <button className="big-blue-button auth-btn" onClick={() => this.setState({register: 'manager'})}>

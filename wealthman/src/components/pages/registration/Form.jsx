@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency } from '../../helpers';
 import Avatar from '../../Avatar'
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
-import Input from '../../Input' 
+import Input from '../../Input'
 
 class Form extends Component {
   constructor(props) {
@@ -123,12 +123,12 @@ class Form extends Component {
           if (question.obvious && this.state[question.property] === '')
             ok = false;
       }
-      if (!ok) {
-        alert(`Field ${question.title} must be filled!`);
-        break;
-      }
+      // if (!ok) {
+      //   alert(`Field ${question.title} must be filled!`);
+      //   break;
+      // }
     }
-    if (ok)
+    // if (ok)
       this.props.onSubmit(data);
   }
   render() {
@@ -247,7 +247,9 @@ class Form extends Component {
             </div>
           })}
         <div className="row-padding">
-          <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
+          <Link to="/questions">
+            <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
+          </Link>
         </div>
       </div>
     );

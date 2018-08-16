@@ -92,6 +92,7 @@ class OldAccount extends Component {
             <div className="account-box">
               {gotData ? <Form
                 questions={questions[user]}
+                // onSubmit={(data) => this.saveData(data)}
                 onSubmit={(data) => this.saveData(data)}
               /> : 'Loading...'}
             </div>
