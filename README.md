@@ -1,1 +1,1 @@
-# Frontend part of the Wealthman platform 
+# Prototype of the Wealthman platform 
