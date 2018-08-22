@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { setReduxState } from '../redux/index'
 import { Link } from 'react-router-dom'
 
-import { api, setCookie, getCookie } from './helpers'
+import { setPage, api, setCookie, getCookie } from './helpers'
 import auth from './auth'
 
 import Input from './Input'
@@ -36,6 +36,8 @@ export default class SignIn extends Component {
           this.hide(null, true)
           if (typeof this.props.callback === 'function')
             this.props.callback()
+          else
+            setPage('dashboard')
         })
       })
       .catch((e) => {

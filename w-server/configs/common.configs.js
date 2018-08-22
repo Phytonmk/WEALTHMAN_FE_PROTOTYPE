@@ -5,8 +5,8 @@ module.exports = {
   adminAddress: '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D',
   exchangerAddress: '0x9cb29b6be58387e13e256a52d16aad7376d1ed65',
   binanceApi: {
-    key: '0eEhZb5rMmXjeQcGJp6Ho4V6xUlM7LjG8VLbknB6Yf1GuUVkZfGcQhaSjQe7vqfb',
-    secret: 'XoiqvoqSImVgidD8jX7IBQ8j3lUhS9jMOWuSE2p3OuQkbMgXjP2p2wk5nuwNC239'
+    key: 'NfVTh5BOre1sa8NNnxBVRiPU94k5NXVIfxo7SWbwgbxYUzvZnHieMIMHbqSuOoBQ',
+    secret: 'jKCtsdruy650mDhj1kpAIcOgOu22bewpUAx3QPaPp7Q2c03xDd5CZXxlwcokbaw8'
   },
   chatsAccess: {
     host: 'platform.wealthman.io',
@@ -18,7 +18,7 @@ module.exports = {
   },
   exchanges: [{
     name: 'binance',
-    key: '0eEhZb5rMmXjeQcGJp6Ho4V6xUlM7LjG8VLbknB6Yf1GuUVkZfGcQhaSjQe7vqfb',
-    secret: 'XoiqvoqSImVgidD8jX7IBQ8j3lUhS9jMOWuSE2p3OuQkbMgXjP2p2wk5nuwNC239'
+    key: 'NfVTh5BOre1sa8NNnxBVRiPU94k5NXVIfxo7SWbwgbxYUzvZnHieMIMHbqSuOoBQ',
+    secret: 'jKCtsdruy650mDhj1kpAIcOgOu22bewpUAx3QPaPp7Q2c03xDd5CZXxlwcokbaw8'
   }]
 }

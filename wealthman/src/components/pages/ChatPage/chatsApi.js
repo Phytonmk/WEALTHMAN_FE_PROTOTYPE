@@ -2,8 +2,11 @@ import axios from 'axios'
 import { getCookie } from '../../helpers'
 import io from 'socket.io-client';
 
-const apiUrl = 'http://platform.wealthman.io:2905/chats-api/'
-const socketsHost = 'ws://platform.wealthman.io';
+// const apiUrl = 'http://platform.wealthman.io:2905/chats-api/'
+// const socketsHost = 'ws://platform.wealthman.io';
+
+const apiUrl = 'http://185.185.70.5:2905/chats-api/'
+const socketsHost = 'ws://185.185.70.5';
 
 // const apiUrl = 'http://localhost:2905/chats-api/'
 // const socketsHost = 'ws://localhost';

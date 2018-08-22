@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { store, setReduxState } from '../../redux';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Sortable2 from '../Sortable2.jsx';
-import Select from '../Select.jsx';
-import Search from '../Search.jsx';
-import Avatar from '../Avatar.jsx';
-import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers';
-import {AreaChart} from 'react-easy-chart';
-import Subheader from './../Subheader.jsx';
+import React, { Component } from 'react'
+import { store, setReduxState } from '../../redux'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import Sortable2 from '../Sortable2.jsx'
+import Select from '../Select.jsx'
+import Search from '../Search.jsx'
+import Avatar from '../Avatar.jsx'
+import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers'
+import {AreaChart} from 'react-easy-chart'
+import Subheader from './../Subheader.jsx'
 
 const filters = [
   {
@@ -23,11 +23,11 @@ const filters = [
     link: "Advisory",
     description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
   },
-];
+]
 
 class ManagersPage extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       searchName: "",
       gotData: false,
@@ -39,24 +39,24 @@ class ManagersPage extends Component {
     }
     let lastPage
     store.subscribe(() => {
-      const state = store.getState();
+      const state = store.getState()
       if ((state.currentPage === 'company-managers' || state.currentPage === 'managers') && state.currentPage !== lastPage)
-        setTimeout(this.load.bind(this), 0);
-    });
+        setTimeout(this.load.bind(this), 0)
+    })
   }
   applyManager(managerID) {
     setReduxState({
       currentManager: managerID,
-    });
-    const manager = this.state.offers.find(i => i._id === managerID);
-    setCookie('service', this.state.filter);
-    // setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+    })
+    const manager = this.state.offers.find(i => i._id === managerID)
+    setCookie('service', this.state.filter)
+    // setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
     // console.log(getCookie('usertype'))
     if (getCookie('usertype') === '0')
-      setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+      setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
     else
       window.openSignUp(() => {
-        setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id);
+        setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
       })
   }
   load(filter) {
@@ -64,19 +64,19 @@ class ManagersPage extends Component {
       offers: [],
       gotData: false
     })
-    if (filter)
-      this.setState({filter});
-    else
-      filter = this.state.filter
+    // if (filter)
+    //   this.setState({filter})
+    // else
+    //   filter = this.state.filter
 
-    let filterIndex;
-    switch(filter.toLowerCase()) {
-      case 'robo-advisor': filterIndex = 0; break;
-      case 'discretionary': filterIndex = 1; break;
-      case 'advisory': filterIndex = 2; break;
-      default: filterIndex = 0
-    }
-    this.setState({gotData: false});
+    // let filterIndex
+    // switch(filter.toLowerCase()) {
+    //   case 'robo-advisor': filterIndex = 0 break
+    //   case 'discretionary': filterIndex = 1 break
+    //   case 'advisory': filterIndex = 2 break
+    //   default: filterIndex = 0
+    // }
+    this.setState({gotData: false})
     let query = 'marketplace/'
     if (getCookie('usertype') == 3) {
       if (this.props.match.path  === '/company-managers') {
@@ -87,15 +87,15 @@ class ManagersPage extends Component {
     } else if (getCookie('usertype') == 1) {
       query += '-1?only-companies=true'
     } else {
-      query += filterIndex
+      query += '-1'
     }
     api.get(query)
       .then((res) => {
-        this.setState(res.data);
-        this.setState({gotData: true});
-        setTimeout(() => this.forceUpdate(), 0);
+        this.setState(res.data)
+        this.setState({gotData: true})
+        setTimeout(() => this.forceUpdate(), 0)
       })
-      .catch(console.log);
+      .catch(console.log)
   }
   genGraphData() {
     const data = []
@@ -110,7 +110,7 @@ class ManagersPage extends Component {
   }
   componentDidMount() {
     if (!this.state.gotData)
-      this.load();
+      this.load()
   }
   render() {
     let sortableHeader = [
@@ -127,24 +127,30 @@ class ManagersPage extends Component {
         width: "106px",
       },
       {
+        property: "type",
+        title: "Type",
+        // width: "156px",
+        width: "65px",
+      },
+      {
         property: "rating",
         title: "Success rate",
         // width: "85px",
-        width: "70px",
+        width: "60px",
         type: "number",
       },
       {
         property: "min",
         title: "min. investment",
         // width: "103px",
-        width: "90px",
+        width: "80px",
         type: "number",
       },
       {
         property: "aum",
         title: "AUM, mln $",
         // width: "82px",
-        width: "70px",
+        width: "50px",
         type: "number",
         tooltip: "Assets Under Management in millions of $"
       },
@@ -164,9 +170,9 @@ class ManagersPage extends Component {
       },
       {
         property: "clients",
-        title: "Number of clients",
+        title: "Clients",
         // width: "82px",
-        width: "70px",
+        width: "40px",
       },
       {
         property: "aum6",
@@ -176,7 +182,7 @@ class ManagersPage extends Component {
         type: "unsortable",
         tooltip: "Assets Under Management in the last 6 month"
       }
-    ];
+    ]
     if (getCookie('usertype') != 1 && getCookie('usertype') != 3)
       sortableHeader.push({
           property: "apply",
@@ -190,7 +196,7 @@ class ManagersPage extends Component {
           type: "unsortable",
         })
     if (getCookie('usertype') == 3) { // user -- company
-      sortableHeader.pop();
+      sortableHeader.pop()
       if (this.props.currentPage === 'company-managers')
         sortableHeader.push({
           property: 'chat',
@@ -205,7 +211,7 @@ class ManagersPage extends Component {
         })
     }
     let sortableManagers = this.state.offers.map((manager, index) => {
-      const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '');
+      const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '')
       return {
         id: manager.id,
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
@@ -215,6 +221,7 @@ class ManagersPage extends Component {
           </Link>,
           value: name
         },
+        type: manager.company_name ? 'Company' : 'Manager',
         rating: {
           render: <div className="rating">{manager.successRate}</div>,
           value: manager.successRate
@@ -265,8 +272,8 @@ class ManagersPage extends Component {
               Details
             </button>
           </Link>
-      };
-    });
+      }
+    })
 
     return (
       <div id="managers-page">
@@ -283,7 +290,7 @@ class ManagersPage extends Component {
                 <Select
                   value={this.state.filter}
                   options={filters.map(filter => filter.link)}
-                  setValue={(value) => {this.setState({filter: value}); setTimeout(() => this.load(), 0)}}
+                  setValue={(value) => {this.setState({filter: value}) setTimeout(() => this.load(), 0)}}
                   width="135px"
                 />
               <br />
@@ -390,10 +397,10 @@ class ManagersPage extends Component {
           },
         ]} />
       </div>
-    );
+    )
   }
 }
 
 
 
-export default connect(a => a)(ManagersPage);
+export default connect(a => a)(ManagersPage)

@@ -20,7 +20,7 @@ class PortfoliosPage extends Component {
       requests: [{}],
       currentCurrencyPrices: [],
       currentCurrency: 'USD',
-      currentTab: 0
+      currentTab: 0,
     }
   }
   componentWillMount() {
@@ -33,12 +33,12 @@ class PortfoliosPage extends Component {
           this.setState({gotData: true, portfolios: [], requests: []});
         setTimeout(() => this.forceUpdate(), 0)
       })
-      .catch(console.log);
+      .catch(console.log)
     api.get('stocks')
       .then((res) => {
         this.setState({currentCurrencyPrices: res.data.map(stock => {return {name: stock.title, price: stock.last_price}})});
       })
-      .catch(console.log);
+      .catch(console.log)
   }
   genGraphData() {
     const data = []
@@ -73,27 +73,21 @@ class PortfoliosPage extends Component {
 
     let titles = [
       {
-        property: "portfolio",
-        title: "Portfolio",
+        property: "number",
+        title: "#",
+        type: "number",
         width: "60px",
       },
       {
-        property: "smart",
-        title: "Smart-cntract",
+        property: "person",
+        title: this.props.user == 1 ? "investor" : "manager",
         width: "200px",
-        type: "unsortable"
       },
       {
         property: "instrument",
-        title: "instrument",
+        title: "Managment style",
         width: "100px",
         tooltip: "name of algorythm",
-      },
-      {
-        property: "profit",
-        title: "Fee, % of profit",
-        width: "80px",
-        type: "unsortable"
       },
       {
         property: "value",
@@ -102,20 +96,34 @@ class PortfoliosPage extends Component {
         tooltip: "value of portfolio",
       },
       {
-        property: "status",
-        title: "Status",
-        width: "160px",
+        property: "change",
+        title: "24 h. change",
+        width: "80px",
+        type: "unsortable"
       },
       {
-        property: "cost",
-        title: "Cost",
-        width: "80px",
+        property: "status",
+        title: "Status",
+        width: "60px",
+      },
+      {
+        property: "recommendation",
+        title: "Recommendation needed",
+        width: "60px",
+      },
+      {
+        property: "qrcode",
+        title: "",
+        width: "100px",
         type: "unsortable"
       }
     ];
 
+    const addedRequests = []
     let portfolios = this.state.portfolios.map((portfolio, i) => {
       let request = this.state.requests.find(request => request._id == portfolio.request) || {};
+      addedRequests.push(request._id)
+      let person = ''
       let price = 1;
       if (this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency) !== undefined)
         price = this.state.currentCurrencyPrices.find(c => c.name == portfolio.currency).price;
@@ -127,25 +135,40 @@ class PortfoliosPage extends Component {
         height={20}
         data={[this.genGraphData()]}
       />
-      const costGraph =  <AreaChart
-        margin={{top: 0, right: 0, bottom: 0, left: 0}}
-        width={80}
-        height={20}
-        data={[this.genGraphData()]}
-      />
       return {
-        id: portfolio._id,
-        portfolio: <b>{portfolio._id}</b>,
-        smart:  <div className="smart-contract-comact">{portfolio.smart_contract}</div>,
+        number: i,
+        id: request._id,
+        portfolio: <b>{request._id}</b>,
+        qrcode:  <QRCode size={100} value={portfolio.smart_contract} />,
+        person,
         instrument: request.service || '',
-        profit: profitGraph,
+        change: profitGraph,
         value: (value != 'NaN' ? value : '-') + " " + currentCurrency.name,
         status: request.status,
-        cost: costGraph,
+        recommendation: 'no',
         link: 'request/' + request._id
       };
     });
-    console.log(portfolios)
+    let i = this.state.requests.length
+    this.state.requests.forEach((request) => {
+      if (!addedRequests.includes(request._id)) {
+        let person = ''
+        portfolios.push({
+          number: i,
+          id: request._id,
+          portfolio: <b>{request._id}</b>,
+          qrcode: <small>not deployed</small>,
+          person,
+          instrument: request.service || '',
+          change: '',
+          value: request.value + ' Eth',
+          status: request.status,
+          recommendation: 'no',
+          link: 'request/' + request._id
+        })
+        i++
+      }
+    })
     const subheaders = [
         // {
         //   header: "Proposed (initial)",

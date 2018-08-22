@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../redux/index';
 import { Link } from 'react-router-dom';
 
-import { api, setCookie, getCookie } from './helpers'
+import { api, setCookie, getCookie, setPage } from './helpers'
 import auth from './auth'
 import '../css/AuthWindows.sass';
 import Form from './pages/registration/Form';
@@ -19,7 +19,7 @@ export default class SignUp extends Component {
       password: '',
       passwordRepeat: '',
       register: this.props.forManagers ? '' : 'investor',
-      registerNewClient: this.props.registerNewClient,
+      registerNewClient: !!this.props.registerNewClient,
       notConfirmed: false
     }
   }
@@ -45,24 +45,28 @@ export default class SignUp extends Component {
       .catch(console.log);
   }
   sendDetails(data, token) {
-    console.log('sendDetails')
     api.post(this.state.registerNewClient ? 'investor/data' : (this.state.register + '/data'), this.state.registerNewClient ? Object.assign(data, {accessToken: token}): data)
       .then((res) => {
-        console.log('res.data')
-        if (this.state.registerNewClient)
+        // console.log('res.data')
+        if (this.state.registerNewClient) {
           this.props.hide()
-        else
+        } else {
           this.setState({step: 2})
+        }
       })
       .catch(console.log);
   }
   confirm() {
     auth((confirmed) => {
-      console.log(confirmed)
+      //console.log(confirmed)
       if (confirmed) {
         this.hide(null, true)
-        if (typeof this.props.callback === 'function')
+        if (typeof this.props.callback === 'function') {
           this.props.callback()
+        } else {
+          if (this.state.register === 'manager' || this.state.register === 'company')
+            setPage('investors')
+        }
       } else {
         this.setState({notConfirmed: true})
       }
@@ -70,6 +74,7 @@ export default class SignUp extends Component {
   }
 
   render() {
+    console.log(`Registration of another user via email: ${this.state.registerNewClient}`)
     return (
       <div onClick={(event) => this.hide(event)} className={this.props.visible ? 'modal-wrapper visible' : 'modal-wrapper'}>
         <div className="auth-box registration-box">
@@ -106,7 +111,7 @@ export default class SignUp extends Component {
          {this.state.step !== 1 ? '' : <div>
             {this.state.register !== '' ? <Form
               questions={questions[this.state.register]}
-              onSubmit={(data) => {this.sendAllForms(data); this.props.hide()}}
+              onSubmit={(data) => {this.sendAllForms(data)}}
             /> : <React.Fragment>
               <div className="row-padding">
                 <button className="big-blue-button auth-btn" onClick={() => this.setState({register: 'manager'})}>

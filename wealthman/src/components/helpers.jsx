@@ -3,8 +3,10 @@ import axios from 'axios';
 import React from 'react';
 import { store, setReduxState } from '../redux';
 
-const apiUrl = 'http://159.89.17.248:8080/api/';
+const apiUrl = 'http://185.185.70.5:8080/api/';
 // const apiUrl = 'http://localhost:8080/api/';
+
+
 
 const api = {
   domain: apiUrl.replace(/:[0-9\/api]+$/, ''),

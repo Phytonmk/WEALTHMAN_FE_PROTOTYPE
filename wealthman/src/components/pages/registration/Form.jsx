@@ -123,12 +123,12 @@ class Form extends Component {
           if (question.obvious && this.state[question.property] === '')
             ok = false;
       }
-      // if (!ok) {
-      //   alert(`Field ${question.title} must be filled!`);
-      //   break;
-      // }
+      if (!ok) {
+        alert(`Field ${question.title} must be filled!`);
+        break;
+      }
     }
-    // if (ok)
+    if (ok)
       this.props.onSubmit(data);
   }
   render() {
@@ -247,9 +247,7 @@ class Form extends Component {
             </div>
           })}
         <div className="row-padding">
-          <Link to="/questions">
-            <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
-          </Link>
+          <button className="big-blue-button" onClick={() => this.submit()}>Submit</button>
         </div>
       </div>
     );

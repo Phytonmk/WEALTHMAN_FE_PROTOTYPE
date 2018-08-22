@@ -81,12 +81,17 @@ class RequestsPage extends Component {
       {
         property: "name",
         title: "",
-        width: "156px",
+        width: "106px",
       },
       {
         property: "date",
         title: "Date",
         width: "100px",
+      },
+      {
+        property: "inout",
+        title: "In/Out",
+        width: "50px",
       },
       {
         property: "status",
@@ -190,6 +195,7 @@ class RequestsPage extends Component {
           render: date.niceTime(),
           value: date.getTime(),
         },
+        inout: request.initiatedByManager && this.props.user == 1 ? 'outgoing' : 'ingoing',
         value,
         service: request.type === 'inviting' ? 'inviting' : (request.service || 'undefined'),
         percent_change: {

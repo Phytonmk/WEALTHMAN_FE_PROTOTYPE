@@ -76,7 +76,7 @@ module.exports = (contractData) => new Promise((mainResolve, reject) => {
     .then(values => {
      const rawTx = {
        from: admin,
-       gasLimit: web3.utils.toHex(4000000),
+       gasLimit: web3.utils.toHex(1500000),
        nonce: web3.utils.toHex(values[0]),
        gasPrice: web3.utils.toHex(Number(values[1])),
        data: deploy

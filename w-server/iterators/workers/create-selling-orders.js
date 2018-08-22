@@ -15,7 +15,7 @@ const depositHistory = (apiKey, secret, startTime) => new Promise((resolve, reje
   })
   binance.depositHistory((err, res) => {
     if (err)
-      reejct(err)
+      rejct(err)
     else
       resolve(res)
   })

@@ -46,14 +46,21 @@ class DashboardPage extends Component {
         usertype = 'company'
         break
     }
-    api.get('my-dashboard')
-      .then((res) => {
-        console.log(res.data)
-        this.setState(res.data)
+    if (usertype === 'manager') {
+      api.get('my-dashboard')
+        .then((res) => {
+          console.log(res.data)
+          this.setState(res.data)
 
-      }).catch(console.log)
+        }).catch(console.log)
+    }
   }
   render() {
+    if (getCookie('usertype') == 0)
+      return <div className="container">
+        <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} />
+        <p>Investors Summary are not created yet</p>
+      </div>
     return <div className="container">
       {getCookie('usertype') == 0 ? <InvstorPortfolioHeader dashboardMode={true} buttonLink={"/managers"} /> : ''}
       {getCookie('usertype') == 1 ? <h1>Dashboard Manager</h1> : ''}

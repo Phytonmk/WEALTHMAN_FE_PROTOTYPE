@@ -47,6 +47,28 @@ class Input extends Component {
           tabIndex={this.props.tabindex}
         />
       );
+    else if (this.props.type === 'switcher')  
+      return (
+        <div className="switch-container">
+          <input
+            checked={this.props.value}
+            onChange={(event) => {
+              if (typeof this.props.onChange === 'function')
+                this.props.onChange(event)
+              if (typeof this.props.setValue === 'function')
+                this.props.setValue(event.target.checked)
+            }}
+            type="checkbox"
+            placeholder={this.props.placeholder}
+            className={"default " + (this.props.error ? "error" : "")}
+            tabIndex={this.props.tabindex}
+          />
+          <div className="switch-hollow">
+            <div className="switch-button" />
+          </div>
+        </div>
+
+      );
     else  
       return (
         <input

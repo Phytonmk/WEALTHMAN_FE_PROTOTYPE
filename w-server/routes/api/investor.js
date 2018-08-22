@@ -1,4 +1,5 @@
 const Token = require('../../models/accessToken');
+const User = require('../../models/User');
 const Manager = require('../../models/Manager');
 const Investor = require('../../models/Investor');
 const Request = require('../../models/Request');
@@ -9,37 +10,39 @@ module.exports = (app) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
       res.status(403);
-      res.end('');
+      res.end();
       return;
     }
-    let userType;
-    let userId;
-    const manager = await Manager.findOne({user: token.user});
-    if (manager === null) {
-      const company = await Company.findOne({user: token.user});
-      if (company === null) {
-        res.status(403);
-        res.end();
-        return;
-      }
-      userType = 'company';
-      userId = company.id;
-    } else {
-      userType = 'manager';
-      userId = manager.id;
-    }
-    const investorsIds = [];
-    const requests = await Request.find({[userType]: userId});
-    for (let request of requests) {
-      if (request.investor !== null && !investorsIds.includes(request.investor))
-        investorsIds.push(request.investor);
-    }
-    const investors = [];
-    for (let investorId of investorsIds) {
-      const investor = await Investor.findById(investorId);
-      if (investor !== null)
-        investors.push(investor);
-    }
+    // let userType;
+    // let userId;
+    // const manager = await Manager.findOne({user: token.user});
+    // if (manager === null) {
+    //   const company = await Company.findOne({user: token.user});
+    //   if (company === null) {
+    //     res.status(403);
+    //     res.end();
+    //     return;
+    //   }
+    //   userType = 'company';
+    //   userId = company.id;
+    // } else {
+    //   userType = 'manager';
+    //   userId = manager.id;
+    // }
+    // const investorsIds = [];
+    // const requests = await Request.find({[userType]: userId})
+    // const requests = await Request.find({[userType]: userId})
+    // for (let request of requests) {
+    //   if (request.investor !== null && !investorsIds.includes(request.investor))
+    //     investorsIds.push(request.investor);
+    // }
+    // const investors = [];
+    // for (let investorId of investorsIds) {
+    //   const investor = await Investor.findById(investorId);
+    //   if (investor !== null)
+    //     investors.push(investor);
+    // }
+    const investors = await Investor.find()
     res.send(investors);
     res.end();
   });
@@ -50,7 +53,6 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    res.status(200);
     res.send(investor);
     res.end();
   });
@@ -58,7 +60,7 @@ module.exports = (app) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
       res.status(403);
-      res.end('');
+      res.end();
       return;
     }
     const investor = await Investor.findOne({user: token.user});
@@ -68,7 +70,6 @@ module.exports = (app) => {
       return;
     }
     // withdrawing...
-    res.status(200);
     res.send(investor);
     res.end();
   });
@@ -91,4 +92,37 @@ module.exports = (app) => {
   //   });
   //   res.end();
   // });
-}
+  app.get('/api/my-clients', async (req, res, next) => {
+    const token = await Token.findOne({token: req.headers.accesstoken})
+    if (token === null) {
+      res.sendStatus(403)
+      res.end()
+      return
+    }
+    const user = await User.findById(token.user)
+    if (user === null) {
+      res.sendStatus(403)
+      res.end()
+      return
+    }
+    let userType = null
+    if (user.type === 1)
+      userType = 'manager'
+    else if (user.type === 1)
+      userType = 'company'
+    if (userType === null) {
+      res.sendStatus(403)
+      res.end()
+      return
+    }
+    const userRoleAccount = await (userType === 'manager' ? Manager : Company).findOne({user: user._id}) 
+    const roleId = userRoleAccount._id
+    const requests = await Request.find({[userType]: roleId, type: 'portfolio'})
+    const result = []
+    for (let request of requests) {
+      result.push(request.investor)
+    }
+    res.send(result)
+    res.end()
+  })
+} 

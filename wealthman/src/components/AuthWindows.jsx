@@ -33,7 +33,7 @@ export default class AuthWindows extends Component {
   render() {
     return <React.Fragment>
       <SignIn
-        visible={this.state.signInVisible}
+        visible={!!this.state.signInVisible}
         hide={() => this.setState({signInVisible: false})}
         openSignIn={() => {
           this.setState({
@@ -43,9 +43,9 @@ export default class AuthWindows extends Component {
         }
         callback={this.state.callback}/>
       <SignUp
-        forManagers={this.props.forManagers}
-        registerNewClient={this.props.registerNewClient}
-        visible={this.state.signUpVisible}
+        forManagers={!!this.props.forManagers}
+        registerNewClient={!!this.props.registerNewClient}
+        visible={!!this.state.signUpVisible}
         hide={() => this.setState({signUpVisible: false})}
         openSignIn={() => {
           this.setState({

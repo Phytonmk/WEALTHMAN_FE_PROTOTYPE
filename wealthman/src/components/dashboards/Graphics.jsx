@@ -159,6 +159,13 @@ class SuperPie extends Component {
     }
   }
   render() {
+    const pieData = this.props.datasets[this.state.selectOption].data.map((chunk, i) => {
+                    return {
+                      key: chunk.header,
+                      value: chunk.value,
+                      color: pieColors[i]
+                    }
+                  })
     return  <div className="pie-chart-box">
                 <h2>{this.props.title}</h2>
                 {this.props.datasets.length > 1 ?
@@ -177,13 +184,7 @@ class SuperPie extends Component {
                 <PieChart
                   size={180}
                   innerHoleSize={140}
-                  data={this.props.datasets[this.state.selectOption].data.map((chunk, i) => {
-                    return {
-                      key: chunk.header,
-                      value: chunk.value,
-                      color: pieColors[i]
-                    }
-                  })}
+                  data={pieData}
                 />
                 {this.props.datasets[this.state.selectOption].inCircleTitle ? <div className="pie-chart-in-circle-container">
                   <h3>{this.props.datasets[this.state.selectOption].inCircleValue || this.props.datasets[this.state.selectOption].data.reduce((a, b) => a + b.value, 0)}</h3>

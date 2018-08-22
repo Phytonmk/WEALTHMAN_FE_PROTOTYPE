@@ -1,6 +1,7 @@
 const Binance = require('node-binance-api')
 const Order = require('../../models/Order')
 const Stock = require('../../models/Stock')
+const Portfolio = require('../../models/Portfolio')
 const configs = require('../../configs')
 const ccxt = require('ccxt')
 
@@ -45,7 +46,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
           order.set({status: 'failed to buy token'})
           await order.save()
         })
-      if (purchase) {
+      if (purchase || !configs.productionMode) {
         console.log(purchase)
         order.set({
           cost: price.last,
@@ -61,7 +62,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
           order.set({status: 'failed to withdraw'})
           await order.save()
         }) 
-      if (withdrawing) {
+      if (withdrawing || !configs.productionMode) {
         order.set({
           status: 'completed'
         })
