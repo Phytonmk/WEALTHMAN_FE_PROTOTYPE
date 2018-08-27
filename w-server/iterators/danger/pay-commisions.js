@@ -19,20 +19,7 @@ for (let exchange of configs.exchanges) {
   exchanges.push(exchange)
 }
 
-const tokenTitles = {}
-let gotTokens = false
-Stock.find({})
-  .then(stocks => {
-    gotTokens = true
-    stocks.forEach(stock =>
-      tokenTitles[stock.name] = stock.title)
-  })
-
 module.exports = () => new Promise(async (resolve, reject) => {
-  if (!gotTokens) {
-    resolve()
-    return
-  }
   if (true || (new Date()).getHours() === 12) {
     const requests = await Request.find({})
     for (let request of requests) {
@@ -43,16 +30,18 @@ module.exports = () => new Promise(async (resolve, reject) => {
         const portfolio = await Portfolio.findOne({request: request._id})
         const tokens = []
         const values = []
-        for (let token of portfolio.currencies) {
-          const tokenName = tokenTitles[token.currency]
-          tokens.push(tokenName)
-          const order = await Order.findOne({contract_address: portfolio.smart_contact})
+        const order = await Order.findOne({contract_address: portfolio.smart_contact})
+        if (order !== null) {
           const exchange = exchanges[0]
-          const symbol = tokenName.toUpperCase() + '/ETH'
-          const currentPrice = (await exchange.api.fetchTicker(symbol)).last
-          values.push(currentPrice - order.cost)
+          for (let token of portfolio.currencies) {
+            const tokenName = token.currency
+            tokens.push(tokenName)
+            const symbol = tokenName.toUpperCase() + '/ETH'
+            const currentPrice = (await exchange.api.fetchTicker(symbol)).last
+            values.push(currentPrice - order.cost)
+          }
+          await callCommisionsPay(portfolio.smart_contact, tokens, values)
         }
-        await callCommisionsPay(portfolio.smart_contact, tokens, values)
       }
     }
   }

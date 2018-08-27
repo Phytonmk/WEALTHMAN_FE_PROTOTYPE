@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
 
+const googleClientId = '284455547769-8m06ntqreg5qv2m8nm6nlcmm7ska9uss.apps.googleusercontent.com'
+const facebookAppId = '440673259755979'
 export default class AuthWindows extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +43,8 @@ export default class AuthWindows extends Component {
             signUpVisible: true,
           })}
         }
+        googleClientId={googleClientId}
+        facebookAppId={facebookAppId}
         callback={this.state.callback}/>
       <SignUp
         forManagers={!!this.props.forManagers}
@@ -53,6 +57,8 @@ export default class AuthWindows extends Component {
             signInVisible: true,
           })}
         }
+        googleClientId={googleClientId}
+        facebookAppId={facebookAppId}
         callback={this.state.callback}/>
     </React.Fragment>
   }

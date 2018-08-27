@@ -134,6 +134,9 @@ Usage example
         }}
       />
 
+
+
+
 */
 
 
@@ -232,6 +235,22 @@ class SuperLine extends Component {
                 </div>)}
               </div>
               <div className="row">
+              {/*
+              Interpolations:
+                linear
+                stepBefore
+                stepAfter
+                basis
+                basisOpen
+                basisClosed
+                bundle
+                cardinal
+                cardinalOpen
+                cardinalClosed
+                natural
+                monotoneX
+                monotoneY
+              */}
                 <LineChart
                   xTicks={Math.round(this.props.width / 60)}
                   xType={'time'}
@@ -239,7 +258,7 @@ class SuperLine extends Component {
                   margin={{top: 20, right: 20, bottom: 45, left: 40}}
                   grid
                   verticalGrid
-                  interpolate={'cardinal'}
+                  interpolate={'basis'}
                   width={this.props.width}
                   height={300}
                   data={this.props.onOneGraphic ? this.props.datasets.map((dataset) => {

@@ -17,6 +17,8 @@
     opacity: 1
     pointer-events: all
   .auth-box
+    border: 2px solid rgba(0, 0, 0, 0)
+    transition: .3s all
     cursor: default
     width: 444px
     padding: 40px
@@ -46,6 +48,8 @@
     small
       font-size: 13px
       margin-bottom: 10px
+      text-align: center
+      display: inline-block
       a
         text-transform: none !important
         color: #79828f !important
@@ -56,6 +60,30 @@
       // margin-top: 24px
       &.first-input-row
         margin-top: 34px
+    .oauth-container
+      width: 358px
+      margin: auto
+      display: flex
+      & > *
+        display: block
+        width: 50%
+        overflow: hidden
+        font-size: 14px !important
+        height: 50px
+        font-weight: normal !important
+        *
+          text-transform: none
+          font-weight: normal
+          height: 50px
+          width: 100%
+          padding: 10px
+          padding-left: 0 !important
+          padding-right: 0 !important
+          font-size: 14px !important
+        &:nth-child(1)
+          border-radius: 5px 0 0 5px !important
+        &:nth-child(2)
+          border-radius: 0 5px 5px 0 !important
     label
       font-size: 13px
       color: #071e40
@@ -68,10 +96,6 @@
       padding: 17px
       font-size: 15px
       height: 50px
-      transition: box-shadow .3s, border-color .3s
-      &:focus
-        box-shadow: 0 0 0 1px #39a9dc
-        border-color: #39a9dc
     .forgot-password-link
       float: right
       font-size: 13px
@@ -123,3 +147,5 @@
     margin-right: 0 !important
   .another-auth-window-link
     cursor: pointer
+  .supported-browsers
+    padding-top: 15px

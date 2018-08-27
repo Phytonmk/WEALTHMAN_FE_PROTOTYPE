@@ -26,6 +26,7 @@ class QuestionsPage extends Component {
       },
       {
         question: "What is your primary reason for investing?",
+        description: "Choose one goal,then add other goals from your personal account",
         type: "radio",
         typeSpecific: {
           answers: ["General Savings", "Retirement", "Colledge savings", "Other"]

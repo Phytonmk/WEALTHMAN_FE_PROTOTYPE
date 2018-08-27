@@ -8,7 +8,7 @@ import Input from '../Input.jsx';
 import Search from '../Search.jsx';
 import Avatar from '../Avatar.jsx';
 import LevDate from '../LevDate.jsx';
-import { api, setPage, setCurrency, setCookie } from '../helpers';
+import { api, setPage, setCurrency, setCookie, niceNumber } from '../helpers';
 import AuthWindows from '../AuthWindows'
 
 class InvestorsPage extends Component {
@@ -46,7 +46,7 @@ class InvestorsPage extends Component {
       {
         property: "name",
         title: "Investor name",
-        width: "106px",
+        width: "86px",
         type: "unsortable",
       },
       {
@@ -57,19 +57,24 @@ class InvestorsPage extends Component {
         type: "date",
       },
       {
+        property: "source",
+        title: "source",
+        width: "82px",
+      },
+      {
         property: "target",
         title: "target",
-        width: "82px",
+        width: "62px",
       },
       {
         property: "managers",
         title: "Number of managers",
         // width: "52px",
-        width: "62px",
+        width: "52px",
       },
       {
         property: "aum",
-        title: "AUM, mln $",
+        title: "AUM, $",
         width: "62px",
         type: "number",
         tooltip: "Assets Under Management in millions of $"
@@ -96,7 +101,7 @@ class InvestorsPage extends Component {
       {
         property: "recommendation",
         title: "Recommendation needed",
-        width: "82px",
+        width: "32px",
         type: "number",
       },
       // {
@@ -125,18 +130,16 @@ class InvestorsPage extends Component {
           value: (investor.name || '') + ' ' + (investor.surname || '')
         },
         registered: new LevDate(investor.registered || (Date.now() - 1000 * 60 * 600)).pastDays(),
-        aum: {
-          render: Math.ceil(Math.random() * 100) + "$",
-          value: Math.ceil(Math.random() * 100)
-        },
-        kyc: 'unfilled',
+        aum: niceNumber(investor.aum),
+        kyc: investor.kyc_filled ? 'filled' : 'unfilled',
         risk: {
           value: risk,
           render: risk + ' %'
         },
-        target: '-',
-        managers: Math.ceil(Math.random() * 5),
-        lastActive: new LevDate(new Date().getTime() - Math.round(Math.random() * 100000)).niceTime(),
+        source: investor.source,
+        target: investor.last_target,
+        managers: investor.managers_amount,
+        lastActive: investor.online ? 'online' : new LevDate(investor.last_active).niceTime(),
         recommendation: 'no',
         offer: <Link to={"/special-offer/" + investor._id} className="no-margin offer-link">
               add portfolio

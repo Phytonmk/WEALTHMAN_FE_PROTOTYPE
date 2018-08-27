@@ -65,6 +65,7 @@ class Sortable2 extends Component {
       rowProperties: undefined,
       error: "",
     }
+    this.alreadyInitialized = false
   }
 
   componentWillMount() {
@@ -109,17 +110,21 @@ class Sortable2 extends Component {
     });
 
     //set sortBy
-    if (props.initialSortBy)
-      this.setState({sortBy: props.initialSortBy});
-    else {
-      let firstSortableColumn = props.columns.find(column => column.type != "unsortable");
+    if (!this.alreadyInitialized) {
+      if (props.initialSortBy)
+        this.setState({sortBy: props.initialSortBy});
+      else {
+        let firstSortableColumn = props.columns.find(column => column.type != "unsortable");
 
-      if (firstSortableColumn)
-        this.setState({sortBy: firstSortableColumn.property});
+        if (firstSortableColumn)
+          this.setState({sortBy: firstSortableColumn.property});
+      }
+
+      if (props.maxShown)
+        this.setState({maxShown: props.maxShown});
     }
 
-    if (props.maxShown)
-      this.setState({maxShown: props.maxShown});
+    this.alreadyInitialized = true
   }
 
   setSortBy(sortBy) {
@@ -150,7 +155,7 @@ class Sortable2 extends Component {
       <ul className="listings">
         {
           this.props.data
-          .filter(this.props.filter ? this.props.filter : i => true)
+          .filter(this.props.filter ? this.props.filter : (i) => true)
           .sort((a, b) => {
             let sortableA = a[this.state.sortBy].hasOwnProperty("render") && a[this.state.sortBy].hasOwnProperty("value") ?
               a[this.state.sortBy].value : a[this.state.sortBy];
@@ -240,7 +245,7 @@ class Sortable2 extends Component {
   }
 
   renderNavigation() {
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i) => true).length;
 
     if (this.state.maxShown >= length)
       return;
@@ -278,7 +283,7 @@ class Sortable2 extends Component {
     if (!this.columnsDefined(this.props) || !this.dataDefined(this.props))
       return;
 
-    let length = this.props.data.filter(this.props.filter ? this.props.filter : i => true).length;
+    let length = this.props.data.filter(this.props.filter ? this.props.filter : (i) => true).length;
 
     if (this.state.offset + this.state.maxShown >= length)
       return;

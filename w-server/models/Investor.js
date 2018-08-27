@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 var investorScheme = mongoose.Schema({
   img: String,
@@ -12,7 +12,15 @@ var investorScheme = mongoose.Schema({
   country: String,
   adress: String,
   wallet_address: String,
-  registered: {type: Date, default: Date.now}
-});
+  registered: {type: Date, default: Date.now},
+  aum: {type: Number, default: 0},
+  aum6m: {type: Array, default: [0, 0, 0, 0, 0, 0]},
+  online: {type: Boolean, default: true},
+  last_active: {type: Date, default: Date.now},
+  kyc_filled: {type: Boolean, default: false},
+  last_target: {type: String, default: '-'},
+  managers_amount: {type: Number, default: 0},
+  source: {type: String, default: 'Application'},
+})
 
-module.exports = mongoose.model('investor', investorScheme);
+module.exports = mongoose.model('investor', investorScheme)

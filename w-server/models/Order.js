@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const OrderSchema = mongoose.Schema({
   date: {type: Date, default: Date.now},
   status: {type: String, default: 'buy'}, // 'token bouthg', 'completed', 'failed'
+  request: String,
   token_name: String,
   whole_eth_amount: Number,
   percent: Number,

@@ -11,10 +11,11 @@ import questions from './registration/questions';
 import Form from './registration/Form';
 
 import Subheader from './../Subheader';
-import AccountInfo from './account/AccountInfo';
-import RiskProfile from './account/RiskProfile';
-import Goals from './account/Goals';
+// import AccountInfo from './account/AccountInfo';
+// import RiskProfile from './account/RiskProfile';
+// import Goals from './account/Goals';
 import DetailedInfo from './account/DetailedInfo';
+import AccountAccess from './account/AccountAccess';
 import OldAccount from './account/OldAccount';
 
 class AccountPage extends Component {
@@ -56,25 +57,37 @@ class AccountPage extends Component {
       <div id="account-page">
         <Subheader data={[
           {
-            header: "Account Information",
-            content: <OldAccount />,
+            header: 'Profile',
+            content: <OldAccount />
           },
           {
-            header: "Risk Tollerance Profile",
-            content: <RiskProfile />,
+            header: 'Account access',
+            content: <AccountAccess />
           },
           {
-            header: "Goals And Aims",
-            content: <Goals />,
+            header: 'KYC blank',
+            content: <DetailedInfo />
           },
-          {
-            header: "Personal Information",
-            content: <DetailedInfo />,
-          },
-          {
-            header: "Account settings",
-            content: <AccountInfo />,
-          },
+      //    {
+      //      header: "Account settings",
+      //      content: <OldAccount />,
+      //    },
+      //    {
+      //      header: "Risk Profile",
+      //      content: <RiskProfile />,
+      //    },
+      //    {
+      //      header: "Goals And Aims",
+      //      content: <Goals />,
+      //    },
+      //    {
+      //      header: "Personal Information",
+      //      content: <DetailedInfo />,
+      //    },
+      //    {
+      //      header: "Contacts & Password change",
+      //      content: <AccountInfo />,
+      //    },
         ]}
       />
       </div>

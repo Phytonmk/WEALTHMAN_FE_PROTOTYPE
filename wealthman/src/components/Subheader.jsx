@@ -72,7 +72,7 @@ class Subheader extends Component {
         <div className="container shown-in-account">
           <div className="header-preview">
             <h1>{currentData.header}</h1>
-            <span>It takes you a few minutes</span>
+            {/*<span>It takes you a few minutes</span>*/}
           </div>
         </div>
         <div className="tabs">

@@ -10,7 +10,7 @@ class RiskProfile extends Component {
     this.state = {
       firstName: "",
       lastName: "",
-      nationality: '',
+      citizenship: '',
 
       address: "",
       postalCode: "",
@@ -51,16 +51,16 @@ class RiskProfile extends Component {
             setValue={value => this.setState({lastName: value})}
             placeholder="Enter last name"
           />
-          <small>NATIONALITY</small>
+          <small>Citizenship</small>
           <Dropdown
-            value={this.state.nationality}
+            value={this.state.citizenship}
             options={["England", "USA", "Germany", "Japan", "Italy"]}
-            setValue={(value) => this.setState({nationality: value})}
+            setValue={(value) => this.setState({citizenship: value})}
             width="320px"
           />
-          <button onClick={() => this.saveData()} className="big-blue-button save">
+          {/*<button onClick={() => this.saveData()} className="big-blue-button save">
             Save changes
-          </button>
+          </button>*/}
         </div>
 
         <div className="account-box">
@@ -97,9 +97,9 @@ class RiskProfile extends Component {
             setValue={(value) => this.setState({country: value})}
             width="320px"
           />
-          <button onClick={() => this.saveData()} className="big-blue-button save">
+          {/*<button onClick={() => this.saveData()} className="big-blue-button save">
             Save changes
-          </button>
+          </button>*/}
         </div>
 
         <div className="account-box">
@@ -125,6 +125,13 @@ class RiskProfile extends Component {
             Upload document
           </button>
         </div>
+        <div className="account-box">
+          <small className="blue">I hereby certify that the information above is true and accurate.</small>
+           <button onClick={() => this.saveData()} className="big-blue-button save">
+            Save & submit data
+          </button>
+        </div>
+
       </div>
     );
   }

@@ -98,7 +98,6 @@ class ChatPage extends Component {
     this.loadMessages(this.props.match.params.chat);
     chatsApi.chatsList()
       .then(res => {
-        console.log(res.data);
         this.setState({chats: res.data.map(chat => {
           const companionPostion = chat.users[0] !== this.props.userData.user ? 0 : 1
           return {

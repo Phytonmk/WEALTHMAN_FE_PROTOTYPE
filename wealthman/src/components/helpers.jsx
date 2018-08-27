@@ -3,10 +3,8 @@ import axios from 'axios';
 import React from 'react';
 import { store, setReduxState } from '../redux';
 
-const apiUrl = 'http://185.185.70.5:8080/api/';
-// const apiUrl = 'http://localhost:8080/api/';
-
-
+// const apiUrl = 'http://platform.wealthman.io:8080/api/';
+const apiUrl = 'http://localhost:8080/api/';
 
 const api = {
   domain: apiUrl.replace(/:[0-9\/api]+$/, ''),
@@ -195,7 +193,7 @@ const previousPage = () => {
 
 const niceNumber = (number) => {
   if (number < 10 ** 3)
-    return number
+    return Math.round(number * 100) / 100
   else if (number < 10 ** 9)
     return Math.round((number / (10 ** 3)) * 100) / 100 + ' Th'
   else if (number < 10 ** 12)

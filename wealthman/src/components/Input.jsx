@@ -12,7 +12,7 @@ import '../css/Input.sass';
   setValue={(value) => this.setState({password: value})}
   //(OPTIONAL) function that listen to changes
   onChange={(event) => this.setState({password: event.target.value})}
-  //(OPTIONAL) type of the input (text or password for now) (! Also you can use type="textarea" !)
+  //(OPTIONAL) type of the input (text or password for now) (! Also you can use type="textarea" and "switcher" !)
   type={"password"}
   //(OPTIONAL) placeholder for the input
   placeholder={"enter password"}

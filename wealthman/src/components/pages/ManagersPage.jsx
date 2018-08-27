@@ -6,7 +6,7 @@ import Sortable2 from '../Sortable2.jsx'
 import Select from '../Select.jsx'
 import Search from '../Search.jsx'
 import Avatar from '../Avatar.jsx'
-import { api, setPage, setCurrency, setCookie, getCookie } from '../helpers'
+import { api, setPage, setCurrency, setCookie, getCookie, niceNumber } from '../helpers'
 import {AreaChart} from 'react-easy-chart'
 import Subheader from './../Subheader.jsx'
 
@@ -50,8 +50,6 @@ class ManagersPage extends Component {
     })
     const manager = this.state.offers.find(i => i._id === managerID)
     setCookie('service', this.state.filter)
-    // setCookie('selectedManager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
-    // console.log(getCookie('usertype'))
     if (getCookie('usertype') === '0')
       setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
     else
@@ -64,18 +62,6 @@ class ManagersPage extends Component {
       offers: [],
       gotData: false
     })
-    // if (filter)
-    //   this.setState({filter})
-    // else
-    //   filter = this.state.filter
-
-    // let filterIndex
-    // switch(filter.toLowerCase()) {
-    //   case 'robo-advisor': filterIndex = 0 break
-    //   case 'discretionary': filterIndex = 1 break
-    //   case 'advisory': filterIndex = 2 break
-    //   default: filterIndex = 0
-    // }
     this.setState({gotData: false})
     let query = 'marketplace/'
     if (getCookie('usertype') == 3) {
@@ -95,7 +81,10 @@ class ManagersPage extends Component {
         this.setState({gotData: true})
         setTimeout(() => this.forceUpdate(), 0)
       })
-      .catch(console.log)
+      .catch((e) => {
+        this.setState({gotData: true})
+        console.log(e)
+      })
   }
   genGraphData() {
     const data = []
@@ -148,9 +137,9 @@ class ManagersPage extends Component {
       },
       {
         property: "aum",
-        title: "AUM, mln $",
+        title: "AUM, $",
         // width: "82px",
-        width: "50px",
+        width: "60px",
         type: "number",
         tooltip: "Assets Under Management in millions of $"
       },
@@ -165,7 +154,7 @@ class ManagersPage extends Component {
         property: "perfomance",
         title: "performance fee",
         // width: "103px",
-        width: "90px",
+        width: "80px",
         type: "number",
       },
       {
@@ -175,7 +164,7 @@ class ManagersPage extends Component {
         width: "40px",
       },
       {
-        property: "aum6",
+        property: "aum6m",
         title: "6m aum graph",
         // width: "100px",
         width: "90px",
@@ -231,7 +220,7 @@ class ManagersPage extends Component {
           {manager.services[i].min || '?'} $
         </li>)}</ul>,
         aum: {
-          render: manager.aum + "$",
+          render: niceNumber(manager.aum),
           value: manager.aum
         },
         services: {
@@ -246,11 +235,14 @@ class ManagersPage extends Component {
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].perfomance_fee || '?'} %
         </li>)}</ul>,
-        aum6: <AreaChart
+        aum6m: <AreaChart
             margin={{top: 0, right: 0, bottom: 0, left: 0}}
             width={80}
             height={20}
-            data={[this.genGraphData()]}
+            data={[manager.aum6m.map((chunk, i) => { return {
+              x: i,
+              y: chunk
+            }})]}
           />,
         apply: <div className="no-margin" onClick={() => this.applyManager(manager._id)}>
             <button className="big-blue-button">
@@ -282,67 +274,70 @@ class ManagersPage extends Component {
             <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
           </div>
         </article>
-        <div className="container">
-          <div className="row">
-            {(getCookie('usertype') != 1 &&  getCookie('usertype') != 3) ? <div className="advisors">
-              {/* <div className="row">
-                <span>Sort by</span>
-                <Select
-                  value={this.state.filter}
-                  options={filters.map(filter => filter.link)}
-                  setValue={(value) => {this.setState({filter: value}) setTimeout(() => this.load(), 0)}}
-                  width="135px"
-                />
-              <br />
-              </div> */}
-              <div className="row">
-                <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
-                  Invest on Autopilot
-                </Link>
-              </div>
-            </div> : ''}
-            <div className="card-3">
-              <div className="img" />
-              <span>Total AUM, min $</span>
-              <h4>
-                {
-                  this.state.gotData ?
-                    this.state.offers.length > 0 ?
-                    this.state.offers
-                    .map(manager => manager.aum)
-                    .reduce((a, b) => a + b)
-                    : 0
-                  : 0
-                }
-              </h4>
-            </div>
-            <div className="card-2">
-              <div className="img" />
-              <span>Total managers</span>
-              <h4>
-                {
-                  this.state.gotData ? this.state.offers.length : 0
-                }
-              </h4>
-            </div>
-            <div className="card-1">
-              <div className="img" />
-              <span>Total investors</span>
-              <h4>
-                {
-                  this.state.gotData ?
-                    this.state.offers.length > 0 ?
-                    this.state.offers
-                    .map(manager => manager.clients)
-                    .reduce((a, b) => a + b)
-                    : 0
-                  : 0
-                }
-              </h4>
+        {getCookie('usertype') == 1 || getCookie('usertype') == 3 ? '' : 
 
+          <div className="container">
+            <div className="row">
+              {(getCookie('usertype') != 1 &&  getCookie('usertype') != 3) ? <div className="advisors">
+                {/* <div className="row">
+                  <span>Sort by</span>
+                  <Select
+                    value={this.state.filter}
+                    options={filters.map(filter => filter.link)}
+                    setValue={(value) => {this.setState({filter: value}) setTimeout(() => this.load(), 0)}}
+                    width="135px"
+                  />
+                <br />
+                </div> */}
+                <div className="row">
+                  <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
+                    Invest on Autopilot
+                  </Link>
+                </div>
+              </div> : ''}
+              <div className="card-3">
+                <div className="img" />
+                <span>Total AUM, $</span>
+                <h4>
+                  {
+                    this.state.gotData ?
+                      this.state.offers.length > 0 ?
+                      niceNumber(this.state.offers
+                        .map(manager => manager.aum)
+                        .reduce((a, b) => a + b))
+                      : 0
+                    : 0
+                  }
+                </h4>
+              </div>
+              <div className="card-2">
+                <div className="img" />
+                <span>Total managers</span>
+                <h4>
+                  {
+                    this.state.gotData ? this.state.offers.length : 0
+                  }
+                </h4>
+              </div>
+              <div className="card-1">
+                <div className="img" />
+                <span>Total investors</span>
+                <h4>
+                  {
+                    this.state.gotData ?
+                      this.state.offers.length > 0 ?
+                      this.state.offers
+                      .map(manager => manager.clients)
+                      .reduce((a, b) => a + b)
+                      : 0
+                    : 0
+                  }
+                </h4>
+
+              </div>
             </div>
           </div>
-        </div>
+        }
         <Subheader data={[
           {
             header: "Robo-advisor",

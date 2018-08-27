@@ -65,12 +65,10 @@ module.exports = (app) => {
       const portfolio = await Portfolio.findOne({request: request._id, state: 'draft'})
       portfolio.set({state: 'active'})
       await portfolio.save()
-      portfolio
-      console.log(request);
-      await request.save();
+      await request.save()
       await notify({request: request._id, title: `Contract deploying started`})
-      res.status(200);
-      res.end();
+      res.status(200)
+      res.end()
     }
   });
   app.post('/api/withdraw-address', async (req, res) => {

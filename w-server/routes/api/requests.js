@@ -104,7 +104,14 @@ module.exports = (app) => {
       request: request.id,
       answers: req.body.kycAnswers
     })
-    investor.set({riskprofile});
+    let last_target = '-'
+    for (let step of kycAnswersForm.answers) {
+      if (step.question === 'What is your primary reason for investing?') {
+        last_target = step.answer
+        break
+      }
+    }
+    investor.set({riskprofile, kyc_filled: true, last_target});
     await kycAnswersForm.save();
     await investor.save();
     await request.save();

@@ -41,7 +41,8 @@ class PortfolioCreationPage extends Component {
         const tokens = res.data.map((token, i) => { return {
           id: i,
           icon: <img src={token.token_img ? api.imgUrl(token.token_img) : ''} className="token-icon" />,
-          name: token.name,
+          name: token.title,
+          hint: token.name,
           volume: token.volume,
           price: token.last_price,
           change_percent: token.change_percent,
@@ -206,20 +207,32 @@ class PortfolioCreationPage extends Component {
         .catch(console.log);
     })
   }
+  setFee(fee, value) {
+    console.log(fee, value)
+    const changingAvalible = this.state.request.status === 'pending' || this.state.request.status === 'not created'
+    if (changingAvalible) {
+      const request = Object.assign({}, this.state.request)
+      request[fee] = value
+      this.setState({
+        request,
+        [fee]: value
+      })
+    }
+  }
   render() {
     let page = '';
     switch(this.state.page) {
       case 'fees':
-        let changingAvalible = this.state.request.status === 'pending' || this.state.request.status === 'not created'
+        const changingAvalible = this.state.request.status === 'pending' || this.state.request.status === 'not created'
         page = <div>
           <div className="row">{changingAvalible ? 'Request is pending, so you can set custom fees, investor may accept or decline them' : 'Request is not pending, so you unable to change them'}</div>
-          <div className="row">Exit fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.exit_fee} onChange={(event) => changingAvalible ? this.setState({exit_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => changingAvalible ? this.setState({managment_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => changingAvalible ? this.setState({perfomance_fee: event.target.value}) : ''}/> %</div>
-          <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => changingAvalible ? this.setState({front_fee: event.target.value}) : ''}/> %</div>
+          <div className="row">Exit fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.exit_fee} onChange={(event) => this.setFee('exit_fee', event.target.value)}/> %</div>
+          <div className="row">Management fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.managment_fee} onChange={(event) => this.setFee('managment_fee', event.target.value)}/> %</div>
+          <div className="row">Perfomance fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.perfomance_fee} onChange={(event) => this.setFee('perfomance_fee', event.target.value)}/> %</div>
+          <div className="row">Front fee:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.front_fee} onChange={(event) => this.setFee('front_fee', event.target.value)}/> %</div>
           <br />
-          <div className="row">Max deviation:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.max_deviation} onChange={(event) => changingAvalible ? this.setState({max_deviation: event.target.value}) : ''}/> %</div>
-          <div className="row">frequency of commission payments:</div><div className="row"><input type="number" step="5" min="0" value={this.state.commissions_frequency} onChange={(event) => changingAvalible ? this.setState({commissions_frequency: event.target.value}) : ''}/> Days</div>
+          <div className="row">Max deviation:</div><div className="row"><input type="number" step="1" min="0" max="100" value={this.state.max_deviation} onChange={(event) => this.setFee('max_deviation', event.target.value)}/> %</div>
+          <div className="row">frequency of commission payments:</div><div className="row"><input type="number" step="5" min="0" value={this.state.commissions_frequency} onChange={(event) => this.setFee('commissions_frequency', event.target.value)}/> Days</div>
         </div>
       break;
       case 'select': 

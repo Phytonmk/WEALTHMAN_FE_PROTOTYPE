@@ -4,32 +4,54 @@ import { api } from './helpers'
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-export default (portfolio, callback) => {
-  let query = api.domain + ':3000/'
-  let simcolomn = false
+export default (portfolio, ethereumAmount=1, onlyOnePeriod, callback) => {
+  let query = ''
+  let ampersend = false
   for (let token of portfolio) {
-    if (simcolomn)
-      query += ';'
-    simcolomn = true
+    if (ampersend)
+      query += '&'
+    ampersend = true
     query += token.currency + ':' + token.percent
   }
-  for (let length of ['week', 'month', 'year']) {
-    console.log(query + '?' + length)
-    axios.get(query + '?' + length)
+  const getDataFor = (period) => {
+    api.get(`portfolio-history/${period}/${query}`)
       .then((res) => {
-        const startDate = Date.now() - 1000 * 60 * 60 * 24 * res.data.length
+        let startDate = Date.now()
+        switch(period) {
+          case 'day':
+            startDate = Date.now() - 1000 * 60 * 60 * 24 * 1
+            break
+          case 'week':
+            startDate = Date.now() - 1000 * 60 * 60 * 24 * 7
+            break
+          case 'month':
+            startDate = Date.now() - 1000 * 60 * 60 * 24 * 30
+            break
+          case 'year':
+            startDate = Date.now() - 1000 * 60 * 60 * 24 * 365
+            break
+        }
         callback({
-          title: length.substr(0, 1).toUpperCase() + length.substr(1),
+          title: period.substr(0, 1).toUpperCase() + period.substr(1),
           data: res.data.map((chunk, i) => {
             const thisDate = new Date(startDate + 1000 * 60 * 60 * 24 * i) 
             const dateString = `${thisDate.getDate()}-${monthNames[thisDate.getMonth()]}-${thisDate.getFullYear().toString().substr(2)}`
             return {
-              value: chunk / 100,
+              value: chunk * ethereumAmount,
               title: dateString,
             }
           })
         })
       })
       .catch(console.log)
+    
+  }
+  console.log(onlyOnePeriod)
+  if (!onlyOnePeriod) {
+    for (let length of ['week', 'month', 'year']) {
+      getDataFor(length)
+    }
+  } else {
+    getDataFor(onlyOnePeriod)
   }
 }

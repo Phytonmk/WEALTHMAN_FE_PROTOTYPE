@@ -3,7 +3,8 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { api, setPage, getCookie, setCurrency, previousPage, niceNumber } from '../helpers';
-// import Sortable from '../Sortable'
+import LevDate from '../LevDate'
+
 
 import InvstorPortfolioHeader from '../dashboards/InvstorPortfolioHeader'
 import Cards from '../dashboards/Cards'
@@ -133,7 +134,7 @@ class DashboardPage extends Component {
             title: 'Earning',
           },{
             value: this.state.aum.change + '%',
-            title: 'Change (1y)',
+            title: `Change (${new LevDate(this.state.aum.changePeriod).pastNice()})`,
             state: this.state.aum.change < 0 ? 'bad' : 'good'
           }],
           datasets: [{

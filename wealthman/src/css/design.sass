@@ -88,14 +88,17 @@ button.big-transparent-button
   line-height: 36px
   &.save
     padding-left: 49px
+    position: relative
     &::before
-      background: url("../img/buttons/chat-icon.svg")
       position: absolute
-      left: 15px
-      top: 10px
+      left: 23px
+      top: 13px
+      border-left: 1px solid white
+      border-bottom: 1px solid white
       content: ""
-      width: 18px
-      height: 16px
+      width: 10px
+      height: 5px
+      transform: rotate(-45deg)
   &.chat
     padding-left: 42px
     position: relative
@@ -241,7 +244,16 @@ article.long-text-input
     margin-bottom: 11px
     line-height: 1
     &.blue
+      text-transform: uppercase
       margin-bottom: 38px
+    &.error
+      color: #b15151
+  .switch-container + small
+    display: inline-block
+    width: calc(100% - 80px)
+    margin-bottom: 0
+    vertical-align: middle
+    // word-wrape: wrap-all
   h1
     margin-bottom: 29px
   h2
@@ -435,32 +447,32 @@ article.long-text-input
     content: ""
 
 #requests-page, #portfolios-page
-  span.cancelled,
-  span.declined,
-  span.accepted,
-  span.pending
-    margin-left: 14px
-    position: relative
-    text-transform: capitalize
-  span.cancelled::before,
-  span.declined::before,
-  span.accepted::before,
-  span.pending::before
-    position: absolute
-    content: ""
-    width: 5px
-    height: 5px
-    top: 16px
-    left: -14px
-    border-radius: 5px
-  span.cancelled::before
-    background: #eb3323
-  span.declined::before
-    background: #ff9b02
-  span.accepted::before
-    background: #47bf6f
-  span.pending::before
-    background: #f6c143
+  // span.cancelled,
+  // span.declined,
+  // span.accepted,
+  // span.pending
+  //   margin-left: 14px
+  //   position: relative
+  //   text-transform: capitalize
+  // span.cancelled::before,
+  // span.declined::before,
+  // span.accepted::before,
+  // span.pending::before
+  //   position: absolute
+  //   content: ""
+  //   width: 5px
+  //   height: 5px
+  //   top: 16px
+  //   left: -14px
+  //   border-radius: 5px
+  // span.cancelled::before
+  //   background: #eb3323
+  // span.declined::before
+  //   background: #ff9b02
+  // span.accepted::before
+  //   background: #47bf6f
+  // span.pending::before
+  //   background: #f6c143
   .my-requests
     width: 100%
     height: 130px

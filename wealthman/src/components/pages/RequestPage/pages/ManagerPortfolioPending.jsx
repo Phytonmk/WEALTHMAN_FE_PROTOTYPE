@@ -7,7 +7,7 @@ import Details from '../Details';
 
 export default class ManagerPortfolioPending extends Component {
   render() {
-    return <div>
+    return <div class="padding-bottom-container">
       <Person requestData={this.props.requestData}/>
       <Details request={this.props.requestData.request} />
       <Cards

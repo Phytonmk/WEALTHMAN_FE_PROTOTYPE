@@ -18,7 +18,7 @@ export default class ManagerInvitingPending extends Component {
       .catch(console.log);
   }
   render() {
-    return <div>
+    return <div class="padding-bottom-container">
       <Person requestData={this.props.requestData}/>
       <Cards
         cards={[{

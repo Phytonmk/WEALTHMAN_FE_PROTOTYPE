@@ -7,17 +7,18 @@ import { api, getCookie, setCookie, setPage } from '../../helpers';
 import questions from './../registration/questions';
 import Form from './../registration/Form';
 
-let gotData = false
 
 class OldAccount extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {};
+    this.state = {
+      gotData: false
+    };
   }
   componentWillMount() {
      api.post('getme', {accessToken: getCookie('accessToken')})
       .then(res => {
+        console.log(res.data)
         if (/[0-9]+/.test(res.data.usertype))
           this.setState({user: res.data.usertype, userData: res.data.userData || {}})
       })
@@ -60,25 +61,21 @@ class OldAccount extends Component {
         switch(questions[user][question].type) {
           case 'photo_upload':
             if (this.state.userData.img) {
-              gotData = true;
               questions[user][question].photo_url = this.state.userData.img;
             }
             break;
           case 'wallet_address':
             if (this.state.userData.wallet_address) {
-              gotData = true;
               questions[user][question].value = this.state.userData.wallet_address;
             }
             break;
           case 'services':
             if (this.state.userData.services) {
-              gotData = true;
               questions[user][question].services = this.state.userData.services;
             }
             break;
           default:
             if (this.state.userData[questions[user][question].property]) {
-              gotData = true;
               questions[user][question].value = this.state.userData[questions[user][question].property];
             }
         }
@@ -90,11 +87,10 @@ class OldAccount extends Component {
         <div className="container">
           <div className="first-tab">
             <div className="account-box">
-              {gotData ? <Form
+              <Form
                 questions={questions[user]}
-                // onSubmit={(data) => this.saveData(data)}
                 onSubmit={(data) => this.saveData(data)}
-              /> : 'Loading...'}
+              />
             </div>
           </div>
         </div>

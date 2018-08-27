@@ -79,8 +79,13 @@ class RequestsPage extends Component {
         type: "unsortable",
       },
       {
-        property: "name",
+        property: "person",
         title: "",
+        width: "156px",
+      },
+      {
+        property: "name",
+        title: "Request name",
         width: "106px",
       },
       {
@@ -91,17 +96,17 @@ class RequestsPage extends Component {
       {
         property: "inout",
         title: "In/Out",
-        width: "50px",
+        width: "60px",
       },
       {
         property: "status",
         title: <div>
-          <span className="left margin">Status: </span>
-          <Select
+          <span className="left margin">Status</span>
+          {/*<Select
             value={this.state.status}
             options={["All", "Declined", "Accepted", "Cancelled", "Pending"]}
             setValue={(value) => this.setState({status: value})}
-          />
+          />*/}
         </div>,
         width: "130px",
         type: "unsortable"
@@ -121,18 +126,18 @@ class RequestsPage extends Component {
       //   title: 'percent_change',
       //   width: '50px'
       // },
-      {
-        property: "profile",
-        title: "",
-        width: "130px",
-        type: "unsortable",
-      },
-      {
-        property: "details",
-        title: "",
-        width: "130px",
-        type: "unsortable",
-      },
+      // {
+      //   property: "profile",
+      //   title: "",
+      //   width: "130px",
+      //   type: "unsortable",
+      // },
+      // {
+      //   property: "details",
+      //   title: "",
+      //   width: "130px",
+      //   type: "unsortable",
+      // },
     ];
     let sortableRequests = this.state.requests.map(request => {
       let user = {};
@@ -160,66 +165,87 @@ class RequestsPage extends Component {
           render: request.value + ' ETH',
           value: request.value
         }
-      const percent_change = Math.ceil(Math.random() * 20);
+      let actionStatus = 'System msg'
+      const percent_change = Math.ceil(Math.random() * 20)
+      let outgoing = false
+      if (request.initiatedByManager) {
+        if (this.props.user == 1)
+          outgoing = true
+      } else {
+        if (this.props.user != 1)
+          outgoing = true
+      }
       let userLink = '/investor/';
       switch(this.props.user) {
         case 0:
+          if (!outgoing && ['pending'].includes(request.status.toLowerCase())) {
+            actionStatus = 'Response needed'
+          }
           if (request.company)
             userLink = '/company/';
           else
             userLink = '/manager/';
         break;
         case 1:
+          if (!outgoing && ['pending', 'in work'].includes(request.status.toLowerCase()))
+            actionStatus = 'Response needed'
           if (request.company)
             userLink = '/company/';
           else
             userLink = '/investor/';
         break;
         case 3:
+          if (!outgoing && ['pending'].includes(request.status.toLowerCase())) {
+            actionStatus = 'Response needed'
+          }
           if (request.type === 'portfolio')
             userLink = '/investor/';
           else
             userLink = '/manager/';
         break;
       }
+      if (['deploying', 'buying tokens', 'waiting for deposit', 'recalculation'].includes(request.status.toLowerCase()))
+        actionStatus = 'Protfolio configuration'
       return {
         id: request._id,
         img: <Avatar src={user.img ? api.imgUrl(user.img) : ""} size="40px" />,
-        name: {
+        person: {
           render: <Link to={userLink + user._id} className="no-margin no-link-style">
-            {user.name || user.company_name || '' + " " + user.surname || ''}
+            {(user.name || user.company_name || '') + " " + (user.surname || '')}
           </Link>,
-          value: user.name || '' + " " + user.surname || ''
+          value: (user.name || user.company_name || '') + " " + (user.surname || '')
         },
         date: {
           render: date.niceTime(),
           value: date.getTime(),
         },
-        inout: request.initiatedByManager && this.props.user == 1 ? 'outgoing' : 'ingoing',
+        inout: outgoing ? 'outgoing' : 'ingoing',
         value,
         service: request.type === 'inviting' ? 'inviting' : (request.service || 'undefined'),
         percent_change: {
           render: percent_change + '%',
           value: percent_change
         },
-        status: {
+        name: {
           render: <span className={request.status}>
             {request.status}
           </span>,
           value: request.status
         },
+        status: actionStatus,
         profile:
         <Link to={userLink + user._id}>
           <button className="big-blue-button">
             PROFILE
           </button>
         </Link>,
-        details:
-        <Link to={"request/" + request._id}>
-          <button className="big-blue-button">
-            DETAILS
-          </button>
-        </Link>
+        // details:
+        // <Link to={"request/" + request._id}>
+        //   <button className="big-blue-button">
+        //     DETAILS
+        //   </button>
+        // </Link>
+        detailsLink: "request/" + request._id
       };
     });
 
@@ -228,7 +254,7 @@ class RequestsPage extends Component {
         <div className="container">
           <div className="my-requests">
             <div className="column fourth">
-              <h2>My requests</h2>
+              <h2>Events log</h2>
               <span>All requests</span>
             </div>
             <div className="searcharea">
@@ -247,6 +273,7 @@ class RequestsPage extends Component {
             navigation={true}
             maxShown={4}
             initialSortBy={'date'}
+            linkProperty={"detailsLink"}
           />
         </div>
       </div>

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 
 import { setPage, api, setCookie, getCookie } from './helpers'
 import auth from './auth'
+import GoogleLogin from 'react-google-login'
+import FacebookLogin from 'react-facebook-login'
 
 import Input from './Input'
 
@@ -15,7 +17,8 @@ export default class SignIn extends Component {
     this.state = {
       login: '',
       password: '',
-      wrongPassword: false
+      wrongPassword: false,
+      wasFacebookClick: false
     }
   }
   hide(event, forced=false) {
@@ -44,8 +47,37 @@ export default class SignIn extends Component {
         console.log(e)
         if (e.response && e.response.status === 403) {
           this.setState({wrongPassword: true})
+          setTimeout(() => {
+            this.setState({wrongPassword: false})
+          }, 2500)
         }
       })
+  }
+  oauth(service, authData) {
+    if (service === 'facebook' && !this.state.wasFacebookClick)
+      return
+    api.post('oauth/' + service, {
+      token: authData.accessToken
+    })
+    .then((res) => {
+      if (res.data.dataFilled) {
+        console.log(res.data)
+        setCookie('accessToken', res.data.token)
+        setCookie('usertype', res.data.usertype)
+        console.log(document.cookie)
+        auth(() => {
+          this.setState({login: '', password: ''})
+          this.hide(null, true)
+          if (typeof this.props.callback === 'function')
+            this.props.callback()
+          else
+            setPage('dashboard')
+        })
+      } else {
+        this.props.openSignIn()
+      }
+    })
+    .catch(console.log);
   }
   render() {
     return (
@@ -57,7 +89,7 @@ export default class SignIn extends Component {
           <div className="row first-input-row">
             <label>Email address</label>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="text" value={this.state.login} onChange={(event) => this.setState({login: event.target.value, wrongPassword: false})} placeholder="username@example.com" /> */}
-            <Input tabindex="0" value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />
+            <Input tabindex="0" error={this.state.wrongPassword} value={this.state.login} setValue={value => this.setState({login: value, wrongPassword: false})} placeholder="username@example.com" />
           </div>
           <div className="row">
             <label>Password</label>
@@ -65,11 +97,29 @@ export default class SignIn extends Component {
               Forgot password?
             </Link>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" /> */}
-            <Input tabindex="1" type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
+            <Input tabindex="1" error={this.state.wrongPassword} type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
           </div>
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>
-            <div>
+          </div>
+          <div className="row oauth-container">
+            <GoogleLogin
+                clientId={this.props.googleClientId}
+                buttonText="Sign in via Google"
+                onSuccess={(authData) => this.oauth('google', authData)}
+                onFailure={(e) => {console.log(e); alert('Unable to sign up via Google')}}
+              />
+              <FacebookLogin
+                appId={this.props.facebookAppId}
+                autoLoad={true}
+                fields="email"
+                onClick={() => this.setState({wasFacebookClick: true})}
+                callback={(authData) => this.oauth('facebook', authData)}
+                textButton="Sign in via Facebook"
+              />
+          </div>
+          <div className="row submit-row">
+            <div className="supported-browsers">
               <Link to="/supported-browsers" target="_blank">Supported browsers</Link>
             </div>
           </div>

@@ -17,10 +17,12 @@ module.exports = () => new Promise(async (resolve, reject) => {
         break
       }
     }
-    await sendAllEth(contractAddress)
-    if (everyCompeleted) {
-      request.set({status: 'active'})
-      await request.save()
+    if (orders.length > 0) {
+      await sendEthereum(orders[0].contract_address)
+      if (everyCompeleted) {
+        request.set({status: 'active'})
+        await request.save()
+      }
     }
   }
   const ethReturning = await Request.find({status: 'recalculation'})
@@ -39,7 +41,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
         tokens.push(stock.address)
       }
     }
-    await sendAllToEth(contractAddress, tokens)
+    await sendTokens(contractAddress, tokens)
     if (everyCompeleted) {
       request.set({status: 'active'})
       await request.save()

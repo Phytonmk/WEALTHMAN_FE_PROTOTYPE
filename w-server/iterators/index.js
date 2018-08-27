@@ -10,16 +10,26 @@ const timeout = 60 * 25
 
 module.exports = (app) => {
   const workers = []
-  fs.readdirSync(__dirname + '/workers/').forEach((file) => {
+  fs.readdirSync(__dirname + '/safe/').forEach((file) => {
     const name = file.replace(/\.js$/i, '')
     workers.push({
       name,
-      module: require(`${__dirname}/workers/${file}`),
+      module: require(`${__dirname}/safe/${file}`),
       workingProcess: false,
       workStart: 0,
       workEnd: 0
     })
   });
+  // fs.readdirSync(__dirname + '/danger/').forEach((file) => {
+  //   const name = file.replace(/\.js$/i, '')
+  //   workers.push({
+  //     name,
+  //     module: require(`${__dirname}/danger/${file}`),
+  //     workingProcess: false,
+  //     workStart: 0,
+  //     workEnd: 0
+  //   })
+  // });
   const interval = () => { 
     for (let worker of workers) {
       // console.log(`Wordker ${worker.name} workingProcess: ${worker.workingProcess}`)

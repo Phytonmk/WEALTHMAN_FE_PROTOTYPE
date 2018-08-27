@@ -9,7 +9,7 @@ export default class InvestorPortfolioDeposit extends Component {
     setPage('signagreement/' + this.state.request._id);
   }
   render() {
-    return <div>
+    return <div class="padding-bottom-container">
       <Person requestData={this.props.requestData}/>
       <Cards
         whiteBg={true}

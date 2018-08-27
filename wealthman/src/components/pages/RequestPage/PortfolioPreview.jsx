@@ -47,9 +47,15 @@ class PortfolioPreview extends Component {
   render() {
     if (!this.state.requestedPorfolios && this.props.requestData && this.props.requestData.portfolio) {
       this.state.requestedPorfolios = true // mutation (sic!)
-      portfolioValues(this.props.requestData.portfolio.currencies, (graphic) => {
+      portfolioValues(this.props.requestData.portfolio.currencies, this.props.requestData.request.value, false, (graphic) => {
         const portfolioValues = [...this.state.portfolioValues]
         portfolioValues.push(graphic)
+        portfolioValues.sort((a, b) => {
+          if (a.data.length < b.data.length)
+            return -1
+          else
+            return 1
+        })
         this.setState({portfolioValues})   
       })
     }

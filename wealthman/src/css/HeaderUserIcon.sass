@@ -10,16 +10,16 @@
   margin-right: 16px
   position: relative
   cursor: pointer
-  &::after
-    background: #47bf6f
-    width: 7px
-    height: 7px
-    border-radius: 14px
-    border: 3px solid #0e2241
-    position: absolute
-    bottom: 8px
-    right: 8px
-    content: ""
+  // &::after
+  //   background: #47bf6f
+  //   width: 7px
+  //   height: 7px
+  //   border-radius: 14px
+  //   border: 3px solid #0e2241
+  //   position: absolute
+  //   bottom: 8px
+  //   right: 8px
+  //   content: ""
   &::before
     content: ""
     position: absolute
@@ -51,3 +51,22 @@
       white-space: nowrap
       &:hover
         background: #f5f5f5
+  .notifications
+    position: absolute
+    background-color: #47bf6f
+    padding: 5px
+    border-radius: 50%
+    color: white
+    font-size: 10px
+    border: 3px solid #0e2241
+    left: 40px
+    height: 27px
+    width: 27px
+    text-align: center
+    overflow: hidden
+    top: 40px
+    z-index: 1
+    opacity: 1
+    transition: .3s all
+    &:empty
+      opacity: 0

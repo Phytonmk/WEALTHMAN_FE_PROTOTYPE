@@ -84,6 +84,16 @@ const questions = {
       obvious: true
     }
   ],
+  managerShort: [
+    {
+      property: 'name',
+      title: 'Name',
+      obvious: true
+    },
+    {
+      property: 'surname',
+      title: 'Last name'
+    }],
   company: [
     {
       property: 'company_name',
@@ -142,6 +152,13 @@ const questions = {
       obvious: true
     }
   ],
+  companyShort: [
+    {
+      property: 'company_name',
+      title: 'Company name',
+      obvious: true
+    }
+  ]
 }
 
 export default questions;

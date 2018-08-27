@@ -20,7 +20,10 @@ const ManagerScheme = mongoose.Schema({
   about: String,
   wallet_address: String,
   services: [ServiceSchema],
-  registered: {type: Date, default: Date.now}
+  registered: {type: Date, default: Date.now},
+  aum: {type: Number, default: 0},
+  aum6m: {type: Array, default: [0, 0, 0, 0, 0, 0]},
+  clients: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('Manager', ManagerScheme);

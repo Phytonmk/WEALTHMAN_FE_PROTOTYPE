@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
   id: String,
   type: Number,
   login: String,
-  password_hash: String,
+  passwordHash: String,
   agreed: {type: Boolean, default: false}
 });
 

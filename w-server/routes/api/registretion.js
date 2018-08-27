@@ -1,8 +1,13 @@
-const crypto = require('crypto')
 const fs = require('fs-extra')
+const axios = require('axios')
 
+const configs = require('../../configs')
+
+const tokensAndPasswords = require('../../helpers/tokens-and-passwords')
+
+const OAuthModel = require('../../models/OAuth')
 const User = require('../../models/User')
-const Token = require('../../models/accessToken')
+const AccessToken = require('../../models/accessToken')
 const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
 const ManagerStatistic = require('../../models/ManagerStatistic')
@@ -10,57 +15,54 @@ const Company = require('../../models/Company')
 const AnswersForm = require('../../models/AnswersForm')
 const KYCAnswersForm = require('../../models/KYCAnswersForm')
 const EmailConfirmation = require('../../models/EmailConfirmation')
+const EmailChanging = require('../../models/emailChanging')
 
 const mailer = require('../../helpers/mailer')
 
-const currentDomain = 'platform.wealthman.io'
-const salt = 'super salt'
-
-const genToken = (user) => {
-  const token = 
-    crypto.createHash('md5')
-    .update(
-      salt +
-      user._id +
-      salt +
-      (new Date).getTime() +
-      salt +
-      user.password_hash +
-      salt
-    ).digest("hex")
-  return token
-}
-
-
-const password_hash = (password) => crypto.createHash('md5').update(salt + password + salt).digest("hex")
-
 module.exports = (app) => {
   app.post('/api/register', async (req, res, next) => {
-    if (!req.body.login || !req.body.password) {
-      res.sendStatus(500)
+    if (!req.body.login) {
+      res.status(400)
+      res.end()
+      return
+    }
+    let generatedPassword = false
+    if (!req.body.password || req.body.password == '') {
+      generatedPassword = true
+      req.body.password = tokensAndPasswords.newPassword()
+    }
+    const accountWithThisLogin = await User.findOne({login: req.body.login})
+    if (accountWithThisLogin !== null) {
+      res.status(403)
       res.end()
       return
     }
     const user = new User({
       login: req.body.login,
-      password_hash: password_hash(req.body.password),
+      password_hash: tokensAndPasswords.passwordHash(req.body.password),
     })
-    const token = genToken(user)
-    const accessToken = new Token({
+    const token = tokensAndPasswords.genAccessToken(user)
+    const accessToken = new AccessToken({
       user: user._id,
       token
     })
 
-    const confirmToken = crypto.createHash('md5').update(token + salt + token + salt).digest("hex")
+    const confirmToken = tokensAndPasswords.genConfirmToken(token)
+    let emailText = `To confirm your email follow <a href="http://${configs.host}:8080/api/confirm-email/${confirmToken}">this link</a>`
+    if (generatedPassword) {
+      emailText += '<br><br>'
+      emailText += `Your login: ${req.body.login}<br>`
+      emailText += `Your password: ${req.body.password}<br>`
+    }
     if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
       const email = {
         Recipients: [{ Email: req.body.login }],
         Subject: 'Confirm your email',
-        'Text-part': `To confirm your email follow this link http://${currentDomain}:8080/api/confirm-email/${confirmToken}`,
-        'Html-part': `To confirm your email follow <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>`,
-        FromEmail: `no-reply@${currentDomain}`,
+        //'Text-part': `To confirm your email follow this link http://${configs.host}:8080/api/confirm-email/${confirmToken}`,
+        'Html-part': emailText,
+        FromEmail: `no-reply@${configs.host}`,
         FromName: 'Wealthman registration'
-      } 
+      }
       await mailer(email).catch(console.log)
     }
 
@@ -68,15 +70,112 @@ module.exports = (app) => {
       user: user._id,
       token: confirmToken
     })
+    if (req.body.register === 'investor') {
+      user.set({type: 0})
+      const investor = new Investor({user: user.id, name: 'Anonymous investor', surname: ''})
+      await investor.save()
+    }
     await user.save()
     await accessToken.save()
     await emailConfirmation.save()
-    res.send({token, confirmToken}) // remove confirmToken from response
-    console.log('reg compelted')
+    res.send({token, dataFilled: req.body.register === 'investor', confirmToken}) // remove confirmToken from response
     res.end()
   })
+  app.post('/api/oauth/:service', async (req, res, next) => {
+    if (!['google', 'facebook'].includes(req.params.service)) {
+      res.status(400)
+      res.end()
+      return
+    }
+    const token = req.body.token
+    let url = ''
+    if (req.params.service === 'facebook')
+      url = `https://graph.facebook.com/me?access_token=${token}&fields=email`
+    if (req.params.service === 'google')
+      url = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
+    const request = await axios.get(url)
+      .catch((e) => {
+        console.log(e)
+        res.status(403)
+        res.end()
+      })
+    const userData = request.data
+    if (userData && userData.email) {
+      userData.email = userData.email.replace('\\u0040', '@')
+      let oauthModel = await OAuthModel.findOne({
+        service: req.params.service,
+        in_service_id: userData.id
+      })
+      if (oauthModel === null) {
+        const user = new User({
+          login: userData.email,
+          confirmed: true,
+        })
+        const accessTokenString = tokensAndPasswords.genAccessToken(user)
+        const accessToken = new AccessToken({
+          user: user.id,
+          token: accessTokenString
+        })
+        oauthModel = new OAuthModel({
+          user: user.id,
+          service: req.params.service,
+          in_service_id: userData.id,
+          token
+        })
+        const username = {first: '', last: ''}
+        if (!userData.name.includes(' ')) {
+          username.first = userData.name
+        } else {
+          username.first = userData.name.split(' ')[0]
+          username.last = userData.name.split(' ')[1]
+        }
+        switch (req.body.register) {
+          case 'investor':
+            user.set({type: 0})
+            const investor = new Investor({user: user.id, name: username.first, surname: username.last})
+            await investor.save()
+            break
+          case 'manager':
+            user.set({type: 1})
+            const manager = new Manager({user: user.id, name: username.first, surname: username.last})
+            await manager.save()
+            break
+          case 'compnay':
+            user.set({type: 3})
+            const compnay = new Company({user: user.id, name: username.first, surname: username.last})
+            await compnay.save()
+            break
+        }
+        await user.save()
+        await accessToken.save()
+        await oauthModel.save()
+        res.send({token: accessTokenString, dataFilled: ['investor', 'manager', 'company'].includes(req.body.register)})
+        res.end()
+      } else {
+        oauthModel.set({token})
+        const user = await User.findById(oauthModel.user)
+        if (user === null) {
+          res.status(500)
+          res.end()
+          return
+        }
+        const accessTokenString = tokensAndPasswords.genAccessToken(user)
+        const accessToken = new AccessToken({
+          user: user._id,
+          token: accessTokenString
+        })
+        await oauthModel.save()
+        await accessToken.save()
+        res.send({token: accessTokenString, dataFilled: user.type !== undefined, usertype: user.type})
+        res.end()
+      }
+    } else {
+      res.status(500)
+      res.end()
+    }
+  })
   app.post('/api/register-new-client', async (req, res, next) => {
-    const ManagersAccessToken = await Token.findOne({token: req.body.accessToken});
+    const ManagersAccessToken = await AccessToken.findOne({token: req.body.accessToken});
     if (ManagersAccessToken === null) {
       res.status(403);
       res.end('');
@@ -89,7 +188,7 @@ module.exports = (app) => {
       return;
     }
     if (!req.body.login) {
-      res.sendStatus(500)
+      res.status(500)
       res.end()
       return
     }
@@ -99,48 +198,52 @@ module.exports = (app) => {
       password += (Math.random() > 0.5 ? alphabet : alphabet.toUpperCase())[Math.floor(Math.random() * alphabet.length)]
     const user = new User({
       login: req.body.login,
-      password_hash: password_hash(password),
+      password_hash: tokensAndPasswords.passwordHash(password),
       invited: manager.user
     })
-    const token = genToken(user)
-    const accessToken = new Token({
+    const token = tokensAndPasswords.genAccessToken(user)
+    const accessToken = new AccessToken({
       user: user._id,
       token
     })
-    const confirmToken = crypto.createHash('md5').update(token + salt + token + salt).digest("hex")
+    const investor = new Investor({
+      user: user.id,
+      name: '',
+      source: 'Added client'
+    })
+    const confirmToken = tokensAndPasswords.genConfirmToken(token)
     if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
       const email = {
         Recipients: [{ Email: req.body.login }],
         Subject: 'Confirm your email',
-        'Text-part': `Manager ${(manager.name || '') + (manager.surname ? ' ' + manager.surname : '')} offer you to become his new client on wealthman.io\n\nTo start investing, conifrm you email via this link http://${currentDomain}:8080/api/confirm-email/${confirmToken}, then use your new login and password on platform.wealthman.io\n\nlogin: ${req.body.login}\npassword: ${password}\n(you can change it any time)\n\nAnd contact this manager http://platform.wealthman.io/manager/${manager._id}`,
-        'Html-part': `Manager ${(manager.name || '') + (manager.surname ? ' ' + manager.surname : '')} offer you to become his new client on wealthman.io<br><br>To start investing, conifrm you email via <a href="http://${currentDomain}:8080/api/confirm-email/${confirmToken}">this link</a>, then use your new login and password on <a href="http://platform.wealthman.io">platform.wealthman.io</a><br><br>login: ${req.body.login}<br>password: ${password}<br>(you can change it any time)<br><br>And contact <a href="http://platform.wealthman.io/manager/${manager._id}">this manager</a>`,
-        FromEmail: `no-reply@${currentDomain}`,
+        'Html-part': `Manager ${(manager.name || '') + (manager.surname ? ' ' + manager.surname : '')} offer you to become his new client on wealthman.io<br><br>To start investing, conifrm you email via <a href="http://${configs.host}:8080/api/confirm-email/${confirmToken}">this link</a>, then use your new login and password on <a href="http://platform.wealthman.io">platform.wealthman.io</a><br><br>login: ${req.body.login}<br>password: ${password}<br>(you can change it any time)<br><br>And contact <a href="http://platform.wealthman.io/manager/${manager._id}">this manager</a>`,
+        FromEmail: `no-reply@${configs.host}`,
         FromName: 'Wealthman registration'
       } 
       await mailer(email).catch(console.log)
     }
 
     const emailConfirmation = new EmailConfirmation({
-      user: user._id,
+      user: user.id,
       token: confirmToken
     })
     await user.save()
+    await investor.save()
     await accessToken.save()
     await emailConfirmation.save()
-    console.log('reg compelted')
     res.send({token})
     res.end()
   })
   app.get('/api/confirm-email/:token', async (req, res, next) => {
     const emailConfirmation = await EmailConfirmation.findOne({token: req.params.token})
     if (emailConfirmation === null) {
-      res.sendStatus(404)
+      res.status(404)
       res.end('')
       return
     }
     const user = await User.findById(emailConfirmation.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
       res.end('')
       return
     }
@@ -151,15 +254,15 @@ module.exports = (app) => {
     res.end()
   })
   app.post('/api/investor/agree', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const user = await User.findById(token.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
       res.end()
       return
     }
@@ -167,19 +270,19 @@ module.exports = (app) => {
     await user.save()
     const investor = new Investor({user: user._id})
     await investor.save()
-    res.sendStatus(200)
+    res.status(200)
     res.end()
   })
   app.post('/api/investor/risk', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const investor = await Investor.findOne({user: token.user})
     if (investor === null) {
-      res.sendStatus(500)
+      res.status(500)
       res.end()
       return
     }
@@ -201,15 +304,20 @@ module.exports = (app) => {
     res.end()
   })
   app.post('/api/investor/data', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const user = await User.findById(token.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
+      res.end()
+      return
+    }
+    if (user.type !== undefined && user.type !== 0) {
+      res.status(403)
       res.end()
       return
     }
@@ -221,19 +329,24 @@ module.exports = (app) => {
     investor.set(req.body)
     await investor.save()
     console.log('--')
-    res.sendStatus(200)
+    res.status(200)
     res.end()
   })
   app.post('/api/manager/data', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const user = await User.findById(token.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
+      res.end()
+      return
+    }
+    if (user.type !== undefined && user.type !== 1) {
+      res.status(403)
       res.end()
       return
     }
@@ -258,25 +371,25 @@ module.exports = (app) => {
       }]
     })
     await managerStatistic.save()
-    res.sendStatus(200)
+    res.status(200)
     res.end()
   })
   app.post('/api/photo/investor', async (req, res, next) => {
     console.log(req.headers)
-    const token = await Token.findOne({token: req.headers.accesstoken})
+    const token = await AccessToken.findOne({token: req.headers.accesstoken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const investor = await Investor.findOne({user: token.user})
     if (!req.files)
-      return res.sendStatus(400).send('No files were uploaded.')
+      return res.status(400).send('No files were uploaded.')
     const file = req.files.file
     await fs.ensureDir(__dirname+ '/../../img/investors/')
     req.files.file.mv(__dirname+ '/../../img/investors/' + investor._id + '.png', async (err) => {
       if (err)
-        return res.sendStatus(500).send(err)
+        return res.status(500).send(err)
       investor.set({img: 'investors/' + investor._id + '.png'})
       await investor.save()
       res.send('investors/' + investor._id + '.png')
@@ -285,9 +398,9 @@ module.exports = (app) => {
   })
   app.post('/api/photo/manager', async (req, res, next) => {
     console.log(req.headers)
-    const token = await Token.findOne({token: req.headers.accesstoken})
+    const token = await AccessToken.findOne({token: req.headers.accesstoken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
@@ -296,7 +409,7 @@ module.exports = (app) => {
       manager = new Manager(Object.assign(req.body, {user: token.user}))
     }
     if (!req.files) {
-      res.sendStatus(400).send('No files were uploaded.')
+      res.status(400).send('No files were uploaded.')
       return
     }
     const file = req.files.file
@@ -304,7 +417,7 @@ module.exports = (app) => {
     req.files.file.mv(__dirname+ '/../../img/managers/' + manager._id + '.png', async (err) => {
       if (err) {
         console.log(err)
-        res.sendStatus(500)
+        res.status(500)
         return
       }
       manager.set({img: 'managers/' + manager._id + '.png'})
@@ -315,9 +428,9 @@ module.exports = (app) => {
   })
   app.post('/api/photo/company', async (req, res, next) => {
     console.log(req.headers)
-    const token = await Token.findOne({token: req.headers.accesstoken})
+    const token = await AccessToken.findOne({token: req.headers.accesstoken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
@@ -326,12 +439,12 @@ module.exports = (app) => {
       company = new Company(Object.assign(req.body, {user: token.user}))
     }
     if (!req.files)
-      return res.sendStatus(400).send('No files were uploaded.')
+      return res.status(400).send('No files were uploaded.')
     const file = req.files.file
     await fs.ensureDir(__dirname+ '/../../img/companies/')
     req.files.file.mv(__dirname+ '/../../img/companies/' + company._id + '.png', async (err) => {
       if (err)
-        return res.sendStatus(500).send(err)
+        return res.status(500).send(err)
       company.set({img: 'companies/' + company._id + '.png'})
       await company.save()
       res.send('companies/' + company._id + '.png')
@@ -339,15 +452,20 @@ module.exports = (app) => {
     })
   })
   app.post('/api/company/data', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const user = await User.findById(token.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
+      res.end()
+      return
+    }
+    if (user.type !== undefined && user.type !== 3) {
+      res.status(403)
       res.end()
       return
     }
@@ -360,22 +478,22 @@ module.exports = (app) => {
     } else {
       await Company.findOneAndUpdate({user: user._id}, req.body)
     }
-    res.sendStatus(200)
+    res.status(200)
     res.end()
   })
   app.post('/api/login', async (req, res, next) => {
     const user = await User.findOne({
       login: req.body.login,
-      password_hash: password_hash(req.body.password)
+      password_hash: tokensAndPasswords.passwordHash(req.body.password)
     })
     if (user === null) {
-      res.sendStatus(403)
-      console.log(`Wrong login or password:\n${req.body.login}\n${req.body.password}\n${password_hash(req.body.password)}`)
+      res.status(403)
+      // console.log(`Wrong login or password:\n${req.body.login}\n${req.body.password}\n${tokensAndPasswords.passwordHash(req.body.password)}`)
       res.end()
       return
     }
-    const token = genToken(user)
-    const accessToken = new Token({
+    const token = tokensAndPasswords.genAccessToken(user)
+    const accessToken = new AccessToken({
       user: user._id,
       token
     })
@@ -384,20 +502,20 @@ module.exports = (app) => {
     res.end()
   })
   app.post('/api/logout', async (req, res, next) => {
-    await Token.findOneAndRemove({token: req.body.accessToken})
-    res.sendStatus(200)
+    await AccessToken.findOneAndRemove({token: req.body.accessToken})
+    res.status(200)
     res.end()
   })
   app.post('/api/getme', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
     const user = await User.findById(token.user)
     if (user === null) {
-      res.sendStatus(500)
+      res.status(500)
       res.end()
       return
     }
@@ -419,29 +537,157 @@ module.exports = (app) => {
     }
     user.set({last_request: Date.now()})
     await user.save()
-    res.send({usertype: user.type, userData})
+    res.send({usertype: user.type, userData, testNetwork: !configs.productionMode})
     res.end()
   })
   app.post('/api/changepassword', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end('')
       return
     }
-    const user = await User.findById(token.user).where({password_hash: password_hash(req.body.old_password)})
+    const user = await User.findById(token.user).where({password_hash: tokensAndPasswords.passwordHash(req.body.old_password)})
     if (user === null) {
-      res.sendStatus(403)
+      res.status(403)
       res.end()
       return
     }
     if (req.body.new_password1 === req.body.new_password2) {
-      user.set({password_hash: password_hash(req.body.new_password1)})
+      user.set({password_hash: tokensAndPasswords.passwordHash(req.body.new_password1)})
       await user.save()
-      res.sendStatus(200)
+      res.status(200)
       res.end()
     } else {
-      res.sendStatus(500)
+      res.status(500)
+      res.end()
+    }
+  })
+  app.post('/api/check-login', async (req, res, next) => {
+    if (!req.body.login || req.body.login === '') {
+      res.status(403)
+      res.end()
+      return
+    }
+    const accountWithThisLogin = await User.findOne({login: req.body.login})
+    if (accountWithThisLogin !== null) {
+      res.status(403)
+      res.end()
+      return
+    }
+    res.status(200)
+    res.end()
+  })
+  app.get('/api/my-email', async (req, res, next) => {
+    const token = await AccessToken.findOne({token: req.headers.accesstoken})
+    if (token === null) {
+      res.status(403)
+      res.end('')
+      return
+    }
+    const user = await User.findById(token.user)
+    if (user === null) {
+      res.status(403)
+      res.end()
+      return
+    }
+    if (!user.login) {
+      res.status(500)
+      res.end()
+      return
+    }
+    let userLogin = user.login
+    if (userLogin.includes('@')) {
+      if (userLogin.indexOf('@') < 3)
+        userLogin = '***' + userLogin.substr(userLogin.indexOf('@'))
+      else
+        userLogin = userLogin.substr(0, 2) + '***' + userLogin.substr(userLogin.indexOf('@'))
+    }
+    res.send(userLogin)
+    res.status(200)
+    res.end()
+  })
+  app.post('/api/change-email', async (req, res, next) => {
+    const token = await AccessToken.findOne({token: req.body.accessToken})
+    if (token === null) {
+      res.status(403)
+      res.end('')
+      return
+    }
+    const user = await User.findById(token.user)
+    if (user === null) {
+      res.status(403)
+      res.end()
+      return
+    }
+    const userWithThisEmail = await User.findOne({login: req.body.email})
+    if (userWithThisEmail !== null) {
+      res.status(403)
+      res.end()
+      return
+    }
+    if (!/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.email)) {
+      res.status(400)
+      res.end()
+      return
+    }
+    const emailChanging = new EmailChanging({
+      user: user._id,
+      oldEmailConfirmationToken: tokensAndPasswords.genConfirmToken(token),
+      newEmailConfirmationToken: tokensAndPasswords.genConfirmToken(token),
+      oldEmail: user.login,
+      newEmail: req.body.email,
+      oldEmailConfirmed: false,
+      newEmailConfirmed: false,
+    })
+    await emailChanging.save()
+    const email = {
+      Recipients: [{ Email: user.login }],
+      Subject: 'Confirm email change',
+      'Html-part': `To change you email address click <a href="http://${configs.host}:8080/api/confirm-email-change/old/${emailChanging.oldEmailConfirmationToken}">this link</a>`,
+      FromEmail: `no-reply@${configs.host}`,
+      FromName: 'Wealthman platform'
+    } 
+    await mailer(email).catch(console.log)
+    res.status(200)
+    res.end()
+  })
+  app.get('/api/confirm-email-change/:email/:token', async (req, res, next) => {
+    let emailChanging;
+    if (req.params.email === 'old')
+      emailChanging = await EmailChanging.findOne({oldEmailConfirmationToken: req.params.token, oldEmailConfirmed: false, newEmailConfirmed: false})
+    else
+      emailChanging = await EmailChanging.findOne({newEmailConfirmationToken: req.params.token, oldEmailConfirmed: true, newEmailConfirmed: false})
+    if (emailChanging === null) {
+      res.status(404)
+      res.end('')
+      return
+    }
+    const user = await User.findById(emailChanging.user).where({login: emailChanging.oldEmail})
+    if (user === null) {
+      res.status(500)
+      res.end('')
+      return
+    }
+    if (req.params.email === 'old') {
+      emailChanging.set({oldEmailConfirmed: true})
+      const email = {
+        Recipients: [{ Email: emailChanging.newEmail }],
+        Subject: 'Confirm email change',
+        'Html-part': `To change you email address click <a href="http://${configs.host}:8080/api/confirm-email-change/new/${emailChanging.newEmailConfirmationToken}">this link</a>`,
+        FromEmail: `no-reply@${configs.host}`,
+        FromName: 'Wealthman platform'
+      } 
+      await emailChanging.save()
+      await mailer(email).catch(console.log)
+      res.send('Confirmation link was sent to new email ' + emailChanging.newEmail)
+      res.end()
+    } else {
+      emailChanging.set({newEmailConfirmed: true})
+      user.set({login: emailChanging.newEmail})
+      await user.save()
+      await emailChanging.save()
+      res.send('Greate! You email was changed')
       res.end()
     }
   })

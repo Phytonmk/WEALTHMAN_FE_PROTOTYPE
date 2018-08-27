@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
-import $ from 'jquery';
-import { setReduxState } from './../redux/index';
-import { api, setPage, setCookie } from './helpers';
-import { Link } from 'react-router-dom';
-import Avatar from './Avatar';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import $ from 'jquery'
+import { setReduxState } from './../redux/index'
+import { api, setPage, setCookie } from './helpers'
+import { Link } from 'react-router-dom'
+import Avatar from './Avatar'
+import { connect } from 'react-redux'
+import { default as chatsApi } from './pages/ChatPage/chatsApi'
 
-import '../css/HeaderUserIcon.sass';
+import '../css/HeaderUserIcon.sass'
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -16,10 +17,11 @@ import '../css/HeaderUserIcon.sass';
 
 class HeaderUserIcon extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      opened: false
-    };
+      opened: false,
+      notifications: 0
+    }
   }
 
   logout() {
@@ -36,12 +38,12 @@ class HeaderUserIcon extends Component {
         // document.cookie = ''
         // setTimeout(() => auth(), 0)
         // auth(() => {
-        //   window.location.reload(false);
-        //     // this.state = store.getState();
-        //     // this.forceUpdate();
+        //   window.location.reload(false)
+        //     // this.state = store.getState()
+        //     // this.forceUpdate()
 
-        // });
-      });
+        // })
+      })
   }
 
   componentWillMount() {
@@ -50,8 +52,23 @@ class HeaderUserIcon extends Component {
         !event.target.className.includes("header-user-icon") &&
         !event.target.className.includes("loaded") && // "loaded" img of avatar
         !event.target.className.includes("default-avatar-user"))
-        this.setState({opened: false});
-    });
+        this.setState({opened: false})
+    })
+    chatsApi.connect()
+      .then((socket) => {
+        socket.on('message', msg => {
+          this.setState(pervState => { return {notifications: pervState.notifications + 1}})
+          window.dispatchEvent(newMsgEvent)
+        });
+      })
+      .catch(console.log)
+    chatsApi.chatsList()
+      .then(res => {
+        let notifications = 0
+        res.data.map((chat) => notifications += chat.unread)
+        this.setState({notifications})
+      })
+      .catch(console.log)
   }
 
   render() {
@@ -67,7 +84,7 @@ class HeaderUserIcon extends Component {
           <div className="options">
             <Link to={'/account'}>
               <div className="option">
-                {this.props.userData ? (this.props.userData.name || this.props.userData.company_name || '') + ' ' + (this.props.userData.surname || '') : 'Account settings'}
+                Account settings{/*{this.props.userData ? (this.props.userData.name || this.props.userData.company_name || '') + ' ' + (this.props.userData.surname || '') : 'Account settings'}*/}
               </div>
             </Link>
             <Link to={'/chats'}>
@@ -77,7 +94,7 @@ class HeaderUserIcon extends Component {
             </Link>
             <Link to={'/requests'}>
               <div className="option">
-                My requests
+                Event log
               </div>
             </Link>
             <Link to={'/'}>
@@ -92,9 +109,10 @@ class HeaderUserIcon extends Component {
           size="58px"
           src={this.props.userData ? api.imgUrl(this.props.userData.img) : ''}
         />
+        <div className="notifications">{this.state.notifications > 0 ? this.state.notifications : ''}</div>
       </div>
-    );
+    )
   }
 }
 
-export default connect(a => a)(HeaderUserIcon);
+export default connect(a => a)(HeaderUserIcon)

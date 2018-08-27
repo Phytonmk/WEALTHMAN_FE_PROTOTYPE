@@ -75,7 +75,7 @@ class MoneyPage extends Component {
     // const web3 = new Web3(web3.currentProvider);
     const contract = web3.eth.contract(abi);
     const contractInstance = contract.at(this.state.contractAddress);
-    contractInstance.deposit({value: this.state.request.value * 100000000000000, gas: 7600000, gasPrice: 2},function(err, transactionHash) {
+    contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(),'ether'), gas: 7600000, gasPrice: 2000000000},function(err, transactionHash) {
       if (!err)
         console.log(transactionHash);
       else

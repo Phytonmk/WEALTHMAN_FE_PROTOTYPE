@@ -34,24 +34,10 @@ module.exports = (app) => {
       user = 'investor'
       userID = investor.id
     }
-    console.log(user)
     switch(user) {
       case 'manager':
         const statistic = await ManagerStatistic.findOne({manager: userID})
-        const clients = await Request.aggregate([  
-          {
-            $match: {
-              type: 'portfolio',
-              manager: userID
-            }
-          },
-          {
-            $group : {
-              _id : "$investor",
-              count: { $sum: 1 }
-            }
-          }
-        ])
+        const clients = manager.clients
         const clientsApplications = await Request.aggregate([  
           {
             $match: {
@@ -67,16 +53,28 @@ module.exports = (app) => {
             }
           }
         ])
+        let change = 0, earning = 0, changeDaysCount = 365
+        if (statistic.aum.length > 365) {
+          change = Math.round(manager.aum / statistic.aum[statistic.aum.length - 365] * 100) / 100
+          earning = manager.aum - statistic.aum[statistic.aum.length - 365]
+        } else {
+          change = Math.round(manager.aum / statistic.aum[0] * 100) / 100
+          earning = manager.aum - statistic.aum[0]
+          changeDaysCount = statistic.aum.length
+        }
+        if (change === null || change === Infinity)
+          change = 100
         const aum = {
-          value: genRandom(5, 15) ** genRandom(5, 15),
-          earning: genRandom(5, 15) * (10 ** genRandom(5, 15)),
-          change: genRandom(-30, 30),
+          value: manager.aum,
+          earning,
+          change,
+          changePeriod: new Date(Date.now() - 1000 * 60 * 60 * 24 * changeDaysCount),
           grpahic: statistic.aum
         }
         const portfolios = statistic.portfolios
         const dates = statistic.dates
         res.send({
-          clients: clients.length,
+          clients,
           clientsApplications: clientsApplications.length,
           profileViews: '?',
           aum,

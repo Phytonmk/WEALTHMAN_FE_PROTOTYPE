@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { setReduxState } from './../redux/index';
+import { setReduxState, store } from './../redux/index';
 
 import logo from './../img/logo.svg';
 import '../css/Header.sass';
-import { default as chatsApi } from './pages/ChatPage/chatsApi'
 import { api } from './helpers';
 import HeaderUserIcon from './HeaderUserIcon';
 import AuthWindows from './AuthWindows'
@@ -20,17 +19,6 @@ class Header extends Component {
     window.openSignUp = this.state.openSignUp
   }
 
-  componentDidMount() {
-    chatsApi.connect()
-      .then((socket) => {
-        socket.on('message', msg => {
-          console.log(msg)
-          const newMsgEvent = new CustomEvent('new message from chats', {detail: {msg: msg}})
-          window.dispatchEvent(newMsgEvent)
-        });
-      })
-      .catch(console.log)
-  }
 
   render() {
     let headerLinks = [];
@@ -126,9 +114,9 @@ class Header extends Component {
         </li>
       );
     });
-
     return (
       <header>
+        {!store.getState().testNetwork ? '' : <div className="test-network-hint">Testnet currently enabled</div>}
         <AuthWindows
           openSignIn={(func) => this.setState({openSignIn: func})}
           openSignUp={(func) => {
