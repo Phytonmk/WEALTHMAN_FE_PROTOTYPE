@@ -19,7 +19,6 @@ export default class InvestorPortfolioActive extends Component {
   render() {
     console.log(this.props.requestData)
     return <div>
-      <InvstorPortfolioHeader requestData={this.props.requestData} buttonLink={"/withdraw/" + this.props.requestData.request._id} />
       <Cards
         whiteBg={true}
         cards={[{
@@ -49,6 +48,12 @@ export default class InvestorPortfolioActive extends Component {
         },{
           title: '? $',
           subtitle: 'Total earnings'
+        }]}
+      />
+      <Cards
+        whiteBg={true}
+        cards={[{
+          title: <Link className="blue" to={'/portfoliocreation/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Review portfolio</Link>,
         }]}
       />
       <SmartContract address={this.props.requestData.portfolio.smart_contract} />

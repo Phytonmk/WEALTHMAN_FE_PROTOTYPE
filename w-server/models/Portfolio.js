@@ -19,7 +19,8 @@ const PortfolioScheme = mongoose.Schema({
     comments: String,
     address: String,
     bought_quantity: Number
-  }]
+  }],
+  balance: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('Portfolio', PortfolioScheme);

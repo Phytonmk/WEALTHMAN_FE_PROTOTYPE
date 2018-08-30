@@ -6,6 +6,7 @@ const Request = require('../../models/Request');
 const Portfolio = require('../../models/Portfolio');
 const KYCAnswersForm = require('../../models/KYCAnswersForm');
 const Notification = require('../../models/Notification');
+const Transaction = require('../../models/Transaction');
 
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
@@ -140,9 +141,12 @@ module.exports = (app) => {
     const investor = await Investor.findById(request.investor);
     const manager = await Manager.findById(request.manager);
     const company = await Company.findById(request.company);
-    const portfolio = await Portfolio.findOne({request: request.id});
+    const portfolio = await Portfolio.findOne({request: request.id/*, state: 'active'*/})
+    const transactions = portfolio !== null ? await Transaction.find({
+      smart_contract: portfolio.smart_contract
+    }) : []
     const oldPortfolios = await Portfolio.find({request: request.id, status: 'old'});
-    res.send({request, investor, manager, company, portfolio, oldPortfolios});
+    res.send({request, investor, manager, company, portfolio, oldPortfolios, transactions});
     res.status(200);
     res.end();
   });

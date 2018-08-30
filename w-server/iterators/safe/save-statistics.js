@@ -1,6 +1,7 @@
 const Request = require('../../models/Request')
 const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
+const Portfolio = require('../../models/Portfolio')
 const ManagerStatistic = require('../../models/ManagerStatistic')
 
 module.exports = () => new Promise(async (resolve, reject) => {
@@ -30,6 +31,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
       archived: await Request.countDocuments({manager: statisticObj.manager, status: 'archived'}),
       inProgress: await Request.countDocuments({manager: statisticObj.manager, status: { $not: { $in: ['active', 'archived', 'failed']}}})
     })
+    const portfoliosAmount = portfolios[portfolios.length - 1].active +
+                              portfolios[portfolios.length - 1].archived +
+                                portfolios[portfolios.length - 1].inProgress 
     statistic.set({
       dates,
       aum,
@@ -58,7 +62,11 @@ module.exports = () => new Promise(async (resolve, reject) => {
           }
         }
       ])
-    thisManager.set({aum6m, clients: clients.length === 0 ? 0 : clients.reduce((a, b) => a + b.count, 0)})
+    thisManager.set({
+      aum6m,
+      clients: clients.length === 0 ? 0 : clients.reduce((a, b) => a + b.count, 0),
+      portfolios: portfoliosAmount
+    })
     await statistic.save()
     await thisManager.save()
   }
@@ -82,7 +90,11 @@ module.exports = () => new Promise(async (resolve, reject) => {
     if (Date.now() - investor.last_active.getTime() > 1000 * 60 * 5) {
       investor.set({online: false})
     }
-    investor.set({managers_amount: managers_amount.length === 0 ? 0 : managers_amount.reduce((a, b) => a + b.count, 0)})
+    const portfolios = await Request.countDocuments({investor: investor._id, type: 'portfolio'})
+    investor.set({
+      managers_amount: managers_amount.length === 0 ? 0 : managers_amount.reduce((a, b) => a + b.count, 0),
+      portfolios
+    })
     await investor.save()
   }
   resolve()

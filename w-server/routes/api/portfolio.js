@@ -56,16 +56,15 @@ module.exports = (app) => {
       })
     }
     const existsPortfolio = await Portfolio.findOne({request: request._id, state: 'draft'})
-    const currencies = req.body.currencies
-    for (let i in currencies) {
-      const currency = currencies[i]
+    const rawCurrencies = req.body.currencies
+    const currencies = []
+    for (let i in rawCurrencies) {
+      const currency = rawCurrencies[i]
       const stock = await Stock.findOne({ $or: [{title: currency.currency}, {name: currency.currency}] })
-      if (stock === null || currency.percent > 100 || currency.percent <= 0) {
-        res.status(400)
-        res.end()
-        return
+      if (stock !== null && currency.percent <= 100 && currency.percent > 0) {
+        rawCurrencies[i].currency = stock.title
+        currencies.push(rawCurrencies[i])
       }
-      currencies[i].currency = stock.title
     }
     if (existsPortfolio === null) {
       const portfolio = new Portfolio({
@@ -132,7 +131,7 @@ module.exports = (app) => {
       res.end()
       return
     }
-    let manager
+    let manager, user
     const investor = await Investor.findOne({user: token.user})
     if (investor === null) {
       manager = await Manager.findOne({user: token.user})
@@ -149,7 +148,12 @@ module.exports = (app) => {
       userID = investor._id
     }
     const request = await Request.findById(req.body.request)
-    if (request === null || request.user !== userID) {
+    // console.log(request)
+    // console.log({request: {[user]: userID}})
+    // console.log(request === null, request[user] !== userID)
+    // console.log (request === null || request[user] !== userID)
+    console.log(`'${request[user]}'`, `'${userID}'`, request[user] != userID)
+    if (request === null || request[user] != userID) {
       res.status(404)
       res.end()
       return
@@ -237,7 +241,9 @@ module.exports = (app) => {
       return
     }
     request.set({status: 'proposed'})
+    // portfolio.set({state: 'active'})
     await request.save()
+    // await portfolio.save()
     await notify({request: request._id, title: `Manager proposed portfolio`})
     res.status(200)
     res.end()

@@ -1,7 +1,8 @@
 const Portfolio = require('../models/Portfolio')
-const Web3 = require('web3')
-const Tx = require('ethereumjs-tx')
 const configs = require('../configs')
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
+const Tx = require('ethereumjs-tx')
 const portfolioAbi = require('./portfolio_abi.js')
 const privateKey = configs.privateKey
 const admin = configs.adminAddress

@@ -11,7 +11,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
   const smartContracts = []
   let i = 0
   for (request of requests) {
-    const portfolio = await Portfolio.findOne({request: request._id})
+    const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
     if (portfolio !== null && portfolio.smart_contract)
       smartContracts.push({
         address: portfolio.smart_contract,
@@ -21,21 +21,16 @@ module.exports = () => new Promise(async (resolve, reject) => {
       })
   }
   for (let smartContract of smartContracts) {
-    const tokensReturnToExchange = await checkBalance(smartContract.address).catch(console.log)
-    if (tokensReturnToExchange) {
-      const request = await Request.findById(smartContract.request)
-      request.set({status: 'active'})
-      await request.save()
-      for (let token of smartContract.currencies) {
-        const order = new Order({
-          token_name: token.currency,
-          whole_eth_amount: request.value,
-          percent: token.percent,
-          contract_address: smartContract.address,
-          rebuild: false
-        })
-        await order.save()
-      }
+    const request = await Request.findById(smartContract.request)
+    for (let token of smartContract.currencies) {
+      const order = new Order({
+        token_name: token.currency,
+        whole_eth_amount: request.value,
+        percent: token.percent,
+        contract_address: smartContract.address,
+        rebuild: false
+      })
+      await order.save()
     }
   }
   resolve()

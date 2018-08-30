@@ -42,8 +42,8 @@ export default class Header extends Component {
             </div>
           <div className="person-details-numbers">
             <div>
-              <h4>2</h4>
-              <p>Portfolies</p>
+              <h4>{person.portfolios}</h4>
+              <p>Portfolios</p>
             </div>
             {!person.registered ? '' : <div>
               <h4>{new LevDate(person.registered).pastNice()}</h4>
@@ -103,6 +103,7 @@ const getAnotherPerson = (investor, manager, company) => {
     registered: anotherPersonData.registered,
     name: anotherPersonData.company_name || ((anotherPersonData.name || '') + ' ' + (anotherPersonData.surname || '')),
     img: anotherPersonData.img ? anotherPersonData.img : 'manager/user.svg',
-    subtitle, type
+    portfolios: anotherPersonData.portfolios,
+    subtitle, type, 
   }
 }

@@ -13,33 +13,21 @@ var abi =[
 	},
 	{
 		"constant": false,
-		"inputs": [],
-		"name": "deposit",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "endPortfolio",
+		"inputs": [
+			{
+				"name": "portfolioTokens",
+				"type": "address[]"
+			},
+			{
+				"name": "values",
+				"type": "uint256[]"
+			}
+		],
+		"name": "calculateRewards",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Deposit",
-		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -60,7 +48,19 @@ var abi =[
 				"type": "uint256"
 			}
 		],
-		"name": "OrderExpired",
+		"name": "OrderCanceled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Withdraw",
 		"type": "event"
 	},
 	{
@@ -88,6 +88,18 @@ var abi =[
 			}
 		],
 		"name": "OrderCompleted",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "Deposit",
 		"type": "event"
 	},
 	{
@@ -127,30 +139,27 @@ var abi =[
 				"type": "uint256"
 			}
 		],
-		"name": "OrderCanceled",
+		"name": "OrderExpired",
 		"type": "event"
 	},
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "Withdraw",
-		"type": "event"
+		"constant": false,
+		"inputs": [],
+		"name": "deposit",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_rewardSum",
-				"type": "uint256"
+				"name": "tokens",
+				"type": "address[]"
 			}
 		],
-		"name": "sendReward",
+		"name": "endPortfolio",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -349,20 +358,6 @@ var abi =[
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "frontReward",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
 		"name": "isRunning",
 		"outputs": [
 			{
@@ -518,20 +513,6 @@ var abi =[
 		"constant": true,
 		"inputs": [],
 		"name": "performanceFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "platformReward",
 		"outputs": [
 			{
 				"name": "",

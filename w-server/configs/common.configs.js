@@ -1,5 +1,5 @@
 module.exports = {
-  mongoUrl: 'mongodb://wealthman:FxScHc58DTJqNc9W@185.185.70.5:27017/wealthman',
+  mongoUrl: 'mongodb://wealthman:FxScHc58DTJqNc9W@localhost:27017/wealthman',
   workerPort: 8080,
   privateKey: Buffer.from('4a131e9f1843d982cd3a4b83749b46bcd2435b5e19429109a16d2f144bd5d948','hex'),
   adminAddress: '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D',
@@ -21,5 +21,9 @@ module.exports = {
     name: 'binance',
     key: 'NfVTh5BOre1sa8NNnxBVRiPU94k5NXVIfxo7SWbwgbxYUzvZnHieMIMHbqSuOoBQ',
     secret: 'jKCtsdruy650mDhj1kpAIcOgOu22bewpUAx3QPaPp7Q2c03xDd5CZXxlwcokbaw8'
-  }]
+  }],
+  telegram: {
+    token: '636209033:AAGsp6kM_-tqvCY2wzmfSetnPIzofbC1LRM',
+    admin: '306472594'
+  }
 }

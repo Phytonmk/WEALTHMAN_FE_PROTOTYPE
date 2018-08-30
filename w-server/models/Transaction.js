@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = mongoose.Schema({
-  smart_contract: String,
-  block: Number,
-  index: Number,
-  date: Date,
-  data: {}
+  contract: String,
+  request: String,
+  date: {type: Date, default: Date.now()},
+  type: String,
+  receiver: mongoose.Schema({
+    name: String,
+    type: String,
+    id: String
+  })
 });
 
 module.exports = mongoose.model('transaction', transactionSchema);

@@ -54,13 +54,13 @@ module.exports = (app) => {
           }
         ])
         let change = 0, earning = 0, changeDaysCount = 365
-        if (statistic.aum.length > 365) {
+        if (statistic.aum.length > 365 * 2) {
           change = Math.round(manager.aum / statistic.aum[statistic.aum.length - 365] * 100) / 100
           earning = manager.aum - statistic.aum[statistic.aum.length - 365]
         } else {
-          change = Math.round(manager.aum / statistic.aum[0] * 100) / 100
-          earning = manager.aum - statistic.aum[0]
-          changeDaysCount = statistic.aum.length
+          change = Math.round(manager.aum / statistic.aum[Math.round(statistic.aum.length / 2)] * 100) / 100
+          earning = manager.aum - statistic.aum[Math.round(statistic.aum.length / 2)]
+          changeDaysCount = Math.round(statistic.aum.length / 2)
         }
         if (change === null || change === Infinity)
           change = 100

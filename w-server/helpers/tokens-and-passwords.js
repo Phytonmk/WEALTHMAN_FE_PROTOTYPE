@@ -38,9 +38,22 @@ const newPassword = (length=16, charactersCase="different", alphabet="abcdefghij
   return result
 }
 
+const passwordResetToken = () => {
+  const alphabet="abcdefghijklmnopqrstuvwxyz1234567890!@#$%^*;:"
+  let result = ''
+  for(let i = 0; i < 3; i++) {
+    for (let j = 0; j < 4; j++)
+      result += Math.random() > 0.5 ? alphabet[Math.floor(Math.random() * alphabet.length)].toUpperCase() : alphabet[Math.floor(Math.random() * alphabet.length)]
+    if (i !== 2)
+      result += '-'
+  }
+  return result
+}
+
 module.exports = {
   genAccessToken,
   passwordHash,
   genConfirmToken,
   newPassword,
+  passwordResetToken
 }

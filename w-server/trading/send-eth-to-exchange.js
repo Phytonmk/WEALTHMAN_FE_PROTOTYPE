@@ -3,9 +3,9 @@ const configs = require('../configs')
 const portfolioAbi = require('./portfolio_abi.js');
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
-const Tx = configs.tx
-const privateKey = configs.privatekey
-const admin = configs.admin_adress;
+const Tx = require('ethereumjs-tx')
+const privateKey = configs.privateKey
+const admin = configs.adminAddress;
 module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
   var contract = new web3.eth.Contract(portfolioAbi, portfolio_adress);
   var functionAbi =  contract.methods.transferEth().encodeABI();

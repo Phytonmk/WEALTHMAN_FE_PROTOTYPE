@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Cards from '../../../dashboards/Cards';
 import Person from '../../../dashboards/Person';
-import Graphics from '../../../dashboards/Graphics';
+import PortfolioPreview from '../PortfolioPreview'
 
 import { api, setPage } from '../../../helpers'
 
@@ -16,54 +16,15 @@ export default class InvestorPortfolioProposed extends Component {
       .catch(console.log)
   }
   render() {
-    return <div class="padding-bottom-container">
+    return <div className="padding-bottom-container">
       <Person requestData={this.props.requestData}/>
       <Cards
         cards={[{
           subtitle: 'Manager created portfolio and waiting for you reaction',
         }]}
       />
-      <Graphics
-       pie={{
-         title: 'Portfolio allocation',
-         datasets: [{
-           inCircleValue: this.props.requestData.request.value,
-           inCircleTitle: 'Eth',
-           data: this.props.requestData.portfolio.currencies.sort((a, b) => a.percent > b.percent ? -1 : 1).map(currency => { return {
-             header: currency.percent + '% ' + currency.currency,
-             value: currency.percent
-           }})
-         }]
-       }}
-       main={{
-         title: 'Portfolio value on historical data (hardcode)',
-         datasets: [{
-           title: 'Jun 22 - Jul 16, 2018',
-           data: [{
-             value: 1,
-             title: '1-Jul-15'
-           },{
-             value: 2,
-             title: '2-Jul-15'
-           },{
-             value: 3,
-             title: '3-Jul-15'
-           },{
-             value: 8,
-             title: '4-Jul-15'
-           },{
-             value: 5,
-             title: '5-Jul-15'
-           },{
-             value: 3,
-             title: '6-Jul-15'
-           },{
-             value: 7,
-             title: '7-Jul-15'
-           },]
-         }]
-       }}
-     />
+      {this.props.requestData.portfolio ? 
+        <PortfolioPreview requestData={this.props.requestData} /> : ''}
       <Cards
         whiteBg={true}
         cards={[{

@@ -22,7 +22,8 @@ const CompanyScheme = mongoose.Schema({
   registered: {type: Date, default: Date.now},
   aum: {type: Number, default: 0},
   aum6m: {type: Array, default: [0, 0, 0, 0, 0, 0]},
-  clients: {type: Number, default: 0}
+  clients: {type: Number, default: 0},
+  portfolios: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('Company', CompanyScheme);

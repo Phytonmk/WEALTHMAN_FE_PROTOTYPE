@@ -32,7 +32,7 @@ module.exports = (app) => {
         name: query.split(':')[0],
         percent: query.split(':')[1] 
       }})
-      const timeout = 4000
+      const timeout = 10 * 1000
       let got = 0
       let result = []
       for (let i = 0; i < resultLength; i++)
@@ -58,7 +58,8 @@ module.exports = (app) => {
             result[resultLength - rows.length + i] += rows[i] * percent
           }
         }
-        if (got >= tokens.length) {
+        if (got > tokens.length) {
+          got = -10000
           res.send(result)
           res.end()
         }

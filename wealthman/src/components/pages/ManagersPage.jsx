@@ -162,6 +162,7 @@ class ManagersPage extends Component {
         title: "Clients",
         // width: "82px",
         width: "40px",
+        type: 'number'
       },
       {
         property: "aum6m",

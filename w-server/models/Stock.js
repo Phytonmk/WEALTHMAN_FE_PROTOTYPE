@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const StockSchema = mongoose.Schema({
-  name: String,
-  title: String,
+  title: String, // (short!)
+  name: String, // (long!)
   address: String,
   last_price: Number,
   change_percnt: Number,

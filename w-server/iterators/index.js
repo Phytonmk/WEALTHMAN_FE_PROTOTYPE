@@ -20,16 +20,16 @@ module.exports = (app) => {
       workEnd: 0
     })
   });
-  // fs.readdirSync(__dirname + '/danger/').forEach((file) => {
-  //   const name = file.replace(/\.js$/i, '')
-  //   workers.push({
-  //     name,
-  //     module: require(`${__dirname}/danger/${file}`),
-  //     workingProcess: false,
-  //     workStart: 0,
-  //     workEnd: 0
-  //   })
-  // });
+  fs.readdirSync(__dirname + '/danger/').forEach((file) => {
+    const name = file.replace(/\.js$/i, '')
+    workers.push({
+      name,
+      module: require(`${__dirname}/danger/${file}`),
+      workingProcess: false,
+      workStart: 0,
+      workEnd: 0
+    })
+  });
   const interval = () => { 
     for (let worker of workers) {
       // console.log(`Wordker ${worker.name} workingProcess: ${worker.workingProcess}`)

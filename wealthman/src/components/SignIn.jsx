@@ -18,7 +18,9 @@ export default class SignIn extends Component {
       login: '',
       password: '',
       wrongPassword: false,
-      wasFacebookClick: false
+      wasFacebookClick: false,
+      passwordReset: false,
+      resetEmail: ''
     }
   }
   hide(event, forced=false) {
@@ -61,10 +63,8 @@ export default class SignIn extends Component {
     })
     .then((res) => {
       if (res.data.dataFilled) {
-        console.log(res.data)
         setCookie('accessToken', res.data.token)
         setCookie('usertype', res.data.usertype)
-        console.log(document.cookie)
         auth(() => {
           this.setState({login: '', password: ''})
           this.hide(null, true)
@@ -79,7 +79,43 @@ export default class SignIn extends Component {
     })
     .catch(console.log);
   }
+  reset() {
+    api.post('forgot-password', {email: this.state.resetEmail})
+      .then(res => {
+        this.setState({
+          resetEmail: '',
+          passwordReset: false,
+          passwordResetError: false
+        })
+        this.props.hide()
+      })
+      .catch((e) => {
+        console.log(e)
+        this.setState({passwordResetError: true})
+      })
+  }
   render() {
+    if (this.state.passwordReset)
+      return (
+      <div onClick={(event) => this.hide(event)} className={this.props.visible ? 'modal-wrapper visible' : 'modal-wrapper'}>
+        <div className="auth-box">
+          <div className="close-modal-btn">
+          </div>
+          <h2>Password reset</h2>
+          <div className="row first-input-row">
+            <label>Email address</label>
+            <Input tabindex="0" error={this.state.passwordResetError} value={this.state.resetEmail} setValue={value => this.setState({resetEmail: value, passwordResetError: false})} placeholder="username@example.com" />
+          </div>
+          <div className="row submit-row">
+            <button className="big-blue-button auth-btn" onClick={() => this.reset()}>Reset</button>
+          </div>
+          <div className="devider"></div>
+          <div className="row footer-row">
+            <span>Remembered password?</span>
+            <a onClick={() => this.setState({passwordReset: false})} className="another-auth-window-link">Sign in now</a>
+          </div>
+        </div>
+      </div>)
     return (
       <div onClick={(event) => this.hide(event)} className={this.props.visible ? 'modal-wrapper visible' : 'modal-wrapper'}>
         <div className="auth-box">
@@ -93,7 +129,7 @@ export default class SignIn extends Component {
           </div>
           <div className="row">
             <label>Password</label>
-            <Link to={'#'} className="forgot-password-link">
+            <Link to={'#'} onClick={() => this.setState({passwordReset: true})} className="forgot-password-link">
               Forgot password?
             </Link>
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" /> */}

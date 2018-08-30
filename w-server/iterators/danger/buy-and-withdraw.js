@@ -1,6 +1,7 @@
 const Binance = require('node-binance-api')
 const Order = require('../../models/Order')
 const Stock = require('../../models/Stock')
+const Request = require('../../models/Request')
 const Portfolio = require('../../models/Portfolio')
 const configs = require('../../configs')
 const ccxt = require('ccxt')
@@ -38,7 +39,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const feeRate = 0.01 // update it later
       const ethPrice = 1//(await lowestPrice.exchange.api.fetchTicker('ETH/USDT')).last
       const fee = Math.ceil((ethPrice * feeRate) / price)
-      const quantity = Math.floor((order.percent / price) * order.whole_eth_amount)
+      const quantity = Math.floor(((order.percent / 100) / price) * order.whole_eth_amount)
       console.log(`Buying ${quantity} + ${fee} = ${(quantity + fee)} tokens "${symbol}"...`)
       let purshcase = null
       if (configs.productionMode) {
@@ -100,7 +101,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
       }
     } else if (order.status === 'token bouthg') {
       let withdrawing = null
-      if (configs.productionMode) {
+      const request = await Request.findById(order.request)
+      if (request.exchange_withdraw_allowed && configs.productionMode) {
         withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity, order.contract_address)
           .catch( async (e) => {
               console.log(e)

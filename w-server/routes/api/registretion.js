@@ -16,6 +16,7 @@ const AnswersForm = require('../../models/AnswersForm')
 const KYCAnswersForm = require('../../models/KYCAnswersForm')
 const EmailConfirmation = require('../../models/EmailConfirmation')
 const EmailChanging = require('../../models/emailChanging')
+const PasswordReset = require('../../models/PasswordReset')
 
 const mailer = require('../../helpers/mailer')
 
@@ -251,6 +252,62 @@ module.exports = (app) => {
     await user.save()
     await EmailConfirmation.findOneAndRemove({token: req.params.token})
     res.send('Your email has been successfully verified')
+    res.end()
+  })
+  app.post('/api/forgot-password', async (req, res, next) => {
+    const user = await User.findOne({login: req.body.email})
+    if (user === null) {
+      res.status(404)
+      res.end('')
+      return
+    }
+    const code = tokensAndPasswords.passwordResetToken()
+    const passwordReset = new PasswordReset({
+      user: user._id,
+      email: req.body.email,
+      code
+    })
+    await passwordReset.save()
+    const email = {
+      Recipients: [{ Email: user.login }],
+      Subject: 'Password reset',
+      'Html-part': `To reset your password go to <a href="http://${configs.host}/#/password-reset?email=${req.body.email}&code=${code}">this link</a>`,
+      FromEmail: `no-reply@${configs.host}`,
+      FromName: 'Wealthman platform'
+    } 
+    await mailer(email).catch(console.log)
+    res.status(200)
+    res.end()
+  })
+  app.post('/api/password-reset', async (req, res, next) => {
+    const passwordReset = await PasswordReset.findOne({
+      email: req.body.email,
+      code: req.body.code,
+      used: false
+    })
+    if (passwordReset === null) {
+      res.status(404)
+      res.end()
+      return
+    }
+    if (Date.now() - passwordReset.date.getTime() > 1000 * 60 * 60 * 24 * 2) {
+      res.status(408)
+      res.end()
+      return
+    }
+    const user = await User.findById(passwordReset.user)
+    user.set({password_hash: tokensAndPasswords.passwordHash(req.body.password)})
+    await user.save()
+    passwordReset.set({used: true})
+    await passwordReset.save()
+    const token = tokensAndPasswords.genAccessToken(user)
+    const accessToken = new AccessToken({
+      user: user._id,
+      token
+    })
+    await accessToken.save()
+    res.send({accessToken: accessToken.token, usertype: user.type})
+    res.status(200)
     res.end()
   })
   app.post('/api/investor/agree', async (req, res, next) => {

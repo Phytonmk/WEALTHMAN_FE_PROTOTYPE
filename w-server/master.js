@@ -1,6 +1,6 @@
 const cluster = require('cluster')
 
-const numCPUs = require('os').cpus().length;
+const numCPUs = 1//require('os').cpus().length;
 
 const configs = require('./configs')
 const express = require('express')

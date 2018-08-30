@@ -10,9 +10,12 @@ import InvestorPortfolioProposed from './pages/InvestorPortfolioProposed'
 import InvestorPortfolioRevision from './pages/InvestorPortfolioRevision'
 import InvestorPortfolioDeposit from './pages/InvestorPortfolioDeposit'
 import InvestorPortfolioActive from './pages/InvestorPortfolioActive'
+import InvestorPortfolioRecalculated from './pages/InvestorPortfolioRecalculated'
+
+import ManagerPortfolioActive from './pages/ManagerPortfolioActive'
 import ManagerPortfolioPending from './pages/ManagerPortfolioPending'
 import ManagerInvitingPending from './pages/ManagerInvitingPending'
-import InvestorPortfolioRecalculated from './pages/InvestorPortfolioRecalculated'
+
 import CompanyInvitingPending from './pages/CompanyInvitingPending'
 import CompanyPortfolioPending from './pages/CompanyPortfolioPending'
 
@@ -76,7 +79,7 @@ class RequestPage extends Component {
           if (this.state.request.status === 'pending') {
             Page = ManagerPortfolioPending;
           } else if (this.state.request.status === 'active') {
-            Page = InvestorPortfolioActive; // update!
+            Page = ManagerPortfolioActive;
           }
         } else if (this.state.request.type === 'inviting') {
           if (!this.state.request.initiatedByManager)

@@ -22,21 +22,6 @@ module.exports = () => new Promise(async (resolve, reject) => {
   const users = managers.concat(investors)
   for (let user of users) {
     
-    const requests = await Request.find({[user.type]: user._id, type: 'portfolio'})
-    const tokens = []
-    for (let request of requests) {
-      const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
-      if (portfolio === null)
-        continue
-      for (let currency of portfolio.currencies) {
-        if (currency.currency !== undefined && currency.amount !== undefined)
-          tokens.push({
-            name: currency.currency.toUpperCase(),
-            amount: currency.amount
-          })
-      }
-    }
-    
     const prices = {}
     const stocks = await Stock.find()
     for (let stock of stocks)
@@ -52,8 +37,24 @@ module.exports = () => new Promise(async (resolve, reject) => {
     // const ethPrice = ethereumSumPrice / ethereumPriceVars
 
     let aum = 0
-    for (let token of tokens) {
-      aum += token.amount * prices[token.name]/* * ethPrice*/
+    // const requests = await Request.find({[user.type]: user._id, type: 'portfolio'})
+    // const tokens = []
+    // for (let request of requests) {
+    const portfolios = await Portfolio.find({[user.type]: user._id, state: 'active'})
+    for (let portfolio of portfolios) {
+      let portfolioBalance = 0
+      for (let currency of portfolio.currencies) {
+        if (currency.currency !== undefined && currency.amount !== undefined) {
+          portfolioBalance += currency.amount * prices[currency.currency.toUpperCase()]/* * ethPrice*/
+          aum += portfolioBalance
+        }
+          // tokens.push({
+          //   name: currency.currency.toUpperCase(),
+          //   amount: currency.amount
+          // })
+      }
+      portfolio.set({balance: portfolioBalance})
+      await portfolio.save()
     }
     user.set({aum})
     user.save()

@@ -4,6 +4,16 @@ import { api } from './helpers'
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+let stocks = {}
+api.get('stocks')
+  .then((res) => {
+    res.data.forEach((stock) => {
+      stocks[stock.title] = stock.name
+    })
+    // res.data.map
+  })
+  .catch(console.log)
+
 export default (portfolio, ethereumAmount=1, onlyOnePeriod, callback) => {
   let query = ''
   let ampersend = false
@@ -11,9 +21,10 @@ export default (portfolio, ethereumAmount=1, onlyOnePeriod, callback) => {
     if (ampersend)
       query += '&'
     ampersend = true
-    query += token.currency + ':' + token.percent
+    query += (stocks[token.currency] ? stocks[token.currency] : token.currency) + ':' + token.percent
   }
   const getDataFor = (period) => {
+    console.log(`portfolio-history/${period}/${query}`)
     api.get(`portfolio-history/${period}/${query}`)
       .then((res) => {
         let startDate = Date.now()
