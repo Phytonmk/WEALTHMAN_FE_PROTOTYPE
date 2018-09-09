@@ -47,6 +47,7 @@ class ProgressBar3 extends Component {
     let totalLength = props.approxLength && props.approxLength >= props.pages.length ? props.approxLength : props.pages.length + 5;
     this.state = {
       pagesLength: Array(totalLength).fill(100 / totalLength),
+      oldLength: props.pages.length,
       subtitle: '',
       lastPageIndex: 0
     }
@@ -58,6 +59,11 @@ class ProgressBar3 extends Component {
     window.onbeforeunload = null
   }
   componentWillReceiveProps(nextProps) {
+    // if (nextProps.pages.length == this.state.oldLength)
+      return;
+    this.setState({oldLength: nextProps.pages.length});
+
+    console.log(nextProps.pages.length + " " + this.state.oldLength);
     let link = nextProps.match.url.slice(nextProps.match.url.lastIndexOf("/") + 1);
     let currentPageIndex = nextProps.pages.findIndex(page => page.link == link);
 
@@ -148,7 +154,8 @@ class ProgressBar3 extends Component {
             </div>
             <div className="row">
               <span className="grey left">{width > 0 ? this.state.subtitle : ''}</span>
-              <span className="grey right">{Math.floor(width)}%</span>
+              {/* <span className="grey right">{Math.floor(width)}%</span> */}
+              <span className="grey right">{currentPageIndex}/{this.state.pagesLength.length}</span>
             </div>
           </div>
         </div>

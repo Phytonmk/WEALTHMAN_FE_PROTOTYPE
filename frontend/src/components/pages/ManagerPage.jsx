@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-// import Sortable from '../Sortable.jsx';
+// import Sortable from '../Sortable';
 import { api, setPage, setCurrency, setCookie, getCookie, niceNumber } from '../helpers';
 import Social from './../Social';
-import Avatar from '../Avatar.jsx';
+import Avatar from '../Avatar';
 
 const filters = [
   {

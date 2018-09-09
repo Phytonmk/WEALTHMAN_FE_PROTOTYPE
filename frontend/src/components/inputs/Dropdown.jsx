@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 
-import '../css/Dropdown.sass';
+import '../../css/Dropdown.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //

@@ -87,7 +87,7 @@ class Subheader extends Component {
                     this.setState({currentTab: index})
                   }}
                   id={"subheaderTab" + index}
-                  key={index}
+                  key={tab.header}
                 >
                   {tab.header}
                 </div>

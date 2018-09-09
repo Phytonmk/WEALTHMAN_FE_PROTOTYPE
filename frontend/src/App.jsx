@@ -5,8 +5,8 @@ import { store, setReduxState } from './redux/index';
 import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
-import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 import { api, setPage } from './components/helpers';
 
@@ -24,7 +24,7 @@ import ManagerPage from './components/pages/ManagerPage';
 import CompanyPage from './components/pages/CompanyPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
-import RequestPage from './components/pages/RequestPage/index.jsx';
+import RequestPage from './components/pages/RequestPage/index';
 import PortfolioCreationPage from './components/pages/PortfolioCreationPage';
 import SignAgreementPage from './components/pages/SignAgreementPage';
 import MoneyPage from './components/pages/MoneyPage';

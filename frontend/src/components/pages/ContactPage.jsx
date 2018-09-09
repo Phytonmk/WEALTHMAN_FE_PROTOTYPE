@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import Social from './../Social'
-import Input from './../Input'
+import Input from './../inputs/Input'
 
 class ContactPage extends Component {
   constructor(props) {

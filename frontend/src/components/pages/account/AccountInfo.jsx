@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { api } from '../../helpers'
 
-import Input from '../../Input';
+import Input from '../../inputs/Input';
 
 class AccountInfo extends Component {
   constructor(props) {

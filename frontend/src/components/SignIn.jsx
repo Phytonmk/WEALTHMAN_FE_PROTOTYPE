@@ -7,7 +7,7 @@ import auth from './auth'
 import GoogleLogin from 'react-google-login'
 import FacebookLogin from 'react-facebook-login'
 
-import Input from './Input'
+import Input from './inputs/Input'
 
 import '../css/AuthWindows.sass'
 

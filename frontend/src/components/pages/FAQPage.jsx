@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from './../../redux/index';
 import { Link } from 'react-router-dom';
 
-import Accordion from './../Accordion.jsx';
+import Accordion from './../Accordion';
 
 class FAQPage extends Component {
   constructor(props) {

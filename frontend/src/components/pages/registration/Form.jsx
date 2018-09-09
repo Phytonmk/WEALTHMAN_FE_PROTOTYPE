@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { api, setPage, setCurrency } from '../../helpers';
 import Avatar from '../../Avatar'
 const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
-import Input from '../../Input'
+import Input from '../../inputs/Input'
 
 class Form extends Component {
   constructor(props) {
@@ -187,7 +187,7 @@ class Form extends Component {
               input = <div className="services-block">
                 {(this.state[question.property] || {services: []}).services.map((service, i) => <div key={i} className="service-selecting-element">
                   <select onChange={(event) => this.setServiceData(question.property, event, i, 'type')}>
-                    {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} key={index} value={index}>{option}</option>)}
+                    {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} value={index}>{option}</option>)}
                   </select>
                   <br />
                   Exit fee

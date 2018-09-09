@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Subheader from './../Subheader.jsx';
+import Subheader from './../Subheader';
 
 import MozillaLogo from './../../img/SupportedBrowsers/firefox-logo.png';
 import MozillaDesc from './../../img/SupportedBrowsers/firefox.png';

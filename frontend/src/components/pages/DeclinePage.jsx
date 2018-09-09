@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Sortable2 from '../Sortable2.jsx';
+import Sortable2 from '../Sortable2';
 import { api, setPage, setCurrency } from '../helpers';
 
 class DeclinePage extends Component {

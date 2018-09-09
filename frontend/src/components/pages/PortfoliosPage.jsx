@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { store, setReduxState } from '../../redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Sortable2 from '../Sortable2.jsx'
-import LevDate from '../LevDate.jsx'
+import Sortable2 from '../Sortable2'
+import LevDate from '../LevDate'
 import { api, setPage, setCurrency } from '../helpers'
 
 import QRCode from 'qrcode.react'
 import {AreaChart} from 'react-easy-chart'
 
 import Subheader from './../Subheader'
-import Select from './../Select'
+import Select from './../inputs/Select'
 import portfolioValues from './../portfolioValues'
 
 import notDeployedPic from '../../img/not-deployed.png'

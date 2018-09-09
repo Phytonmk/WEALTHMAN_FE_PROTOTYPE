@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Dropdown from '../../Dropdown';
-import Input from '../../Input';
+import Dropdown from '../../inputs/Dropdown';
+import Input from '../../inputs/Input';
 import { api } from '../../helpers'
 
 class RiskProfile extends Component {

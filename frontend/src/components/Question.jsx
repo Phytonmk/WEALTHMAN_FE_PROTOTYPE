@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import Input from './Input';
-import Textarea from './Textarea';
-import Radio from './Radio';
-import Checkboxes from './Checkboxes';
-import Slider from './Slider';
-import AgeSlider from './AgeSlider';
+import Input from './inputs/Input';
+import Textarea from './inputs/Textarea';
+import Radio from './inputs/Radio';
+import Checkboxes from './inputs/Checkboxes';
+import Slider from './inputs/Slider';
+import SliderWithInput from './inputs/SliderWithInput';
 
 import '../css/Question.sass';
 
@@ -53,6 +53,8 @@ class Question extends Component {
         return this.renderSlider();
       case "age-slider":
         return this.renderAgeSlider();
+      case "cost-slider":
+        return this.renderCostSlider();
     }
   }
 
@@ -105,12 +107,27 @@ class Question extends Component {
   }
   renderAgeSlider() {
     return (
-      <AgeSlider
+      <SliderWithInput
         value={this.props.value}
         setValue={this.props.setValue}
         from={this.props.typeSpecific.from}
         to={this.props.typeSpecific.to}
         step={this.props.typeSpecific.step}
+        units="years"
+        inputLabel="Age"
+      />
+    );
+  }
+  renderCostSlider() {
+    return (
+      <SliderWithInput
+        value={this.props.value}
+        setValue={this.props.setValue}
+        from={this.props.typeSpecific.from}
+        to={this.props.typeSpecific.to}
+        step={this.props.typeSpecific.step}
+        units="$"
+        inputLabel="Cost, usd"
       />
     );
   }

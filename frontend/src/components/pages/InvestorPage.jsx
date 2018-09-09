@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import Sortable from '../Sortable.jsx';
+// import Sortable from '../Sortable';
 import { api, setPage, setCurrency, setCookie } from '../helpers';
 import Social from './../Social';
-import Avatar from '../Avatar.jsx';
+import Avatar from '../Avatar';
 
 class InvestorPage extends Component {
   constructor(props) {

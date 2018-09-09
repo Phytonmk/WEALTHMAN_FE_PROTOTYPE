@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 
-import { clamp } from './helpers';
+import { clamp, roundAccurate } from './../helpers';
 
-import '../css/Slider.sass';
+import '../../css/Slider.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -19,15 +19,38 @@ import '../css/Slider.sass';
     to={100}
     //(OPTIONAL) minimum value change (default 1)
     step={1}
+    //(OPTIONAL) units to show in tooltip
+    units={"years"}
+    //(OPTIONAL) ranges with different steps and labels
+    ranges={[
+      {
+        //(REQUIRED) values range length
+        length: 20,
+        //(OPTIONAL) range step (default is step of slider)
+        step: 1,
+        //(OPTIONAL) label for the range end
+        label: "1-20"
+      },
+      {
+        length: 30,
+        step: 2,
+        label: "20-50"
+      },
+    ]}
   />
 */}
 
 class Slider extends Component {
   constructor(props) {
     super(props);
+    let step;
+    if (this.props.ranges && this.props.ranges.length > 0 && this.props.ranges[0].step)
+      step = this.props.ranges[0].step;
+    else
+      step = this.props.step || 1;
     this.state = {
       draggable: false,
-      step: props.step ? props.step : 1,
+      step: step,
     };
   }
 
@@ -54,9 +77,30 @@ class Slider extends Component {
     let content = ReactDOM.findDOMNode(this);
     if (content instanceof HTMLElement) {
       let rect = content.getElementsByClassName("grey-bar")[0].getBoundingClientRect();
-      let value = (event.clientX - rect.left) / (rect.right - rect.left) * (this.props.to - this.props.from) + this.props.from;
-      let clippedValue = Math.round(clamp(value, this.props.from, this.props.to) / this.state.step) * this.state.step;
-      this.props.setValue(clippedValue);
+      let value = (event.clientX - rect.left) / (rect.right - rect.left);
+      value = clamp(value, 0, 1);
+      let from, to, step;
+
+      if (this.props.ranges) {
+        let rangeIndex = Math.floor(value * this.props.ranges.length);
+        let range = this.props.ranges[rangeIndex];
+        step = range.step && this.state.step;
+        from = this.props.ranges
+        .slice(0, rangeIndex)
+        .map(range => range.length)
+        .reduce((a, b) => a + b);
+        to = from + range.length;
+      } else {
+        step = this.state.step;
+        from = this.props.from;
+        to = this.props.to;
+      }
+
+      this.setState({step: step});
+      value = value * (to - from) + from;
+      value = roundAccurate(value, step);
+      value = clamp(value, from, to);
+      this.props.setValue(value);
     }
   }
 
@@ -84,10 +128,14 @@ class Slider extends Component {
             />
           </div>
           <div
-            className="dot"
+            className={"dot " + (this.state.draggable && "active")}
             onMouseDown={(event) => this.handleMouseDown(event)}
             style={{left: dotOffset}}
-          />
+          >
+            <div className="tooltip noselect">
+              {this.props.value || this.props.from} {this.props.units}
+            </div>
+          </div>
         </div>
       </div>
     );

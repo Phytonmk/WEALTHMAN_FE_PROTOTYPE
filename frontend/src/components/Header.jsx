@@ -53,7 +53,7 @@ class Header extends Component {
     const loggedSuplierLinks = [
       {
         label: "some page",
-        link: "sone"
+        link: "some"
       }
     ];
     const loggedCompanyLinks = [
@@ -133,10 +133,7 @@ class Header extends Component {
             >
               <img src={logo} className="logo"/>
             </NavLink>
-            {
-              this.props.user != -1 ?
-                <HeaderUserIcon /> : ""
-            }
+            {this.props.user != -1 && <HeaderUserIcon />}
             <ul className="links right">
               {headerLinks}
               {this.props.user != -1 ? '' :

@@ -73,14 +73,12 @@ class Avatar extends Component {
       >
         {defaultAvatar}
         {
-          this.props.src ?
+          this.props.src &&
             <img
               style={{transform: this.state.transform}}
               src={this.props.src}
-              className={this.state.imageLoaded ?
-                ("loaded " + this.state.orientation)
-                : ""} />
-            : ""
+              className={this.state.imageLoaded && ("loaded " + this.state.orientation)}
+            />
         }
       </div>
     );

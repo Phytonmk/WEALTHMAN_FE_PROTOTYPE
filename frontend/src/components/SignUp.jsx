@@ -7,7 +7,7 @@ import auth from './auth'
 import '../css/AuthWindows.sass'
 import Form from './pages/registration/Form'
 import questions from './pages/registration/questions'
-import Input from './Input'
+import Input from './inputs/Input'
 import GoogleLogin from 'react-google-login'
 import FacebookLogin from 'react-facebook-login'
 

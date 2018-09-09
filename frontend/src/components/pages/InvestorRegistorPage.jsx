@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import auth from '../auth.js';
 import { api, getCookie, setPage } from '../helpers';
 
-import Input from '../Input';
+import Input from '../inputs/Input';
 
 // const Eth = require('web3-eth');
 let uploadFile;

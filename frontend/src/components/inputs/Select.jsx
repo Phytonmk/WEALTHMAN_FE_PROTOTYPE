@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 
-import '../css/Select.sass';
+import '../../css/Select.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //

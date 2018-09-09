@@ -147,8 +147,8 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import LevDate from '../LevDate.jsx';
-import Select from '../Select.jsx';
+import LevDate from '../LevDate';
+import Select from '../inputs/Select';
 import { PieChart, LineChart } from 'react-easy-chart';
 
 let colors = ['#0378ff', '#00ccf1', '#ffc070', '#39a9dc', '#071e40'];

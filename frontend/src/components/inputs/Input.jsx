@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../css/Input.sass';
+import '../../css/Input.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //

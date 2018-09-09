@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import auth from '../auth';
 import { api, setPage, setCookie, setCurrency, previousPage, niceNumber } from '../helpers';
 import LevDate from '../LevDate'
-import Input from '../Input'
+import Input from '../inputs/Input'
 
 const findGetParameter = (parameterName) => {
     let result = null,

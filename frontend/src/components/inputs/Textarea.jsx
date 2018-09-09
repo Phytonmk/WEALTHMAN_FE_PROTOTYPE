@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../css/Textarea.sass';
+import '../../css/Textarea.sass';
 
 class Textarea extends Component {
   constructor(props) {
