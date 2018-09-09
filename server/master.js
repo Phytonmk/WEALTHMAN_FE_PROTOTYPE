@@ -23,7 +23,7 @@ const addSpaces = (str) => {
   return str
 }
 
-TGlogger(`Server started in ${configs.productionMode ? 'production' : 'developer'} mode`)
+// TGlogger(`Server started in ${configs.productionMode ? 'production' : 'developer'} mode`)
 
 console.log('\n\n')
 console.log('  ╔════════════════════════════════════╗')

@@ -94,7 +94,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
           }
         }
         order.set({
-          cost: price.last,
+          cost: price,
           status: 'token bouthg',
           quantity
         })

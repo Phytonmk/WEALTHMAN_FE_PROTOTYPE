@@ -17,7 +17,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       if (result.update_id >= offset && result.message.chat.id == configs.telegram.admin) 
         messages.push(result.message)
     }
-    offset = tgResponse.data.result[tgResponse.data.result.length - 1].update_id
+    offset = tgResponse.data.result.length > 0 ? tgResponse.data.result[tgResponse.data.result.length - 1].update_id : -100
     for (let message of messages) {
       const text = message.text
       if (/^\/allow_[a-zA-Z0-9]{10,50}$/.test(text)) {

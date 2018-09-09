@@ -79,7 +79,8 @@ module.exports = (app) => {
           profileViews: '?',
           aum,
           portfolios,
-          dates
+          dates,
+          commisions: statistic.commisions
         })
         res.end()
       break

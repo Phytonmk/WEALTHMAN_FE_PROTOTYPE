@@ -29,7 +29,8 @@ class DashboardPage extends Component {
         grpahic: []
       },
       portfolios: [],
-      dates: []
+      dates: [],
+      commisions: []
     }
   }
   componentWillMount() {
@@ -48,9 +49,8 @@ class DashboardPage extends Component {
     if (usertype === 'manager') {
       api.get('my-dashboard')
         .then((res) => {
-          // console.log(res.data)
+          console.log(res.data)
           this.setState(res.data)
-
         }).catch(console.log)
     }
   }
@@ -150,17 +150,18 @@ class DashboardPage extends Component {
           title: 'Aum Dinamics',
           lines: [{
             title: 'Total remuneration accrued',
-            data: !this.state.comissions || !this.state.comissions.accrued ? [] : this.state.comissions.map((chunk, i) => {
+            data: this.state.commisions.map((chunk, i) => {
               return {
-                value: chunk,
+                value: chunk.accrued,
                 title: this.state.dates[i]
               }
             })
           }, {
             title: 'Total remuneration paid',
-            data: !this.state.comissions || !this.state.comissions.paid ? [] : this.state.comissions.map((chunk, i) => {
+            data: this.state.commisions.map((chunk, i) => {
+              console.log(chunk)
               return {
-                value: chunk,
+                value: chunk.paid,
                 title: this.state.dates[i]
               }
             })

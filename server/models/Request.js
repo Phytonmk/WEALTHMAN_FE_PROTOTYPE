@@ -28,7 +28,8 @@ const RequestSchema = mongoose.Schema({
   commissions_frequency: {type: Number, default: 7},
   max_deviation: {type: Number, default: 10},
   investing_reason: String,
-  exchange_withdraw_allowed: {type: Boolean, default: false}
+  exchange_withdraw_allowed: {type: Boolean, default: false},
+  lastPayedComission: Date
 });
 
 module.exports = mongoose.model('Request', RequestSchema);
