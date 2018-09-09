@@ -233,5 +233,9 @@ const clamp = (number, min, max) => {
   return Math.max(min, Math.min(number, max));
 }
 
+const roundAccurate = (number, accurancy) => {
+  return Math.round(number / accurancy) * accurancy;
+}
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, camelize, dasherize, clamp };
+
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, camelize, dasherize, clamp, roundAccurate };

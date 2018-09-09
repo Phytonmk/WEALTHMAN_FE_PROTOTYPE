@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 
-import { clamp } from './helpers';
+import { clamp } from './../helpers';
 import Slider from './Slider';
 
-import '../css/AgeSlider.sass';
+import '../../css/SliderWithInput.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
 
-<AgeSlider
+<SliderWithInput
   //(REQUIRED) value to input (if user inputs incorrect value this property will be "")
   value={this.props.value}
   //(REQUIRED) function that sets the value
@@ -20,14 +20,17 @@ import '../css/AgeSlider.sass';
   to={this.props.typeSpecific.to}
   //(OPTIONAL) minimum value change (default 1)
   step={this.props.typeSpecific.step}
+  //(OPTIONAL) units to show in tooltip
+  units={"years"}
+  //(OPTIONAL) text above input
+  inputLabel={"Age"}
 />
 */}
 
-class AgeSlider extends Component {
+class SliderWithInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      draggable: false,
       value: props.value,
       step: props.step ? props.step : 1,
     };
@@ -43,7 +46,7 @@ class AgeSlider extends Component {
       <div className="age-slider">
         <div className="input-column">
           <div className="row">
-            <small>Age</small>
+            <small>{this.props.inputLabel}</small>
           </div>
           <input
             value={this.state.value}
@@ -71,12 +74,13 @@ class AgeSlider extends Component {
             from={this.props.from}
             to={this.props.to}
             step={this.props.step}
+            units={this.props.units}
           />
-          <small>Adjust slider or enter a value</small>
+          <p>Adjust slider or enter a value</p>
         </div>
       </div>
     );
   }
 }
 
-export default AgeSlider;
+export default SliderWithInput;

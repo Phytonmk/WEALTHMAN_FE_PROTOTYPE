@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import Sortable from '../Sortable.jsx';
+// import Sortable from '../Sortable';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 class PortfolioPage extends Component {

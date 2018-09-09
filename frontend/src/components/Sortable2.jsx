@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import LevDate from './LevDate.jsx';
+import LevDate from './LevDate';
 import '../css/Sortable2.sass';
 
 {/*

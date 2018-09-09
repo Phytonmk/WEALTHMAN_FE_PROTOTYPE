@@ -101,7 +101,7 @@ class ManagerDetailingPage extends Component {
                 <br />
                 {this.state.services.map((service, i) => <div key={i} className="service-selecting-element">
                   <select onChange={(event) => this.setServiceData(event, i, 'type')}>
-                    {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} key={index} value={index}>{option}</option>)}
+                    {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} value={index}>{option}</option>)}
                   </select>
                   <br />
                   Fee

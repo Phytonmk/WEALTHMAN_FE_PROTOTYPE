@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { api, getCookie } from '../../helpers'
 import { store } from '../../../redux'
 
-import Input from '../../Input';
+import Input from '../../inputs/Input';
 
 class AccountInfo extends Component {
   constructor(props) {

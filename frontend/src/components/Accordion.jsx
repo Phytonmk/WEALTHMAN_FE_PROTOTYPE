@@ -38,7 +38,7 @@ class Accordion extends Component {
   render() {
     return (
       <article
-        className={"accordion " + (this.state.opened ? "opened" : "")}
+        className={"accordion " + (this.state.opened && "opened")}
         style={{width: (this.props.width ? this.props.width : "100%")}}
       >
         <h2 onClick={() => this.setState({opened: !this.state.opened})}>

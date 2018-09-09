@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../css/Checkboxes.sass';
+import '../../css/Checkboxes.sass';
 
 class Checkboxes extends Component {
   constructor(props) {

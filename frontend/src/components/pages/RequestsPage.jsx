@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Sortable2 from '../Sortable2.jsx';
-import Select from '../Select.jsx';
-import Search from '../Search.jsx';
-import Avatar from '../Avatar.jsx';
-import LevDate from '../LevDate.jsx';
+import Sortable2 from '../Sortable2';
+import Select from '../inputs/Select';
+import Search from '../Search';
+import Avatar from '../Avatar';
+import LevDate from '../LevDate';
 import { api, setPage, setCurrency, previousPage } from '../helpers';
 
 const requests = []

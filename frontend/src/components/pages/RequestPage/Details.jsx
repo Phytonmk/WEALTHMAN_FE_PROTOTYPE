@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import LevDate from '../../LevDate.jsx';
+import LevDate from '../../LevDate';
 import Cards from '../../dashboards/Cards';
 import SmartContract from '../../dashboards/SmartContract';
 
