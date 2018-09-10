@@ -614,14 +614,15 @@ svg
         font-size: 18px
         font-weight: bold
         margin-bottom: 10px
-      p
+      & > div
         margin: 0px
         font-size: 14px
         color: #66666a
-      h3, p
+      h3, & > div
         white-space: nowrap
-        text-overflow: ellipsis
-        overflow: hidden
+        // text-overflow: ellipsis
+        // overflow-x: hidden
+        // overflow-y: visible
         width: calc(100% - 18px * 2)
 .reports-and-documents-box
   padding-top: 30px
@@ -723,7 +724,6 @@ svg
   width: 18px
   height: 18px
   position: relative
-  left: 1300px
   .animation-container
     opacity: 0
     pointer-events: none
@@ -759,3 +759,8 @@ svg
       font-size: 13px
       width: 182px
       border-radius: 3px
+      white-space: pre-line
+      text-align: left
+.dashboards-qSign
+  vertical-align: sub
+  margin-left: 10px

@@ -117,6 +117,7 @@ class QuestionsPage extends Component {
         />
       }
     })
+    console.log("/user-agreement" + this.props.history.location.search)
     return (
       <div id="questions-page">
         <ProgressBar3

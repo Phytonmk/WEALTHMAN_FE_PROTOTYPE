@@ -17,7 +17,7 @@ export default class InvstorPortfolioHeader extends Component {
         </div>
         {getCookie('usertype') != 0 ? '' : <Link to={this.props.buttonLink}>
           <button className="big-blue-button money-button">
-            {this.props.dashboardMode ? 'add funds' : 'Whithdraw'}
+            {this.props.dashboardMode ? 'Deposit' : 'Whithdraw'}
           </button>
         </Link>}
       </div>

@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 
 import pic from '../img/question-icon.png'
 
+// Usage example
+// all props are optional
+// <QSign tooltip="Lorem ipsum" className="className"/>
+
+
 class QSign extends Component {
   constructor(props) {
     super(props)
@@ -32,19 +37,18 @@ class QSign extends Component {
     })
   }
   render() {
+    const tooltip = this.props.tooltip || ''
     return <div
-              className="question-icon"
+              className={this.props.className ? "question-icon " + this.props.className : "question-icon"}
               ref={(container => this.calcOffset(container))}
               onMouseOver={() => {this.setState({visible: true})}}
               onMouseOut={() => this.setState({visible: false})}>
       <img src={pic} />
-      {this.props.tooltip ?
-        <div className={this.state.visible ? "animation-container visible" : "animation-container"}>
-          <div className="mouse-holder" style={{height: this.state.areaHeight, left: this.state.leftOffset}}/>
-          <div className="corner"/>
-          <div className="tooltip" style={{left: this.state.leftOffset}}>{this.props.tooltip}</div>
-        </div>
-      : ''}
+      <div className={this.state.visible && tooltip !== '' ? "animation-container visible" : "animation-container"}>
+        <div className="mouse-holder" style={{height: this.state.areaHeight, left: this.state.leftOffset}}/>
+        <div className="corner"/>
+        <div className="tooltip" style={{left: this.state.leftOffset}}>{tooltip}</div>
+      </div>
     </div>
   }
 }

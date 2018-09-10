@@ -9,6 +9,7 @@ const OAuthModel = require('../../models/OAuth')
 const User = require('../../models/User')
 const AccessToken = require('../../models/accessToken')
 const Investor = require('../../models/Investor')
+const InvestorStatistic = require('../../models/InvestorStatistic')
 const Manager = require('../../models/Manager')
 const ManagerStatistic = require('../../models/ManagerStatistic')
 const Company = require('../../models/Company')
@@ -75,6 +76,7 @@ module.exports = (app) => {
     if (req.body.register === 'investor') {
       user.set({type: 0})
       const investor = new Investor({user: user.id, name: 'Anonymous investor', surname: ''})
+      await createInvestorStatistics(investor.id)
       await investor.save()
     }
     await user.save()
@@ -135,11 +137,13 @@ module.exports = (app) => {
           case 'investor':
             user.set({type: 0})
             const investor = new Investor({user: user.id, name: username.first, surname: username.last})
+            await createInvestorStatistics(investor.id)
             await investor.save()
             break
           case 'manager':
             user.set({type: 1})
             const manager = new Manager({user: user.id, name: username.first, surname: username.last})
+            await createManagersStatistics(manager.id)
             await manager.save()
             break
           case 'compnay':
@@ -230,6 +234,7 @@ module.exports = (app) => {
       token: confirmToken
     })
     await user.save()
+    await createInvestorStatistics(investor.id)
     await investor.save()
     await accessToken.save()
     await emailConfirmation.save()
@@ -327,6 +332,7 @@ module.exports = (app) => {
     user.set({agreed: true, type: 0})
     await user.save()
     const investor = new Investor({user: user._id})
+    await createInvestorStatistics(investor.id)
     await investor.save()
     res.status(200)
     res.end()
@@ -382,8 +388,10 @@ module.exports = (app) => {
     user.set({type: 0})
     await user.save()
     let investor = await Investor.findOne({user: token.user})
-    if (investor === null)
+    if (investor === null) {
       investor = new Investor({user: token.user})
+      await createInvestorStatistics(investor.id)
+    }
     investor.set(req.body)
     await investor.save()
     console.log('--')
@@ -413,22 +421,11 @@ module.exports = (app) => {
     let manager = await Manager.findOne({user: user._id})
     if (manager === null) {
       manager = new Manager(Object.assign(req.body, {user: user._id}))
+      await createManagersStatistics(manager.id)
     } else {
       manager.set(req.body)
     }
     await manager.save()
-    const managerStatistic = new ManagerStatistic({
-      manager: manager._id,
-      last_update: Date.now(),
-      dates: [Date.now()],
-      aum: [0],
-      portfolios: [{
-        active: 0,
-        archived: 0,
-        inProgress: 0
-      }]
-    })
-    await managerStatistic.save()
     res.status(200)
     res.end()
   })
@@ -465,6 +462,7 @@ module.exports = (app) => {
     let manager = await Manager.findOne({user: token.user})
     if (manager === null) {
       manager = new Manager(Object.assign(req.body, {user: token.user}))
+      await createManagersStatistics(manager.id)
     }
     if (!req.files) {
       res.status(400).send('No files were uploaded.')
@@ -836,3 +834,38 @@ module.exports = (app) => {
     res.end()
   })
 }
+
+const createManagersStatistics = (managerId) => new Promise(async (resolve, reject) => {
+  const managerStatistic = new ManagerStatistic({
+    manager: managerId,
+    last_update: Date.now(),
+    dates: [Date.now()],
+    aum: [0],
+    portfolios: [{
+      active: 0,
+      archived: 0,
+      inProgress: 0
+    }],
+    commisions: [{
+      accrued: 0,
+      paid: 0
+    }]
+  })
+  await managerStatistic.save()
+  resolve()
+})
+const createInvestorStatistics = (investorId) => new Promise(async (resolve, reject) => {
+  const investorStatistic = new InvestorStatistic({
+    investor: investorId,
+    last_update: Date.now(),
+    dates: [Date.now()],
+    aum: [0],
+    portfolios: [{
+      active: 0,
+      archived: 0,
+      inProgress: 0
+    }]
+  })
+  await investorStatistic.save()
+  resolve()
+})

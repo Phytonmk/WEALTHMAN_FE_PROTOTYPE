@@ -3,19 +3,16 @@ const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
 const Portfolio = require('../../models/Portfolio')
 const ManagerStatistic = require('../../models/ManagerStatistic')
+const InvestorStatistic = require('../../models/InvestorStatistic')
 const calcComissions = require('../../helpers/calcComissions')
 
 module.exports = () => new Promise(async (resolve, reject) => {
-  const date = new Date()
-  const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
-  const statistics = await ManagerStatistic.find(/*{ last_update: { $lt: endOfPreviusDay } }*/)
-  for (let statistic of statistics) {
+  const managerStatistics = await ManagerStatistic.find()
+  for (let statistic of managerStatistics) {
     const statisticObj = statistic.toObject()
     const thisManager = await Manager.findById(statisticObj.manager)
     if (thisManager === null)
       continue
-
-    console.log(`Updating statistics for manager ${thisManager.name} ${thisManager.surname}`)
 
     let dates = [...statisticObj.dates]
     let aum = [...statisticObj.aum]
@@ -44,6 +41,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
         paid: 0
       })
 
+    const date = new Date()
+    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
     if (statisticObj.last_update.getTime() > endOfPreviusDay.getTime()) {
       dates.pop()
       aum.pop()
@@ -101,14 +100,62 @@ module.exports = () => new Promise(async (resolve, reject) => {
     await statistic.save()
     await thisManager.save()
   }
-  const investors = await Investor.find()
-  for (let investor of investors) {
+  const investorStatistics = await InvestorStatistic.find()
+  for (let statistic of investorStatistics) {
+    const statisticObj = statistic.toObject()
+    const thisInvestor= await Investor.findById(statisticObj.investor)
+    if (thisInvestor === null)
+      continue
+
+
+    let dates = [...statisticObj.dates]
+    let aum = [...statisticObj.aum]
+    let portfolios = [...statisticObj.portfolios]
+
+    for (let property of [aum]) {
+      if (!property.length)
+        property = []
+      while (property.length < dates.length)
+        property.unshift(0)
+    }
+    if (!portfolios.length)
+      portfolios = []
+    while (portfolios.length < dates.length)
+      portfolios.unshift({
+        active: 0,
+        archived: 0,
+        inProgress: 0
+      })
+
+    const date = new Date()
+    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
+    if (statisticObj.last_update.getTime() > endOfPreviusDay.getTime()) {
+      dates.pop()
+      aum.pop()
+      portfolios.pop()
+    }
+
+    dates.push(date)
+    aum.push(thisInvestor.aum)
+    portfolios.push({
+      active: await Request.countDocuments({investor: statisticObj.investor, status: 'active'}),
+      archived: await Request.countDocuments({investor: statisticObj.investor, status: 'archived'}),
+      inProgress: await Request.countDocuments({investor: statisticObj.investor, status: { $not: { $in: ['active', 'archived', 'failed']}}})
+    })
+
+    statistic.set({
+      dates,
+      aum,
+      portfolios,
+      last_update: Date.now()
+    })
+
     const managers_amount = await Request.aggregate
       ([
         {
           $match: {
             type: 'portfolio',
-            investor: investor._id
+            investor: thisInvestor._id
           }
         },
         {
@@ -118,15 +165,16 @@ module.exports = () => new Promise(async (resolve, reject) => {
           }
         }
       ])
-    if (Date.now() - investor.last_active.getTime() > 1000 * 60 * 5) {
-      investor.set({online: false})
+    if (Date.now() - thisInvestor.last_active.getTime() > 1000 * 60 * 5) {
+      thisInvestor.set({online: false})
     }
-    const portfolios = await Request.countDocuments({investor: investor._id, type: 'portfolio'})
-    investor.set({
+    const portfoliosAmount = await Request.countDocuments({investor: thisInvestor._id, type: 'portfolio'})
+    thisInvestor.set({
       managers_amount: managers_amount.length === 0 ? 0 : managers_amount.reduce((a, b) => a + b.count, 0),
-      portfolios
+      portfolios: portfoliosAmount
     })
-    await investor.save()
+    await statistic.save()
+    await thisInvestor.save()
   }
   resolve()
 })

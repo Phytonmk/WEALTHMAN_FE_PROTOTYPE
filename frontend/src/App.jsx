@@ -179,7 +179,7 @@ class App extends Component {
           <Route path="/withdraw/:request" component={WithdrawPage} />
           <Route path="/investors" component={InvestorsPage} />
 
-          <Route path="/questions/:id" component={KYCQuestionsPage} />
+          <Route path="/questions/:id" component={QuestionsPage} />
           <Route path="/questions" render={({history}) => { 
             history.push({
               pathname: '/questions/first-question',

@@ -56,7 +56,7 @@ module.exports = (manager) => new Promise(async (resolve, reject) => {
     let error = false
     const paidComissions = await getPaidComissions(portfolio.smart_contract)
       .catch((e) => {
-        console.log('Error while getting comissions', e)
+        console.log('Error while getting comissions'/*, e*/)
         error = e
       })
     if (error) {
