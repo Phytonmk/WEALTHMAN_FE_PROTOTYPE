@@ -77,7 +77,7 @@ class Avatar extends Component {
             <img
               style={{transform: this.state.transform}}
               src={this.props.src}
-              className={this.state.imageLoaded && ("loaded " + this.state.orientation)}
+              className={this.state.imageLoaded ? ("loaded " + this.state.orientation) : ""}
             />
         }
       </div>

@@ -11,17 +11,21 @@ import '../../css/SliderWithInput.sass';
 
 <SliderWithInput
   //(REQUIRED) value to input (if user inputs incorrect value this property will be "")
-  value={this.props.value}
+  value={this.state.value}
   //(REQUIRED) function that sets the value
-  setValue={this.props.setValue}
+  setValue={this.state.setValue}
   //(REQUIRED) minimum value
-  from={this.props.typeSpecific.from}
+  from={0}
   //(REQUIRED) maximum value
-  to={this.props.typeSpecific.to}
+  to={100}
+  //(OPTIONAL) label for the value
+  valueLabel={numberToText(this.state.value)}
+  //(OPTIONAL) minimum value label
+  fromLabel={"zero"}
+  //(OPTIONAL) maximum value label
+  toLabel={"hundred"}
   //(OPTIONAL) minimum value change (default 1)
-  step={this.props.typeSpecific.step}
-  //(OPTIONAL) units to show in tooltip
-  units={"years"}
+  step={1}
   //(OPTIONAL) text above input
   inputLabel={"Age"}
 />
@@ -52,29 +56,19 @@ class SliderWithInput extends Component {
             value={this.state.value}
             onChange={event => {
               let number = event.target.value.replace(/[^0-9]/g, '');
-
-              if (number >= this.props.from && number <= this.props.to) {
-                this.props.setValue(number);
-                this.setState({value: number});
-              }
-              else {
-                this.props.setValue("");
-                this.setState({value: number});
-              }
+              number = clamp(number, this.props.from, this.props.to);
+              this.props.setValue(number);
+              this.setState({value: number});
             }}
           />
         </div>
         <div className="slider-column">
           <Slider
-            value={this.props.value}
+            {...this.props}
             setValue={value => {
               this.props.setValue(value);
               this.setState({value: value});
             }}
-            from={this.props.from}
-            to={this.props.to}
-            step={this.props.step}
-            units={this.props.units}
           />
           <p>Adjust slider or enter a value</p>
         </div>

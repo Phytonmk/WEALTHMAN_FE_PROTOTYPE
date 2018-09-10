@@ -35,10 +35,10 @@ class Footer extends Component {
               "https://bitcointalk.org/index.php?topic=2006205"
             ]} />
           </div>
-          <Link to={"contact"} className="right">
+          <Link to={"/contact"} className="right">
             <button className="big-blue-button">CONTACT US</button>
           </Link>
-          <Link to={"faq"} className="right">
+          <Link to={"/faq"} className="right">
             <button className="big-blue-button">FAQ</button>
           </Link>
           {this.props.user === -1 ? <Link to={'#'} onClick={() => this.state.openSignUp()} className="right">

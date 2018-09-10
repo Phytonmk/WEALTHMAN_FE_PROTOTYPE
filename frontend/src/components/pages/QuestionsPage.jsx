@@ -123,7 +123,7 @@ class QuestionsPage extends Component {
         <ProgressBar3
           match = {this.props.match}
           finishLink = {"/user-agreement" + this.props.history.location.search} 
-          approxLength={8}
+          approxLength={5}
           pages={questionsToPages}
         />
       </div>

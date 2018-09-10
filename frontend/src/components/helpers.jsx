@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import React from 'react';
 import { store, setReduxState } from '../redux';
@@ -214,6 +213,23 @@ const niceNumber = (number) => {
     return '∞'
 }
 
+const niceNumber2 = (number) => {
+  if (roundAccurate(number, 10 ** 3) < 1)
+    return number;
+  else if (roundAccurate(number, 10 ** 6) < 1)
+    return roundAccurate(number, 10 ** 2) / 10 ** 3 + "k";
+  else if (roundAccurate(number, 10 ** 9) < 1)
+    return roundAccurate(number, 10 ** 5) / 10 ** 6 + "m";
+  else if (roundAccurate(number, 10 ** 12) < 1)
+    return roundAccurate(number, 10 ** 8) / 10 ** 9 + "b";
+  else if (roundAccurate(number, 10 ** 15) < 1)
+    return roundAccurate(number, 10 ** 11) / 10 ** 12 + "t";
+  else if (roundAccurate(number, 10 ** 18) < 1)
+    return roundAccurate(number, 10 ** 14) / 10 ** 15 + "q";
+  else
+    return '∞'
+}
+
 const camelize = (string) => {
   return string
   .replace(/[^A-Za-z -]/g, '')
@@ -238,4 +254,4 @@ const roundAccurate = (number, accurancy) => {
 }
 
 
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, camelize, dasherize, clamp, roundAccurate };
+export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, niceNumber2, camelize, dasherize, clamp, roundAccurate };

@@ -1,19 +1,22 @@
 .progress-bar-3
   overflow-y: auto
   margin: 58px 0
+  & > .container
+    position: relative
   .content-column
-    width: 625px
+    width: 100%
     height: auto
     float: left
     .big-blue-button, .big-grey-button
       margin-top: 50px
       padding: 0 50px
   .bar-column
-    width: 257px
-    height: auto
-    float: right
+    position: absolute
+    width: 280px
+    top: 0
+    right: 0
     & > .grey-bar
-      width: 257px
+      width: 100%
       height: 7px
       border-radius: 3px
       background-color: #d3d7db

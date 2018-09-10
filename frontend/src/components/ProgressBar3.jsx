@@ -38,13 +38,14 @@ const subtitles = [
   'Very good',
   'Ok',
   'Keep going',
-]
+];
+const extraLength = 2;
 
 
 class ProgressBar3 extends Component {
   constructor(props) {
     super(props);
-    let totalLength = props.approxLength && props.approxLength >= props.pages.length ? props.approxLength : props.pages.length + 5;
+    let totalLength = props.approxLength && props.approxLength >= props.pages.length ? props.approxLength : props.pages.length + extraLength;
     this.state = {
       pagesLength: Array(totalLength).fill(100 / totalLength),
       oldLength: props.pages.length,
@@ -58,37 +59,37 @@ class ProgressBar3 extends Component {
   componentWillUnmount() {
     window.onbeforeunload = null
   }
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.pages.length == this.state.oldLength)
-      return;
-    this.setState({oldLength: nextProps.pages.length});
+  
+  static getDerivedStateFromProps(props, state) {
+    let totalLength = props.approxLength && props.approxLength >= props.pages.length ? props.approxLength : props.pages.length + extraLength;
+    console.log(props.approxLength);
+    if (totalLength == state.oldLength)
+      return null;
 
-    console.log(nextProps.pages.length + " " + this.state.oldLength);
-    let link = nextProps.match.url.slice(nextProps.match.url.lastIndexOf("/") + 1);
-    let currentPageIndex = nextProps.pages.findIndex(page => page.link == link);
-
-    let totalLength = nextProps.approxLength && nextProps.approxLength >= nextProps.pages.length ? nextProps.approxLength : nextProps.pages.length + 5;
-
-    let unaffectedLengthsArray = this.state.pagesLength.length > 0 ?
-      this.state.pagesLength.slice(0, currentPageIndex)
+    let currentLink = props.match.url.slice(props.match.url.lastIndexOf("/") + 1);
+    let currentPageIndex = props.pages.findIndex(page => page.link == currentLink);
+    let unaffectedLengthsArray = state.pagesLength.length > 0 ?
+      state.pagesLength.slice(0, currentPageIndex)
       :
       Array(currentPageIndex).fill(100 / totalLength);
     let unaffectedLength = currentPageIndex == 0 ?
       0
       :
       unaffectedLengthsArray.reduce((a, b) => a + b);
-    const newState = {
+    let nextState = {
       pagesLength: [
         ...unaffectedLengthsArray,
         ...Array(totalLength - currentPageIndex)
           .fill((100 - unaffectedLength) / (totalLength - currentPageIndex))
-        ]
+      ],
+      oldLength: props.pages.length,
     }
-    if (currentPageIndex != this.state.lastPageIndex) {
-      newState.lastPageIndex = currentPageIndex;
-      newState.subtitle = subtitles[Math.floor(subtitles.length * Math.random())];
+    if (currentPageIndex != state.lastPageIndex) {
+      nextState.lastPageIndex = currentPageIndex;
+      nextState.subtitle = subtitles[Math.floor((subtitles.length - 1) * Math.random())];
     }
-    this.setState(newState);
+
+    return nextState;
   }
 
   render() {
@@ -153,9 +154,9 @@ class ProgressBar3 extends Component {
               />
             </div>
             <div className="row">
-              <span className="grey left">{width > 0 ? this.state.subtitle : ''}</span>
-              {/* <span className="grey right">{Math.floor(width)}%</span> */}
-              <span className="grey right">{currentPageIndex}/{this.state.pagesLength.length}</span>
+              <h3 className="grey left">{width > 0 ? this.state.subtitle : ''}</h3>
+              {/* <h3 className="grey right">{Math.floor(width)}%</h3> */}
+              <h3 className="right">{currentPageIndex}/{this.state.oldLength}</h3>
             </div>
           </div>
         </div>
