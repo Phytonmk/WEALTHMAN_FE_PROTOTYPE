@@ -52,7 +52,7 @@ class KYCQuestionsPage extends Component {
         <ProgressBar3
           match = {this.props.match}
           finishLink = {'/kyc' + this.props.history.location.search} 
-          approxLength={8}
+          // approxLength={5}
           onComplete = {() => this.submitForm()}
           pages={questionsToPages}
         />
@@ -69,6 +69,11 @@ const questions = [
     typeSpecific: {
       answers: ['Long-term investment growth', 'Emergency fund', 'Retirement', 'Large purchase (education,  house,  business, etc)', 'Other']
     }
+    // type: 'range-slider',
+    // typeSpecific: {
+    //   from: 0,
+    //   to: 100,
+    // },
   },
   {
     question: 'How long do you plan to hold your investments in the markets?',

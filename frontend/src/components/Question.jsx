@@ -8,6 +8,7 @@ import Slider from './inputs/Slider';
 import SliderWithInput from './inputs/SliderWithInput';
 
 import '../css/Question.sass';
+import { niceNumber2 } from './helpers';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -55,6 +56,8 @@ class Question extends Component {
         return this.renderAgeSlider();
       case "cost-slider":
         return this.renderCostSlider();
+      case "range-slider":
+        return this.renderRangeSlider();
     }
   }
 
@@ -107,27 +110,102 @@ class Question extends Component {
   }
   renderAgeSlider() {
     return (
-      <SliderWithInput
-        value={this.props.value}
-        setValue={this.props.setValue}
-        from={this.props.typeSpecific.from}
-        to={this.props.typeSpecific.to}
-        step={this.props.typeSpecific.step}
-        units="years"
-        inputLabel="Age"
-      />
+      <div className="short-slider-column">
+        <SliderWithInput
+          value={this.props.value}
+          setValue={this.props.setValue}
+          from={this.props.typeSpecific.from}
+          to={this.props.typeSpecific.to}
+          valueLabel={this.props.value + " years"}
+          step={this.props.typeSpecific.step}
+          inputLabel="Age"
+        />
+      </div>
     );
   }
   renderCostSlider() {
     return (
+      <div className="short-slider-column">
+        <SliderWithInput
+          value={this.props.value}
+          setValue={this.props.setValue}
+          from={this.props.typeSpecific.from}
+          to={this.props.typeSpecific.to}
+          valueLabel={this.props.value + " $"}
+          step={this.props.typeSpecific.step}
+          inputLabel="Cost, usd"
+        />
+      </div>
+    );
+  }
+  renderRangeSlider() {
+    return (
       <SliderWithInput
         value={this.props.value}
         setValue={this.props.setValue}
-        from={this.props.typeSpecific.from}
-        to={this.props.typeSpecific.to}
-        step={this.props.typeSpecific.step}
-        units="$"
+        from={0}
+        to={999999999}
+        valueLabel={niceNumber2(this.props.value)}
+        fromLabel={"0"}
+        toLabel={"1b"}
         inputLabel="Cost, usd"
+        ranges={[
+          {
+            length: 50000,
+            label: "50k",
+            step: 5000,
+          },
+          {
+            length: 150000,
+            label: "200k",
+            step: 10000,
+          },
+          {
+            length: 100000,
+            label: "300k",
+            step: 20000,
+          },
+          {
+            length: 200000,
+            label: "500k",
+            step: 50000,
+          },
+          {
+            length: 500000,
+            label: "1m",
+            step: 100000,
+          },
+          {
+            length: 4000000,
+            label: "5m",
+            step: 800000,
+          },
+          {
+            length: 5000000,
+            label: "10m",
+            step: 1000000,
+          },
+          {
+            length: 40000000,
+            label: "50m",
+            step: 8000000,
+          },
+          {
+            length: 50000000,
+            label: "100m",
+            step: 10000000,
+          },
+          {
+            length: 400000000,
+            label: "500m",
+            step: 80000000,
+          },
+          {
+            length: 499000000,
+            label: "1b",
+            step: 50000000,
+          },
+        ]}
       />
     );
   }
@@ -135,9 +213,13 @@ class Question extends Component {
   render() {
     return (
       <div className="question">
-        <h1>{this.props.title}</h1>
-        <h3>{this.props.description}</h3>
-        {this.renderInput()}
+        <div className="text">
+          <h1>{this.props.title}</h1>
+          <h3>{this.props.description}</h3>
+        </div>
+        <div className="row">
+          {this.renderInput()}
+        </div>
       </div>
     );
   }
