@@ -214,21 +214,39 @@ const niceNumber = (number) => {
 }
 
 const niceNumber2 = (number) => {
-  if (roundAccurate(number, 10 ** 3) < 1)
+  if (number == undefined)
+    return 0;
+  if (number < 10 ** 3)
     return number;
-  else if (roundAccurate(number, 10 ** 6) < 1)
-    return roundAccurate(number, 10 ** 2) / 10 ** 3 + "k";
-  else if (roundAccurate(number, 10 ** 9) < 1)
-    return roundAccurate(number, 10 ** 5) / 10 ** 6 + "m";
-  else if (roundAccurate(number, 10 ** 12) < 1)
-    return roundAccurate(number, 10 ** 8) / 10 ** 9 + "b";
-  else if (roundAccurate(number, 10 ** 15) < 1)
-    return roundAccurate(number, 10 ** 11) / 10 ** 12 + "t";
-  else if (roundAccurate(number, 10 ** 18) < 1)
-    return roundAccurate(number, 10 ** 14) / 10 ** 15 + "q";
+  else if (number < 10 ** 6)
+    return (roundAccurate(number, 10 ** 2) / 10 ** 3).toFixed(0) + "k";
+  else if (number < 10 ** 9)
+    return (roundAccurate(number, 10 ** 5) / 10 ** 6).toFixed(0) + "m";
+  else if (number < 10 ** 12)
+    return (roundAccurate(number, 10 ** 8) / 10 ** 9).toFixed(0) + "b";
+  else if (number < 10 ** 15)
+    return (roundAccurate(number, 10 ** 11) / 10 ** 12).toFixed(0) + "t";
+  else if (number < 10 ** 18)
+    return (roundAccurate(number, 10 ** 14) / 10 ** 15).toFixed(0) + "q";
   else
     return '∞'
 }
+// const niceNumber3 = (number) => {
+//   if (roundAccurate(number, 10 ** 3) < 1)
+//     return number;
+//   else if (roundAccurate(number, 10 ** 6) < 1)
+//     return (roundAccurate(number, 10 ** 2) / 10 ** 3).toFixed(1) + "k";
+//   else if (roundAccurate(number, 10 ** 9) < 1)
+//     return (roundAccurate(number, 10 ** 5) / 10 ** 6).toFixed(1) + "m";
+//   else if (roundAccurate(number, 10 ** 12) < 1)
+//     return (roundAccurate(number, 10 ** 8) / 10 ** 9).toFixed(1) + "b";
+//   else if (roundAccurate(number, 10 ** 15) < 1)
+//     return (roundAccurate(number, 10 ** 11) / 10 ** 12).toFixed(1) + "t";
+//   else if (roundAccurate(number, 10 ** 18) < 1)
+//     return (roundAccurate(number, 10 ** 14) / 10 ** 15).toFixed(1) + "q";
+//   else
+//     return '∞'
+// }
 
 const camelize = (string) => {
   return string
@@ -253,5 +271,19 @@ const roundAccurate = (number, accurancy) => {
   return Math.round(number / accurancy) * accurancy;
 }
 
-
-export { api, setCookie, getCookie, tryLogin, setPage, newLines, setCurrency, previousPage, niceNumber, niceNumber2, camelize, dasherize, clamp, roundAccurate };
+export {
+  api,
+  setCookie,
+  getCookie,
+  tryLogin,
+  setPage,
+  newLines,
+  setCurrency,
+  previousPage,
+  niceNumber,
+  niceNumber2,
+  camelize,
+  dasherize,
+  clamp,
+  roundAccurate
+};

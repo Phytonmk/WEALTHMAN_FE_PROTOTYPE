@@ -7,7 +7,7 @@ import { camelize, dasherize } from './../helpers'
 
 class QuestionsPage extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     const questions = [
       {
@@ -95,21 +95,29 @@ class QuestionsPage extends Component {
           answers: ["Buy more", "Hold investments", "Sell investments"]
         }
       },
-    ]
+    ];
 
-    let stateObj = {}
-    stateObj["questions"] = questions
-    questions.forEach(question => stateObj[camelize(question.question)] = "")
-    this.state = stateObj
+    let answers = {};
+    questions.forEach(question => answers[camelize(question.question)] = undefined);
+
+    this.state = {
+      questions: questions,
+      answers: answers,
+    };
   }
+
   render() {
     let questionsToPages = this.state.questions.map(question => {
       return {
         link: dasherize(question.question) + this.props.history.location.search,
-        allowContinue: this.state[camelize(question.question)] != "",
+        allowContinue: typeof this.state.answers[camelize(question.question)] != "undefined",
         component: <Question
-          value={typeof this.state[camelize(question.question)] == "undefined" ? "" : this.state[camelize(question.question)]}
-          setValue={(value) => {this.setState({[camelize(question.question)]: value})}}
+          value={this.state.answers[camelize(question.question)]}
+          setValue={(value) => {
+            // let answers = { ...this.state.answers, [camelize(question.question)]: value };
+            let answers = Object.assign(this.state.answers, {[camelize(question.question)]: value});
+            this.setState({answers: answers});
+          }}
           title={question.question}
           description={question.description}
           type={question.type}

@@ -56,7 +56,9 @@ class SliderWithInput extends Component {
             value={this.state.value}
             onChange={event => {
               let number = event.target.value.replace(/[^0-9]/g, '');
-              number = clamp(number, this.props.from, this.props.to);
+              // number = clamp(number, this.props.from, this.props.to);
+              if (number == "")
+                number = undefined;
               this.props.setValue(number);
               this.setState({value: number});
             }}

@@ -69,11 +69,6 @@ const questions = [
     typeSpecific: {
       answers: ['Long-term investment growth', 'Emergency fund', 'Retirement', 'Large purchase (education,  house,  business, etc)', 'Other']
     }
-    // type: 'range-slider',
-    // typeSpecific: {
-    //   from: 0,
-    //   to: 100,
-    // },
   },
   {
     question: 'How long do you plan to hold your investments in the markets?',
