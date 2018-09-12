@@ -116,7 +116,7 @@ class Question extends Component {
           setValue={this.props.setValue}
           from={this.props.typeSpecific.from}
           to={this.props.typeSpecific.to}
-          valueLabel={this.props.value + " years"}
+          valueLabel={(this.props.value || "") + " years"}
           step={this.props.typeSpecific.step}
           inputLabel="Age"
         />
@@ -131,7 +131,7 @@ class Question extends Component {
           setValue={this.props.setValue}
           from={this.props.typeSpecific.from}
           to={this.props.typeSpecific.to}
-          valueLabel={this.props.value + " $"}
+          valueLabel={(this.props.value || "") + " $"}
           step={this.props.typeSpecific.step}
           inputLabel="Cost, usd"
         />

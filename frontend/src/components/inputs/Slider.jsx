@@ -50,24 +50,23 @@ class Slider extends Component {
     let step = this.props.step || 1;
     let state = {
       draggable: false,
-      position: 0,
     };
     
     if (this.props.ranges) {
       let lastIncludedRangeIndex = -1;
-      let rangeFrom = this.props.from;
+      let rangeTo = this.props.from;
       for (let i = 0; i < this.props.ranges.length; i++) {
-        if (rangeFrom >= this.props.to) {
-          lastIncludedRangeIndex = i - 1;
+        rangeTo += this.props.ranges[i].length;
+        if (rangeTo > this.props.to) {
+          lastIncludedRangeIndex = i;
           break;
         }
-        rangeFrom += this.props.ranges[i].length;
       }
-      if (lastIncludedRangeIndex = -1)
+      if (lastIncludedRangeIndex == -1)
         state.ranges = this.props.ranges;
       else
-        state.ranges = this.props.ranges.slice(lastIncludedRangeIndex);
-      if (lastIncludedRangeIndex < this.props.ranges.length)
+        state.ranges = this.props.ranges.slice(0, lastIncludedRangeIndex);
+      if (lastIncludedRangeIndex < this.props.ranges.length - 1)
         step = this.props.ranges[lastIncludedRangeIndex + 1].step || step;
     }
 
@@ -100,12 +99,13 @@ class Slider extends Component {
       let rect = content.getElementsByClassName("grey-bar")[0].getBoundingClientRect();
       let position = (event.clientX - rect.left) / (rect.right - rect.left);
       position = clamp(position, 0, 1);
-      let from, to, step;
+      let from, to, step, value;
 
       if (this.state.ranges) {
-        let rangeIndex = Math.floor(position * this.state.ranges.length);
+        var rangeIndex = Math.floor(position * this.state.ranges.length);
         let range = this.state.ranges[rangeIndex];
         step = range.step ? range.step : this.state.step;
+        step /= 10;
         if (rangeIndex == 0)
           from = this.props.from;
         else
@@ -114,26 +114,45 @@ class Slider extends Component {
           .map(range => range.length)
           .reduce((a, b) => a + b);
         to = from + range.length;
+        position -= rangeIndex / this.state.ranges.length;
+        position *= this.state.ranges.length;
+        this.setState({
+          position: rangeIndex / this.state.ranges.length + roundAccurate(position * (to - from), step) / (to - from) / this.state.ranges.length
+        });
       } else {
         step = this.state.step;
         from = this.props.from;
         to = this.props.to;
       }
 
-      this.setState({
-        step: step,
-        position: position,
-      });
-      let value = from + roundAccurate(position * (to - from), step);
+      this.setState({step: step});
+      value = from + roundAccurate(position * (to - from), step);
       value = clamp(value, from, to);
       this.props.setValue(value);
     }
   }
 
   render() {
-    let width = this.state.position;
-    let lineWidth = "calc(9px + (100% - 18px) * " + width + ")";
-    let sliderThumbOffset = "calc((100% - 18px) * " + width + ")";
+    let position;
+    let value = clamp(this.props.value || this.props.from, this.props.from, this.props.to);
+    if (this.state.ranges) {
+      let rangeIndex = 0;
+      let rangeFrom = this.props.from;
+      for (let i = 0; i < this.state.ranges.length; i++) {
+        if (value >= rangeFrom && value <= rangeFrom + this.state.ranges[i].length) {
+          rangeIndex = i;
+          break;
+        }
+        rangeFrom += this.state.ranges[i].length;
+      }
+      position = (rangeIndex + (value - rangeFrom) / this.state.ranges[rangeIndex].length) / this.state.ranges.length;
+      position = clamp(position, 0, 1);
+    }
+    else
+      position = (value - this.props.from) / (this.props.to - this.props.from);
+
+    let lineWidth = "calc(9px + (100% - 18px) * " + position + ")";
+    let sliderThumbOffset = "calc((100% - 18px) * " + position + ")";
 
     let rangePoints;
     if (this.state.ranges) {
@@ -142,10 +161,10 @@ class Slider extends Component {
         ...this.state.ranges.map((range, index) => {
           let left = ((index + 1) / this.state.ranges.length);
           return <div
-            className={"point " + (left < this.state.position && "passed")}
+            className={"point " + (left < position && "passed")}
             style={{left: "calc((100% - 12px) * " + left + ")"}}
           >
-            <small className="noselect">{range.label}</small>
+            {(index < this.state.ranges.length - 1) && <small className="noselect">{range.label}</small>}
           </div>;
         }),
         <div className="point" style={{right: 0}} />,

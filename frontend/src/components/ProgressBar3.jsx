@@ -62,7 +62,6 @@ class ProgressBar3 extends Component {
   
   static getDerivedStateFromProps(props, state) {
     let totalLength = props.approxLength && props.approxLength >= props.pages.length ? props.approxLength : props.pages.length + extraLength;
-    console.log(props.approxLength);
     if (totalLength == state.oldLength)
       return null;
 
