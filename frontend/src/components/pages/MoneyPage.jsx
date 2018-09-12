@@ -108,11 +108,10 @@ class MoneyPage extends Component {
                 <div className="row">
                   <div className="metamask" />
                 </div>
-                <ol type="1">
-                  <li>
-                    To deploy smart contract just push the button below
-                  </li>
-                </ol>
+                <p>
+                  Pressing "Deploy" you confirm terms of your portfolio. After contract is deployed you cannot change its terms otherwise you have to form it newly.<br/>
+                  The status of contract and portfolio you can easily find in Portfolio page.
+                </p>
                 <div className="row">
                   <Link to={"/request/" + this.props.match.params.id}>
                     <button className="back">Back</button>

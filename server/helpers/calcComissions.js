@@ -18,41 +18,14 @@ for (let exchange of configs.exchanges) {
 
 const services = ['Robo-advisor', 'Discretionary', 'Advisory']
 
-module.exports = (manager) => new Promise(async (resolve, reject) => {
+module.exports = (manager, specRequest=false) => new Promise(async (resolve, reject) => {
   let accrued = 0, paid = 0
-  const requests = await Request.find({manager: manager._id})
+  const requests = specRequest ? [specRequest] : await Request.find({manager: manager._id})
+
   for (let request of requests) {
     const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
     if (portfolio === null)
       continue
-    const values = []
-    for (let token of portfolio.currencies) {
-      const tokenName = token.currency
-      const orders = await Order.find({
-        status: 'completed',
-        request: request._id,
-        token_name: tokenName.toUpperCase()
-      }).sort({_id: -1}).limit(1)
-      const order = orders[0]
-      const exchange = exchanges[0]
-      if (order !== null) {
-        const symbol = tokenName.toUpperCase() + '/ETH'
-        const currentPrice = (await exchange.api.fetchTicker(symbol)).last
-        values.push(currentPrice - order.cost)
-      }
-    }
-    let fee = null
-    for (let service of manager.services) {
-      if (services[service.type].toLowerCase() == request.service.toLowerCase()) {
-        fee = service.perfomance_fee / 100
-        break
-      }
-    }
-    if (fee === null)
-      continue
-    const sumValue = values.length === 0 ? 0 : values.reduce((a, b) => a + b, 0)
-    accrued += sumValue * fee
-    console.log(`Asking commisions for ${portfolio.smart_contract}`)
     let error = false
     const paidComissions = await getPaidComissions(portfolio.smart_contract)
       .catch((e) => {
@@ -63,7 +36,25 @@ module.exports = (manager) => new Promise(async (resolve, reject) => {
       continue
     } else {
       paid += paidComissions
-      console.log(`Got commisions for ${portfolio.smart_contract}: ${paidComissions}`)
+    }
+    const values = []
+    const initValues = []
+    for (let token of portfolio.currencies) {
+      const tokenName = token.currency
+      const symbol = tokenName.toUpperCase() + '/ETH'
+      const exchange = exchanges[0]
+      const currentPrice = (await exchange.api.fetchTicker(symbol)).last
+      values.push(currentPrice)
+    }
+    const sumValue = values.length === 0 ? 0 : values.reduce((a, b) => a + b, 0)
+    const managmentFee = request.managment_fee / 100
+    const performanceFee = request.perfomance_fee / 100
+    const managmentReward = sumValue * managmentFee
+    const performanceReward = Math.abs(sumValue - request.initial_value) * performanceFee
+    accrued += (managmentReward + performanceReward)
+    if (specRequest !== false) {
+      resolve({accrued, paid, managmentReward, performanceReward})
+      return
     }
   }
   resolve({accrued, paid})

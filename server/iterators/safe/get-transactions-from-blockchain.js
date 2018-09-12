@@ -1,5 +1,5 @@
 module.exports = () => new Promise(a => a())
-const Request = require('../../models/Request')
+/*const Request = require('../../models/Request')
 const Transaction = require('../../models/Transaction')
 const RawTransaction = require('../../models/RawTransaction')
 const Portfolio = require('../../models/Portfolio')
@@ -93,4 +93,4 @@ module.exports = () => new Promise(async (resolve, reject) => {
     }
     // console.log(`Found ${foundTransactions} new transactions on block ${block.number}`)
   }
-})
+})*/

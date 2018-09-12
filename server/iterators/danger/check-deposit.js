@@ -42,6 +42,19 @@ module.exports = () => new Promise(async (resolve, reject) => {
       //   },
       // })
       await TGlogger(`Got deposit for request #${request._id}`)
+      const transaction = new Transaction({
+        contract: smartContract.address,
+        request: request._id,
+        type: 'deposit',
+        receiver: {
+          name: 'Contract',
+          type: 'contract',
+          id: smartContract.address
+        },
+        investor: request.investor,
+        manager: request.manager
+      })
+      await transaction.save()
       await request.save()
       // await transaction.save()
       for (let token of smartContract.currencies) {
@@ -50,6 +63,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
           whole_eth_amount: request.value,
           percent: token.percent,
           contract_address: smartContract.address,
+          related_portfolio: smartContract.portfolio,
           rebuild: false,
           request: request._id
         })

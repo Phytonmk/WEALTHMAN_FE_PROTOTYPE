@@ -26,15 +26,6 @@ module.exports = () => new Promise(async (resolve, reject) => {
             contract_deployment: new Date()
           })
           await TGlogger(`Smart contract ${deployment.address} deployed for request #${request._id}`)
-          const transaction = new Transaction({
-            contract: deployment.address,
-            request: request._id,
-            type: 'Deployment',
-            receiver: {
-              name: 'Contract',
-              type: 'contract'
-            },
-          })
           const portfolio = await Portfolio.findOne({state: 'active', request: request._id + ''})
           if (portfolio !== null) {
             portfolio.set({smart_contract: deployment.address}) 
@@ -42,6 +33,18 @@ module.exports = () => new Promise(async (resolve, reject) => {
           } else {
             request.set({status: 'failed'})
           }
+          const transaction = new Transaction({
+            contract: deployment.address,
+            request: request._id,
+            type: 'deployment',
+            receiver: {
+              name: 'Contract',
+              type: 'contract',
+              id: deployment.address
+            },
+            investor: request.investor,
+            manager: request.manager
+          })
           await request.save()
           await transaction.save()
           break

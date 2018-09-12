@@ -5,9 +5,9 @@ const configs = require('../configs')
 const portfolioAbi = require('./portfolio_abi.js')
 const privateKey = configs.privateKey
 const admin = configs.adminAddress
-module.exports = (address, tokens, values) => new Promise ((resolve, reject) => {
-  var contract = new web3.eth.Contract(portfolioAbi, address)
-  var functionAbi =  contract.methods.calculateRewards(tokens, values).encodeABI()
+module.exports = (address, value) => new Promise ((resolve, reject) => {
+  const contract = new web3.eth.Contract(portfolioAbi, address)
+  const functionAbi =  contract.methods.manageReward(utils.toWei(value.toString(), 'ether')).encodeABI()
   const getNonce = () => {
     return new Promise((resolve, reject) => {
       web3.eth.getTransactionCount(admin, (error, result) => {

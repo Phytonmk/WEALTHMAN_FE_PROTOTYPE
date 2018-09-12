@@ -1,4 +1,5 @@
-const configs = require('../../configs')
+module.exports = () => new Promise(a => a())
+/*const configs = require('../../configs')
 
 const Request = require('../../models/Request')
 const Transaction = require('../../models/Transaction')
@@ -65,4 +66,4 @@ module.exports = () => new Promise(async (resolve, reject) => {
     })
   }
   resolve()
-})
+})*/

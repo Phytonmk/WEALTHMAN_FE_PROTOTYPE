@@ -9,7 +9,9 @@ const transactionSchema = mongoose.Schema({
     name: String,
     type: String,
     id: String
-  })
+  }),
+  ivnestor: String,
+  manager: String,
 });
 
 module.exports = mongoose.model('transaction', transactionSchema);

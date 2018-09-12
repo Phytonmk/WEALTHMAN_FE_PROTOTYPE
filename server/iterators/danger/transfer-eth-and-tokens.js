@@ -1,3 +1,4 @@
+const Portfolio = require('../../models/Portfolio')
 const Request = require('../../models/Request')
 const Order = require('../../models/Order')
 const Stock = require('../../models/Stock')
@@ -11,15 +12,18 @@ const TGlogger = require('../../helpers/tg-testing-loger')
 module.exports = () => new Promise(async (resolve, reject) => {
   const buying = await Request.find({status: 'buying tokens'})
   for (let request of buying) {
-    const orders = await Order.find({request: request._id})
+    const porfolio = await Portfolio.findOne({request: request._id, state: 'active'})
+    const orders = await Order.find({request: request._id, related_portfolio: porfolio.request})
     let everyCompeleted = true
     let tokens = []
+    let sumCost = 0
     for (let order of orders) {
       if (order.status !== 'completed') {
         everyCompeleted = false
         break
       } else {
         const stock = await Stock.findOne({title: order.token_name})
+        sumCost += order.cost
         tokens.push(stock.address)
       }
     }
@@ -31,7 +35,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
         if (tokensOnContract || !configs.productionMode) {
           await TGlogger(`Sent ethereum from request #${request._id} to exchange`)
           await sendEthereum(orders[0].contract_address)
-          request.set({status: 'active'})
+          request.set({status: 'active', initial_value: sumCost})
           await request.save()
         }
       }
@@ -39,7 +43,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
   }
   const ethReturning = await Request.find({status: 'recalculation'})
   for (let request of ethReturning) {
-    const orders = await Order.find({request: request._id})
+    const porfolio = await Portfolio.findOne({request: request._id, state: 'active'})
+    const orders = await Order.find({request: request._id, related_portfolio: porfolio.request})
     let everyCompeleted = true
     let contractAddress = ''
     let tokens = []

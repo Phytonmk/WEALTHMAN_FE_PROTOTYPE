@@ -28,6 +28,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const order = new Order({
         token_name: token.currency,
         whole_eth_amount: request.value,
+        request: smartContract.request,
+        related_portfolio: smartContract.portfolio,
         percent: token.percent,
         contract_address: smartContract.address,
         rebuild: false

@@ -3,19 +3,15 @@ const cluster = require('cluster')
 const numCPUs = require('os').cpus().length;
 
 const configs = require('./configs')
-const express = require('express')
 const mongoose = require('mongoose')
 const TGlogger = require('./helpers/tg-testing-loger')
 
-const app = express()
-const middlewears = require('./helpers/middlewears')
-middlewears(app)
 
 mongoose.connect(configs.mongoUrl, {useNewUrlParser: true}, (err) => {
   if (err)
     console.log(err)
 });
-require('./routes/index.js')(app)
+// require('./routes/index.js')(app)
 
 const addSpaces = (str) => {
   while (str.length < 36)
@@ -36,7 +32,7 @@ console.log('  ║' + addSpaces(`Master ${process.pid} is running`) + '║')
 console.log('  ║' + addSpaces(`numCPUs: ${numCPUs}`) + '║')
 console.log('  ╠════════════════════════════════════╣')
 console.log('  ║Deploying iterators...              ║')
-require('./iterators/index.js')(app)
+require('./iterators/index.js')
 console.log('  ║Deployed                            ║')
 console.log('  ╠════════════════════════════════════╣')
 // require('./trading/wealthman_exchanger_backend')
@@ -58,7 +54,7 @@ cluster.on('message', (worker, msg) => {
     if (deployedWorkers === 0)
       console.log('  ╠════════════════════════════════════╣')
     deployedWorkers++
-    console.log('  ║' + addSpaces(`${deployedWorkers}. Worker ${msg.pid} deployed on port ${msg.port}`) + '║')
+    console.log('  ║' + addSpaces(`Worker ${msg.pid} deployed on port ${msg.port}`) + '║')
     if (deployedWorkers >= numCPUs)
       console.log('  ╚════════════════════════════════════╝')
   }
