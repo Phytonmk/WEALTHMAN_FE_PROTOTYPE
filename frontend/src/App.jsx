@@ -130,7 +130,7 @@ class App extends Component {
           <Route path="/help center" render={() => this.renderHelpCenterPage()} />
           <Route path="/blog" render={() => this.renderBlogPage()} />
 
-          <Route path="/company/:id" component={ManagerPage} />
+          <Route path="/company/:id" component={CompanyPage} />
           <Route path="/manager/:id" component={ManagerPage} />
           <Route path="/investor/:id" component={InvestorPage} />
           <Route path="/company" component={CompanyManagmentPage} />

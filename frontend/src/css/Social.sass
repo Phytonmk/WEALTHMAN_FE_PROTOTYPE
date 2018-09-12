@@ -11,13 +11,10 @@
     margin: 0
     &.margin
       margin-right: 14px
-    .default
-      // z-index: 100
-    .hover
+    .hover.hoverable
       opacity: 0
-      // z-index: 101
       transition: opacity .1s
-    &:hover .hover
+    &:hover .hover.hoverable
       opacity: 1
     .default, .hover
       width: 100%

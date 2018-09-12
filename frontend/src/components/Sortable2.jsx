@@ -279,7 +279,7 @@ class Sortable2 extends Component {
     );
   }
 
-  renderShowMore() {
+  renderSeemore() {
     if (!this.columnsDefined(this.props) || !this.dataDefined(this.props))
       return;
 
@@ -311,7 +311,7 @@ class Sortable2 extends Component {
       <div className="sortable">
         {this.renderHeader()}
         {this.renderListings()}
-        {this.renderShowMore()}
+        {this.renderSeemore()}
       </div>
     );
   }

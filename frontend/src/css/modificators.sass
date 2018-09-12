@@ -15,6 +15,9 @@
   border: 0 !important
   display: none !important
 
+.semitransparent
+  opacity: .3
+
 .noselect 
   -webkit-touch-callout: none;  /* iOS Safari */
   -webkit-user-select: none;    /* Safari */
@@ -62,23 +65,32 @@
   overflow: auto
   float: left
   display: table
+  &.margin30
+    margin-right: 30px
+  &.margin50
+    margin-right: 50px
+  &.margin60
+    margin-right: 60px
 
 .info .column
   margin-left: 218px
 
 .white
-  color: white
-  padding-bottom: 20px
+  color: white !important
 .red
   color: red !important
 .green
   color: #47bf6f !important
+.black
+  color: #071e40 !important
 .grey
   color: #79828f !important
+.light-grey
+  color: #abb0b8 !important
 .blue
   color: #39a9dc !important
 .blue-text
-  color: #095074
+  color: #095074 !important
   cursor: pointer
 
 .no-margin
@@ -118,6 +130,9 @@
 .three-fourth
   width: 75%
   overflow-y: auto
+  float: left
+.fifth
+  width: 20%
   float: left
 
 .right-border

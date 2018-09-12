@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import pic from '../img/question-icon.png'
+import '../css/Qsign.sass';
+import pic from '../img/get-info-icon.svg'
 
 // Usage example
 // all props are optional
