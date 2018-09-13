@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Input from './inputs/Input';
 import Textarea from './inputs/Textarea';
 import Radio from './inputs/Radio';
-import Checkboxes from './inputs/Checkboxes';
+import Checkbox from './inputs/Checkbox';
 import Slider from './inputs/Slider';
 import SliderWithInput from './inputs/SliderWithInput';
 
@@ -89,8 +89,9 @@ class Question extends Component {
     );
   }
   renderCheckboxes() {
+    return ;
     return (
-      <Checkboxes
+      <Checkbox
         value={this.props.value}
         setValue={this.props.setValue}
         options={this.props.typeSpecific.answers}

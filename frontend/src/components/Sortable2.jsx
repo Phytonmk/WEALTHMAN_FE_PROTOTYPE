@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import TridotDropdownWithCheckboxes from './inputs/TridotDropdownWithCheckboxes'
 import LevDate from './LevDate';
 import '../css/Sortable2.sass';
 
@@ -25,6 +26,12 @@ import '../css/Sortable2.sass';
       type: "string",
       //(OPTIONAL) tooltip shown for title
       tooltip: "",
+      //(OPTIONAL) class for the column title
+      titleClass: "border-left",
+      //(OPTIONAL) class for the column cell
+      cellClass: "border-left",
+      //(OPTIONAL) columns with "true" will be static when listings scrolled horizontally (default "false")
+      preventScroll: true,
     },
   ]}
   //(OPTIONAL) data to show
@@ -45,8 +52,6 @@ import '../css/Sortable2.sass';
       listingLink: "/manager/" + manager.id
     };
   })}
-  //(OPTIONAL) show navigational arrows (may overlay content in right corner of the header)
-  navigation={true}
   //(OPTIONAL) maximum shown rows (default 10)
   maxShown={5}
   //(OPTIONAL) listings become clicable links, links are taken from this property
@@ -64,6 +69,7 @@ class Sortable2 extends Component {
       maxShown: 10,
       rowProperties: undefined,
       error: "",
+      horizontalOffset: 0,
     }
     this.alreadyInitialized = false
   }
@@ -105,11 +111,14 @@ class Sortable2 extends Component {
           key: column.property,
           name: column.property,
           width: (column.width ? column.width : (99 / props.columns.length) + "%"),
+          titleClass: column.titleClass,
+          cellClass: column.cellClass,
+          preventScroll: column.preventScroll,
         };
       })
     });
 
-    //set sortBy
+    //set initial sortBy
     if (!this.alreadyInitialized) {
       if (props.initialSortBy)
         this.setState({sortBy: props.initialSortBy});
@@ -124,6 +133,17 @@ class Sortable2 extends Component {
         this.setState({maxShown: props.maxShown});
     }
 
+    let scrollableRowColumns = this.props.columns
+    .filter(column => !column.preventScroll)
+    .filter(column => column.hasOwnProperty("title") && column.title != "");
+    this.setState({
+      shownColumns: scrollableRowColumns.map(column => ({
+        key: column.property,
+        label: column.title,
+        value: true,
+      }))
+    });
+
     this.alreadyInitialized = true
   }
 
@@ -136,7 +156,7 @@ class Sortable2 extends Component {
       this.setState({ sortBy: sortBy });
   }
 
-  renderListings() {
+  renderListings(rowProperties) {
     if (!this.dataDefined(this.props))
       return <ul className="listings">
         <li className="listing">
@@ -178,19 +198,19 @@ class Sortable2 extends Component {
           .map(row => {
             if (this.props.linkProperty)
               return <Link to={row[this.props.linkProperty]} key={row.id}>
-                {this.renderListing(row)}
+                {this.renderListing(row, rowProperties)}
               </Link>;
-            return this.renderListing(row)
+            return this.renderListing(row, rowProperties)
           })
         }
       </ul>
     );
   }
-  renderListing(row) {
+  renderListing(row, rowProperties) {
     return (
       <li className={"listing " + (this.props.linkProperty ? "clicable" : "")} key={row.id}>
         {
-          this.state.rowProperties.map((property, index) => {
+          rowProperties.map((property, index) => {
             let cell = row[property.name];
             if (typeof cell == "undefined") {
               console.log('undefined cell in sortable2: ' + property.name);
@@ -198,7 +218,9 @@ class Sortable2 extends Component {
             }
             return (
               <div
-                className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
+                className={"cell " +
+                          (property.cellClass ? property.cellClass : "") + " " +
+                          (index == rowProperties.length - 1 ? "last" : "")}
                 style={{width: property.width}}
                 key={row.id + property.name}
               >
@@ -211,24 +233,30 @@ class Sortable2 extends Component {
     );
   }
 
-  renderHeader() {
+  renderHeader(rowProperties) {
+    let columns = this.props.columns.filter(column => rowProperties.map(property => property.key).includes(column.property));
+
     if (!this.columnsDefined(this.props))
       return <div className="header" />;
 
     return (
       <div className="header">
         {
-          this.props.columns.map((column, index) =>
+          columns.map((column, index) =>
             <div
-              className={"cell " + (index == this.state.rowProperties.length - 1 ? "last" : "")}
-              style={{"width": this.state.rowProperties[index].width}}
+              className={"cell " +
+                        (rowProperties[index].titleClass ? rowProperties[index].titleClass : "") + " " +
+                        (index == rowProperties.length - 1 ? "last" : "")}
+              style={{"width": rowProperties[index].width}}
               title={column.tooltip ? column.tooltip : column.title}
               key={"header" + column.property}
             >
               {
                 typeof column.title == "string" ?
                   <span
-                    className={(column.type == "unsortable" ? "unsortable" : "") + (this.state.sortBy === column.property ? (this.state.order ? "asc" : "desc") : "")}
+                    className={"noselect " +
+                              (column.type == "unsortable" ? "unsortable" : "") +
+                              (this.state.sortBy === column.property ? (this.state.order ? "asc" : "desc") : "")}
                     onClick={() => this.setSortBy(column.property)}
                   >
                     {column.title}
@@ -239,12 +267,11 @@ class Sortable2 extends Component {
             </div>
           )
         }
-        {this.props.navigation ? this.renderNavigation() : ""}
       </div>
     );
   }
 
-  renderNavigation() {
+  renderVerticalNavigation() {
     let length = this.props.data.filter(this.props.filter ? this.props.filter : (i) => true).length;
 
     if (this.state.maxShown >= length)
@@ -279,7 +306,39 @@ class Sortable2 extends Component {
     );
   }
 
-  renderSeemore() {
+  renderHorizontalNavigation() {
+    const minShownCells = 3;
+    let scrollablePropertiesLength = this.state.rowProperties.filter(property => !property.preventScroll).length;
+    
+    return (
+      <div className="navigation">
+        {
+          this.state.horizontalOffset > 0 ?
+          <button
+            className="left-arrow active"
+            onClick={() => this.setState({
+              horizontalOffset: this.state.horizontalOffset - 1
+            })}
+          />
+          :
+          <button className="left-arrow" />
+        }
+        {
+          scrollablePropertiesLength - this.state.horizontalOffset > minShownCells ?
+          <button
+            className="right-arrow active"
+            onClick={() => this.setState({
+              horizontalOffset: this.state.horizontalOffset + 1
+            })}
+          />
+          :
+          <button className="right-arrow" />
+        }
+      </div>
+    );
+  }
+
+  renderShowmore() {
     if (!this.columnsDefined(this.props) || !this.dataDefined(this.props))
       return;
 
@@ -307,11 +366,34 @@ class Sortable2 extends Component {
         </div>
       );
 
+    let scrollableRowProperties = this.state.rowProperties
+    .filter(property => !property.preventScroll)
+    .filter(column => {
+      let shownColumn = this.state.shownColumns.find(c => c.key == column.key);
+      if (typeof shownColumn != "undefined")
+        return shownColumn.value;
+      return true;
+    });
+    let nonScrollableRowProperties = this.state.rowProperties
+    .filter(property => property.preventScroll == true);
+    scrollableRowProperties = scrollableRowProperties.slice(this.state.horizontalOffset);
+    
     return (
       <div className="sortable">
-        {this.renderHeader()}
-        {this.renderListings()}
-        {this.renderSeemore()}
+        <div className="scrollable-properties-column">
+          {this.renderHeader(scrollableRowProperties)}
+          {this.renderListings(scrollableRowProperties)}
+        </div>
+        <div className="non-scrollable-properties-column">
+          {this.renderHeader(nonScrollableRowProperties)}
+          {this.renderListings(nonScrollableRowProperties)}
+        </div>
+        {this.renderHorizontalNavigation()}
+        <TridotDropdownWithCheckboxes
+          options={this.state.shownColumns}
+          setValue={(value) => this.setState({shownColumns: value})}
+        />
+        {this.renderShowmore()}
       </div>
     );
   }

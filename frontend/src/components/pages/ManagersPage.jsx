@@ -152,8 +152,9 @@ class ManagersPage extends Component {
         property: "min",
         title: "min. investment",
         // width: "103px",
-        width: "80px",
+        width: "90px",
         type: "number",
+        titleClass: "with-border",
       },
       {
         property: "aum",
@@ -174,8 +175,9 @@ class ManagersPage extends Component {
         property: "perfomance",
         title: "performance fee",
         // width: "103px",
-        width: "80px",
+        width: "90px",
         type: "number",
+        titleClass: "with-border",
       },
       {
         property: "clients",
@@ -198,6 +200,7 @@ class ManagersPage extends Component {
           property: "apply",
           width: "135px",
           type: "unsortable",
+          preventScroll: true,
         })
     else
       sortableHeader.push({

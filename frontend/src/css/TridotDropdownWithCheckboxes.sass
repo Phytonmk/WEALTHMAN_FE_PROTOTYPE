@@ -1,0 +1,44 @@
+.tridot-dropdown
+  button.tridot
+    position: relative
+    background: rgba(0,0,0,0)
+    width: 46px
+    height: 46px
+    border-radius: 46px
+    &:hover
+      background: rgba(214,219,226,1)
+    &::after
+      position: absolute
+      content: ""
+      width: 4px
+      height: 16px
+      top: 15px
+      left: 21px
+      background: url("../img/tridot.svg")
+      background-repeat: no-repeat
+      background-size: contain
+  .options
+    overflow-y: auto
+    min-height: 400px
+    padding: 10px 0
+    border-radius: 2px
+    background: white
+    border: 1px solid #e6e6e6
+    box-shadow: 0px 2px 6px 0 rgba(0, 0, 0, 0.15)
+    position: absolute
+    top: 60px
+    right: 0
+    z-index: 1001
+    .option
+      width: 100%
+      height: 47px
+      padding: 16px
+      font-size: 14px
+      line-height: 1
+      background: white
+      cursor: pointer
+      color: #071e40
+      &:hover
+        background: #f5f5f5
+    .checkbox
+      width: 100%
