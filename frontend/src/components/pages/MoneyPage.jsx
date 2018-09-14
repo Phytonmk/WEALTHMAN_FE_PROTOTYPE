@@ -36,7 +36,7 @@ class MoneyPage extends Component {
     super(props);
     this.state = {
       gotData: false,
-      status: 0, // status 0 -- page loaded; 1 -- deploying; 2 -- contract accepted; 3 -- contract rejected; 4 -- error
+      status: 0,
       contractAddress: '',
       request: {},
     };
@@ -44,7 +44,7 @@ class MoneyPage extends Component {
   componentWillMount() {
     api.post('get-request/' + this.props.match.params.id)
       .then((res) => {
-        let status = 4;
+        let status = 5;
         let contractAddress = '';
         if (res.data.request.status === 'proposed')
           status = 0;
@@ -76,7 +76,6 @@ class MoneyPage extends Component {
     }).catch(console.log);
   }
   useMetaMask() {
-    // const web3 = new Web3(web3.currentProvider);
     const contract = web3.eth.contract(abi);
     const contractInstance = contract.at(this.state.contractAddress);
     contractInstance.deposit({value: web3.toWei(this.state.request.value.toString(),'ether'), gas: 760000/*7600000*/, gasPrice: 2000000000},function(err, transactionHash) {
@@ -85,16 +84,7 @@ class MoneyPage extends Component {
       else
         console.log(err)
     })
-    // web3.eth.sendTransaction({
-    //   from: this.props.userData.wallet_address,
-    //   to: this.state.contractAddress,
-    //   value: web3.toWei(this.state.request.value.toString(), 'ether'),
-    //   gas: 7600000,
-    //   gasPrice: 1
-    // }, console.log)
-    // .then(function(receipt){
-    //   console.log(receipt);
-    // });
+    // this.setState({status: 4})
   }
   render() {
     if (!this.state.gotData)
@@ -146,19 +136,20 @@ class MoneyPage extends Component {
                </div>
              </div>
     }
-    if (this.state.status === 4) {
+    if (this.state.status === 5) {
       return <div className="container">
               <div className="box">
                 <h2> Error occurred :'( </h2>
               </div>
             </div>
     }
+    const value = this.state.request.value
     return (
       <div>
         {/* {this.renderBackButton()} */}
         <div className="container">
           <div className="box">
-            <h2>Send Money</h2>
+            <h2>Deposit money</h2>
             <div className="row">
               <button className="show-code" onClick={() => setReduxState({showCode: !this.props.showCode})}>{this.props.showCode ? "Hide" : "Show"} Smart-contract code</button>
               <div className={"code-container " + (this.props.showCode ? "show" : "hide")}>
@@ -166,49 +157,27 @@ class MoneyPage extends Component {
               </div>
             </div>
             <div className="row">
-              <ol type="1">
-                <li>
-                  Please choose your Ethereum wallet
-                </li>
-                <li>
-                  Check that you have enough money on it to invest
-                </li>
-                <li>
-                  Deposit, you can:
-                </li>
-                <li>
-                  <ul>
-                    <br />
-                    <li>
-                      Copy this address of smart-contract <b className="eth-address">{this.state.contractAddress}</b>
-                      <br />
-                      <br />
-                      Go to your Ethereum wallet and paste the address of smart-contract as destination address
-                    </li>  
-                    <li>  
-                      Scan QR code
-                      <br />
-                      <br />
-                      <QRCode value={this.state.contractAddress} />
-                      <br />
-                      <br />
-                    </li>
-                    <li>
-                      <button className="continue" href="" onClick={() => this.useMetaMask()}>Use MetaMask</button>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  Submit the money transfer
-                </li>
-              </ol>
+              <h2>Attention</h2>
+              <p>This interface allows you to deposit money on deployed contract<br/>
+              After you transfer <b>{value}</b> ETH to smart contract exchange operations will be launched<br/>
+              You can track all transactions of via Etherscan or Portfolio page<br/>
+              To withdraw money from portfolio you should click Withdraw button on the portfolio page</p>
+              <p>Please use metamask to make deposit preliminary switch it to Main Etherium network<br/>
+              The portfolio value you input in portfolio target form is <b>{value}</b> ETH</p>
             </div>
-            <div className="row-padding">
-              As soon as transaction is accomplished you can follow the details and statistics at <Link to={"/requests"} onClick={() => this.setPage("portfolios")}>Portfolio page</Link>
+            <div className="row">
+              <button className="continue" href="" onClick={() => this.useMetaMask()}>Use MetaMask</button>
             </div>
-            {/*<div className="row-padding">
-              Time left <Timer start={this.state.request.contract_deployment} duration={1000 * 60 * 45} /> 
-            </div>*/}
+            <div className="row">
+              <small>
+                Make sure that you logged in metamask and your wallet is coincided with address specified in Account settings<br/>
+                Switch Metamask to Main Etherium network<br/>
+                Wallet balance should be not less than {value} ETH<br/>
+                Please, press the Deposit button<br/>
+                When metamask window is poped up check parameters and push Submit button<br/>
+                Check transaction and portfolio status at Etherscan or Portfolio page
+              </small>
+            </div>
             <div className="row-padding">
               <Link to={"/request/" + this.props.match.params.id}>
                 <button className="back">Back</button>

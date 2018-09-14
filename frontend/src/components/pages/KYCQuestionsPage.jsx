@@ -31,7 +31,7 @@ class KYCQuestionsPage extends Component {
   }
   render() {
     // console.log(this.props.history.location.search)
-    const currentQuestions = questions.filter(question => typeof question.filter === 'function' ? question.filter(this.state) : true)
+    const currentQuestions = questions//.filter(question => typeof question.filter === 'function' ? question.filter(this.state) : true)
     // console.log(this.state)
     let questionsToPages = currentQuestions.map(question => {
       return {
@@ -81,7 +81,7 @@ const questions = [
   },
   {
     question: 'What is the total amount you want to invest?',
-    type: 'slider',
+    type: 'range-slider',
     typeSpecific: {
       from: 0,
       to: 999999999,
@@ -89,8 +89,8 @@ const questions = [
     filter: (state) => ['Long-term investment growth', 'Emergency fund', 'Other'].includes(state[camelize(questions[0].question)])
   },
   {
-    question: 'What age of retirement you want to save?',
-    type: 'age-slider',
+    question: 'At what age do you plan to retire and for how long?',
+    type: 'retirement-graphic',
     typeSpecific: {
       from: 0,
       to: 100,
@@ -98,17 +98,8 @@ const questions = [
     filter: (state) => ['Retirement'].includes(state[camelize(questions[0].question)])
   },
   {
-    question: 'What length of retirement you want to save?',
-    type: 'slider',
-    typeSpecific: {
-      from: 0,
-      to: 999999999,
-    },
-    filter: (state) => ['Retirement'].includes(state[camelize(questions[0].question)])
-  },
-  {
     question: 'What is the total amount you want to save?',
-    type: 'slider',
+    type: 'range-slider',
     typeSpecific: {
       from: 0,
       to: 999999999,
@@ -117,7 +108,7 @@ const questions = [
   },
   {
     question: 'What are the current value of your purchase?',
-    type: 'slider',
+    type: 'range-slider',
     typeSpecific: {
       from: 0,
       to: 999999999,

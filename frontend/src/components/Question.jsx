@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import Input from './inputs/Input';
-import Textarea from './inputs/Textarea';
-import Radio from './inputs/Radio';
-import Checkboxes from './inputs/Checkboxes';
-import Slider from './inputs/Slider';
-import SliderWithInput from './inputs/SliderWithInput';
+import Input from './inputs/Input'
+import Textarea from './inputs/Textarea'
+import Radio from './inputs/Radio'
+import Checkboxes from './inputs/Checkboxes'
+import Slider from './inputs/Slider'
+import SliderWithInput from './inputs/SliderWithInput'
+import RetirementGraphic from './inputs/RetirementGraphic'
 
-import '../css/Question.sass';
-import { niceNumber2 } from './helpers';
+import '../css/Question.sass'
+import { niceNumber2 } from './helpers'
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -35,29 +36,33 @@ import { niceNumber2 } from './helpers';
 
 class Question extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
     }
   }
 
   renderInput() {
     switch(this.props.type) {
-      case "text":
-        return this.renderText();
-      case "textarea":
-        return this.renderTextarea();
-      case "radio":
-        return this.renderRadio();
-      case "checkboxes":
-        return this.renderCheckboxes();
-      case "slider":
-        return this.renderSlider();
-      case "age-slider":
-        return this.renderAgeSlider();
-      case "cost-slider":
-        return this.renderCostSlider();
-      case "range-slider":
-        return this.renderRangeSlider();
+      case 'text':
+        return this.renderText()
+      case 'textarea':
+        return this.renderTextarea()
+      case 'radio':
+        return this.renderRadio()
+      case 'checkboxes':
+        return this.renderCheckboxes()
+      case 'slider':
+        return this.renderSlider()
+      case 'age-slider':
+        return this.renderAgeSlider()
+      case 'cost-slider':
+        return this.renderCostSlider()
+      case 'range-slider':
+        return this.renderRangeSlider()
+      case 'retirement-graphic':
+        return this.renderRetirementGraphic()
+      default:
+        return <p>Unable to render {this.props.type} input</p>
     }
   }
 
@@ -68,7 +73,7 @@ class Question extends Component {
         setValue={this.props.setValue}
         placeholder={this.props.typeSpecific.placeholder}
       />
-    );
+    )
   }
   renderTextarea() {
     return (
@@ -77,7 +82,7 @@ class Question extends Component {
         setValue={this.props.setValue}
         placeholder={this.props.typeSpecific.placeholder}
       />
-    );
+    )
   }
   renderRadio() {
     return (
@@ -86,7 +91,7 @@ class Question extends Component {
         setValue={this.props.setValue}
         options={this.props.typeSpecific.answers}
       />
-    );
+    )
   }
   renderCheckboxes() {
     return (
@@ -95,7 +100,7 @@ class Question extends Component {
         setValue={this.props.setValue}
         options={this.props.typeSpecific.answers}
       />
-    );
+    )
   }
   renderSlider() {
     return (
@@ -106,7 +111,7 @@ class Question extends Component {
         to={this.props.typeSpecific.to}
         step={this.props.typeSpecific.step}
       />
-    );
+    )
   }
   renderAgeSlider() {
     return (
@@ -121,7 +126,7 @@ class Question extends Component {
           inputLabel="Age"
         />
       </div>
-    );
+    )
   }
   renderCostSlider() {
     return (
@@ -136,12 +141,11 @@ class Question extends Component {
           inputLabel="Cost, usd"
         />
       </div>
-    );
+    )
   }
   renderRangeSlider() {
     return (
       <SliderWithInput
-        value={this.props.value}
         setValue={this.props.setValue}
         from={0}
         to={999999999}
@@ -207,9 +211,14 @@ class Question extends Component {
           },
         ]}
       />
-    );
+    )
   }
-
+  renderRetirementGraphic() {
+    return  <RetirementGraphic
+              value={this.props.value}
+              setValue={this.props.setValue}
+            />
+  }
   render() {
     return (
       <div className="question">
@@ -221,8 +230,8 @@ class Question extends Component {
           {this.renderInput()}
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Question;
+export default Question

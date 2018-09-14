@@ -67,11 +67,11 @@ class ManagersPage extends Component {
         //   link += '&apply=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
         // let link = 'questions'
         // setPage(link)
+        // setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
         this.props.history.push({
           pathname: 'questions',
           search: '?apply=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
         })
-        // setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
       })
     }
   }

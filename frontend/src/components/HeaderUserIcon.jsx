@@ -50,9 +50,9 @@ class HeaderUserIcon extends Component {
   componentWillMount() {
     $(window).click(event => {
       if (this.state.opened &&
-        !event.target.className.includes("header-user-icon") &&
-        !event.target.className.includes("loaded") && // "loaded" img of avatar
-        !event.target.className.includes("default-avatar-user"))
+        !event.target.className.includes("header-user-icon")) //&&
+        // !event.target.className.includes("loaded") && // "loaded" img of avatar
+        // !event.target.className.includes("default-avatar-user"))
         this.setState({opened: false})
     })
     chatsApi.connect()
@@ -73,6 +73,12 @@ class HeaderUserIcon extends Component {
   }
 
   render() {
+    let profileLink = ''
+    switch (this.props.user * 1) {
+      case 0: profileLink = `/investor/${this.props.userData._id}`; break
+      case 1: profileLink = `/manager/${this.props.userData._id}`; break
+      case 3: profileLink = `/company/${this.props.userData._id}`; break
+    }
     if (!this.props.userData)
       return '...'
     return (
@@ -106,10 +112,12 @@ class HeaderUserIcon extends Component {
           </div>
           : ""
         }
-        <Avatar
-          size="58px"
-          src={this.props.userData ? api.imgUrl(this.props.userData.img) : ''}
-        />
+        <Link to={profileLink}>
+          <Avatar
+            size="58px"
+            src={this.props.userData ? api.imgUrl(this.props.userData.img) : ''}
+          />
+        </Link>
         <div className="notifications">{this.state.notifications > 0 ? this.state.notifications : ''}</div>
       </div>
     )

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import ReactDOM from "react-dom";
+import React, { Component } from 'react'
+import ReactDOM from "react-dom"
 
-import { clamp } from './../helpers';
-import Slider from './Slider';
+import { clamp } from './../helpers'
+import Slider from './Slider'
 
-import '../../css/SliderWithInput.sass';
+import '../../css/SliderWithInput.sass'
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -33,18 +33,18 @@ import '../../css/SliderWithInput.sass';
 
 class SliderWithInput extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       value: props.value,
       step: props.step ? props.step : 1,
-    };
+    }
   }
 
   render() {
-    let width = !this.props.value || this.props.value == "" ? 0 :
-    (clamp(this.props.value, this.props.from, this.props.to) - this.props.from) / (this.props.to - this.props.from);
-    let lineWidth = "calc(9px + (100% - 18px) * " + width + ")";
-    let dotOffset = "calc((100% - 18px) * " + width + ")";
+    // let width = !this.props.value || this.props.value == "" ? 0 :
+    // (clamp(this.props.value, this.props.from, this.props.to) - this.props.from) / (this.props.to - this.props.from)
+    // let lineWidth = "calc(9px + (100% - 18px) * " + width + ")"
+    // let dotOffset = "calc((100% - 18px) * " + width + ")"
 
     return (
       <div className="age-slider">
@@ -55,28 +55,29 @@ class SliderWithInput extends Component {
           <input
             value={this.state.value}
             onChange={event => {
-              let number = event.target.value.replace(/[^0-9]/g, '');
-              // number = clamp(number, this.props.from, this.props.to);
+              let number = event.target.value.replace(/[^0-9]/g, '')
+              // number = clamp(number, this.props.from, this.props.to)
               if (number == "")
-                number = undefined;
-              this.props.setValue(number);
-              this.setState({value: number});
+                number = undefined
+              this.props.setValue(number)
+              this.setState({value: number})
             }}
           />
         </div>
         <div className="slider-column">
           <Slider
             {...this.props}
+            value={this.state.value}
             setValue={value => {
-              this.props.setValue(value);
-              this.setState({value: value});
+              this.props.setValue(value)
+              this.setState({value: value})
             }}
           />
           <p>Adjust slider or enter a value</p>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default SliderWithInput;
+export default SliderWithInput

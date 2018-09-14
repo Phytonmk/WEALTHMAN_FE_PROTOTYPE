@@ -92,25 +92,31 @@ class ProgressBar3 extends Component {
   }
 
   render() {
-    let link = this.props.match.url.slice(this.props.match.url.lastIndexOf("/") + 1);
-
+    let link = this.props.match.url.slice(this.props.match.url.lastIndexOf("/") + 1)
+    if (link.includes('?'))
+      link = link.substr(0, link.indexOf('?'))
     let currentPageIndex = this.props.pages.findIndex(page => {
       let pageLink = page.link
       if (pageLink.includes('?'))
         pageLink = pageLink.substr(0, pageLink.indexOf('?'))
       return pageLink == link
-    });
-    if (currentPageIndex == -1)
+    })
+
+    if (currentPageIndex == -1) {
       if (link == "first-question")
         currentPageIndex = 0
       else if (this.props.pages.length === 1)
         currentPageIndex = 0
-      else
+      else {
+        console.log(this.props.pages.map(a => a.link))
+        console.log(link)
         return <div className="progress-bar-3">
           <div className="container">
             ProgressBar3: incorrect link
           </div>
-        </div>;
+        </div>
+      }
+    }
 
     let currentPage = this.props.pages[currentPageIndex];
     let width = currentPageIndex == 0 ?

@@ -21,7 +21,6 @@ import ManagerRegPage from './components/pages/ManagerRegPage';
 import ManagerDetailingPage from './components/pages/registration/ManagerRegistorPage';
 import ManagersPage from './components/pages/ManagersPage';
 import ManagerPage from './components/pages/ManagerPage';
-import CompanyPage from './components/pages/CompanyPage';
 import KYCPage from './components/pages/KYCPage';
 import RequestsPage from './components/pages/RequestsPage';
 import RequestPage from './components/pages/RequestPage/index';
@@ -130,7 +129,7 @@ class App extends Component {
           <Route path="/help center" render={() => this.renderHelpCenterPage()} />
           <Route path="/blog" render={() => this.renderBlogPage()} />
 
-          <Route path="/company/:id" component={CompanyPage} />
+          <Route path="/company/:id" component={ManagerPage} />
           <Route path="/manager/:id" component={ManagerPage} />
           <Route path="/investor/:id" component={InvestorPage} />
           <Route path="/company" component={CompanyManagmentPage} />

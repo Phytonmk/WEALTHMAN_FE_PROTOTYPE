@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import ReactDOM from "react-dom";
+import React, { Component } from 'react'
+import ReactDOM from "react-dom"
 
-import { clamp, roundAccurate } from './../helpers';
+import { clamp, roundAccurate } from './../helpers'
 
-import '../../css/Slider.sass';
+import '../../css/Slider.sass'
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //
@@ -46,129 +46,129 @@ import '../../css/Slider.sass';
 
 class Slider extends Component {
   constructor(props) {
-    super(props);
-    let step = this.props.step || 1;
+    super(props)
+    let step = this.props.step || 1
     let state = {
       draggable: false,
-    };
+    }
     
     if (this.props.ranges) {
-      let lastIncludedRangeIndex = -1;
-      let rangeTo = this.props.from;
+      let lastIncludedRangeIndex = -1
+      let rangeTo = this.props.from
       for (let i = 0; i < this.props.ranges.length; i++) {
-        rangeTo += this.props.ranges[i].length;
+        rangeTo += this.props.ranges[i].length
         if (rangeTo > this.props.to) {
-          lastIncludedRangeIndex = i;
-          break;
+          lastIncludedRangeIndex = i
+          break
         }
       }
       if (lastIncludedRangeIndex == -1)
-        state.ranges = this.props.ranges;
+        state.ranges = this.props.ranges
       else
-        state.ranges = this.props.ranges.slice(0, lastIncludedRangeIndex);
+        state.ranges = this.props.ranges.slice(0, lastIncludedRangeIndex)
       if (lastIncludedRangeIndex < this.props.ranges.length - 1)
-        step = this.props.ranges[lastIncludedRangeIndex + 1].step || step;
+        step = this.props.ranges[lastIncludedRangeIndex + 1].step || step
     }
 
-    state.step = step;
-    this.state = state;
+    state.step = step
+    this.state = state
   }
 
   handleMouseDown(event) {
-    this.setState({draggable: true});
-    this.updateValue(event);
-    document.addEventListener("mousemove", this.handleMouseMove.bind(this));
-    document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    this.setState({draggable: true})
+    this.updateValue(event)
+    document.addEventListener("mousemove", this.handleMouseMove.bind(this))
+    document.addEventListener("mouseup", this.handleMouseUp.bind(this))
   }
 
   handleMouseUp(event) {
-    this.setState({draggable: false});
-    document.removeEventListener("mousemove", this.handleMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.handleMouseUp.bind(this));
+    this.setState({draggable: false})
+    document.removeEventListener("mousemove", this.handleMouseMove.bind(this))
+    document.removeEventListener("mouseup", this.handleMouseUp.bind(this))
   }
 
   handleMouseMove(event) {
     if (!this.state.draggable)
-      return;
-    this.updateValue(event);
+      return
+    this.updateValue(event)
   }
 
   updateValue(event) {
-    let content = ReactDOM.findDOMNode(this);
+    let content = ReactDOM.findDOMNode(this)
     if (content instanceof HTMLElement) {
-      let rect = content.getElementsByClassName("grey-bar")[0].getBoundingClientRect();
-      let position = (event.clientX - rect.left) / (rect.right - rect.left);
-      position = clamp(position, 0, 1);
-      let from, to, step, value;
+      let rect = content.getElementsByClassName("grey-bar")[0].getBoundingClientRect()
+      let position = (event.clientX - rect.left) / (rect.right - rect.left)
+      position = clamp(position, 0, 1)
+      let from, to, step, value
 
       if (this.state.ranges) {
-        var rangeIndex = Math.floor(position * this.state.ranges.length);
-        let range = this.state.ranges[rangeIndex];
-        step = range.step ? range.step : this.state.step;
-        step /= 10;
+        var rangeIndex = Math.floor(position * this.state.ranges.length)
+        let range = this.state.ranges[rangeIndex]
+        step = range.step ? range.step : this.state.step
+        step /= 10
         if (rangeIndex == 0)
-          from = this.props.from;
+          from = this.props.from
         else
           from = this.props.from + this.state.ranges
           .slice(0, rangeIndex)
           .map(range => range.length)
-          .reduce((a, b) => a + b);
-        to = from + range.length;
-        position -= rangeIndex / this.state.ranges.length;
-        position *= this.state.ranges.length;
+          .reduce((a, b) => a + b)
+        to = from + range.length
+        position -= rangeIndex / this.state.ranges.length
+        position *= this.state.ranges.length
         this.setState({
           position: rangeIndex / this.state.ranges.length + roundAccurate(position * (to - from), step) / (to - from) / this.state.ranges.length
-        });
+        })
       } else {
-        step = this.state.step;
-        from = this.props.from;
-        to = this.props.to;
+        step = this.state.step
+        from = this.props.from
+        to = this.props.to
       }
 
-      this.setState({step: step});
-      value = from + roundAccurate(position * (to - from), step);
-      value = clamp(value, from, to);
-      this.props.setValue(value);
+      this.setState({step: step})
+      value = from + roundAccurate(position * (to - from), step)
+      value = clamp(value, from, to)
+      this.props.setValue(value)
     }
   }
 
   render() {
-    let position;
-    let value = clamp(this.props.value || this.props.from, this.props.from, this.props.to);
+    let position
+    let value = clamp(this.props.value || this.props.from, this.props.from, this.props.to)
     if (this.state.ranges) {
-      let rangeIndex = 0;
-      let rangeFrom = this.props.from;
+      let rangeIndex = 0
+      let rangeFrom = this.props.from
       for (let i = 0; i < this.state.ranges.length; i++) {
         if (value >= rangeFrom && value <= rangeFrom + this.state.ranges[i].length) {
-          rangeIndex = i;
-          break;
+          rangeIndex = i
+          break
         }
-        rangeFrom += this.state.ranges[i].length;
+        rangeFrom += this.state.ranges[i].length
       }
-      position = (rangeIndex + (value - rangeFrom) / this.state.ranges[rangeIndex].length) / this.state.ranges.length;
-      position = clamp(position, 0, 1);
+      position = (rangeIndex + (value - rangeFrom) / this.state.ranges[rangeIndex].length) / this.state.ranges.length
+      position = clamp(position, 0, 1)
     }
     else
-      position = (value - this.props.from) / (this.props.to - this.props.from);
+      position = (value - this.props.from) / (this.props.to - this.props.from)
 
-    let lineWidth = "calc(9px + (100% - 18px) * " + position + ")";
-    let sliderThumbOffset = "calc((100% - 18px) * " + position + ")";
+    let lineWidth = "calc(9px + (100% - 18px) * " + position + ")"
+    let sliderThumbOffset = "calc((100% - 18px) * " + position + ")"
 
-    let rangePoints;
+    let rangePoints
     if (this.state.ranges) {
       rangePoints = [
         <div className="point passed" style={{left: 0}} />,
         ...this.state.ranges.map((range, index) => {
-          let left = ((index + 1) / this.state.ranges.length);
+          let left = ((index + 1) / this.state.ranges.length)
           return <div
             className={"point " + (left < position && "passed")}
             style={{left: "calc((100% - 12px) * " + left + ")"}}
           >
             {(index < this.state.ranges.length - 1) && <small className="noselect">{range.label}</small>}
-          </div>;
+          </div>
         }),
         <div className="point" style={{right: 0}} />,
-      ];
+      ]
     }
 
     return (
@@ -200,8 +200,8 @@ class Slider extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Slider;
+export default Slider

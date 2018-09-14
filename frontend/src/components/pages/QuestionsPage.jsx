@@ -43,7 +43,7 @@ class QuestionsPage extends Component {
       {
         question: "What is the size of your liquid assets?",
         description: "Add up your assets from checking, savings accounts, investment portfolios, even the cash under your mattress - but exclude assets, like your home or car. An estimate will work.",
-        type: "slider",
+        type: "range-slider",
         typeSpecific: {
           from: 0,
           to: 999999999,

@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
-import { setReduxState } from '../../redux';
-import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
-// import Sortable from '../Sortable';
-import { api, setPage, setCurrency, setCookie, getCookie, niceNumber } from '../helpers';
-import Social from './../Social';
-import Avatar from '../Avatar';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import { api, setCookie, getCookie } from '../helpers'
+import Social from './../Social'
+import Seemore from '../Seemore'
+import Avatar from '../Avatar'
+import Qsign from '../Qsign'
+import Breadcrumbs from '../Breadcrumbs'
+import Graphics from '../dashboards/Graphics'
 
 const filters = [
   {
@@ -20,11 +22,11 @@ const filters = [
     link: "Advisory",
     description: "Find The Right Advisory Support For Your Own Decisions On Investment Management",
   },
-];
+]
 
 class ManagerPage extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       profitability: '-',
       clients: '-',
@@ -38,45 +40,30 @@ class ManagerPage extends Component {
     const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
     api.get(managerType + '/' + this.props.match.params.id)
       .then((res) => {
-        if (this.props.userData.user === res.data.user)
-          setPage('account')
-        this.setState({manager: res.data});
+        console.log(res.data)
+        this.setState({manager: res.data})
       })
-      .catch(console.log);
-    api.get(managerType + '-statistics/' + this.props.match.params.id)
-      .then((res) => {
-        this.setState({
-          profitability: res.data.profitability,
-          clients: res.data.clients,
-          portfolios: res.data.portfolios,
-          companyManagers: res.data.managers
-        });
-      })
-      .catch(console.log);
+      .catch(console.log)
   }
   componentWillMount() {
     this.load()
   }
   apply(filter) {
     const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
-    setCookie('service', filters[filter].link);
-    // setCookie('selectedManager', managerType + '/' + this.props.match.params.id);
+    setCookie('service', filters[filter].link)
     if (getCookie('usertype') === '0') {
       this.props.history.push({
         pathname: 'kyc-questions',
         search: '?manager=' + managerType + '/' + this.props.match.params.id
       })
-      // setPage("kyc/" + managerType + '/' + this.props.match.params.id);
     } else {
       window.openSignUp(() => {
         this.props.history.push({
           pathname: 'kyc-questions',
           search: '?manager=' + managerType + '/' + this.props.match.params.id
         })
-        // setPage("kyc/" + managerType + '/' + this.props.match.params.id);
       })
     }
-    // setPage(this.props.user === -1 ? "reg-or-login/" : "kyc/" + managerType + '/' + this.props.match.params.id);
   }
   render() {
     const managerType = (this.props.match.path.includes('company') ? 'company' : 'manager')
@@ -84,263 +71,185 @@ class ManagerPage extends Component {
       this.lastManagerUrl = managerType + '/' + this.props.match.params.id
       this.load()
     }
-    var manager = this.state.manager;
+    var manager = this.state.manager
     if (manager === null)
-      return <div>...</div>
+      return <div>incorrect URL</div>
 
-    let inviteBtn = '';
+    let aum = []
+    if (this.state.manager.aumDynamics) {
+      for (let i = 0; i < this.state.manager.aumDynamics.dates.length; i++) {
+        aum.push({
+          title: new Date(this.state.manager.aumDynamics.dates[i]),
+          value: this.state.manager.aumDynamics.values[i]
+        })
+      }
+    }
 
-    if (this.props.user === 3 && manager.company_name === undefined && (manager.company === -1 || manager.company === null))
-      inviteBtn = <Link to={"/participating/" + manager._id}>
-                    <button className="big-blue-button right">Invite now</button>
-                  </Link>
-    else if (this.props.user === 1 && manager.company_name !== undefined && (this.props.userData.company === -1 || this.props.userData.company === null))
-      inviteBtn = <Link to={"/participating/" + manager._id}>
-                    <button className="big-blue-button right">Apply to be in</button>
-                  </Link>
     return (
-      <div id="manager-page">
+      <div id="company-page">
         <div className="new-long-header" />
         <div className="container">
-          <div className="breadcrumb">
-            <Link to="/">Marketplace</Link>
-            <Link to={'#'}>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</Link>
-          </div>
+          <Breadcrumbs links={[
+            {
+              link: "/",
+              label: "Marketplace"
+            },
+            {
+              link: "#",
+              label: (manager.name || manager.company_name || '') + ' ' + (manager.surname || '')
+            },
+          ]} />
           <div className="heading">
-            <div className="manager-details">
+            <div className="column margin30">
               <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="96px" />
-              <div className="details-block">
-                <div className="row">
-                  <h1>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
-                  <small>{manager.company_name ?
-                        'Company'
-                      :
-                      (manager.company === null ? 'Lonely manager' :
-                      <Link to={"/company/" + manager.company}>
-                        Manager of company
-                      </Link>)
-                    }
-                  </small>
-                </div>
-                <div className="row subheaders">
-                  <div>
-                    <small>Location</small>
-                    <p>???</p>
+            </div>
+            <div className="column">
+              <div className="company-name row">
+                <h1 className="white">{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
+                <h3 className="light-grey">{manager.company_name ? 'Company' : 'Manager'}</h3>
+              </div>
+              <div className="row">
+                {[
+                  {
+                    label: "Location",
+                    data: "United Kingdom, London",
+                  },
+                  {
+                    label: "Total",
+                    data: "822 investor",
+                  },
+                  {
+                    label: "Total",
+                    data: "820 000$ in AUM",
+                  },
+                ].map(column =>
+                  <div className="column margin60">
+                    <h3 className="light-grey">{column.label}</h3>
+                    <h3 className="white">{column.data}</h3>
                   </div>
-                  <div>
-                    <small>Total</small>
-                    <p>{manager.clients > 0 ? manager.clients : 'no'} {manager.clients > 1 ? 'investors' : 'investor'}</p>
-                  </div>
-                  <div>
-                    <small>Total</small>
-                    <p>{niceNumber(manager.aum)}$ in AUM</p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
-            <div className="row">
-              <Link to={"/chat/" + manager.user} onClick={() => this.setPage("chat")}>
-                <button className="big-transparent-button right">CONTACT</button>
+            <div className="column right">
+              <Link to={"/chat/" + manager.user}>
+                <button className="big-transparent-button">CONTACT</button>
               </Link>
-              {inviteBtn}
             </div>
           </div>
-          {/*<div className="heading">
-            <div className="main-info">
-              <div className="name-row">
-                <h1>{(manager.name || manager.company_name || '') + ' ' + (manager.surname || '')}</h1>
-                <h3>{manager.age ? `Age ${manager.age}` : 'Age not specified'}</h3>
-              </div>
-
-            </div>
-
-            <div className="column right">
-            </div>
-          </div>*/}
 
           <div className="row">
             <div className="main-column">
-              {/*{(manager.services || []).map((service, i) => <div className="box" key={i}>
-                <h2>
-                  {filters[service.type].link}
-                  {getCookie('usertype') != '1' && getCookie('usertype') != '3' ?
-                    <button
-                      onClick={() => this.apply(i)}
-                      className="big-blue-button right"
-                    >Invest now</button> : ''}
-                </h2>
-                <p>{filters[service.type].description}</p>
-                <div className="row">
-                  <b>Exit fee:</b> {service.exit_fee} %
-                </div>
-                <div className="row">
-                  <b>Managment fee:</b> {service.managment_fee} %
-                </div>
-                <div className="row">
-                  <b>Perfomance fee:</b> {service.perfomance_fee} %
-                </div>
-                <div className="row">
-                  <b>Font fee:</b> {service.front_fee} %
-                </div>
-                <div className="row">
-                  <b>Recalculation:</b> {service.recalculation}
-                </div>
-                <div className="row">
-                  <b>Minimal investment:</b> {service.min} $
-                </div>
-                <div className="row">
-                  <b>Methodology:</b> {service.methodology}
-                </div>
-                <div className="row">
-                  <b>Philosofy:</b> {service.philosofy}
-                </div>
-              </div>)}*/}
-              {(manager.services || []).map((service, i) => <div className="box manager-desc-box" key={i}>
-                <h2>
-                  {filters[service.type].link}investment management
-                  <Link to="/faq">
-                    <span className="question" />
-                  </Link>
-                </h2>
-                <div className="conditions">
-                  <div className="condition">
-                    <p>
-                      99%
-                      <Link to="/faq">
-                        <span className="question light" />
-                      </Link>
-                    </p>
-                    <small>Success score</small>
-                  </div>
-                  <div className="condition">
-                    <p>
-                      {service.min}$
-                    </p>
-                    <small>Account minimum</small>
-                  </div>
-                  <div className="condition">
-                    <p>
-                      {service.perfomance_fee}%
-                    </p>
-                    <small>Perfomance fee</small>
-                  </div>
-                  <div className="condition">
-                    <p>
-                      {service.exit_fee}%
-                    </p>
-                    <small>Exit fee</small>
-                  </div>
-                  {getCookie('usertype') != '1' && getCookie('usertype') != '3' ?
-                    <button
-                      onClick={() => this.apply(i)}
-                      className="big-blue-button right"
-                    >Invest</button> : ''}
-                </div>
-                <h3>Methodology</h3>
-                <p>{service.methodology}</p>
-                <h3>Investment philosophy</h3>
-                <p>{service.philosofy}</p>
-              </div>)}
+              {
+                (manager.services || []).map(service =>
+                  <Seemore>
+                    <div className="row">
+                      <h2 className="left">{filters[service.type].link} investment management</h2>
+                      <Link to="/faq"><Qsign /></Link>
+                    </div>
+                    <div className="row numbers">
+                      {[
+                        {number: "99%", desc: "Success score"},
+                        {number: service.min + "$", desc: "Account minimum"},
+                        {number: service.perfomance_fee + "%", desc: "Fees of AUM"},
+                        {number: 1592, desc: "Title"},
+                      ].map((info, index) => 
+                        <div className="column left margin-right">
+                          <div className="row">
+                            <h1 className="blue left">{info.number}</h1>
+                            {index == 0 && <Link to="/faq"><Qsign className="semitransparent" /></Link>}
+                          </div>
+                          <small>{info.desc}</small>
+                        </div>
+                      )}
+                      {
+                        (getCookie('usertype') != '1' && getCookie('usertype') != '3') &&
+                        <button
+                          onClick={() => this.apply(i)}
+                          className="big-blue-button right"
+                        >Invest</button>
+                      }
+                    </div>
+                    <h3>Methodology</h3>
+                    {/* <p>{service.methodology}</p> */}
+                    <span className="grey">
+                      We develop recommendations for you portfolio using a varienty of HSBC
+                      and third-party investment vehicles and investment managers, tailoring
+                      each choice to your needs.<br />
+                      If you have a discretionary portfolio we will review it and may make
+                      adjustments based on your objectives and our market outlook. We
+                      continually review the investments and managers we use to ensure they
+                      suited to your portfolio.
+                    </span>
+                    <h3>Investment philosophy</h3>
+                    {/* <p>{service.philosofy}</p> */}
+                    <span className="grey">
+                      Ever-changing global economic and market conditions can provide
+                      investment opportunities all over the world. Backed by the global reach
+                      of HSBC, we can deliver these opportunities to you.
+                    </span>
+                    {aum &&
+                    <Graphics
+                      graphics={[{
+                        type: 'fixed-width-line',
+                        width: 470,
+                        title: <b>AUM dinamics</b>,
+                        lines: [{
+                          data: aum
+                        }]
+                      }]}
+                    />}
+                  </Seemore>
+                )
+              }
             </div>
             <div className="second-column right">
 
-              {!manager.company_name ? '' :
-                <div className="box">
-                  <div className="row">
-                    Company's managers
-                  </div>
-                  {(!this.state.companyManagers || this.state.companyManagers.length === 0) ? <small>no managers</small> :
-                  this.state.companyManagers.map((manager, i) =>
-                    <Link to={'/manager/' + manager._id}>
-                    <div className="row comapy-managers" key={i}>
-                      <Avatar src={api.imgUrl(manager.img)} />
-                      {(manager.name || '') + ' ' + (manager.surname || '')}
-                    </div>
-                  </Link>)}
+              <div className="box">
+                <h2>Team</h2>
+              </div>
+
+              <div className="box">
+                <h2>{manager.company_name ? 'Company' : 'Manager'} details</h2>
+                <div className="webpage info-row">
+                  <span>Website</span>
+                  <a href="https://www.griffoncapital.com" target="_blank">https://www.griffoncapital.com</a>
                 </div>
-              }
-
-              <div className="box">
-                <h3>Statistics</h3>
-                <h1 className="green">{this.state.profitability}%</h1>
-                <small>Profitability (all time)</small>
-                <h1>{this.state.clients}</h1>
-                <small>Quantity clients</small>
-                <h1>{this.state.portfolios}</h1>
-                <small>Portfolios in management</small>
+                <div className="headquaters info-row">
+                  <span>Headquaters</span>
+                  <span className="black">Tehran, Tehran</span>
+                </div>
+                {[
+                  {
+                    label: "Year founded",
+                    data: "2014",
+                  },
+                  {
+                    label: "Company type",
+                    data: "Partnership",
+                  },
+                  {
+                    label: "Company size",
+                    data: "11-50 employees",
+                  },
+                  {
+                    label: "Specialties",
+                    data: "Iran Asset Management, Iran Corporate Private Equity, Iran Venture Frontier Finance, Iran Investment Banking, Iran Markets, Iran Equity Fund. Tehran Stock Exch metual fund, Iran Capital Markets, Iran Fixed Income, Iran Investment Fund and Iran Portfolio Management",
+                  },
+                ].map(row => 
+                  <div className="info-row">
+                    <span>{row.label}</span>
+                    <span className="black">{row.data}</span>
+                  </div>
+                )}
               </div>
 
               <div className="box">
-                <h3>Methodology</h3>
-                <span>VAR method</span>
+                <h2>Social networks</h2>
+                <Social hoverable={false} links={["https://t.me", "https://facebook.com", "https://linkedin.com"]} />
               </div>
+
             </div>
           </div>
-
-          {/* <div className="first-tab">
-            <div className="manager-box">
-              <div className="cover"></div>
-              <div className="info">
-                <div className="circle">
-                  <img src={manager.img ? api.imgUrl(manager.img) : ''} className="avatar" />
-                </div>
-                <h2 className="text-center">{manager.name} {manager.surname}</h2>
-                <h4 className="text-center">Age {manager.age}</h4>
-                <div className="row-padding">
-                  <div className="column center">
-                    <Link to={"/contact"} onClick={() => this.setPage("contact")}>
-                      <button className="back">Contact</button>
-                    </Link>
-                    <Link to={this.props.user === -1 ? "/register" : "/kyc"} onClick={() => this.apply()}>
-                      <button className="continue">Apply now</button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-              <div className="box">
-                <h4>Fees</h4>
-                {manager.terms}
-              </div>
-
-              <div className="box margin-right row">
-                <div className="third">
-                  <p className="blue">Social networks:</p>
-                  <button className="facebook"></button>
-                  <button className="twitter"></button>
-                  <button className="linkedin"></button>
-                </div>
-                <div className="two-third">
-                  <p className="blue">Biography:</p><p> {manager.biography}</p>
-                </div>
-              </div>
-
-          </div>
-          { company !== undefined ?
-            <div className="second-tab">
-            <div className="box">
-              <div className="circle left">
-                <img src={"manager/companies/" + company.img} className="avatar" />
-              </div>
-              <div className="row">
-                <p className="blue">Company</p>
-                <h3>{company.name}</h3>
-                <div className="row tridot">
-                  <a>{company.site}</a>
-                </div>
-              </div>
-              <div className="row">
-                <p className="blue">Social networks:</p>
-                <button className="facebook"></button>
-                <button className="twitter"></button>
-                <button className="linkedin"></button>
-              </div>
-            </div>
-            <div className="box">
-              <p className="blue">Methodology:</p><p> {manager.methodology}</p>
-            </div>
-          </div> : ''} */}
         </div>
       </div>
     )
@@ -349,4 +258,4 @@ class ManagerPage extends Component {
 
 
 
-export default withRouter(connect(a => a)(ManagerPage));
+export default withRouter(connect(a => a)(ManagerPage))

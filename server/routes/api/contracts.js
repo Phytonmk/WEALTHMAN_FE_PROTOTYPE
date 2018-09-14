@@ -3,16 +3,13 @@ const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
 const Request = require('../../models/Request')
 const Portfolio = require('../../models/Portfolio')
-
-const TGlogger = require('../../helpers/tg-testing-loger')
-
+const configs = require('../../configs')
+const portfolioAbi = require('../../trading/portfolio_abi.js')
 const Web3 = require('web3')
-const Accounts = require('web3-eth-accounts')
-
-const ABI = require('../../trading/contract_abi')
-
+const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
+const TGlogger = require('../../helpers/tg-testing-loger')
 const notify = require('../../helpers/notifications')
-const addPortfolio = require('../../trading/wealthman_portfolio_add')
+// const addPortfolio = require('../../trading/wealthman_portfolio_add')
 const deployContract = require('../../trading/wealthman_deploy')
 
 module.exports = (app) => {
@@ -147,12 +144,56 @@ module.exports = (app) => {
     request.set({status: 'getting ethereum'})
     await request.save()
   })
-  app.get('/api/create-wallet', (req, res) => {
-    const web3 = new Web3()
-    const accounts = new Accounts("http://rinkeby.infura.io")
-    const account = web3.eth.accounts.create()
-    res.send(account)
-    res.status(200)
-    res.end('')
-  })
+  // app.get('/api/contract-price/:request/:type', (req, res) => {
+  //   cosnt
+  //   const portfolio = await Portfolio.find({request: req.params.request, state: 'active'})
+  //   if (portfolio === null) {
+  //     res.status(404)
+  //     res.end()
+  //     return
+  //   }
+  //   const contract = new web3.eth.Contract(portfolioAbi, portfolio.smart_contract)
+  //   let functionAbi = null
+  //   switch (req.params.type) {
+  //     case 'deploy':
+  //       functionAbi = contract.deploy({
+  //         data: bytecode,
+  //         arguments:[
+  //           '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D',
+  //           '0xA5Db0030205F621eF2571275858A92aa0D65C0D2',
+  //           '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D',
+  //           '0x6e3F0CC77BF9A846e5FD4B07706bf8ca95493d4D',
+  //            1535760000, 5, 10, 5, 5, 5, 5, 5]
+  //       }).encodeABI()
+  //     break
+  //     case 'deploy':
+  //       functionAbi = contract.methods.transferEth().encodeABI()
+  //     break
+  //     case 'rebuild':
+  //       functionAbi = contract.methods.transferAllToEth(tokens).encodeABI()
+  //     break
+  //     case 'withdraw':
+  //       functionAbi = contract.methods.withdraw().encodeABI()
+  //     break
+  //   }
+  //   if (functionAbi === null) {
+  //     res.status(400)
+  //     res.end()
+  //     return
+  //   }
+  //   res.status(200)
+  //   res.end('')
+  // })
 }
+
+// const getNonce = (address) =>
+//   new Promise((resolve, reject) =>
+//     web3.eth.getTransactionCount(address, (e, result) => e ? reject(e) : resolve(result)))
+
+// const getGasPrice = () =>
+//   new Promise((resolve, reject) =>
+//     web3.eth.getGasPrice((e, result) => e ? reject(e) : resolve(result)))
+
+// const getGasLimit = (functionAbi) =>
+//   new Promise((resolve, reject) =>
+//     web3.eth.estimateGas({data: functionAbi}, (e, result) => e ? reject(e) : resolve(result)))

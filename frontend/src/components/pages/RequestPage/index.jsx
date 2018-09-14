@@ -51,6 +51,9 @@ class RequestPage extends Component {
           case 'revision':
             Page = InvestorPortfolioRevision;
           break;
+          // case 'pending':
+          //   Page = InvestorPortfolioRevision;
+          // break;
           case 'waiting for deposit':
             Page = InvestorPortfolioDeposit;
           break;
