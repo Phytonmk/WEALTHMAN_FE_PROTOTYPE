@@ -31,7 +31,7 @@ class KYCQuestionsPage extends Component {
   }
   render() {
     // console.log(this.props.history.location.search)
-    const currentQuestions = questions//.filter(question => typeof question.filter === 'function' ? question.filter(this.state) : true)
+    const currentQuestions = questions.filter(question => typeof question.filter === 'function' ? question.filter(this.state) : true)
     // console.log(this.state)
     let questionsToPages = currentQuestions.map(question => {
       return {

@@ -226,7 +226,7 @@ class ManagersPage extends Component {
     let sortableManagers = this.state.offers.map((manager, index) => {
       const name = (manager.name || manager.company_name || '') + " " + (manager.surname || '')
       return {
-        id: manager.id,
+        id: manager._id,
         img: <Avatar src={manager.img ? api.imgUrl(manager.img) : ""} size="40px" />,
         name: {
           render: <Link to={(manager.company_name ? "/company/" : "/manager/") + manager._id} className="no-margin no-link-style">
@@ -314,8 +314,9 @@ class ManagersPage extends Component {
                 <br />
                 </div> */}
                 <div className="row">
+                  <h2>Choose the best suited wealth manager!</h2>
                   <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
-                    Invest on Autopilot
+                    {(filters.find(filter => filter.link === this.state.filter) || {description: ''}).description}
                   </Link>
                 </div>
               </div> : ''}
@@ -414,7 +415,31 @@ class ManagersPage extends Component {
               :
               <div className="loading"><p>Loading</p></div>,
           },
-        ]} />
+          {
+            header: "All types",
+            content: this.state.gotData ?
+              <Sortable2
+                filter={row =>
+                  row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
+                }
+                columns={sortableHeader}
+                data={sortableManagers.map((manager) => {
+                  manager.apply = <div className="no-margin" onClick={() => setPage(`/${manager.type.toLowerCase()}/${manager.id}`)}>
+                    <button className="big-blue-button">
+                      APPLY NOW
+                    </button>
+                  </div>
+                  return manager
+                })}
+                navigation={true}
+                maxShown={5}
+              />
+              :
+              <div className="loading"><p>Loading</p></div>,
+          },
+        ]}
+        onChange={(tab) => filters[tab] ? this.setState({filter: filters[tab].link}) : this.setState({filter: 'unknown'})}
+        />
       </div>
     )
   }

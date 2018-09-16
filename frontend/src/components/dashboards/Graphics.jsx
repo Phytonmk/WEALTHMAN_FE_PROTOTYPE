@@ -267,7 +267,7 @@ class SuperLine extends Component {
       if (viewOptions[viewOption] !== 'All') {
         console.log(-this.viewOptionsValues[viewOptions[viewOption]])
         lineData.forEach((line, i) => {
-          lineData[i] = line.slice(0, this.viewOptionsValues[viewOptions[viewOption]])
+          lineData[i] = line.slice(line.length - this.viewOptionsValues[viewOptions[viewOption]])
         })
         // lineData = lineData.map((line) => {return line.slice(this.viewOptionsValues[viewOptions[viewOption]]) * -1})
         // console.log(lineData[0].length, this.viewOptionsValues[viewOptions[viewOption]])

@@ -5,6 +5,7 @@ import Radio from './inputs/Radio';
 import Checkbox from './inputs/Checkbox';
 import Slider from './inputs/Slider';
 import SliderWithInput from './inputs/SliderWithInput';
+import RetirementGraphic from './inputs/RetirementGraphic'
 
 import '../css/Question.sass'
 import { niceNumber2 } from './helpers'
@@ -57,6 +58,8 @@ class Question extends Component {
         return this.renderCostSlider()
       case 'range-slider':
         return this.renderRangeSlider()
+      case 'retirement-graphic':
+        return this.renderRetirementGraphic()
       default:
         return <p>Unable to render {this.props.type} input</p>
     }
@@ -138,6 +141,12 @@ class Question extends Component {
         />
       </div>
     )
+  }
+  renderRetirementGraphic() {
+    return  <RetirementGraphic
+              value={this.props.value}
+              setValue={this.props.setValue}
+            />
   }
   renderRangeSlider() {
     return (
