@@ -17,7 +17,7 @@ class PortfolioCreationPage extends Component {
     this.state = {
       selected: [],
       tokens: [],
-      selectedIds: [],
+      selectedNames: [],
       request: null,
       investor: null,
       page: 'select',
@@ -92,16 +92,13 @@ class PortfolioCreationPage extends Component {
       request: this.props.match.params.id,
     })
       .then((res) => {
+        const selectedNames = [...this.state.selectedNames]
         const selected = [];
         const inputData = {};
         if (res.data.exists) {
           let i = 0;
           for (let token of res.data.portfolio.currencies) {
-            // selected.push({
-            //   name: token.currency,
-            //   id: i++,
-            //   icon: '',
-            // });
+            selectedNames.push(token.currency)
             selected.push(Object.assign({}, this.state.tokens.find(a => a.name === token.currency)))
             inputData[token.currency] = {
               percent: token.percent,
@@ -109,7 +106,7 @@ class PortfolioCreationPage extends Component {
               comments: token.comments,
             }
           }
-          this.setState({selected, inputData, activeExists: res.data.activeExists});
+          this.setState({selected, inputData, activeExists: res.data.activeExists, selectedNames});
         }
       })
       .catch(console.log);
@@ -117,7 +114,7 @@ class PortfolioCreationPage extends Component {
   updateButtons() {
     const state = Object.assign({}, this.state);
     state.tokens.map(token => {
-      if (this.state.selectedIds.includes(token.id))
+      if (this.state.selectedNames.includes(token.name))
         token.action = <button style={{width: 100}} className="big-red-button" onClick={() => this.removeToken(token)}>Remove</button>
       else
         token.action = <button style={{width: 100}} className="big-blue-button" onClick={() => this.addToken(token)}>Add</button>
@@ -127,8 +124,8 @@ class PortfolioCreationPage extends Component {
   }
   removeToken(token) {
     const state = Object.assign({}, this.state);
-    state.selected.splice(state.selectedIds.indexOf(token.id), 1);
-    state.selectedIds.splice(state.selectedIds.indexOf(token.id), 1);
+    state.selected.splice(state.selectedNames.indexOf(token.name), 1);
+    state.selectedNames.splice(state.selectedNames.indexOf(token.name), 1);
     delete state.inputData[token.name]
     this.setState(state);
     setTimeout(() => this.updateButtons(), 0);
@@ -153,7 +150,7 @@ class PortfolioCreationPage extends Component {
       comments: '',
     };
     state.selected.push(Object.assign({}, token));
-    state.selectedIds.push(token.id);
+    state.selectedNames.push(token.name);
     this.setState(state);
     setTimeout(() => this.updateButtons(), 0);
   }
