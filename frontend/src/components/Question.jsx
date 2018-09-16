@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-
-import Input from './inputs/Input'
-import Textarea from './inputs/Textarea'
-import Radio from './inputs/Radio'
-import Checkboxes from './inputs/Checkboxes'
-import Slider from './inputs/Slider'
-import SliderWithInput from './inputs/SliderWithInput'
-import RetirementGraphic from './inputs/RetirementGraphic'
+import Input from './inputs/Input';
+import Textarea from './inputs/Textarea';
+import Radio from './inputs/Radio';
+import Checkbox from './inputs/Checkbox';
+import Slider from './inputs/Slider';
+import SliderWithInput from './inputs/SliderWithInput';
 
 import '../css/Question.sass'
 import { niceNumber2 } from './helpers'
@@ -59,8 +57,6 @@ class Question extends Component {
         return this.renderCostSlider()
       case 'range-slider':
         return this.renderRangeSlider()
-      case 'retirement-graphic':
-        return this.renderRetirementGraphic()
       default:
         return <p>Unable to render {this.props.type} input</p>
     }
@@ -95,7 +91,7 @@ class Question extends Component {
   }
   renderCheckboxes() {
     return (
-      <Checkboxes
+      <Checkbox
         value={this.props.value}
         setValue={this.props.setValue}
         options={this.props.typeSpecific.answers}
@@ -212,12 +208,6 @@ class Question extends Component {
         ]}
       />
     )
-  }
-  renderRetirementGraphic() {
-    return  <RetirementGraphic
-              value={this.props.value}
-              setValue={this.props.setValue}
-            />
   }
   render() {
     return (
