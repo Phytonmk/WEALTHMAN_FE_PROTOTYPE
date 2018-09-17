@@ -9,7 +9,7 @@ const TGlogger = require('../../helpers/tg-testing-loger')
 const calcComissions = require('../../helpers/calcComissions')
 const Transaction = require('../../models/Transaction')
 
-const callCommisionsPay = require('../../trading/call_commissions')
+const callCommisionsPay = require('../../trading/check-tokens-presence')
 
 const ccxt = require('ccxt')
 

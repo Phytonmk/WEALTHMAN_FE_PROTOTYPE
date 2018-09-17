@@ -1,6 +1,6 @@
 const Request = require('../../models/Request')
 const Portfolio = require('../../models/Portfolio')
-const checkContractBalance = require('../../trading/token_balance_check.js')
+const checkContractBalance = require('../../trading/check-tokens-presence.js')
 const TGlogger = require('../../helpers/tg-testing-loger')
 const Transaction = require('../../models/Transaction')
 const Investor = require('../../models/Investor')

@@ -57,9 +57,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
       archived: await Request.countDocuments({manager: statisticObj.manager, status: 'archived'}),
       inProgress: await Request.countDocuments({manager: statisticObj.manager, status: { $not: { $in: ['active', 'archived', 'failed']}}})
     })
-    console.log(`Updating commisions for manager ${thisManager.name} ${thisManager.surname}`)
+    // console.log(`Updating commisions for manager ${thisManager.name} ${thisManager.surname}`)
     commisions.push(await calcComissions(thisManager))
-    console.log(commisions)
+    // console.log(commisions)
     statistic.set({
       dates,
       aum,

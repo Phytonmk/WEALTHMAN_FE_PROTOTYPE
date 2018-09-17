@@ -1,19 +1,17 @@
 const Portfolio = require('../models/Portfolio');
 const configs = require('../configs')
-const portfolioAbi = require('./portfolio_abi.js');
+const portfolioAbi = require('./contract-abi.js');
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 const Tx = require('ethereumjs-tx')
 const privateKey = configs.privateKey
 const admin = configs.adminAddress;
 module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
-  console.log('----------------------------')
   var contract = new web3.eth.Contract(portfolioAbi, portfolio_adress);
   var functionAbi =  contract.methods.transferEth().encodeABI();
   const getNonce = () => {
     return new Promise((resolve, reject) => {
       web3.eth.getTransactionCount(admin, (error, result) => {
-       console.log(result)
         if(error) reject(error);
         resolve(result);
       })
@@ -22,7 +20,9 @@ module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
   const getGasPrice = () => {
     return new Promise((resolve, reject) => {
       web3.eth.getGasPrice((error, result) => {
-        if(error) reject(error);
+        if(error)
+          reject(error)
+        else
           resolve(result);
       })
     })
@@ -30,8 +30,11 @@ module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
   const getGasLimit = (functionAbi) => {
     return new Promise((resolve, reject) => {
       web3.eth.estimateGas({data:functionAbi},(error, result) => {
-        if(error) reject(error);
-        resolve(result);
+        console.log(error, result)
+        if(error)
+          reject(error);
+        else
+          resolve(result);
       })
     })
   }
@@ -50,12 +53,12 @@ module.exports = (portfolio_adress) => new Promise((resolve, reject) => {
     });
   }
 
-  Promise.all([getNonce(), getGasPrice(), getGasLimit(functionAbi)])
+  Promise.all([getNonce(), getGasPrice()/*, getGasLimit(functionAbi)*/])
     .then(values => {
       console.log(`VALUES:\n`, values, '\n')
       const rawTx = {
         to: portfolio_adress,
-        gasLimit: web3.utils.toHex(values[2]),
+        gasLimit: 36 * 1000/*web3.utils.toHex(values[2])*/,
         nonce: web3.utils.toHex(values[0]),
         gasPrice: web3.utils.toHex(Number(values[1])),
         data: functionAbi

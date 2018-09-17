@@ -4,13 +4,13 @@ const Manager = require('../../models/Manager')
 const Request = require('../../models/Request')
 const Portfolio = require('../../models/Portfolio')
 const configs = require('../../configs')
-const portfolioAbi = require('../../trading/portfolio_abi.js')
+const portfolioAbi = require('../../trading/contract-abi.js')
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 const TGlogger = require('../../helpers/tg-testing-loger')
 const notify = require('../../helpers/notifications')
 // const addPortfolio = require('../../trading/wealthman_portfolio_add')
-const deployContract = require('../../trading/wealthman_deploy')
+const deployContract = require('../../trading/deploy')
 
 module.exports = (app) => {
   app.post('/api/contracts/deploy', async (req, res) => {

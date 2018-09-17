@@ -42,7 +42,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const fee = Math.ceil((ethPrice * feeRate) / price)
       const quantity = Math.floor(((order.percent / 100) / price) * order.whole_eth_amount)
 
-      await TGlogger(`Buying ${quantity} + ${fee} = ${(quantity + fee)} "${symbol}" for request #${request._id}`)
+      await TGlogger(`Buying ${quantity} + ${fee} = ${(quantity + fee)} "${symbol}" for request #${order.request}`)
       let purshcase = null
       if (configs.productionMode) {
         purshcase = await lowestPrice.exchange.api.createOrder(symbol, 'market', 'buy', quantity + fee)
@@ -96,7 +96,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
         order.set({
           cost: price,
           status: 'token bouthg',
-          quantity
+          quantity,
+          additional_quantity: fee
         })
         await portfolio.save()
         await order.save()
@@ -105,11 +106,12 @@ module.exports = () => new Promise(async (resolve, reject) => {
       let withdrawing = null
       const request = await Request.findById(order.request)
       if (request.exchange_withdraw_allowed) {
-        await TGlogger(`Withdrawing ${order.quantity} "${order.token_name}" to ${order.contract_address} for request #${request._id}`)
+        await TGlogger(`Withdrawing ${order.quantity} + ${order.additional_quantity} - 1 = ${order.quantity + order.additional_quantity - 1} "${order.token_name}" to ${order.contract_address} for request #${request._id}`)
         if (configs.productionMode) {
-          withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity, order.contract_address)
+          withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity + order.additional_quantity - 1, order.contract_address)
             .catch( async (e) => {
-                await TGlogger(e)
+                await TGlogger('failed to withdraw')
+                console.log(e)
                 order.set({status: 'failed to withdraw'})
                 await order.save()
             })

@@ -2,7 +2,7 @@ const Portfolio = require('../models/Portfolio')
 const Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 const configs = require('../configs')
-const portfolioAbi = require('./portfolio_abi.js')
+const portfolioAbi = require('./contract-abi.js')
 const privateKey = configs.privateKey
 const admin = configs.adminAddress
 module.exports = (address, value) => new Promise ((resolve, reject) => {
@@ -46,11 +46,11 @@ module.exports = (address, value) => new Promise ((resolve, reject) => {
     })
   }
 
-  Promise.all([getNonce(), getGasPrice(), getGasLimit(functionAbi)])
+  Promise.all([getNonce(), getGasPrice()/*, getGasLimit(functionAbi)*/])
     .then(values => {
       const rawTx = {
         to: portfolio_adress,
-        gasLimit: web3.utils.toHex(values[2]),
+        gasLimit: 36 * 1000/*web3.utils.toHex(values[2])*/,
         nonce: web3.utils.toHex(values[0]),
         gasPrice: web3.utils.toHex(Number(values[1])),
         data: functionAbi

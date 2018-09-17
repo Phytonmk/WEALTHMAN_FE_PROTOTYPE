@@ -2,14 +2,14 @@ const Web3 = require('web3')
 const Tx = require('ethereumjs-tx')
 const configs = require('../configs')
 const bytecode = require('./bytecode.js')
-const portfolioAbi = require('./portfolio_abi.js')
+const portfolioAbi = require('./contract-abi.js')
 const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
 const privateKey = configs.privateKey
 const _exchanger = configs.exchangerAddress
 const admin = configs.adminAddress
 const _admin = admin;
 module.exports = (contractData) => new Promise((mainResolve, reject) => {
-  console.log('!!!!!!!!!!!!!\n' + configs.web3httpProvider + '\n!!!!!!!!!!!!!')
+  console.log('!!!!!!!!!!!!!\nWeb3 Provider: ' + configs.web3httpProvider + '\n!!!!!!!!!!!!!')
   let {
     _owner,
     _manager,
@@ -79,11 +79,11 @@ module.exports = (contractData) => new Promise((mainResolve, reject) => {
   }
 
 
-    Promise.all([getNonce(), getGasPrice(), getGasLimit(deploy)])
+    Promise.all([getNonce(), getGasPrice()/*, getGasLimit(deploy)*/])
     .then(values => {
      const rawTx = {
        from: admin,
-       gasLimit: web3.utils.toHex(values[2]),
+       gasLimit: 36 * 1000/*web3.utils.toHex(values[2])*/,
        nonce: web3.utils.toHex(values[0]),
        gasPrice: web3.utils.toHex(Number(values[1])),
        data: deploy

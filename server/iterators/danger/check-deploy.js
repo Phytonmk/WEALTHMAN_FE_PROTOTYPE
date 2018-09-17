@@ -3,8 +3,7 @@ const Portfolio = require('../../models/Portfolio')
 const Transaction = require('../../models/Transaction')
 const TGlogger = require('../../helpers/tg-testing-loger')
 
-const checkDeployment = require('../../trading/wealthman_check_deploy')
-const trade = require('../../trading/wealthman_trade')
+const checkDeployment = require('../../trading/check-deposit')
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'deploying'})

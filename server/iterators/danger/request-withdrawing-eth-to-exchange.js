@@ -26,20 +26,24 @@ module.exports = () => new Promise(async (resolve, reject) => {
     if (portfolio === null)
       continue
     let value = 0
+    const ethPriceData = await exchanges[0].api.fetchTicker('ETH/USDT')
+        .catch(console.log)
     for (let currency of portfolio.currencies) {
       const stock = await Stock.findOne({title: currency.currency})
-      value += currency.amount * stock.last_price
+      value += currency.amount * stock.last_price / ethPriceData.last
     }
+    await TGlogger(`Sending ${value} from exchange to ${portfolio.smart_contract} for request ${request._id}`)
     if (request.exchange_withdraw_allowed) {
       let withdraw = false, error = false
       if (configs.productionMode) {
         withdraw = await exchanges[0].api.withdraw('ETH', value, portfolio.smart_contract)
           .catch( async (e) => {
-              await TGlogger(e)
+              console.log(e)
+              await TGlogger('Sending error')
               error = e
           })
       }
-      await TGlogger(`withdraw #${request._id}`)
+      await TGlogger(`Sent to #${request._id}`)
       if ((withdraw && !error) || !configs.productionMode) {
         request.set({status: 'selling tokens'})
         await request.save()

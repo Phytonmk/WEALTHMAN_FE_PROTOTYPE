@@ -66,17 +66,18 @@ module.exports = (app) => {
         currencies.push(rawCurrencies[i])
       }
     }
+    console.log(currencies)
     if (existsPortfolio === null) {
       const portfolio = new Portfolio({
         request: request._id,
         manager: request.manager,
         investor: request.investor,
-        currencies: req.body.currencies,
+        currencies,
         state: 'draft'
       })
       await portfolio.save()
     } else {
-      existsPortfolio.set({currencies: req.body.currencies})
+      existsPortfolio.set({currencies})
       await existsPortfolio.save()
     }
     if (request.status === 'pending')

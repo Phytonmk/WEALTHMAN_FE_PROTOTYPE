@@ -11,6 +11,7 @@ const OrderSchema = mongoose.Schema({
   contract_address: String,
   cost: Number,
   quantity: Number,
+  additional_quantity: Number,
   rebuild: Boolean,
 });
 

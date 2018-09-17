@@ -7,7 +7,7 @@ const TGlogger = require('../../helpers/tg-testing-loger')
 
 const configs = require('../../configs')
 
-const checkBalance = require('../../trading/wealthman_check_balance')
+const checkBalance = require('../../trading/check-deposit')
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'waiting for deposit'})
