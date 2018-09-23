@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../css/social.sass';
+import '../css/Social.sass';
 
 {/*
   //  //  //              USAGE EXAMPLE              //  //  //

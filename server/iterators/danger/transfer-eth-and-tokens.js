@@ -41,35 +41,46 @@ module.exports = () => new Promise(async (resolve, reject) => {
       }
     }
   }
-  const ethReturning = await Request.find({status: 'sending old tokens'})
+  const ethReturning = await Request.find({status: 'recalculation'})
   for (let request of ethReturning) {
     const porfolio = await Portfolio.findOne({request: request._id, state: 'active'})
-    const orders = await Order.find({request: request._id, related_portfolio: porfolio._id})
-    let everyCompeleted = true
-    let contractAddress = ''
-    let tokens = []
-    for (let order of orders) {
-      contractAddress = order.contract_address
-      if (order.status !== 'completed') {
-        everyCompeleted = false
-        break
-      } else {
-        const stock = await Stock.findOne({title: order.token_name})
-        tokens.push(stock.address)
-      }
+    console.log('=============', request._id, porfolio.smart_contract)
+    const oldPortfolios = await Portfolio.find({request: request._id, state: 'old'}).sort({lastActiveEnabling: -1}).limit(1)
+    if (oldPortfolios.length === 0) {
+      console.log(`Unable to find previos active portfolio for request ${request._id} to sell old tokens`)
+      continue
+    }
+    const prevPortfolio = oldPortfolios[0]
+    // const orders = await Order.find({request: request._id, related_portfolio: porfolio._id})
+    // let everyCompeleted = true
+    const tokens = []
+    // for (let order of orders) {
+    //   contractAddress = order.contract_address
+    //   if (order.status !== 'completed') {
+    //     everyCompeleted = false
+    //     break
+    //   } else {
+    //     const stock = await Stock.findOne({title: order.token_name})
+    //   }
+    // }
+    for (let token of prevPortfolio.currencies) {
+      const stock = await Stock.findOne({title: token.currency})
+      tokens.push(stock.address)
+      console.log(`Token: ${stock.title}`)
     }
     // console.log(orders.length > 0, everyCompeleted, tokens)
-    if (orders.length > 0) {
-      if (everyCompeleted) {
-        const tokensOnContract = await checkContractBalance(orders[0].contract_address, ['0x05f4a42e251f2d52b8ed15e9fedaacfcef1fad27'])
+    // if (orders.length > 0) {
+    //   if (everyCompeleted) {
+        const tokensOnContract = await checkContractBalance(porfolio.smart_contract, tokens).catch(console.log)
+        console.log(`Tokens on contract of request ${request._id}? ${tokensOnContract}`)
         if (tokensOnContract || !configs.productionMode) {
-          await TGlogger(`Sent tokens from request #${request._id} to exchange`)
-          await sendTokens(contractAddress, tokens)
-          request.set({status: 'active'})
+          await sendTokens(porfolio.smart_contract, tokens)
+          await TGlogger(`Sent tokens ${tokens.join(', ')} from request #${request._id} to exchange`)
+          request.set({status: 'tokens exchanging'})
           await request.save()
         }
-      }
-    }
+    //   }
+    // }
   }
   resolve()
 })

@@ -62,8 +62,11 @@ module.exports = (app) => {
       const currency = rawCurrencies[i]
       const stock = await Stock.findOne({ $or: [{title: currency.currency}, {name: currency.currency}] })
       if (stock !== null && currency.percent <= 100 && currency.percent > 0) {
+        console.log(`Currency ${currency.currency} ${currency.percent} is OK`)
         rawCurrencies[i].currency = stock.title
         currencies.push(rawCurrencies[i])
+      } else {
+        console.log(`Currency ${currency.currency} ${currency.percent} is NOT OK`)
       }
     }
     console.log(currencies)
@@ -231,23 +234,22 @@ module.exports = (app) => {
     }
     const request = await Request.findOne({manager: manager._id, _id: req.params.request, status: 'pending'})
     if (request === null) {
-      res.status(404)
+      res.redirect('/api/portfolio/review/' + req.params.request)
+    } else {
+      const portfolio = await Portfolio.findOne({manager: manager._id, request: request._id})
+      if (portfolio === null) {
+        res.status(403)
+        res.end()
+        return
+      }
+      request.set({status: 'proposed'})
+      // portfolio.set({state: 'active'})
+      await request.save()
+      // await portfolio.save()
+      await notify({request: request._id, title: `Manager proposed portfolio`})
+      res.status(200)
       res.end()
-      return
     }
-    const portfolio = await Portfolio.findOne({manager: manager._id, request: request._id})
-    if (portfolio === null) {
-      res.status(403)
-      res.end()
-      return
-    }
-    request.set({status: 'proposed'})
-    // portfolio.set({state: 'active'})
-    await request.save()
-    // await portfolio.save()
-    await notify({request: request._id, title: `Manager proposed portfolio`})
-    res.status(200)
-    res.end()
   })
   app.post('/api/portfolio/review/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
@@ -261,7 +263,7 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({manager: manager._id, _id: req.params.request})
+    const request = await Request.findOne({manager: manager._id, _id: req.params.request, status: 'active'})
     if (request === null) {
       res.status(404)
       res.end()
@@ -494,7 +496,7 @@ module.exports = (app) => {
 const updatePortfoliosState = (searchQuery) => new Promise(async (resolve, reject) => {
   const oldActivePortfolio = await Portfolio.findOne(Object.assign(searchQuery, {state: 'active'}))
   const newActivePortfolio = await Portfolio.findOne(Object.assign(searchQuery, {state: 'draft'}))
-  newActivePortfolio.set({state: 'active'})
+  newActivePortfolio.set({state: 'active', lastActiveEnabling: new Date()})
   if (oldActivePortfolio !== null) {
     newActivePortfolio.set({smart_contract: oldActivePortfolio.smart_contract}) 
     oldActivePortfolio.set({state: 'old'})

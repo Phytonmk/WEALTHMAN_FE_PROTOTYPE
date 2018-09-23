@@ -39,7 +39,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const price = lowestPrice.price
       const feeRate = 0.01 // update it later
       const ethPrice = 1//(await lowestPrice.exchange.api.fetchTicker('ETH/USDT')).last
-      const fee = Math.ceil((ethPrice * feeRate) / price)
+      const fee = 0//Math.ceil((ethPrice * feeRate) / price)
       const quantity = Math.floor(((order.percent / 100) / price) * order.whole_eth_amount)
 
       await TGlogger(`Buying ${quantity} + ${fee} = ${(quantity + fee)} "${symbol}" for request #${order.request}`)
@@ -47,9 +47,10 @@ module.exports = () => new Promise(async (resolve, reject) => {
       if (configs.productionMode) {
         purshcase = await lowestPrice.exchange.api.createOrder(symbol, 'market', 'buy', quantity + fee)
           .catch(async (e) => {
-              await TGlogger(e)
-              order.set({status: 'failed to buy token'})
-              await order.save()
+              console.log(e)
+              await TGlogger(`failed to buy ${(quantity + fee)} ${symbol}`)
+              // order.set({status: 'failed to buy token'})
+              // await order.save()
           })
       }
       if (purshcase || !configs.productionMode) {
@@ -110,10 +111,10 @@ module.exports = () => new Promise(async (resolve, reject) => {
         if (configs.productionMode) {
           withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity + order.additional_quantity - 1, order.contract_address)
             .catch( async (e) => {
-                await TGlogger('failed to withdraw')
+                await TGlogger(`failed to withdraw ${order.quantity + order.additional_quantity - 1} ${order.token_name}`)
                 console.log(e)
-                order.set({status: 'failed to withdraw'})
-                await order.save()
+                // order.set({status: 'failed to withdraw'})
+                // await order.save()
             })
         }
       }

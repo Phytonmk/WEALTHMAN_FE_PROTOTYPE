@@ -8,12 +8,11 @@ const TGlogger = require('../../helpers/tg-testing-loger')
 const checkBalance = require('../../trading/check-tokens-presence')
 
 module.exports = () => new Promise(async (resolve, reject) => {
-  const requests = await Request.find({status: 'recalculation'})
+  const requests = await Request.find({status: 'tokens exchanging'})
   const smartContracts = []
   let i = 0
   for (request of requests) {
     const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
-    await TGlogger(`Created buying orders for request #${request._id}`)
     if (portfolio !== null && portfolio.smart_contract)
       smartContracts.push({
         address: portfolio.smart_contract,
@@ -36,8 +35,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
       })
       await order.save()
     }
-    await TelegramAcception.findAndRemove({asked_request: request._id})
-    request.set({status: 'sending old tokens', exchange_withdraw_allowed: false})
+    await TelegramAcception.find({asked_request: request._id}).remove().exec()
+    await TGlogger(`Created buying orders for request #${request._id}`)
+    request.set({status: 'active', exchange_withdraw_allowed: false})
     await request.save()
   }
   resolve()

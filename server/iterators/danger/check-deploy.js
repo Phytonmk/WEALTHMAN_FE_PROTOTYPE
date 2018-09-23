@@ -3,15 +3,16 @@ const Portfolio = require('../../models/Portfolio')
 const Transaction = require('../../models/Transaction')
 const TGlogger = require('../../helpers/tg-testing-loger')
 
-const checkDeployment = require('../../trading/check-deposit')
+const checkDeployment = require('../../trading/check-deploy')
+
 
 module.exports = () => new Promise(async (resolve, reject) => {
   const requests = await Request.find({status: 'deploying'})
   for (request of requests) {
     if (request.deployment_hash) {
-      // console.log(`Checking ${request.deployment_hash} for deployment...`)
+      console.log(`Checking ${request.deployment_hash} for deployment...`)
       const deployment = await checkDeployment(request.deployment_hash).catch(console.log)
-      // console.log(deployment)
+      console.log(deployment)
       switch (deployment.status) {
         case 'failed':
           // console.log(`${request.deployment_hash} faild`)

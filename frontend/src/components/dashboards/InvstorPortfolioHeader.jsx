@@ -1,26 +1,104 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCookie, niceNumber } from '../helpers';
+import { getCookie, niceNumber, setPage } from '../helpers';
+import Modal from '../Modal'
 
 export default class InvstorPortfolioHeader extends Component {
   render() {
-    return <div className="investor-portfolio-header">
-      <div>
-        <h1>{this.props.dashboardMode ? 'Portfolios' : 'Active portfolio'}</h1>
-        <p>{this.props.requestData ? ('#' + this.props.requestData.request._id) : ''}</p>
-      </div>
-      <div>
-        <div>
-          <h2>{this.props.value || '???'}</h2>
-          <p>Total balance</p>
+    if (this.props.dashboardMode)
+      return <div className="investor-portfolio-header">
+          <div>
+            <h1>Portfolios</h1>
+          </div>
+          <div>
+            <div>
+              <h2>{this.props.value || '???'}</h2>
+              <p>Total balance</p>
+            </div>
+            {(getCookie('usertype') != 0 ? '' : (<Link to={"/"}>
+              <button className="big-blue-button money-button">Deposit</button>
+            </Link>))}
+          </div>
         </div>
-        {getCookie('usertype') != 0 ? '' : <Link to={this.props.buttonLink}>
-          <button className="big-blue-button money-button">
-            {this.props.dashboardMode ? 'Deposit' : 'Whithdraw'}
-          </button>
-        </Link>}
+    else
+      return <div className="investor-portfolio-header">
+        <div>
+          <h1>Active portfolio</h1>
+          <p>#{this.props.requestData.request._id}</p>
+        </div>
+        <div>
+          <div>
+            <h2>{this.props.requestData.portfolio.balance} ETH</h2>
+            <p>Total balance</p>
+          </div>
+          {this.props.requestData.request.status === 'active' &&
+            <RequestWithdraw
+              request={this.props.requestData.request._id}
+              address={this.props.requestData.portfolio.smart_cntract}
+              />}
+          {this.props.requestData.request.status === 'waiting for withdraw' &&
+            <Withdraw
+              request={this.props.requestData.request._id}
+              address={this.props.requestData.portfolio.smart_cntract}
+              />}
+        </div>
       </div>
-    </div>
+  }
+}
+
+
+class RequestWithdraw extends Component {
+  constructor(props) {
+    super(props)
+    this.hideModal = () => {}
+  }
+  sellTokens() {
+    api.post('sell-tokens', {request: this.props.request})
+      .then(() => {
+        this.hideModal()
+        setPage('requests')
+      })
+      .catch(console.log)
+  }
+  render() {
+    return <Modal
+      hider={(func) => this.hideModal = func}
+      button="Request Withdraw"
+      btnClassName="big-blue-button money-button"
+      buttons={[{type: 'blue', text: 'Sell tokens', action: () => this.sellTokens()}]}
+      >
+        <h1>Request withdrawing of portfolio</h1>
+        <br/>
+        <small>#{this.props.request}</small>
+        <br/>
+        <p>All tokens on the <b>{this.props.address}</b> will be exchanged to the ethereum</p>
+      </Modal>
+  }
+}
+import { abi as contractAbi } from '../smart-contract-data';
+class Withdraw extends Component {
+  constructor(props) {
+    super(props)
+    this.hideModal = () => {}
+  }
+  openMetaMask() {
+    const contract = web3.eth.contract(contractAbi)
+    const myContractInstance = contract.at(this.props.address);
+    myContractInstance.withdraw(() => this.hideModal());
+  }
+  render() {
+    return <Modal
+      hider={(func) => this.hideModal = func}
+      button="Withdraw"
+      btnClassName="big-blue-button money-button"
+      buttons={[{type: 'blue', text: 'Withdraw', action: () => this.openMetaMask()}]}
+      >
+        <h1>Withdraw ethereum</h1>
+        <br/>
+        <small>#{this.props.request}</small>
+        <br/>
+        <p>All ethereum will be withdrawed from smart contract <b>{this.state.contract_address}</b> to address which was specified before deploying</p>
+      </Modal>
   }
 }

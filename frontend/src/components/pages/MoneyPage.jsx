@@ -39,6 +39,7 @@ class MoneyPage extends Component {
       status: 0,
       contractAddress: '',
       request: {},
+      deploymentCost: ''
     };
   }
   componentWillMount() {
@@ -59,6 +60,11 @@ class MoneyPage extends Component {
           gotData: true,
           status, contractAddress, request: res.data.request
         })
+      })
+      .catch(console.log)
+    api.get(`contract-cost/${this.props.match.params.id}/deploy`)
+      .then((res) => {
+        this.setState({deploymentCost: res.data})
       })
       .catch(console.log)
   }
@@ -94,14 +100,19 @@ class MoneyPage extends Component {
             <div className="box">
               <h2> Contract deploying </h2>
               <div className="row">
-                Before you continue, please download <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Metamask</a> to your browser and log in to the extention through the private key.
+                {/*Before you continue, please download <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Metamask</a> to your browser and log in to the extention through the private key.
                 <div className="row">
                   <div className="metamask" />
-                </div>
+                </div>*/}
                 <p>
                   Pressing "Deploy" you confirm terms of your portfolio. After contract is deployed you cannot change its terms otherwise you have to form it newly.<br/>
                   The status of contract and portfolio you can easily find in Portfolio page.
                 </p>
+                {this.state.deploymentCost ? <p>
+                  This opertaion will cost <b>{this.state.deploymentCost}</b> $
+                </p> : <p>
+                  Calculating cost of deploying...
+                </p>}
                 <div className="row">
                   <Link to={"/request/" + this.props.match.params.id}>
                     <button className="back">Back</button>

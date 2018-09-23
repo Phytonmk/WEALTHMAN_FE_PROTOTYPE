@@ -36,9 +36,9 @@ class UserAgreementPage extends Component {
             </span>
           </p>
           <p>
-              <button className="big-blue-button" onClick={() => this.completeForm()}>
-                Agree
-              </button> 
+            <button className="big-blue-button" onClick={() => this.completeForm()}>
+              Agree
+            </button> 
           </p>
         </div>
       </div>

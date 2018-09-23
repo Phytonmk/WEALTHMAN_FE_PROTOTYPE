@@ -8,8 +8,10 @@ import Select from '../inputs/Select'
 import Search from '../Search'
 import Avatar from '../Avatar'
 import { api, setPage, setCurrency, setCookie, getCookie, niceNumber } from '../helpers'
-import {AreaChart} from 'react-easy-chart'
 import Subheader from '../Subheader'
+import Modal from '../Modal'
+import { AreaChart } from 'react-easy-chart'
+
 
 const filters = [
   {

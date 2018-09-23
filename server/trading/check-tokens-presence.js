@@ -1,15 +1,27 @@
 const configs = require('../configs')
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider(configs.web3httpProvider))
-module.exports = (address, tokens) => new Promise((resolve, reject) => {
+const erc20Abi = require('./check-tokens-presence-abi.js')
+const checkOneToken = (contractAddress, token) => new Promise((resolve, reject) => {
+  const contract = new web3.eth.Contract(erc20Abi, token);
+  console.log(`Checking if token ${token} on ${contractAddress}`)
+  const functionAbi = contract.methods.balanceOf(contractAddress).call().then((receipt) => {
+    console.log(`receipt: ${receipt}`)
+    resolve(receipt != 0);
+  }).catch(reject);
+})
+module.exports = (address, tokens) => new Promise(async (resolve, reject) => {
   try {
-    tokens.forEach(function(item) {
-      const erc20Abi = require('./check-tokens-presence-abi.js');
-      const contract = new web3.eth.Contract(erc20Abi, item);
-      const functionAbi = contract.methods.balanceOf(address).call().then((receipt) => {
-        resolve(receipt != 0);
-      }).catch(reject);
-    })
+    let presents = false
+    console.log(tokens)
+    for (let token of tokens) {
+      const thisTokenPresents = await checkOneToken(address, token)
+      if (thisTokenPresents) {
+        presents = true
+        break
+      }
+    }
+    resolve(presents)
   } catch (e) {
     reject(e)
   }

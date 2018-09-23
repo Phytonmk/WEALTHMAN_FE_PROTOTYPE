@@ -34,6 +34,8 @@ import '../css/Sortable2.sass';
       preventScroll: true,
     },
   ]}
+  //(OPTIONAL) dont use cloumns scroll
+  disableColScrolling={true}
   //(OPTIONAL) data to show
   data={this.state.managers.map(manager => {
     return {
@@ -384,15 +386,17 @@ class Sortable2 extends Component {
           {this.renderHeader(scrollableRowProperties)}
           {this.renderListings(scrollableRowProperties)}
         </div>
-        <div className="non-scrollable-properties-column">
-          {this.renderHeader(nonScrollableRowProperties)}
-          {this.renderListings(nonScrollableRowProperties)}
-        </div>
-        {this.renderHorizontalNavigation()}
-        <TridotDropdownWithCheckboxes
-          options={this.state.shownColumns}
-          setValue={(value) => this.setState({shownColumns: value})}
-        />
+        {!this.props.disableColScrolling && <React.Fragment>
+          <div className="non-scrollable-properties-column">
+            {this.renderHeader(nonScrollableRowProperties)}
+            {this.renderListings(nonScrollableRowProperties)}
+          </div>
+          {this.renderHorizontalNavigation()}
+          <TridotDropdownWithCheckboxes
+            options={this.state.shownColumns}
+            setValue={(value) => this.setState({shownColumns: value})}
+          />
+        </React.Fragment>}
         {this.renderShowmore()}
       </div>
     );

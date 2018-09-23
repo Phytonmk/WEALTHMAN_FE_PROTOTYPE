@@ -5,7 +5,7 @@ import { api, setCookie, getCookie } from '../helpers'
 import Social from './../Social'
 import Seemore from '../Seemore'
 import Avatar from '../Avatar'
-import Qsign from '../Qsign'
+import QSign from '../QSign'
 import Breadcrumbs from '../Breadcrumbs'
 import Graphics from '../dashboards/Graphics'
 
@@ -144,7 +144,7 @@ class ManagerPage extends Component {
                   <Seemore>
                     <div className="row">
                       <h2 className="left">{filters[service.type].link} investment management</h2>
-                      <Link to="/faq"><Qsign /></Link>
+                      <Link to="/faq"><QSign /></Link>
                     </div>
                     <div className="row numbers">
                       {[
@@ -156,7 +156,7 @@ class ManagerPage extends Component {
                         <div className="column left margin-right">
                           <div className="row">
                             <h1 className="blue left">{info.number}</h1>
-                            {index == 0 && <Link to="/faq"><Qsign className="semitransparent" /></Link>}
+                            {index == 0 && <Link to="/faq"><QSign className="semitransparent" /></Link>}
                           </div>
                           <small>{info.desc}</small>
                         </div>

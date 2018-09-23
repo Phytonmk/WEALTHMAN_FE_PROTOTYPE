@@ -105,7 +105,9 @@ class KYCPage extends Component {
           </div>
           {managerConditions}
           <div className="row">
-            <p>Before it is sent, please, specify your target investment volume: and mark the follow options to get deep understanding of manager`s strategy (takes more time to get return portfolio recommendation):</p>
+            <p>Before you continue, please fill information below. Notice, that investment size field is the actual amount of money, that you are going to invest. You will not have an opportunity to change this number.
+
+Minimal investment is 10000000$ на Minimal investment is 1000$</p>
           </div>
           <h3><b>Sending request to manager</b></h3>
           <div className="row">

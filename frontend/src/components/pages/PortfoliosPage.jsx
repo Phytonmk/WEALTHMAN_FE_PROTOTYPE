@@ -132,7 +132,7 @@ class PortfoliosPage extends Component {
       {
         property: "person",
         title: this.props.user == 1 ? "investor" : "manager",
-        width: "200px",
+        width: "160px",
       },
       {
         property: "instrument",
@@ -160,7 +160,7 @@ class PortfoliosPage extends Component {
       {
         property: "recommendation",
         title: "Recommendation needed",
-        width: "60px",
+        width: "100px",
       },
       {
         property: "qrcode",
@@ -282,6 +282,7 @@ class PortfoliosPage extends Component {
       columns={titles}
       data={portfolios}
       linkProperty={"link"}
+      disableColScrolling={true}
     />
 
     for (let subheader of subheaders) {

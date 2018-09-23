@@ -6,8 +6,15 @@ import Person from '../../../dashboards/Person';
 import PortfolioPreview from '../PortfolioPreview';
 
 export default class InvestorPortfolioRevision extends Component {
-  acceptPortfolio() {
-    setPage('signagreement/' + this.state.request._id);
+  constructor() {
+    super(props)
+  }
+  componentDidMount() {
+    api.get(`contract-cost/${this.props.requestData.request._id}/rebuild`)
+      .then((res) => {
+        this.setState({cost: res.data})
+      })
+      .catch(console.log)
   }
   render() {
     return <div class="padding-bottom-container">
@@ -19,6 +26,12 @@ export default class InvestorPortfolioRevision extends Component {
       />
       {this.props.requestData.portfolio ? 
         <PortfolioPreview requestData={this.props.requestData} /> : ''}
+      <Cards
+        cards={[{
+          title: this.state.cost ? this.state.cost : 'Calculating...'
+          subtitle: 'Recalculation cost',
+        }]}
+      />
       <Cards
         whiteBg={true}
         cards={[{
