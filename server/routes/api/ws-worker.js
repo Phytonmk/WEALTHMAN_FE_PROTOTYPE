@@ -118,7 +118,7 @@ module.exports = async (app) => {
               socket.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 1'}})
               return
             }
-            const user = await User.findOne({_id: token.user})
+            const user = await User.findById(token.user)
             if (user === null) {
               socket.emit('message', {success: false, err: {code: 403, text: 'not auth, marker 2'}})
               return

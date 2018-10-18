@@ -75,7 +75,7 @@ class DashboardPage extends Component {
         <Graphics
           graphics={[{
             type: 'line',
-            title: 'Aum Dinamics',
+            title: 'AUM Dynamics',
             subheaders: [{
               value: niceNumber(this.state.aum.value) + ' $',
               title: 'AUM',
@@ -84,7 +84,7 @@ class DashboardPage extends Component {
               value: niceNumber(this.state.aum.earning) + ' $',
               title: 'Earning',
             },{
-              value: this.state.aum.change == null ? 'no cahnge' : this.state.aum.change + '%',
+              value: this.state.aum.change == null ? 'no change' : this.state.aum.change + '%',
               title: `Change (${new LevDate(this.state.aum.changePeriod).pastNice()})`,
               state: this.state.aum.change == null ? 'common' : (this.state.aum.change < 0 ? 'bad' : 'good')
             }],
@@ -116,7 +116,7 @@ class DashboardPage extends Component {
               }]
             },
             line: {
-              title: 'Remuneration dynamic',
+              title: 'Remuneration accrued',
               lines: !this.state.portfolios ? [] : [{
                 data: this.state.portfolios.map((portfolio, i) => {
                   return {
@@ -164,7 +164,7 @@ class DashboardPage extends Component {
         <Graphics
           graphics={[{
             type: 'line',
-            title: 'Aum Dinamics',
+            title: 'AUM Dynamics',
             subheaders: [{
               value: niceNumber(this.state.aum.value) + ' $',
               title: 'AUM',
@@ -173,7 +173,7 @@ class DashboardPage extends Component {
               value: niceNumber(this.state.aum.earning) + ' $',
               title: 'Earning',
             },{
-              value: this.state.aum.change == null ? 'no cahnge' : this.state.aum.change + '%',
+              value: this.state.aum.change == null ? 'no change' : this.state.aum.change + '%',
               title: `Change (${new LevDate(this.state.aum.changePeriod).pastNice()})`,
               state: this.state.aum.change == null ? 'common' : (this.state.aum.change < 0 ? 'bad' : 'good')
             }],
@@ -205,7 +205,7 @@ class DashboardPage extends Component {
               }]
             },
             line: {
-              title: 'Remuneration dynamic',
+              title: 'Remuneration accrued',
               lines: !this.state.portfolios ? [] : [{
                 data: this.state.portfolios.map((portfolio, i) => {
                   return {
@@ -231,7 +231,7 @@ class DashboardPage extends Component {
             }
           }, {
             type: 'line',
-            title: 'Aum Dinamics',
+            title: 'AUM Dynamics',
             lines: [{
               title: 'Total remuneration accrued',
               data: this.state.commisions.map((chunk, i) => {

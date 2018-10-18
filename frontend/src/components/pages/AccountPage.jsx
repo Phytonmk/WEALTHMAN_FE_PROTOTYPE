@@ -22,7 +22,8 @@ class AccountPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: ''
+      user: '',
+      dataSavedToast: false
     }
   }
   componentWillMount() {
@@ -48,26 +49,36 @@ class AccountPage extends Component {
       .catch(console.log);
     }
   }
-  saveData(data) {
-    api.post(this.state.user + '/data', Object.assign({accessToken: getCookie('accessToken')}, data))
-      .then(() => {alert('Your new data saved')})
-      .catch(console.log);
+  // saveData(data) {
+  //   api.post(this.state.user + '/data', Object.assign({accessToken: getCookie('accessToken')}, data))
+  //     .then(() => {
+  //     })
+  //     .catch(console.log);
+  // }
+  savedToast() {
+    this.setState({ dataSavedToast: true })
+    clearTimeout(this.hideToastTimeout)
+    this.hideToastTimeout = setTimeout(() => {
+      this.setState({ dataSavedToast: false })
+    }, 5000)
+      document.querySelector('.data-update-toast').scrollIntoView({ behavior: 'smooth' })
   }
   render () {
     return (
       <div id="account-page">
+        <h4 className="data-update-toast" style={{opacity: this.state.dataSavedToast ? 1 : 0}}>Data was updated</h4>
         <Subheader data={[
           {
             header: 'Profile',
-            content: <OldAccount usertype={this.props.user} userData={this.props.userData} />
+            content: <OldAccount savedToast={() => this.savedToast()} usertype={this.props.user} userData={this.props.userData} />
           },
           {
             header: 'Account access',
-            content: <AccountAccess />
+            content: <AccountAccess savedToast={() => this.savedToast()} />
           },
           {
             header: 'KYC blank',
-            content: <DetailedInfo />
+            content: <DetailedInfo savedToast={() => this.savedToast()} />
           },
       //    {
       //      header: "Account settings",

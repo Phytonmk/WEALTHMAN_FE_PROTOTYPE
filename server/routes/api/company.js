@@ -7,6 +7,7 @@ const Manager = require('../../models/Manager');
 const notify = require('../../helpers/notifications')
 
 module.exports = (app) => {
+  // Отправка приглашения в компанию менеджеру
   app.post('/api/company/invite-manager', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -35,11 +36,13 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Получить список всех компаний
   app.get('/api/companies', async (req, res, next) => {
     const companies = await Company.find({})
     res.send(companies);
     res.end();
   });
+  // Получть информацию о конкретной компании
   app.get('/api/company/:id', async (req, res, next) => {
     if(req.params.id === 'undefined') {
       console.log('trying to get undefined company');
@@ -56,6 +59,7 @@ module.exports = (app) => {
     res.send(company);
     res.end();
   });
+  // Принять приглашение в компанию (с аккаунта менеджера)
   app.post('/api/company/accept-inviting', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -75,8 +79,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({
-      _id: req.body.request,
+    const request = await Request.findById(req.body.request).where({
       status: 'pending',
       initiatedByManager: false,
       manager: manager.id,
@@ -96,6 +99,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Получить подробную информацию о компании
   app.get('/api/company-statistics/:id', async (req, res, next) => {
     const company = await Company.findById(req.params.id);
     if (company === null) {
@@ -116,7 +120,7 @@ module.exports = (app) => {
     });
     res.end();
   });
-
+  // Отправить запрос на вступление в компанию (со стороны менеджера)
   app.post('/api/company/apply', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -146,6 +150,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Принять запрос на вступление в компанию (со стороны компании)
   app.post('/api/company/accept-apply', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -165,8 +170,7 @@ module.exports = (app) => {
       res.end('');
       return;
     }
-    const request = await Request.findOne({
-      _id: req.body.request,
+    const request = await Request.findById(req.body.request).where({
       status: 'pending',
       initiatedByManager: true,
       manager: manager.id,

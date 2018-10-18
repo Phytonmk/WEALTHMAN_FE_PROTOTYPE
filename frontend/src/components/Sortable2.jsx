@@ -173,6 +173,7 @@ class Sortable2 extends Component {
         </li>
       </ul>;
 
+    
     return (
       <ul className="listings">
         {

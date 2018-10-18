@@ -19,7 +19,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const stock = await Stock.findOne({title: currency.currency})
       tokens.push(stock.address)
     }
-    await sendTokens(portfolio.smart_contract, tokens)
+    if (configs.productionMode)
+      await sendTokens(portfolio.smart_contract, tokens)
     await TGlogger(`Request #${request._id} sent tokens ${JSON.stringify(tokens)} to exchange`)
     request.set({status: 'waiting for withdraw'})
     await request.save()

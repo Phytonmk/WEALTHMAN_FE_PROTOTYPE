@@ -33,7 +33,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
         const tokensOnContract = await checkContractBalance(orders[0].contract_address, tokens)
         console.log(tokensOnContract, !configs.productionMode)
         if (tokensOnContract || !configs.productionMode) {
-          await sendEthereum(porfolio.smart_contract)
+          if (configs.productionMode)
+            await sendEthereum(porfolio.smart_contract)
           await TGlogger(`Sent ethereum from request #${request._id} to exchange`)
           request.set({status: 'active', initial_value: sumCost})
           await request.save()
@@ -74,7 +75,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
         const tokensOnContract = await checkContractBalance(porfolio.smart_contract, tokens).catch(console.log)
         console.log(`Tokens on contract of request ${request._id}? ${tokensOnContract}`)
         if (tokensOnContract || !configs.productionMode) {
-          await sendTokens(porfolio.smart_contract, tokens)
+          if (configs.productionMode)
+            await sendTokens(porfolio.smart_contract, tokens)
           await TGlogger(`Sent tokens ${tokens.join(', ')} from request #${request._id} to exchange`)
           request.set({status: 'tokens exchanging'})
           await request.save()

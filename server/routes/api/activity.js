@@ -2,6 +2,7 @@ const Token = require('../../models/accessToken')
 const Investor = require('../../models/Investor')
 
 module.exports = (app) => {
+  // Подтверждение нахождения аккаунта инвестора в сети
   app.post('/api/online', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {

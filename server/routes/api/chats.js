@@ -5,6 +5,7 @@ const Token = require('../../models/accessToken')
 const getUserData = require('../../helpers/getUserData')
 
 module.exports = (app) => {
+  // Получить список чатов, связанных с аккаунтом
   app.get('/chats-api/chats-list', async (req, res, next) => {
     const token = await Token.findOne({token: req.headers.accesstoken})
     if (token === null) {
@@ -12,7 +13,7 @@ module.exports = (app) => {
       res.end()
       return
     }
-    const user = await User.findOne({_id: token.user})
+    const user = await User.findById(token.user)
     if (user === null) {
       res.status(403)
       res.end()
@@ -28,6 +29,7 @@ module.exports = (app) => {
     res.send(results)
     res.end()
   })
+  // Получить список непрочитанных сообщений 
   app.get('/chats-api/new-messages-count', async (req, res, next) => {
     const token = await Token.findOne({token: req.headers.accesstoken})
     if (token === null) {
@@ -39,6 +41,7 @@ module.exports = (app) => {
     res.send(count)
     res.end()
   })
+  // Получить список сообщений из конкретного чата
   app.get('/chats-api/messages', async (req, res, next) => {
     const token = await Token.findOne({token: req.headers.accesstoken})
     if (token === null) {
@@ -46,7 +49,7 @@ module.exports = (app) => {
       res.end()
       return
     }
-    const user = await User.findOne({_id: token.user})
+    const user = await User.findById(token.user)
     if (user === null) {
       res.status(403)
       res.end()
@@ -73,6 +76,7 @@ module.exports = (app) => {
     res.send({messages, chat: anotherUserData})
     res.end()
   })
+  // Получить порт для подклбчению по веб-сокетам
   app.get('/chats-api/ws', async (req, res, next) => {
     // let port
     // let minimalLoad = null

@@ -5,6 +5,7 @@ const Company = require('../../models/Company');
 const RANDOM = () => Math.round(100 * Math.random());
 
 module.exports = (app) => {
+  // Получить данные для отображения на маркетплейсе
   app.get('/api/marketplace/:filter', async (req, res, next) => {
     const totalInvestors = await Investor.countDocuments({});
     const totalManagers = await Manager.countDocuments({});

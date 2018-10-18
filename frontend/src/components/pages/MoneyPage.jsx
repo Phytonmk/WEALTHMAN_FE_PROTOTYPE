@@ -109,9 +109,9 @@ class MoneyPage extends Component {
                   The status of contract and portfolio you can easily find in Portfolio page.
                 </p>
                 {this.state.deploymentCost ? <p>
-                  This opertaion will cost <b>{this.state.deploymentCost}</b> $
+                  The price for this operation is <b>{this.state.deploymentCost}USD</b>. Money will be claimed from you when withdrawing funds
                 </p> : <p>
-                  Calculating cost of deploying...
+                  Calculating the price of operation...
                 </p>}
                 <div className="row">
                   <Link to={"/request/" + this.props.match.params.id}>

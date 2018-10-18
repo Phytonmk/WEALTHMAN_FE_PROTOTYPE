@@ -31,7 +31,7 @@ class RiskProfile extends Component {
       state: this.state.state,
       country: this.state.country,
     })
-      .then(() => {alert('Saved')})
+      .then(() => {this.props.savedToast && this.props.savedToast()})
       .catch(console.log);
   }
   componentDidMount() {
@@ -43,6 +43,7 @@ class RiskProfile extends Component {
         newState.selfy = !res.data.selfy ? '' : res.data.selfy.split('/')[res.data.selfy.split('/').length - 1]
         console.log(newState)
         this.setState(newState)
+        this.props.savedToast && this.props.savedToast()
       })
       .catch(console.log)
   }
@@ -121,7 +122,7 @@ class RiskProfile extends Component {
         </div>
 
         <div className='account-box'>
-          <small className='blue'>3. ID OR PASSWORD</small>
+          <small className='blue'>3. ID OR PASSPORT</small>
           <div className='file-upload-container'>
             {this.state.id === '' ? <React.Fragment><h2>Drag & Drop or</h2><h2 className='blue'>Browse</h2></React.Fragment> : <h2>{this.state.id}</h2>}
             <input
@@ -142,7 +143,7 @@ class RiskProfile extends Component {
         </div>
 
         <div className='account-box'>
-          <small className='blue'>4. SELFIE HOLDING ID OR PASSWORD</small>
+          <small className='blue'>4. SELFIE HOLDING ID OR PASSPORT</small>
           <div className='file-upload-container'>
             {this.state.selfy === '' ? <React.Fragment><h2>Drag & Drop or</h2><h2 className='blue'>Browse</h2></React.Fragment> : <h2>{this.state.selfy}</h2>}
             <input

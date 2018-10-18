@@ -6,6 +6,7 @@ const Request = require('../../models/Request');
 const Company = require('../../models/Company');
 
 module.exports = (app) => {
+  // Получить список инвесторов
   app.post('/api/investors-list', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -13,39 +14,11 @@ module.exports = (app) => {
       res.end();
       return;
     }
-    // let userType;
-    // let userId;
-    // const manager = await Manager.findOne({user: token.user});
-    // if (manager === null) {
-    //   const company = await Company.findOne({user: token.user});
-    //   if (company === null) {
-    //     res.status(403);
-    //     res.end();
-    //     return;
-    //   }
-    //   userType = 'company';
-    //   userId = company.id;
-    // } else {
-    //   userType = 'manager';
-    //   userId = manager.id;
-    // }
-    // const investorsIds = [];
-    // const requests = await Request.find({[userType]: userId})
-    // const requests = await Request.find({[userType]: userId})
-    // for (let request of requests) {
-    //   if (request.investor !== null && !investorsIds.includes(request.investor))
-    //     investorsIds.push(request.investor);
-    // }
-    // const investors = [];
-    // for (let investorId of investorsIds) {
-    //   const investor = await Investor.findById(investorId);
-    //   if (investor !== null)
-    //     investors.push(investor);
-    // }
     const investors = await Investor.find()
     res.send(investors);
     res.end();
   });
+  // Получит информацию об инвесторе
   app.get('/api/investor/:id', async (req, res, next) => {
     const investor = await Investor.findById(req.params.id);
     if (investor === null) {
@@ -56,42 +29,7 @@ module.exports = (app) => {
     res.send(investor);
     res.end();
   });
-  app.post('/api/withdraw/:request', async (req, res, next) => {
-    const token = await Token.findOne({token: req.body.accessToken});
-    if (token === null) {
-      res.status(403);
-      res.end();
-      return;
-    }
-    const investor = await Investor.findOne({user: token.user});
-    if (investor === null) {
-      res.status(403);
-      res.end();
-      return;
-    }
-    // withdrawing...
-    res.send(investor);
-    res.end();
-  });
-  // app.get('/api/investor-statistics/:id', async (req, res, next) => {
-  //   console.log(req.params.id);
-  //   const investor = await Investor.findById(req.params.id);
-  //   if (investor === null) {
-  //     res.status(404);
-  //     res.end();
-  //     return;
-  //   }
-  //   const profitability = Math.ceil(Math.random() * 100);
-  //   const clients = Math.ceil(Math.random() * 100);
-  //   const portfolios = Math.ceil(Math.random() * 100);
-  //   res.status(200);
-  //   res.send({
-  //     profitability,
-  //     clients,
-  //     portfolios
-  //   });
-  //   res.end();
-  // });
+  // Получить список клиентов текущего аккаунта
   app.get('/api/my-clients', async (req, res, next) => {
     const token = await Token.findOne({token: req.headers.accesstoken})
     if (token === null) {

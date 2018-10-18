@@ -34,7 +34,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       const daysFromLastPay = request.lastPayedComission ? Math.floor((new Date().getTime() - (new Date(request.lastPayedComission)).getTime()) / (1000 * 60 * 60 * 24)) : daysFromDeplyment
       if (daysFromLastPay > request.commissions_frequency) {
         const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
-        const commisions = await calcComissions(null, request)
+        const comissions = await calcComissions(null, request)
         if (comissions.paid < comissions.accrued) {
           const perfomanceFeeTransaction = new Transaction({
             contract: portfolio.smart_contact,
@@ -60,7 +60,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
             investor: request.investor,
             manager: request.manager
           })
-          await TGlogger(`Called comissions paying for request #${request._id} ${JSON.stringify(tokens)} ${JSON.stringify(values)}`)
+          // await TGlogger(`Called comissions paying for request #${request._id} ${JSON.stringify(values)}`)
           await callCommisionsPay(portfolio.smart_contact, comissions.accrued - comissions.paid)
             .catch(TGlogger)  
           request.set({lastPayedComission: new Date()})

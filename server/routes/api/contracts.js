@@ -27,6 +27,7 @@ for (let exchange of configs.exchanges) {
 }
 
 module.exports = (app) => {
+  // Запросить деплой контракта
   app.post('/api/contracts/deploy', async (req, res) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -86,6 +87,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Получить адрес кошелька, который был указан инвестором при деплое
   app.post('/api/withdraw-address', async (req, res) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -133,6 +135,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Продать все токены со смарт контракта
   app.post('/api/sell-tokens', async (req, res) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -158,6 +161,7 @@ module.exports = (app) => {
     request.set({status: 'getting ethereum'})
     await request.save()
   })
+  // Получить информацию о стоимости различных операций по контракту type: deploy, rebuild, withdraw
   app.get('/api/contract-cost/:request/:type', async (req, res) => {
     const portfolio = await Portfolio.findOne({request: req.params.request, state: 'active'})
     const contract = portfolio === null ? new web3.eth.Contract(portfolioAbi) : new web3.eth.Contract(portfolioAbi, portfolio.smart_contract)
@@ -208,4 +212,10 @@ module.exports = (app) => {
       res.end()
     }
   })
+  app.get('/api/create-wallet', (req, res) => {
+    const account = web3.eth.accounts.create();
+    res.send(account);
+    res.status(200);
+    res.end('');
+  });
 }

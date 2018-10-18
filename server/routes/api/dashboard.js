@@ -7,6 +7,7 @@ const Request = require('../../models/Request')
 const Company = require('../../models/Company')
 
 module.exports = (app) => {
+  // Получить информацию для шаборда текущего аккаунта
   app.get('/api/my-dashboard', async (req, res, next) => {
     const token = await Token.findOne({token: req.headers.accesstoken})
     if (token === null) {
@@ -78,7 +79,7 @@ module.exports = (app) => {
           res.send({
             clients,
             clientsApplications: clientsApplications.length,
-            profileViews: '?',
+            profileViews: manager.views,
             aum,
             portfolios,
             dates,

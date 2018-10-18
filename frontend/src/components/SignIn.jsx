@@ -42,7 +42,7 @@ export default class SignIn extends Component {
           if (typeof this.props.callback === 'function')
             this.props.callback()
           else
-            setPage('dashboard')
+            setPage(res.data.usertype == 3 ? 'company-managers' : 'dashboard')
         })
       })
       .catch((e) => {
@@ -71,7 +71,7 @@ export default class SignIn extends Component {
           if (typeof this.props.callback === 'function')
             this.props.callback()
           else
-            setPage('dashboard')
+            setPage(res.data.usertype == 3 ? 'company-managers' : 'dashboard')
         })
       } else {
         this.props.openSignIn()

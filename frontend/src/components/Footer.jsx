@@ -42,7 +42,7 @@ class Footer extends Component {
             <button className="big-blue-button">FAQ</button>
           </Link>
           {this.props.user === -1 ? <Link to={'#'} onClick={() => this.state.openSignUp()} className="right">
-            <button className="big-blue-button">Registration for managers</button>
+            <button className="big-blue-button">Sign up to Wealthman as manager</button>
           </Link> : ''}
         </div>
       </div>

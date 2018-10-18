@@ -8,7 +8,8 @@
      cards={[{
        title: 'Advisory',
        subtitle: 'Style',
-       state: 'good' 
+       state: 'good',
+       buttonBorders: true
      },{
        title: '8 day to expire',
        subtitle: 'Days'
@@ -30,7 +31,7 @@ export default class Cards extends Component {
     return <div className="cards-box">
       <div className="cards-container" style={{background: this.props.whiteBg ? 'white' : 'rgba(0, 0, 0, 0'}}>
         {this.props.cards.map((card, i) => <div key={i} className="cards-block">
-            <h3 style={{color: card.state === 'good' ? '#47bf6f' : (card.state === 'bad' ? '#f7080a' : '#071e40')}}>{card.title !== undefined ? card.title : ''}</h3>
+            <h3 className={card.buttonBorders ? 'button-bordered' : ''} style={{color: card.state === 'good' ? '#47bf6f' : (card.state === 'bad' ? '#f7080a' : '#071e40')}}>{card.title !== undefined ? card.title : ''}</h3>
             <div>{card.subtitle}</div>
           </div>)}
       </div>

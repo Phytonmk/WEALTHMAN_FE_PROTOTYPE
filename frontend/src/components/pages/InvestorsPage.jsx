@@ -53,7 +53,7 @@ class InvestorsPage extends Component {
         property: "registered",
         title: "Days in system",
         // width: "55px",
-        width: "40px",
+        width: "60px",
         type: "date",
       },
       {
@@ -64,13 +64,13 @@ class InvestorsPage extends Component {
       {
         property: "target",
         title: "target",
-        width: "62px",
+        width: "102px",
       },
       {
         property: "managers",
         title: "Number of managers",
         // width: "52px",
-        width: "52px",
+        width: "72px",
       },
       {
         property: "aum",

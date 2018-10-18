@@ -11,7 +11,6 @@ import ReportsAndDocuments from '../../../dashboards/ReportsAndDocuments'
 import SmartContract from '../../../dashboards/SmartContract'
 import InvstorPortfolioHeader from '../../../dashboards/InvstorPortfolioHeader'
 
-
 export default class InvestorPortfolioActive extends Component {
   constructor(props) {
     super(props)

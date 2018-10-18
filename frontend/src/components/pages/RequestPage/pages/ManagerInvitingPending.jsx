@@ -29,10 +29,12 @@ export default class ManagerInvitingPending extends Component {
         whiteBg={true}
         cards={[{
           title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
-          state: 'bad'
+          state: 'bad',
+          buttonBorders: true
         }, {
           title: <Link to={"#"} onClick={() => this.acceptInviting()} style={{color: 'inherit', textDecoration: 'none'}}>Accept inviting</Link>,
-          state: 'good'
+          state: 'good',
+          buttonBorders: true
         }]}
       />
     </div>

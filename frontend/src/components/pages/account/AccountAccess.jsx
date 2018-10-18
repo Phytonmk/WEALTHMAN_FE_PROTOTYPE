@@ -24,7 +24,10 @@ class AccountInfo extends Component {
         new_password1: this.state.newPassword,
         new_password2: this.state.repeatNewPassword,
       })
-      .then(() => this.setState({currentPassword: '', newPassword: '', repeatNewPassword: ''}))
+      .then(() => {
+        this.setState({currentPassword: '', newPassword: '', repeatNewPassword: ''})
+        this.props.savedToast && this.props.savedToast()
+      })
       .catch((e) => {this.setState({wrongCurrentPassword: true}); console.log(e)});
     } else {
       if (this.state.currentPassword === '')
@@ -37,6 +40,7 @@ class AccountInfo extends Component {
   changeEmail() {
     const callback = () => {
       this.setState({newEmail: ''})
+      this.props.savedToast && this.props.savedToast()
     }
     const errorHandler = (e) => {
       this.setState({emailChangeError: true})
@@ -54,7 +58,10 @@ class AccountInfo extends Component {
   }
   componentDidMount() {
     api.get('my-email')
-      .then((res) => this.setState({oldEmail: res.data}))
+      .then((res) => {
+        this.setState({oldEmail: res.data})
+        this.props.savedToast && this.props.savedToast()
+      })
       .catch(console.log)
   }
   render() {

@@ -8,6 +8,7 @@ const Stock = require('../../models/Stock')
 const notify = require('../../helpers/notifications')
 
 module.exports = (app) => {
+  // Сохранить портфолио
   app.post('/api/portfolio/save', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -88,6 +89,7 @@ module.exports = (app) => {
     res.send(request._id)
     res.end()
   })
+  // Загрузить текущее портфолио сделки
   app.post('/api/portfolio/load', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -128,6 +130,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Загрузить последний черновик портфеля сделки или создать новый при его отсутствии
   app.post('/api/portfolio/load-draft', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -187,6 +190,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Получить список портфелей
   app.post('/api/portfolios/load', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -220,6 +224,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Отправить портфель на одобрение инвестором
   app.post('/api/portfolio/propose/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -232,9 +237,9 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({manager: manager._id, _id: req.params.request, status: 'pending'})
+    const request = await Request.findById(req.params.request).where({manager: manager._id, status: 'pending'})
     if (request === null) {
-      res.redirect('/api/portfolio/review/' + req.params.request)
+      res.redirect(307, '/api/portfolio/review/' + req.params.request)
     } else {
       const portfolio = await Portfolio.findOne({manager: manager._id, request: request._id})
       if (portfolio === null) {
@@ -251,6 +256,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Пересобрать портфель
   app.post('/api/portfolio/review/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -263,7 +269,8 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({manager: manager._id, _id: req.params.request, status: 'active'})
+    console.log(manager)
+    const request = await Request.findById(req.params.request).where({manager: manager._id, status: 'active'})
     if (request === null) {
       res.status(404)
       res.end()
@@ -298,6 +305,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Принять пересобранный портфель
   app.post('/api/portfolio/accept-review/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -310,7 +318,7 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'revision'})
+    const request = await Request.findById(req.params.request).where({investor: investor._id, status: 'revision'})
     if (request === null) {
       res.status(404)
       res.end()
@@ -330,6 +338,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Не одобрять пересобранный портфель
   app.post('/api/portfolio/decline-review/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -342,7 +351,7 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'revision'})
+    const request = await Request.findById(req.params.request).where({investor: investor._id, status: 'revision'})
     if (request === null) {
       res.status(404)
       res.end()
@@ -360,6 +369,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Запросить другое портфолио
   app.post('/api/portfolio/request-another/:request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -372,7 +382,7 @@ module.exports = (app) => {
       res.status(403)
       res.end()
     }
-    const request = await Request.findOne({investor: investor._id, _id: req.params.request, status: 'proposed'})
+    const request = await Request.findById(req.params.request).where({investor: investor._id, status: 'proposed'})
     if (request === null) {
       res.status(404)
       res.end()
@@ -384,113 +394,6 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
-
-
-
-  // app.post('/api/get-request/:id', async (req, res, next) => {
-  //   const token = await Token.findOne({token: req.body.accessToken})
-  //   if (token === null) {
-  //     res.status(403)
-  //     res.end()
-  //     return
-  //   }
-  //   let user
-  //   let userID
-  //   let manager
-  //   const investor = await Investor.findOne({user: token.user})
-  //   if (investor === null) {
-  //     manager = await Manager.findOne({user: token.user})
-  //     if (manager === null) {
-  //       res.status(403)
-  //       res.end()
-  //       return
-  //     } else {
-  //       user = 'manager'
-  //       userID = manager._id
-  //     }
-  //   } else {
-  //     user = 'investor'
-  //     userID = investor._id
-  //   }
-  //   console.log({[user]: userID, _id: req.params._id})
-  //   const request = await Request.findOne({[user]: userID, _id: req.params._id})
-  //   if (request === null) {
-  //     res.status(404)
-  //     res.end()
-  //     return
-  //   }
-  //   res.send(request)
-  //   res.status(200)
-  //   res.end()
-  // })
-  // app.post('/api/requests', async (req, res, next) => {
-  //   console.log(req.body)
-
-  //   const token = await Token.findOne({token: req.body.accessToken})
-  //   if (token === null) {
-  //     res.status(403)
-  //     res.end()
-  //     return
-  //   }
-  //   let user
-  //   let userID
-  //   let manager
-  //   const investor = await Investor.findOne({user: token.user})
-  //   if (investor === null) {
-  //     manager = await Manager.findOne({user: token.user})
-  //     if (manager === null) {
-  //       res.status(403)
-  //       res.end()
-  //       return
-  //     } else {
-  //       user = 'manager'
-  //       userID = manager._id
-  //     }
-  //   } else {
-  //     user = 'investor'
-  //     userID = investor._id
-  //   }
-  //   const requests = await Request.find({[user]: userID})
-  //   res.send(requests)
-  //   res.status(200)
-  //   res.end()
-  // })
-  // app.post('/api/decline-request/:id', async (req, res, next) => {
-  //   const token = await Token.findOne({token: req.body.accessToken})
-  //   if (token === null) {
-  //     res.status(403)
-  //     res.end()
-  //     return
-  //   }
-  //   let user
-  //   let userID
-  //   let manager
-  //   const investor = await Investor.findOne({user: token.user})
-  //   if (investor === null) {
-  //     manager = await Manager.findOne({user: token.user})
-  //     if (manager === null) {
-  //       res.status(403)
-  //       res.end()
-  //       return
-  //     } else {
-  //       user = 'manager'
-  //       userID = manager._id
-  //     }
-  //   } else {
-  //     user = 'investor'
-  //     userID = investor._id
-  //   }
-  //   const request = await Request.findOne({[user]: userID, _id: req.params._id})
-  //   if (request === null) {
-  //     res.status(404)
-  //     res.end()
-  //     return
-  //   }
-  //   request.set({status: 'declined'})
-  //   await request.save()
-  //   res.status(200)
-  //   res.end()
-  // })
 }
 
 const updatePortfoliosState = (searchQuery) => new Promise(async (resolve, reject) => {

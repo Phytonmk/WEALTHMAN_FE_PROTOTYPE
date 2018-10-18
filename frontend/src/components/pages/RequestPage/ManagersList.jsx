@@ -117,6 +117,7 @@ class ManagersList extends Component {
             data={sortableManagers}
             navigation={true}
             maxShown={5}
+            disableColScrolling={true}
           /> : ''}
         </div>)
   }

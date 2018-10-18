@@ -43,8 +43,8 @@ module.exports = () => new Promise(async (resolve, reject) => {
               error = e
           })
       }
-      await TGlogger(`Sent to #${request._id}`)
-      if ((withdraw && !error) || !configs.productionMode) {
+      // await TGlogger(`Sent to #${request._id}`)
+      if (!error || !configs.productionMode) {
         request.set({status: 'selling tokens'})
         await request.save()
       }

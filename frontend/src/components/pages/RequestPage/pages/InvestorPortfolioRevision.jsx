@@ -28,7 +28,7 @@ export default class InvestorPortfolioRevision extends Component {
         <PortfolioPreview requestData={this.props.requestData} /> : ''}
       <Cards
         cards={[{
-          title: this.state.cost ? this.state.cost : 'Calculating...'
+          title: this.state.cost ? this.state.cost : 'Calculating...',
           subtitle: 'Recalculation cost',
         }]}
       />
@@ -36,13 +36,15 @@ export default class InvestorPortfolioRevision extends Component {
         whiteBg={true}
         cards={[{
           title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
-          state: 'bad'
+          state: 'bad',
+          buttonBorders: true
         }, {
           title: 'Request another portfolio',
           subtitle: '(don\'t work yet)'
         }, {
           title: <Link to={'/signagreement/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Accept</Link>,
-          state: 'good'
+          state: 'good',
+          buttonBorders: true
         }]}
       />
     </div>

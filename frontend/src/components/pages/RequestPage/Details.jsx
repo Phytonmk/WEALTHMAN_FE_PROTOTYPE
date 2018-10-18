@@ -61,7 +61,7 @@ class Header extends Component {
                 subtitle: 'Service'
               }, {
                 title: this.props.request.service === 'Robo-advisor' ? 'unlimited' : this.props.request.revisions_amount,
-                subtitle: 'Alowed revision amounts'
+                subtitle: 'Allowed revision amounts'
               }]}
             />
             <Cards
@@ -88,7 +88,7 @@ class Header extends Component {
                 subtitle: 'Exit fee'
               }, {
                 title: this.props.request.managment_fee + ' %',
-                subtitle: 'Managment fee'
+                subtitle: 'Management fee'
               }, {
                 title: this.props.request.perfomance_fee + ' %',
                 subtitle: 'Perfomance fee'

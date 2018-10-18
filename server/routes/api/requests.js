@@ -13,6 +13,7 @@ const servicesList = ['Robo-advisor', 'Discretionary', 'Advisory'];
 const notify = require('../../helpers/notifications')
 
 module.exports = (app) => {
+  // Отправить запрос на сделку менеджеру 
   app.post('/api/request', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -120,6 +121,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Подучить информацию о сделке
   app.post('/api/get-request/:id', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -132,7 +134,7 @@ module.exports = (app) => {
         res.status(err);
         res.end();
       });
-    const request = await Request.findOne(Object.assign(requestQuery, {_id: req.params.id}));
+    const request = await Request.findById(req.params.id).where(requestQuery)
     if (request === null) {
       res.status(404);
       res.end('');
@@ -153,6 +155,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Получить список сделок и приглашений
   app.post('/api/requests', async (req, res, next) => {
     console.log(req.body);
 
@@ -172,6 +175,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
+  // Отклонить сделку
   app.post('/api/decline-request/:id', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -184,7 +188,7 @@ module.exports = (app) => {
         res.status(err);
         res.end();
       });
-    const request = await Request.findOne(Object.assign(requestQuery, {_id: req.body.request}));
+    const request = await Request.findById(req.body.request).where(requestQuery)
     if (request === null) {
       res.status(404);
       res.end('');
@@ -196,37 +200,7 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
-  // app.post('/api/pending-request/:id', async (req, res, next) => {
-  //   const token = await Token.findOne({token: req.body.accessToken});
-  //   if (token === null) {
-  //     res.status(403);
-  //     res.end('');
-  //     return;
-  //   }
-  //   console.log('-')
-  //   const  manager = await Manager.findOne({user: token.user});
-  //   if (manager === null) {
-  //     res.status(403);
-  //     res.end('');
-  //   }
-  //   const request = await Request.findOne({manager: manager.id, _id: req.params.id});
-  //   if (request === null) {
-  //     res.status(404);
-  //     res.end('');
-  //     return;
-  //   }
-  //   console.log('-')
-  //   const portfolio = await Portfolio.findOne({manager: manager.id, request: req.params.id});
-  //   if (portfolio === null) {
-  //     res.status(403);
-  //     res.end('');
-  //     return;
-  //   }
-  //   request.set({status: 'pending'});
-  //   await request.save();
-  //   res.status(200);
-  //   res.end();
-  // });
+  // Переслать запрос менеджеру (От компании)
   app.post('/api/requests/relay-to-manager', async (req, res, next) => {
     const token = await Token.findOne({token: req.body.accessToken});
     if (token === null) {
@@ -239,13 +213,13 @@ module.exports = (app) => {
       res.status(403);
       res.end('');
     }
-    const request = await Request.findOne({company: company.id, _id: req.body.request});
+    const request = await Request.findById(req.body.request).where({company: company.id});
     if (request === null) {
       res.status(404);
       res.end('');
       return;
     }
-    const manager = await Manager.findOne({company: company.id, _id: req.body.manager});
+    const manager = await Manager.findById(req.body.manager).where({company: company.id});
     if (request === null) {
       res.status(404);
       res.end('');
@@ -257,11 +231,6 @@ module.exports = (app) => {
     res.status(200);
     res.end();
   });
-  app.get('/api/request/history/:request', async (req, res, next) => {
-    const history = await Notification.find({request: req.params.request});
-    res.send(history)
-  });
-  //
 }
 
 const getRequestQueryByToken = (token) => new Promise(async (resolve, reject) => {

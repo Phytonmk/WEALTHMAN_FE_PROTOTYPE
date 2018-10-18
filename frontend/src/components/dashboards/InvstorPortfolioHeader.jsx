@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCookie, niceNumber, setPage } from '../helpers';
+import { getCookie, niceNumber, setPage, api } from '../helpers';
 import Modal from '../Modal'
 
 export default class InvstorPortfolioHeader extends Component {
@@ -13,7 +13,7 @@ export default class InvstorPortfolioHeader extends Component {
           </div>
           <div>
             <div>
-              <h2>{this.props.value || '???'}</h2>
+              <h2>{this.props.value || ''}</h2>
               <p>Total balance</p>
             </div>
             {(getCookie('usertype') != 0 ? '' : (<Link to={"/"}>
@@ -35,12 +35,12 @@ export default class InvstorPortfolioHeader extends Component {
           {this.props.requestData.request.status === 'active' &&
             <RequestWithdraw
               request={this.props.requestData.request._id}
-              address={this.props.requestData.portfolio.smart_cntract}
+              address={this.props.requestData.portfolio.smart_contract}
               />}
           {this.props.requestData.request.status === 'waiting for withdraw' &&
             <Withdraw
               request={this.props.requestData.request._id}
-              address={this.props.requestData.portfolio.smart_cntract}
+              address={this.props.requestData.portfolio.smart_contract}
               />}
         </div>
       </div>
@@ -83,9 +83,13 @@ class Withdraw extends Component {
     this.hideModal = () => {}
   }
   openMetaMask() {
-    const contract = web3.eth.contract(contractAbi)
-    const myContractInstance = contract.at(this.props.address);
-    myContractInstance.withdraw(() => this.hideModal());
+    try {
+      const contract = web3.eth.contract(contractAbi)
+      const myContractInstance = contract.at(this.props.address);
+      myContractInstance.withdraw(() => this.hideModal());
+    } catch (e) {
+      alert('Seems like you are not Logged In MetaMask')
+    }
   }
   render() {
     return <Modal
@@ -98,7 +102,7 @@ class Withdraw extends Component {
         <br/>
         <small>#{this.props.request}</small>
         <br/>
-        <p>All ethereum will be withdrawed from smart contract <b>{this.state.contract_address}</b> to address which was specified before deploying</p>
+        <p>All ethereum will be withdrawed from smart contract <b>{this.props.address}</b> to address which was specified before deploying</p>
       </Modal>
   }
 }

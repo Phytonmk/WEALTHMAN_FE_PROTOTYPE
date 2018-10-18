@@ -257,7 +257,7 @@ class PortfoliosPage extends Component {
           header: "Archived",
         },
         {
-          header: "In proggress",
+          header: "In progress",
         },
         {
           header: "All",
@@ -271,7 +271,7 @@ class PortfoliosPage extends Component {
         return true
       else if (subheaders[this.state.currentTab].header === 'Archived' && row.status === 'archived')
         return true
-      else if (subheaders[this.state.currentTab].header === 'In proggress' && !['active', 'archived'].includes(row.status))
+      else if (subheaders[this.state.currentTab].header === 'In progress' && !['active', 'archived'].includes(row.status))
         return true
       else
         return false

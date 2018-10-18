@@ -54,22 +54,15 @@ class ManagersPage extends Component {
     const manager = this.state.offers.find(i => i._id === managerID)
     setCookie('service', this.state.filter)
     if (getCookie('usertype') === '0') {
-      // setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
-      this.props.history.push({
-        pathname: 'kyc-questions',
-        search: '?manager=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
-      })
+      if (this.state.filters === 'unknown')
+        setPage(`${manager.type.toLowerCase()}/${manager.id}`)
+      else
+        this.props.history.push({
+          pathname: 'kyc-questions',
+          search: '?manager=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
+        })
     } else {
-      // setCookie('manager', (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
       window.openSignUp(() => {
-        // let search;
-        // if (!location.href.includes('?'))
-        //   link += '?apply=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
-        // else
-        //   link += '&apply=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
-        // let link = 'questions'
-        // setPage(link)
-        // setPage("kyc/" + (manager.company_name ? 'company' : 'manager') + '/' + manager._id)
         this.props.history.push({
           pathname: 'questions',
           search: '?apply=' + (manager.company_name ? 'company' : 'manager') + '/' + manager._id
@@ -152,7 +145,7 @@ class ManagersPage extends Component {
       },
       {
         property: "min",
-        title: "min. investment",
+        title: "Min. investment",
         // width: "103px",
         width: "90px",
         type: "number",
@@ -174,8 +167,8 @@ class ManagersPage extends Component {
         type: "unsortable",
       },
       {
-        property: "perfomance",
-        title: "performance fee",
+        property: "managmentFee",
+        title: "Management fee",
         // width: "103px",
         width: "90px",
         type: "number",
@@ -195,7 +188,31 @@ class ManagersPage extends Component {
         width: "90px",
         type: "unsortable",
         tooltip: "Assets Under Management in the last 6 month"
-      }
+      },
+      {
+        property: "perfomanceFee",
+        title: "Performance fee",
+        // width: "103px",
+        width: "90px",
+        type: "number",
+        titleClass: "with-border",
+      },
+      {
+        property: "frontFee",
+        title: "Front fee",
+        // width: "103px",
+        width: "90px",
+        type: "number",
+        titleClass: "with-border",
+      },
+      {
+        property: "exitFee",
+        title: "Exit fee",
+        // width: "103px",
+        width: "90px",
+        type: "number",
+        titleClass: "with-border",
+      },
     ]
     if (getCookie('usertype') != 1 && getCookie('usertype') != 3)
       sortableHeader.push({
@@ -212,7 +229,7 @@ class ManagersPage extends Component {
         })
     if (getCookie('usertype') == 3) { // user -- company
       sortableHeader.pop()
-      if (this.props.currentPage === 'company-managers')
+      if (this.props.history.location.pathname === '/company-managers')
         sortableHeader.push({
           property: 'chat',
           width: "105px",
@@ -243,7 +260,7 @@ class ManagersPage extends Component {
         },
         min: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
-          {manager.services[i].min || '?'} $
+         {manager.services[i].min || '?'} $
         </li>)}</ul>,
         aum: {
           render: niceNumber(manager.aum),
@@ -257,9 +274,21 @@ class ManagersPage extends Component {
           value: manager.services.map(service => filters[service.type].link).reduce((a, b) => a + " " + b)
         },
         clients: manager.clients,
-        perfomance: manager.services.length === 0 ? <div>-</div> :
+        perfomanceFee: manager.services.length === 0 ? <div>-</div> :
         <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
           {manager.services[i].perfomance_fee || '?'} %
+        </li>)}</ul>,
+        managmentFee: manager.services.length === 0 ? <div>-</div> :
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {manager.services[i].managment_fee || '?'} %
+        </li>)}</ul>,
+        frontFee: manager.services.length === 0 ? <div>-</div> :
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {manager.services[i].front_fee || '?'} %
+        </li>)}</ul>,
+        exitFee: manager.services.length === 0 ? <div>-</div> :
+        <ul className="services-in-table-list">{manager.services.map((service, i) => <li key={i}>
+          {manager.services[i].exit_fee || '?'} %
         </li>)}</ul>,
         aum6m: <AreaChart
             margin={{top: 0, right: 0, bottom: 0, left: 0}}
@@ -316,7 +345,7 @@ class ManagersPage extends Component {
                 <br />
                 </div> */}
                 <div className="row">
-                  <h2>Choose the best suited wealth manager!</h2>
+                  <h2>Select the best suited wealth manager!</h2>
                   <Link to="faq" className="grey-link" onClick={() => {setPage("faq"); setReduxState({faqId: filters.find(filter => filter.link == this.props.managersFilter).link})}}>
                     {(filters.find(filter => filter.link === this.state.filter) || {description: ''}).description}
                   </Link>
@@ -425,14 +454,7 @@ class ManagersPage extends Component {
                   row.name.value.toLowerCase().includes(this.state.searchName.toLowerCase())
                 }
                 columns={sortableHeader}
-                data={sortableManagers.map((manager) => {
-                  manager.apply = <div className="no-margin" onClick={() => setPage(`/${manager.type.toLowerCase()}/${manager.id}`)}>
-                    <button className="big-blue-button">
-                      APPLY NOW
-                    </button>
-                  </div>
-                  return manager
-                })}
+                data={sortableManagers}
                 navigation={true}
                 maxShown={5}
               />

@@ -53,7 +53,7 @@ export default class InvestorPortfolioActive extends Component {
       <Cards
         whiteBg={true}
         cards={[{
-          title: <Link className="blue" to={'/portfoliocreation/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Review portfolio</Link>,
+          title: <Link className="blue" to={'/portfoliocreation/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Rebalance portfolio</Link>,
         }]}
       />
       <SmartContract address={this.props.requestData.portfolio.smart_contract} />

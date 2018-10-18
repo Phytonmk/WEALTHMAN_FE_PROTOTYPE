@@ -1,5 +1,6 @@
 const axios = require('axios')
 module.exports = (app) => {
+  // Получить график стоимости портфеля time: day, week, month, year
   app.get('/api/portfolio-history/:time/:portfolio', async (req, res, next) => {
     try {
       let startDate = new Date()

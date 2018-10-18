@@ -36,13 +36,13 @@ class OldAccount extends Component {
         new_password1: this.state.new_password1,
         new_password2: this.state.new_password2,
       })
-      .then(() => alert('Password changed'))
+      .then(() => this.props.savedToast && this.props.savedToast())
       .catch(console.log);
     }
   }
   saveData(data) {
     api.post(this.state.user + '/data', Object.assign({accessToken: getCookie('accessToken')}, data))
-      .then(() => {alert('Your new data saved')})
+      .then(() => {this.props.savedToast && this.props.savedToast()})
       .catch(console.log);
   }
   render() {

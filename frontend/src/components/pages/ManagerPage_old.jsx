@@ -125,7 +125,7 @@ class ManagerPage extends Component {
                 <div className="row subheaders">
                   <div>
                     <small>Location</small>
-                    <p>???</p>
+                    <p></p>
                   </div>
                   <div>
                     <small>Total</small>

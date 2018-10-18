@@ -107,6 +107,7 @@ class PortfolioCreationPage extends Component {
             }
           }
           this.setState({selected, inputData, activeExists: res.data.activeExists, selectedNames});
+          setTimeout(() => this.updateButtons(), 10);
         }
       })
       .catch(console.log);
@@ -152,7 +153,7 @@ class PortfolioCreationPage extends Component {
     state.selected.push(Object.assign({}, token));
     state.selectedNames.push(token.name);
     this.setState(state);
-    setTimeout(() => this.updateButtons(), 0);
+    setTimeout(() => this.updateButtons(), 10);
   }
   changeTokenData(token, property, value) {
     const state = Object.assign({}, this.state);
@@ -317,7 +318,7 @@ class PortfolioCreationPage extends Component {
 
           </div> : <RequestDetails request={this.state.request} />}
           <div className='box'>
-            <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'fees'})}>Fees</button>
+            {(this.state.request && (this.state.request.status === 'pending' || this.state.request.status === 'not created')) && <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'fees'})}>Fees</button>}
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'select'})}>Tokens selecting</button>
             <button className='porfolio-creation-tabs' onClick={() => this.setState({page: 'percent'})}>Tokens percent changing</button>
             <button className='big-blue-button right' style={{marginLeft: 20}} onClick={() => this.send()}>Send</button>

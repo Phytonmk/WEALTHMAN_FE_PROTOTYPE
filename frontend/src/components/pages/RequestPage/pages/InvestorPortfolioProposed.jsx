@@ -29,12 +29,14 @@ export default class InvestorPortfolioProposed extends Component {
         whiteBg={true}
         cards={[{
           title: <Link to={'/decline/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Decline</Link>,
-          state: 'bad'
+          state: 'bad',
+          buttonBorders: true
         }, {
           title: <a style={{cursor: 'pointer'}} onClick={() => this.requestAnother()}>Request another portfolio</a>,
         }, {
           title: <Link to={'/signagreement/' + this.props.requestData.request._id} style={{color: 'inherit', textDecoration: 'none'}}>Accept</Link>,
-          state: 'good'
+          state: 'good',
+          buttonBorders: true
         }]}
       />
     </div>

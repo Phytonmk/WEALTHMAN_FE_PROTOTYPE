@@ -190,6 +190,7 @@ class Form extends Component {
                     {servicesList.map((option, index) => <option {...service.type === index ? 'selected' : 's'} value={index}>{option}</option>)}
                   </select>
                   <br />
+                  <br />
                   Exit fee
                   <br />
                   <Input type="number" placeholder="Exit fee" value={service.exit_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'exit_fee')}/>
@@ -210,17 +211,17 @@ class Form extends Component {
                   <br />
                   <Input type="number" placeholder="recalculation" value={service.recalculation} onChange={(event) => this.setServiceData(question.property, event, i, 'recalculation')}/>
                   <br />
-                  Minimal investment
+                  Minimum investment
                   <br />
-                  <Input type="number" placeholder="Minimal investment" value={service.min} onChange={(event) => this.setServiceData(question.property, event, i, 'min')}/>
+                  <Input type="number" placeholder="Minimum investment" value={service.min} onChange={(event) => this.setServiceData(question.property, event, i, 'min')}/>
                   <br />
                   Methodology
                   <br />
                   <Input type="text" placeholder="Methodology" value={service.methodology} onChange={(event) => this.setServiceData(question.property, event, i, 'methodology')}/>
                   <br />
-                  Philosophy
+                  Investment philosophy
                   <br />
-                  <Input type="text" placeholder="Philosophy" value={service.philosofy} onChange={(event) => this.setServiceData(question.property, event, i, 'philosofy')}/>
+                  <Input type="text" placeholder="Investment philosophy" value={service.philosofy} onChange={(event) => this.setServiceData(question.property, event, i, 'philosofy')}/>
                   <br />
                   <button className="back" onClick={() => this.removeService(question.property, i)}>Remove {servicesList[service.type]} from list</button>
                   <br />

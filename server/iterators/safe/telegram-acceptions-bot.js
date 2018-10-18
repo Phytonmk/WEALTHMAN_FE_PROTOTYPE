@@ -30,16 +30,19 @@ module.exports = () => new Promise(async (resolve, reject) => {
           text: `Ok`,
           reply_to_message_id: message.message_id
         })
+        await TelegramAcception.findOneAndRemove({asked_request: request._id})
       }
     }
   }
   await TelegramAcception.findOneAndUpdate({last_update: true}, {last_update: true, update_id: offset}, {upsert: true})
-  const requests = await Request.find({exchange_withdraw_allowed: false, $or: [{status: 'buying tokens'}, {status: 'sending old tokens'}]})
+  const requests = await Request.find({exchange_withdraw_allowed: false, $or: [{status: 'buying tokens'}, {status: 'tokens exchanging'}]})
   console.log(`Sending acceptions for requests:`, requests.map(r => r._id))
   for (let request of requests) {
     let thisRequestSentRecord = await TelegramAcception.findOne({asked_request: request._id})
     if (thisRequestSentRecord === null) {
       const portfolio = await Portfolio.findOne({request: request._id, state: 'active'})
+      if (portfolio === null)
+        continue
       const msgText = `You need to accept this smart contract to be with withdrawable:\n<code>${portfolio.smart_contract}</code>\n\n/allow_${request._id}`
       await axios.post(`https://api.telegram.org/bot${configs.telegram.token}/sendMessage`, {
         chat_id: configs.telegram.admin,

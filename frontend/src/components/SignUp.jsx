@@ -11,6 +11,16 @@ import Input from './inputs/Input'
 import GoogleLogin from 'react-google-login'
 import FacebookLogin from 'react-facebook-login'
 
+const mailingServices = [{
+  title: 'GMail inbox',
+  domain: 'gmail.com',
+  url: 'https://mail.google.com'
+}, {
+  title: 'Yandex mail inbox',
+  domain: 'yandex.ru',
+  url: 'https://mail.yandex.ru'
+}]
+
 export default class SignUp extends Component {
   constructor(props) {
     super(props)
@@ -230,14 +240,24 @@ export default class SignUp extends Component {
             {/^[^@]+@{1}[^\.]+\.{1}.+$/.test(this.state.login) ?
             <div>
               <div className="row">
-                Email send to <b>{this.state.login}</b>
+                Email sent to <b>{this.state.login}</b>
               </div>
               <div className="row">
                 Confirm your email and then push the button below
               </div>
-              <div className="row">
-                <ins><a target="_blank" href={'https://' + this.state.login.substr(this.state.login.indexOf('@') + 1)}>Go to {this.state.login.substr(this.state.login.indexOf('@') + 1)}</a></ins>
-              </div>
+              {(() => { 
+                const mainlingService = mailingServices.find((inbox) => inbox.domain === this.state.login.substr(this.state.login.indexOf('@') + 1))
+                if (mainlingService === undefined)
+                  return ''
+                return  <div className="row">
+                          <br />
+                          <ins><a
+                            target="_blank"
+                            href={mainlingService.url} >
+                          Go to {mainlingService.title}
+                          </a></ins>
+                        </div>
+              })()}
             </div> :
             <div>
               <div className="row">

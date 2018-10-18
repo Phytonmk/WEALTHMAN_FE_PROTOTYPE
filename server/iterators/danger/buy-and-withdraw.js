@@ -104,9 +104,9 @@ module.exports = () => new Promise(async (resolve, reject) => {
         await order.save()
       }
     } else if (order.status === 'token bouthg') {
-      let withdrawing = null
       const request = await Request.findById(order.request)
       if (request.exchange_withdraw_allowed) {
+        let withdrawing = null
         await TGlogger(`Withdrawing ${order.quantity} + ${order.additional_quantity} - 1 = ${order.quantity + order.additional_quantity - 1} "${order.token_name}" to ${order.contract_address} for request #${request._id}`)
         if (configs.productionMode) {
           withdrawing = await exchanges[0].api.withdraw(order.token_name, order.quantity + order.additional_quantity - 1, order.contract_address)
@@ -117,12 +117,12 @@ module.exports = () => new Promise(async (resolve, reject) => {
                 // await order.save()
             })
         }
-      }
-      if (withdrawing || !configs.productionMode) {
-        order.set({
-          status: 'completed'
-        })
-        await order.save()
+        if (withdrawing || !configs.productionMode) {
+          order.set({
+            status: 'completed'
+          })
+          await order.save()
+        }
       }
     }
   }

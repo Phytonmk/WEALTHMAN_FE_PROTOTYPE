@@ -3,6 +3,7 @@ import { setReduxState } from '../../../redux';
 import { connect } from 'react-redux';
 import LevDate from '../../LevDate';
 import { api, setPage, setCurrency, previousPage } from '../../helpers';
+import Breadcrumbs from '../../Breadcrumbs'
 
 import DefaultPage from './pages/default'
 
@@ -56,6 +57,7 @@ class RequestPage extends Component {
           // break;
           case 'waiting for deposit':
             Page = InvestorPortfolioDeposit;
+            break;
           case 'waiting for withdraw':
             Page = InvestorPortfolioActive; // update it !
           break;
@@ -96,6 +98,23 @@ class RequestPage extends Component {
     }
 
     return  <div className="container">
+              <div className="breadcrumbs-container">
+                <Breadcrumbs
+                  links={this.state.request.type !== 'portfolio' ? [{
+                    link: '/requests',
+                    label: 'Event log'
+                  }, {
+                    link: '/request/' + this.props.match.params.id,
+                    label: 'Inviting request'
+                  }] : [{
+                    link: '/portfolios',
+                    label: 'My portfolios'
+                  }, {
+                    link: '/request/' + this.props.match.params.id,
+                    label: this.state.request.investing_reason
+                  }]}
+                />
+              </div>
               <Page
                 requestData={this.state}
               />

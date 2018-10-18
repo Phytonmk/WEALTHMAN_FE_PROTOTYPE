@@ -44,6 +44,8 @@ class ManagerPage extends Component {
         this.setState({manager: res.data})
       })
       .catch(console.log)
+    if (managerType === 'manager')
+      api.post('increment-manager-views/' + this.props.match.params.id).catch(console.log)
   }
   componentWillMount() {
     this.load()

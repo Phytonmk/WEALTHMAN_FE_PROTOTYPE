@@ -23,6 +23,7 @@ const KYCBlank = require('../../models/KYCBlank')
 const mailer = require('../../helpers/mailer')
 
 module.exports = (app) => {
+  // Регистрирует пользователя и отправляет сообщение на почту, взятую из логина
   app.post('/api/register', async (req, res, next) => {
     if (!req.body.login) {
       res.status(400)
@@ -85,6 +86,8 @@ module.exports = (app) => {
     res.send({token, dataFilled: req.body.register === 'investor', confirmToken}) // remove confirmToken from response
     res.end()
   })
+  // Авторизирует или регстрирует пользователя через внешние сервисы
+  // Возможные значения service: google, facebook
   app.post('/api/oauth/:service', async (req, res, next) => {
     if (!['google', 'facebook'].includes(req.params.service)) {
       res.status(400)
@@ -180,6 +183,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Регистрирует нового пользователя с аккаунта менеджера
   app.post('/api/register-new-client', async (req, res, next) => {
     const ManagersAccessToken = await AccessToken.findOne({token: req.body.accessToken});
     if (ManagersAccessToken === null) {
@@ -241,6 +245,7 @@ module.exports = (app) => {
     res.send({token})
     res.end()
   })
+  // Подтверждение почты
   app.get('/api/confirm-email/:token', async (req, res, next) => {
     const emailConfirmation = await EmailConfirmation.findOne({token: req.params.token})
     if (emailConfirmation === null) {
@@ -260,6 +265,7 @@ module.exports = (app) => {
     res.send('Your email has been successfully verified')
     res.end()
   })
+  // Запрос на восстановление пароля
   app.post('/api/forgot-password', async (req, res, next) => {
     const user = await User.findOne({login: req.body.email})
     if (user === null) {
@@ -285,6 +291,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Смена пароля по коду восстановления
   app.post('/api/password-reset', async (req, res, next) => {
     const passwordReset = await PasswordReset.findOne({
       email: req.body.email,
@@ -316,6 +323,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // [not used] Подтверждение согласия инвестора с правилами платформы 
   app.post('/api/investor/agree', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -337,6 +345,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Сохранение формы "после регистрации" и генерация уровня риска инвестора
   app.post('/api/investor/risk', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -367,6 +376,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Обновление аккаунта инвестора или его создание из только что зарегестрированного аккаунта пользователя
   app.post('/api/investor/data', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -398,6 +408,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Обновление аккаунта менеджера или его создание из только что зарегестрированного аккаунта пользователя
   app.post('/api/manager/data', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -429,6 +440,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Загрузка фото для инвестора
   app.post('/api/photo/investor', async (req, res, next) => {
     console.log(req.headers)
     const token = await AccessToken.findOne({token: req.headers.accesstoken})
@@ -451,6 +463,7 @@ module.exports = (app) => {
       res.end()
     })
   })
+  // Загрузка фото для менеджера
   app.post('/api/photo/manager', async (req, res, next) => {
     console.log(req.headers)
     const token = await AccessToken.findOne({token: req.headers.accesstoken})
@@ -482,6 +495,7 @@ module.exports = (app) => {
       res.end()
     })
   })
+  // Загрузка фото для компании
   app.post('/api/photo/company', async (req, res, next) => {
     console.log(req.headers)
     const token = await AccessToken.findOne({token: req.headers.accesstoken})
@@ -507,6 +521,7 @@ module.exports = (app) => {
       res.end()
     })
   })
+  // Обновление аккаунта компании или его создание из только что зарегестрированного аккаунта пользователя
   app.post('/api/company/data', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -537,6 +552,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Авторизация
   app.post('/api/login', async (req, res, next) => {
     const user = await User.findOne({
       login: req.body.login,
@@ -557,11 +573,13 @@ module.exports = (app) => {
     res.send({accessToken: accessToken.token, usertype: user.type})
     res.end()
   })
+  // Удаление текущего токена доступа
   app.post('/api/logout', async (req, res, next) => {
     await AccessToken.findOneAndRemove({token: req.body.accessToken})
     res.status(200)
     res.end()
   })
+  // Получение информации о текущем аккаунте через токен доступа
   app.post('/api/getme', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -596,6 +614,7 @@ module.exports = (app) => {
     res.send({usertype: user.type, userData, testNetwork: !configs.productionMode})
     res.end()
   })
+  // Смена пароля
   app.post('/api/changepassword', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -619,6 +638,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Проверка на доступность логина для регистрации
   app.post('/api/check-login', async (req, res, next) => {
     if (!req.body.login || req.body.login === '') {
       res.status(403)
@@ -634,6 +654,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // [deprecated] Получить текущий email аккаунта вида us***@example.com
   app.get('/api/my-email', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.headers.accesstoken})
     if (token === null) {
@@ -663,6 +684,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Запросить смену логина
   app.post('/api/change-email', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -708,6 +730,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Подтверждение смены логина
   app.get('/api/confirm-email-change/:email/:token', async (req, res, next) => {
     let emailChanging;
     if (req.params.email === 'old')
@@ -747,6 +770,7 @@ module.exports = (app) => {
       res.end()
     }
   })
+  // Загрузка на сервер документов пользователя: id или selfy
   app.post('/api/photo/doc/:fileType', async (req, res, next) => {
     if (!['id', 'selfy'].includes(req.params.fileType)) {
       res.status(400)
@@ -803,6 +827,7 @@ module.exports = (app) => {
       res.end()
     })
   })
+  // Отправка персональной информации о пользователе
   app.post('/api/kyc-blank', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
@@ -822,6 +847,7 @@ module.exports = (app) => {
     res.status(200)
     res.end()
   })
+  // Скачивание персональной информации о пользователе
   app.get('/api/kyc-blank', async (req, res, next) => {
     const token = await AccessToken.findOne({token: req.headers.accesstoken})
     if (token === null) {

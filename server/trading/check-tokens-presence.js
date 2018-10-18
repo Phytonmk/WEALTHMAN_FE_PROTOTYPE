@@ -15,7 +15,7 @@ module.exports = (address, tokens) => new Promise(async (resolve, reject) => {
     let presents = false
     console.log(tokens)
     for (let token of tokens) {
-      const thisTokenPresents = await checkOneToken(address, token)
+      const thisTokenPresents = configs.productionMode ? await checkOneToken(address, token).catch(reject) : true
       if (thisTokenPresents) {
         presents = true
         break
