@@ -43,20 +43,26 @@ export default class SignUp extends Component {
       this.props.hide()
   }
   openDetailsStep() {
-    if (this.state.password === this.state.passwordRepeat) {
+    // if (this.state.password === this.state.passwordRepeat) {
       api.post('check-login', {login: this.state.login})
         .then(() => {
-          if (!this.state.registerNewClient && this.state.register === 'investor') {
+          if (this.state.registerNewClient || !this.state.registerNewClient && this.state.register === 'investor') {
             this.sendAllForms(null)
           } else {
             this.setState({step: 1})
           }
         })
-        .catch((e) => e.response && e.response.status === 403 ? this.setState({badLogin: true}) : alert('Error, registration is temporarely unavalible'))
+        .catch((e) => {
+          console.log(e)
+          if (e.response && e.response.status === 403)
+            this.setState({badLogin: true})
+          else
+            alert('Error, registration is temporarely unavalible')
+        })
       
-    } else {
-      alert('Passwords are not equal')
-    }
+    // } else {
+    //   alert('Passwords are not equal')
+    // }
   }
   sendAllForms(data) {
     const callback = (res) => {
@@ -66,10 +72,13 @@ export default class SignUp extends Component {
         if (res.data.confirmToken)
           this.setState({confirmToken: res.data.confirmToken})
       }
-      if (!res.data.dataFilled)
+      if (this.state.registerNewClient) {
+        this.setState({login: ''})
+        this.props.hide()
+      } else if (!res.data.dataFilled)
         this.sendDetails(data, res.data.token)
       else if (this.state.oauthService !== null)
-        this.props.hide()
+          this.props.hide()
       else
         this.setState({step: 2})
     }
@@ -178,12 +187,12 @@ export default class SignUp extends Component {
           {this.state.registerNewClient ? '' :
             <React.Fragment>
               <div className="row">
-                <label>Password</label>
+                <label>Password <span className="red">*</span></label>
                 <Input value={this.state.password} setValue={value => this.setState({password: value})} type="password" placeholder="Enter your password" />
               </div>
-              <div className="row">
+              {/*<div className="row">
                 <Input value={this.state.passwordRepeat} setValue={value => this.setState({passwordRepeat: value})} type="password" placeholder="Repeat your password" />
-              </div>
+              </div>*/}
               <small>
                 If you leave password field empty, it will be generated and sent to your e-mail automatically.
               </small>
@@ -221,7 +230,7 @@ export default class SignUp extends Component {
          {this.state.step !== 1 ? '' : <div>
             {this.state.register !== '' ? <Form
               questions={questions[this.state.register + 'Short']}
-              onSubmit={(data) => {this.sendAllForms(data)}}
+              onSubmit={(data) => this.sendAllForms(data)}
             /> : <React.Fragment>
               <div className="row-padding">
                 <button className="big-blue-button auth-btn" onClick={() => this.setState({register: 'manager'})}>

@@ -146,6 +146,7 @@ class Question extends Component {
     return  <RetirementGraphic
               value={this.props.value}
               setValue={this.props.setValue}
+              age={this.props.allAnswers['WhatIsYourAge']}
             />
   }
   renderRangeSlider() {

@@ -25,7 +25,6 @@ export default class ReportsAndDocuments extends Component {
     }
   }
   render() {
-    console.log(this.props.transactions)
     return <div className="reports-and-documents-box">
       <div className="box">
         <h3>Reports & Documents</h3>
@@ -66,7 +65,11 @@ export default class ReportsAndDocuments extends Component {
               />
             },{
               header: 'Agreements',
-              content: 'no data'
+              content:  <div>
+                          {this.props.investorAgreement && <div>Investor agreement:
+                            <a className="blue" target="_blank" href={api.imgUrl(`agreements/${this.props.request}/investor/${this.props.investorAgreement}`)}>
+                              {' ' + this.props.investorAgreement}</a></div>}
+                        </div>
             },{
               header: 'History',
               content: this.state.history.length === 0 ? 'no data' : this.state.history.map(transaction => 

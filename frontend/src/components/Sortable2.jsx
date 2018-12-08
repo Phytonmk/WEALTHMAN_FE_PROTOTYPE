@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import TridotDropdownWithCheckboxes from './inputs/TridotDropdownWithCheckboxes'
 import LevDate from './LevDate';
 import '../css/Sortable2.sass';
-
+import { getCookie, setCookie } from './helpers'
 {/*
 //  //  //              USAGE EXAMPLE              //  //  //
 
@@ -58,6 +58,8 @@ import '../css/Sortable2.sass';
   maxShown={5}
   //(OPTIONAL) listings become clicable links, links are taken from this property
   linkProperty={"listingLink"}
+  //(OPTIONAL) Initially hidden links
+  initHiddenColumns={["name", "age"]}
 />
 */}
 
@@ -138,11 +140,22 @@ class Sortable2 extends Component {
     let scrollableRowColumns = this.props.columns
     .filter(column => !column.preventScroll)
     .filter(column => column.hasOwnProperty("title") && column.title != "");
+    
+    let headersList = []
+    for (let header in this.props.columns)
+      headersList.push(header.property)
+    this.cookiePropertyName = 'hiden-cols-' + getStringHash(headersList.sort().join(', ')).toString()
     this.setState({
-      shownColumns: scrollableRowColumns.map(column => ({
+      shownColumns: scrollableRowColumns.map((column, i) => ({
         key: column.property,
         label: column.title,
-        value: true,
+        value: 
+               getCookie(this.cookiePropertyName) !== undefined ?
+               getCookie(this.cookiePropertyName).split('-').includes(i + '') :
+               (!this.props.initHiddenColumns ||
+               !this.props.initHiddenColumns.splice ||
+               !this.props.initHiddenColumns.includes ||
+               !this.props.initHiddenColumns.includes(column.property))
       }))
     });
 
@@ -395,13 +408,32 @@ class Sortable2 extends Component {
           {this.renderHorizontalNavigation()}
           <TridotDropdownWithCheckboxes
             options={this.state.shownColumns}
-            setValue={(value) => this.setState({shownColumns: value})}
+            setValue={(shownColumns) => {
+              console.log(shownColumns)
+              let shownColumnsList = []
+              for (let headerIndex in shownColumns)
+                if (shownColumns[headerIndex].value)
+                  shownColumnsList.push(headerIndex)
+              setCookie(this.cookiePropertyName, shownColumnsList.join('-'))
+              this.setState({ shownColumns })
+            }}
           />
         </React.Fragment>}
         {this.renderShowmore()}
       </div>
     );
   }
+}
+
+const getStringHash = (str) => {
+  let hash = 0, i, chr
+  if (str.length === 0) return hash;
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + chr
+    hash |= 0 // Convert to 32bit integer
+  }
+  return hash
 }
 
 export default Sortable2;

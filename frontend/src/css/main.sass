@@ -25,7 +25,7 @@ li.link
     margin-top: 0
 
 .box, .login-box
-  input[type="text"], input[type="text"], input[type="number"], input[type="number"], input[type="file"], input[type="file"], input[type="password"], input[type="password"]
+  input[type="text"], input[type="text"], input[type="number"], input[type="number"], input[type="file"], input[type="file"], input[type="password"], input[type="password"], textarea
     width: 100%
     max-width: 320px
     height: 40px
@@ -202,19 +202,32 @@ p.grey
   .progress
     height: 5px
     background-color: #5ad77d
-
-.document-box
-  width: 318px
-  height: 318px
-  margin: 12px
-  padding-top: 110px
-  border: 1px solid #e7e7ea
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15)
-  float: left
-  button.continue
-    margin-left: calc(50% - 100px)
-    margin-top: 15px
-
+.document-box-container
+  display: flex
+  .document-box
+    width: 318px
+    height: 318px
+    margin: 12px
+    margin-left: 0
+    padding-top: 110px
+    border: 1px solid #e7e7ea
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15)
+    float: left
+    .file-upload-container
+      width: 200px
+      margin: 15px auto
+      border: 2px dashed #48a8da
+      border-radius: 5px
+      text-align: center
+      font-size: 14px
+      height: 40px
+      transition: .3s all
+      background-color: rgba(0, 0, 0, 0)
+      h2
+        padding: 1px
+    button.continue
+      margin: 15px auto
+      display: block
 ul.token-listings
   padding: 0
   li
@@ -620,9 +633,9 @@ svg
         color: #66666a
       h3, & > div
         white-space: nowrap
-        // text-overflow: ellipsis
-        // overflow-x: hidden
-        // overflow-y: visible
+        text-overflow: ellipsis
+        overflow-x: hidden
+        overflow-y: hidden
         width: calc(100% - 18px * 2)
 .reports-and-documents-box
   padding-top: 30px

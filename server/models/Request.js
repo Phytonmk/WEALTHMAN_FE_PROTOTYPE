@@ -30,7 +30,8 @@ const RequestSchema = mongoose.Schema({
   investing_reason: String,
   exchange_withdraw_allowed: {type: Boolean, default: false},
   lastPayedComission: Date,
-  initial_value: Number
+  initial_value: Number,
+  investor_agreement: String
 });
 
 module.exports = mongoose.model('Request', RequestSchema);

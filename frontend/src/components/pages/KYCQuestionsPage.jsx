@@ -44,6 +44,7 @@ class KYCQuestionsPage extends Component {
           description={question.description}
           type={question.type}
           typeSpecific={question.typeSpecific}
+          allAnswers={this.state}
         />
       }
     })
@@ -52,11 +53,11 @@ class KYCQuestionsPage extends Component {
         <ProgressBar3
           match = {this.props.match}
           finishLink = {'/kyc' + this.props.history.location.search} 
-          // approxLength={5}
           onComplete = {() => this.submitForm()}
           pages={questionsToPages}
         />
       </div>
+          // approxLength={5}
     )
   }
 }
@@ -87,6 +88,15 @@ const questions = [
       to: 999999999,
     },
     filter: (state) => ['Long-term investment growth', 'Emergency fund', 'Other'].includes(state[camelize(questions[0].question)])
+  },
+  {
+    question: 'What is your age?',
+    type: 'age-slider',
+    typeSpecific: {
+      from: 18,
+      to: 100,
+    },
+    filter: (state) => ['Retirement'].includes(state[camelize(questions[0].question)])
   },
   {
     question: 'At what age do you plan to retire and for how long?',

@@ -77,7 +77,7 @@ module.exports = (app) => {
     res.end()
   })
   // Получить порт для подклбчению по веб-сокетам
-  app.get('/chats-api/ws', async (req, res, next) => {
+  app.get('/chats-api/ws', async (req, res) => {
     // let port
     // let minimalLoad = null
     // for (let worker of global.workersLoad) {

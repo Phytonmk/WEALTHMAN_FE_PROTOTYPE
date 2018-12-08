@@ -25,12 +25,13 @@ module.exports = {
   telegram: {
     token: '636209033:AAGsp6kM_-tqvCY2wzmfSetnPIzofbC1LRM',
     logsTo: -1001378890631,
-    admin: '306472594'
+    admin: '156646228'
   },
   chats: {
     apiPort: 2905,
     minWsPort: 2906,
     rabbitMq: 'amqp://admin:123456@185.185.71.190',
     queue: 'chats-messages-queue'
-  }
+  },
+  fixerIoApiKey: '1a9673cab457250cf0cc9edd273e74cc'
 }

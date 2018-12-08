@@ -21,6 +21,7 @@ var investorScheme = mongoose.Schema({
   last_target: {type: String, default: '-'},
   managers_amount: {type: Number, default: 0},
   source: {type: String, default: 'Application'},
+  addedBy: String,
   portfolios: {type: Number, default: 0}
 })
 

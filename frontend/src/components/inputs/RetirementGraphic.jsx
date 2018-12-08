@@ -15,7 +15,7 @@ class RetirementGraphic extends Component {
         this.state = {age: '', length: ''}
       }
     } else {
-      this.state = {age: 10, length: 10}
+      this.state = {age: 65, length: 10}
     }
   }
 
@@ -24,16 +24,16 @@ class RetirementGraphic extends Component {
       x: ((new Date).getFullYear()),
       y: 0
     }]
-    if (this.state.age && this.state.length && this.state.age <= 150 && this.state.length <= 150) {
+    if (this.state.age - this.props.age && this.state.length && this.state.age - this.props.age <= 150 && this.state.length <= 150) {
       graphicData.push({
-        x: (new Date).getFullYear() + this.state.age * 1,
+        x: (new Date).getFullYear() + this.state.age * 1 - this.props.age,
         y: 100
       }, {
-        x: (new Date).getFullYear() + this.state.age * 1 + this.state.length * 1 + 20,
+        x: (new Date).getFullYear() + this.state.age * 1 - this.props.age + this.state.length * 1 + 20,
         y: 80
       })
       graphicData.push({
-        x: (new Date).getFullYear() + this.state.age * 1 + this.state.length * 1 + 46,
+        x: (new Date).getFullYear() + this.state.age * 1 - this.props.age + this.state.length * 1 + 46,
         y: 20
       })
     }

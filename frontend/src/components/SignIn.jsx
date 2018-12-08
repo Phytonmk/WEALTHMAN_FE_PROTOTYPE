@@ -135,6 +135,9 @@ export default class SignIn extends Component {
             {/* <input style={this.state.wrongPassword ? {borderColor: 'red'} : {}} type="password" value={this.state.password} onChange={(event) => this.setState({password: event.target.value, wrongPassword: false})} placeholder="Enter your password" /> */}
             <Input tabindex="1" error={this.state.wrongPassword} type="password" value={this.state.password} setValue={value => this.setState({password: value, wrongPassword: false})} placeholder="Enter your password" />
           </div>
+          {this.state.wrongPassword && <div className="row">
+            <label>Login or password is incorrect</label>
+          </div>}
           <div className="row submit-row">
             <button className="big-blue-button auth-btn" onClick={() => this.login()}>Sign in</button>
           </div>

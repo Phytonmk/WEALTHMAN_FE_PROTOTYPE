@@ -70,21 +70,22 @@ class Input extends Component {
 
       );
     else  
-      return (
-        <input
-          value={this.props.value}
-          onChange={(event) => {
-            if (typeof this.props.onChange === 'function')
-              this.props.onChange(event)
-            if (typeof this.props.setValue === 'function')
-              this.props.setValue(event.target.value)
-          }}
-          type={this.props.type}
-          placeholder={this.props.placeholder}
-          className={"default " + (this.props.error ? "error" : "")}
-          tabIndex={this.props.tabindex}
-        />
-      );
+      return  <React.Fragment>
+                {this.props.percentSymbol ? <span className="after-input-percent-symbol">%</span> : ''}
+                <input
+                  value={this.props.value}
+                  onChange={(event) => {
+                    if (typeof this.props.onChange === 'function')
+                      this.props.onChange(event)
+                    if (typeof this.props.setValue === 'function')
+                      this.props.setValue(event.target.value)
+                  }}
+                  type={this.props.type}
+                  placeholder={this.props.placeholder}
+                  className={"default " + (this.props.error ? "error" : "")}
+                  tabIndex={this.props.tabindex}
+                />
+              </React.Fragment>
   }
 }
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Sortable2 from '../Sortable2'
 import LevDate from '../LevDate'
-import { api, setPage, setCurrency } from '../helpers'
+import { api, setPage, setCurrency, niceNumber } from '../helpers'
 
 import QRCode from 'qrcode.react'
 import {AreaChart} from 'react-easy-chart'
@@ -34,7 +34,7 @@ class PortfoliosPage extends Component {
   componentWillMount() {
     api.post('portfolios/load')
       .then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.exists)
           this.setState({gotData: true, portfolios: res.data.portfolios, requests: res.data.requests})
         else
@@ -51,14 +51,15 @@ class PortfoliosPage extends Component {
               }})
             })
             this.setState({graphics})
-            console.log(graphics)
+            // console.log(graphics)
           })
         setTimeout(() => this.forceUpdate(), 0)
       })
       .catch(console.log)
-    api.get('stocks')
+    api.get('currencies')
       .then((res) => {
-        this.setState({currentCurrencyPrices: res.data.map(stock => {return {name: stock.title, price: stock.last_price}})})
+        console.log(res.data)
+        this.setState({currentCurrencyPrices: res.data.map(currency => {return {name: currency.title, price: currency.toEthRate}})})
       })
       .catch(console.log)
     api.post('requests')
@@ -109,18 +110,7 @@ class PortfoliosPage extends Component {
       <option key={i} value={c.name}>{c.name}</option>
     )
     let currentCurrency = this.state.currentCurrencyPrices.find(c => c.name == this.state.currentCurrency) || {price: 0, name: 'USD'}
-    let totalValue
-    if (this.state.portfolios.length > 0)
-      totalValue = this.state.portfolios
-        .map(p => {
-          let price = 1
-          if (this.state.currentCurrencyPrices.find(c => c.name == p.currency) !== undefined)
-            price = this.state.currentCurrencyPrices.find(c => c.name == p.currency).price
-          return p.value * price
-        })
-        .reduce((a, b) => a + b)
-    else
-      totalValue = 0
+    let totalValue = 0
 
     let titles = [
       {
@@ -196,6 +186,7 @@ class PortfoliosPage extends Component {
         this.state.investors.find(i => i._id == request.investor) || {}
       else if (this.props.user === 3)
         user = this.state.investors.find(i => i._id == request.investor) || {}
+      totalValue += request.value * currentCurrency.price
       return {
         number: i,
         id: request._id,
@@ -204,7 +195,7 @@ class PortfoliosPage extends Component {
         person: (user.name || user.company_name || '') + " " + (user.surname || ''),
         instrument: request.service || '',
         change: profitGraph,
-        value: request.value + ' Eth', /*(value != 'NaN' ? value : '-') + " " + currentCurrency.name*/
+        value: niceNumber(request.value * currentCurrency.price) + ' ' + currentCurrency.name, /*(value != 'NaN' ? value : '-') + " " + currentCurrency.name*/
         status: request.status,
         recommendation: 'no',
         link: 'request/' + request._id
@@ -299,14 +290,18 @@ class PortfoliosPage extends Component {
             </div>
             <div className="column right portfolios-currency-select">
               <div className="row">
-                <h2>{totalValue} {this.state.currentCurrency}</h2>
+                <h2>{niceNumber(totalValue)} {this.state.currentCurrency}</h2>
               </div>
               <div className="row">
                 Change the current currency
                 <Select
                   value={this.state.currentCurrency}
                   options={this.state.currentCurrencyPrices.map(c => c.name)}
-                  setValue={(value) => this.setState({currentCurrency: value})}
+                  setValue={(value) => {
+                    //const price = this.state.currentCurrencyPrices.find(c => c.name === value)
+                    //console.table(this.state.currentCurrencyPrices)
+                    this.setState({currentCurrency: value})
+                  }}
                   width="100px"
                 />
               </div>

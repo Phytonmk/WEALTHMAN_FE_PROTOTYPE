@@ -54,7 +54,7 @@ export default class InvestorPortfolioActive extends Component {
       <PortfolioPreview requestData={this.props.requestData} />
       <PageDevider />
       <Person requestData={this.props.requestData}/>
-      <ReportsAndDocuments request={this.props.requestData.request._id} transactions={this.props.requestData.transactions}/>
+      <ReportsAndDocuments investorAgreement={this.props.requestData.request.investor_agreement} request={this.props.requestData.request._id} transactions={this.props.requestData.transactions}/>
     </div>
   }
 }

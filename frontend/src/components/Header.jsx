@@ -89,7 +89,6 @@ class Header extends Component {
         headerLinks = loggedCompanyLinks;
         break;
     }
-
     headerLinks = headerLinks.map((link, i) => {
       if (link.link.includes("https://"))
         return (

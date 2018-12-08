@@ -3,7 +3,6 @@ const axios = require('axios')
 
 const configs = require('../../configs')
 
-const tokensAndPasswords = require('../../helpers/tokens-and-passwords')
 
 const OAuthModel = require('../../models/OAuth')
 const User = require('../../models/User')
@@ -21,6 +20,8 @@ const PasswordReset = require('../../models/PasswordReset')
 const KYCBlank = require('../../models/KYCBlank')
 
 const mailer = require('../../helpers/mailer')
+const tokensAndPasswords = require('../../helpers/tokens-and-passwords')
+const { createManagersStatistics, createInvestorStatistics } = require('../../helpers/statistics-creators')
 
 module.exports = (app) => {
   // Регистрирует пользователя и отправляет сообщение на почту, взятую из логина
@@ -53,11 +54,11 @@ module.exports = (app) => {
 
     const confirmToken = tokensAndPasswords.genConfirmToken(token)
     let emailText = `To confirm your email follow <a href="http://${configs.host}:8080/api/confirm-email/${confirmToken}">this link</a>`
-    if (generatedPassword) {
+    // if (generatedPassword) {
       emailText += '<br><br>'
       emailText += `Your login: ${req.body.login}<br>`
       emailText += `Your password: ${req.body.password}<br>`
-    }
+    // }
     if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
       const email = {
         Recipients: [{ Email: req.body.login }],
@@ -209,7 +210,8 @@ module.exports = (app) => {
     const user = new User({
       login: req.body.login,
       password_hash: tokensAndPasswords.passwordHash(password),
-      invited: manager.user
+      invited: manager.user,
+      type: 0
     })
     const token = tokensAndPasswords.genAccessToken(user)
     const accessToken = new AccessToken({
@@ -219,7 +221,8 @@ module.exports = (app) => {
     const investor = new Investor({
       user: user.id,
       name: '',
-      source: 'Added client'
+      source: 'Added client',
+      addedBy: manager._id
     })
     const confirmToken = tokensAndPasswords.genConfirmToken(token)
     if (/^[^@]+@{1}[^\.]+\.{1}.+$/.test(req.body.login)) {
@@ -596,6 +599,7 @@ module.exports = (app) => {
     if (!user.confirmed) {
       res.send(401)
       res.end()
+      return
     }
     let userData = {}
     switch (user.type) {
@@ -860,38 +864,3 @@ module.exports = (app) => {
     res.end()
   })
 }
-
-const createManagersStatistics = (managerId) => new Promise(async (resolve, reject) => {
-  const managerStatistic = new ManagerStatistic({
-    manager: managerId,
-    last_update: Date.now(),
-    dates: [Date.now()],
-    aum: [0],
-    portfolios: [{
-      active: 0,
-      archived: 0,
-      inProgress: 0
-    }],
-    commisions: [{
-      accrued: 0,
-      paid: 0
-    }]
-  })
-  await managerStatistic.save()
-  resolve()
-})
-const createInvestorStatistics = (investorId) => new Promise(async (resolve, reject) => {
-  const investorStatistic = new InvestorStatistic({
-    investor: investorId,
-    last_update: Date.now(),
-    dates: [Date.now()],
-    aum: [0],
-    portfolios: [{
-      active: 0,
-      archived: 0,
-      inProgress: 0
-    }]
-  })
-  await investorStatistic.save()
-  resolve()
-})

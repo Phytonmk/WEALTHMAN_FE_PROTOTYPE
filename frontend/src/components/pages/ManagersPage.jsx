@@ -175,21 +175,6 @@ class ManagersPage extends Component {
         titleClass: "with-border",
       },
       {
-        property: "clients",
-        title: "Clients",
-        // width: "82px",
-        width: "40px",
-        type: 'number'
-      },
-      {
-        property: "aum6m",
-        title: "6m aum graph",
-        // width: "100px",
-        width: "90px",
-        type: "unsortable",
-        tooltip: "Assets Under Management in the last 6 month"
-      },
-      {
         property: "perfomanceFee",
         title: "Performance fee",
         // width: "103px",
@@ -212,6 +197,21 @@ class ManagersPage extends Component {
         width: "90px",
         type: "number",
         titleClass: "with-border",
+      },
+      {
+        property: "clients",
+        title: "Clients",
+        // width: "82px",
+        width: "40px",
+        type: 'number'
+      },
+      {
+        property: "aum6m",
+        title: "6m aum graph",
+        // width: "100px",
+        width: "90px",
+        type: "unsortable",
+        tooltip: "Assets Under Management in the last 6 month"
       },
     ]
     if (getCookie('usertype') != 1 && getCookie('usertype') != 3)
@@ -404,6 +404,7 @@ class ManagersPage extends Component {
                   &&
                   row.services.value.toLowerCase().includes(("Robo-advisor").toLowerCase())
                 }
+                initHiddenColumns={["type", "exitFee", "perfomanceFee", "frontFee"]}
                 columns={sortableHeader}
                 data={sortableManagers}
                 navigation={true}

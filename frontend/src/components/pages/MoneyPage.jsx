@@ -124,13 +124,13 @@ class MoneyPage extends Component {
           </div>
     }
     if (this.state.status === 1) {
-      if (typeof web3 === 'undefined')
+     /*  if (typeof web3 === 'undefined')
         return  <div className="container">
             <div className="box">
               <h2> Install MetaMask and reload page </h2>
             </div>
           </div>
-      else
+      else */
         return <div className="container">
             <div className="box">
               <h2>Etherium network is mining the transaction<br/>Check your portfolio status in 5 minutes</h2>

@@ -20,7 +20,7 @@ class InvestorsPage extends Component {
       investors: [],
       openSignUp: () => {},
       onlyClients: false,
-      myClients: []
+      clientApplications: []
     }
   }
   componentDidMount() {
@@ -29,11 +29,20 @@ class InvestorsPage extends Component {
         this.setState({gotData: true, investors: res.data});
       })
       .catch(console.log)
-    api.get('my-clients')
+    api.post('requests')
       .then((res) => {
-        this.setState({myClients: res.data});
+        const filteredRequests = []
+        for (let request of res.data) {
+          if (request.status === 'pending' && !request.initiatedByManager && request.type === 'portfolio')
+            filteredRequests.push(request)
+        }
+        this.setState({
+          clientApplications: filteredRequests.map(request => ({
+            label: 'New application: ' + request.investing_reason,
+            link: '/request/' + request._id
+          }))
+        })
       })
-      .catch(console.log);
   }
   render() {
     let sortableHeader = [
@@ -146,7 +155,6 @@ class InvestorsPage extends Component {
           </Link>
       };
     });
-
     return (
       <div className="invesotrs-page">
         <AuthWindows
@@ -159,6 +167,23 @@ class InvestorsPage extends Component {
             <Search value={this.state.searchName} setValue={(value) => this.setState({searchName: value})} />
           </div>
         </article>
+        {this.state.clientApplications.length > 0 && <div className="container">
+          <div className="row-padding">
+            <div className="box">
+              <h2>Client applications:</h2>
+              <br />
+              {this.state.clientApplications.map(application => 
+                <div className="row">
+                  <ins>
+                    <Link to={application.link}>{application.label}</Link>
+                  </ins>
+                  <br />
+                  <br />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>}
         <div className="container">
           <div className="row-padding">
             <h1 className="inlibe-block-header">Marketplace</h1>
@@ -176,7 +201,7 @@ class InvestorsPage extends Component {
                 (
                   !this.state.onlyClients
                   ||
-                  this.state.myClients.includes(investor.id)
+                  investor.source === 'Added client'
                 )
               }
               columns={sortableHeader}

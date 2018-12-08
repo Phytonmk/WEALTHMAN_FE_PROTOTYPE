@@ -4,7 +4,8 @@ const path = require('path');
 
 const timeTable = { //seconds
   default: 10,
-  stocks: 60 * 60 * 12
+  'update-stocks': 60 * 60 * 12,
+  'update-currensies': 60 * 60 * 12,
 }
 const timeout = 60 * 25
 
@@ -20,7 +21,7 @@ fs.readdirSync(__dirname + '/safe/').forEach((file) => {
   })
 });
 fs.readdirSync(__dirname + '/danger/').forEach((file) => {
-  const name = file.replace(/\.js$/i, '')
+  const name = file.replace(/\.js$/i, '').toLowerCase()
   workers.push({
     name,
     module: require(`${__dirname}/danger/${file}`),

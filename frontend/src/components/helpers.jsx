@@ -36,15 +36,15 @@ const api = {
         reject(err);
       })
   }),
-  upload: (url, file) => new Promise((resolve, reject) => {
+  upload: (url, file, headers={}) => new Promise((resolve, reject) => {
     const uploadUrl = apiUrl + 'photo/' + url;
     const formData = new FormData();
     formData.append('file', file)
     const config = {
-      headers: {
+      headers: Object.assign(headers, {
         'content-type': 'multipart/form-data',
         'accessToken': getCookie('accessToken')
-      }
+      })
     }
     axios.post(uploadUrl, formData, config)
       .then((res) => resolve(res.data))

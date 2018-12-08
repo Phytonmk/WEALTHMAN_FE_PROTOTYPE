@@ -193,19 +193,19 @@ class Form extends Component {
                   <br />
                   Exit fee
                   <br />
-                  <Input type="number" placeholder="Exit fee" value={service.exit_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'exit_fee')}/>
+                  <Input type="number" percentSymbol={true} placeholder="Exit fee" value={service.exit_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'exit_fee')}/>
                   <br />
                   Managment fee
                   <br />
-                  <Input type="number" placeholder="Managment fee" value={service.managment_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'managment_fee')}/>
+                  <Input type="number" percentSymbol={true} placeholder="Managment fee" value={service.managment_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'managment_fee')}/>
                   <br />
                   Perfomance fee
                   <br />
-                  <Input type="number" placeholder="Perfomance fee" value={service.perfomance_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'perfomance_fee')}/>
+                  <Input type="number" percentSymbol={true} placeholder="Perfomance fee" value={service.perfomance_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'perfomance_fee')}/>
                   <br />
                   Font fee
                   <br />
-                  <Input type="number" placeholder="Font fee" value={service.front_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'front_fee')}/>
+                  <Input type="number" percentSymbol={true} placeholder="Font fee" value={service.front_fee} onChange={(event) => this.setServiceData(question.property, event, i, 'front_fee')}/>
                   <br />
                   Recalculation
                   <br />

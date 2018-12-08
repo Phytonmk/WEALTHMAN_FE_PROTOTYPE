@@ -57,8 +57,9 @@ class App extends Component {
     super(props);
     this.state = Object.assign(defaultState, {authCompleted: false});
     store.subscribe(() => {
-      this.state = store.getState();
-      this.forceUpdate();
+      console.log('||')
+      this.setState(store.getState())
+      // this.forceUpdate();
     });
     window.addEventListener('auth completed', () => {
       //console.log('auth completed')

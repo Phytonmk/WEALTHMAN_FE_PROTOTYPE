@@ -2,8 +2,8 @@ import axios from 'axios'
 import { getCookie } from '../../helpers'
 import io from 'socket.io-client';
 
-const apiUrl = 'http://141.8.198.145:8080/chats-api/'
-const socketsHost = 'ws://141.8.198.145';
+const apiUrl = 'http://141.8.198.87:8080/chats-api/'
+const socketsHost = 'ws://141.8.198.87';
 
 // const apiUrl = 'http://185.185.70.5:2905/chats-api/'
 // const socketsHost = 'ws://185.185.70.5';

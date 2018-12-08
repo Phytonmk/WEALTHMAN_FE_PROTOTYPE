@@ -42,7 +42,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       })
 
     const date = new Date()
-    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
+    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth()) + '-' + (date.getDate() - 1))
     if (statisticObj.last_update.getTime() > endOfPreviusDay.getTime()) {
       dates.pop()
       aum.pop()
@@ -128,7 +128,7 @@ module.exports = () => new Promise(async (resolve, reject) => {
       })
 
     const date = new Date()
-    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate()))
+    const endOfPreviusDay = new Date(date.getFullYear() + '-' + (date.getMonth()) + '-' + (date.getDate() - 1))
     if (statisticObj.last_update.getTime() > endOfPreviusDay.getTime()) {
       dates.pop()
       aum.pop()

@@ -1,8 +1,9 @@
-const Token = require('../../models/accessToken')
+const AccessToken = require('../../models/accessToken')
 const Stock = require('../../models/Stock')
 const Investor = require('../../models/Investor')
 const Manager = require('../../models/Manager')
 const Request = require('../../models/Request')
+const fs = require('fs-extra')
 const Portfolio = require('../../models/Portfolio')
 const configs = require('../../configs')
 const portfolioAbi = require('../../trading/contract-abi.js')
@@ -29,7 +30,7 @@ for (let exchange of configs.exchanges) {
 module.exports = (app) => {
   // Запросить деплой контракта
   app.post('/api/contracts/deploy', async (req, res) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
       res.status(403)
       res.end()
@@ -89,7 +90,7 @@ module.exports = (app) => {
   })
   // Получить адрес кошелька, который был указан инвестором при деплое
   app.post('/api/withdraw-address', async (req, res) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
       res.status(403)
       res.end()
@@ -137,7 +138,7 @@ module.exports = (app) => {
   })
   // Продать все токены со смарт контракта
   app.post('/api/sell-tokens', async (req, res) => {
-    const token = await Token.findOne({token: req.body.accessToken})
+    const token = await AccessToken.findOne({token: req.body.accessToken})
     if (token === null) {
       res.status(403)
       res.end()
@@ -218,4 +219,36 @@ module.exports = (app) => {
     res.status(200);
     res.end('');
   });
+  app.post('/api/photo/agreement', async (req, res, next) => {
+    const token = await AccessToken.findOne({ token: req.headers.accesstoken })
+    if (token === null) {
+      res.status(403)
+      res.end()
+      return
+    }
+    const investor = await Investor.findOne({ user: token.user })
+    if (!req.files)
+      return res.status(400).send('No files were uploaded')
+    if (!req.headers.request)
+      return res.status(400).send('No "request" header set')
+    const request = await Request.findById(req.headers.request)
+    if (token === null) {
+      res.status(400)
+      res.end()
+      return
+    }
+    const file = req.files.file
+    await fs.ensureDir(`${__dirname}/../../img/agreements/${request._id}/investor/`)
+    const extension = file.name.includes('.') ? file.name.substr(file.name.lastIndexOf('.') + 1) : ''
+    if (!['pdf', 'doc', 'docx', 'jpg', 'png'].includes(extension))
+      return res.status(400).send('File must be pdf, doc, docx, jpg or png')
+    file.mv(`${__dirname}/../../img/agreements/${request._id}/investor/${file.name}`, async (err) => {
+      if (err)
+        return res.status(500).send(err)
+      request.set({ investor_agreement: file.name })
+      await request.save()
+      res.send(file.name)
+      res.end()
+    })
+  })
 }

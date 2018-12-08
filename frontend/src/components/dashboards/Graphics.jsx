@@ -166,11 +166,13 @@ class SuperPie extends Component {
   render() {
     const pieData = this.props.datasets[this.state.selectOption].data.map((chunk, i) => {
                     return {
-                      key: chunk.header,
+                      key: i,//chunk.header,
                       value: chunk.value,
                       color: colors[i]
                     }
                   })
+    console.log('----')
+    console.log(pieData)
     return  <div className="pie-chart-box" key={this.props.key ? this.props.key : ''}>
                 <h2>{this.props.title}</h2>
                 {this.props.datasets.length > 1 ?
@@ -224,7 +226,7 @@ class SuperLine extends Component {
   render() {
     let lineData = []
     lineData = this.props.datasets.map((dataset) => {
-        return dataset.data.map(chunk => {
+      return dataset.data.map(chunk => {
           return {
             x: /^[0-9]{1,2}-[a-zA-Z]{3}-[0-9]{2}$/.test(chunk.title) ? chunk.title : `${new Date(chunk.title).getDate()}-${monthNames[new Date(chunk.title).getMonth()]}-${new Date(chunk.title).getFullYear().toString().substr(2)}`,
             y: chunk.value
@@ -232,12 +234,14 @@ class SuperLine extends Component {
         })
       })
     lineData = lineData.map(line => {
-      const pervDayDate = new LevDate()
-      pervDayDate.addDay(-1)
-      const yesterday = pervDayDate.day() + '-' + (pervDayDate.monthStringShort()).substr(0, 1).toUpperCase() + (pervDayDate.monthStringShort()).substr(1) + '-' + pervDayDate.year().toString().substr(2)
+      const todayDate = new LevDate()
+      const prevDayDate = new LevDate()
+      prevDayDate.addDay(-1)
+      const today = todayDate.day() + '-' + (todayDate.monthStringShort()).substr(0, 1).toUpperCase() + (todayDate.monthStringShort()).substr(1) + '-' + todayDate.year().toString().substr(2)
+      const yesterday = prevDayDate.day() + '-' + (prevDayDate.monthStringShort()).substr(0, 1).toUpperCase() + (prevDayDate.monthStringShort()).substr(1) + '-' + prevDayDate.year().toString().substr(2)
       if (line.length === 0)
         line.push({
-          x: yesterday,
+          x: today,
           y: 0
         })
       if (line.length === 1) 
@@ -246,8 +250,8 @@ class SuperLine extends Component {
           y: 0
         })
       // for (let i = 0; i < 500; i++) {
-      //   pervDayDate.addDay(-1)
-      //   const thisDay = pervDayDate.day() + '-' + (pervDayDate.monthStringShort()).substr(0, 1).toUpperCase() + (pervDayDate.monthStringShort()).substr(1) + '-' + pervDayDate.year().toString().substr(2)
+      //   prevDayDate.addDay(-1)
+      //   const thisDay = prevDayDate.day() + '-' + (prevDayDate.monthStringShort()).substr(0, 1).toUpperCase() + (prevDayDate.monthStringShort()).substr(1) + '-' + prevDayDate.year().toString().substr(2)
       //   line.unshift({
       //     x: thisDay,
       //     y: 0
@@ -265,10 +269,10 @@ class SuperLine extends Component {
       if (viewOption >= viewOptions.length)
         viewOption = viewOptions.length - 1
       if (viewOptions[viewOption] !== 'All') {
-        console.log(-this.viewOptionsValues[viewOptions[viewOption]])
-        lineData.forEach((line, i) => {
-          lineData[i] = line.slice(line.length - this.viewOptionsValues[viewOptions[viewOption]])
-        })
+        // console.log(lineData[0])
+        lineData = lineData.map((line, i) =>
+          line.slice(-this.viewOptionsValues[viewOptions[viewOption]])
+        )
         // lineData = lineData.map((line) => {return line.slice(this.viewOptionsValues[viewOptions[viewOption]]) * -1})
         // console.log(lineData[0].length, this.viewOptionsValues[viewOptions[viewOption]])
       }

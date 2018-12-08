@@ -15,10 +15,10 @@ module.exports = (app) => {
     if (configs.productionMode) {
       res.append("Access-Control-Allow-Origin", "*");
  //     res.append("Access-Control-Allow-Origin", "http://platform.wealthman.io, http://localhost:1234");
-      res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
+      res.append("Access-Control-Allow-Headers", "*");
     } else {
       res.append("Access-Control-Allow-Origin", "*");
-      res.append("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, accessToken");
+      res.append("Access-Control-Allow-Headers", "*");
     }
     next();
   })

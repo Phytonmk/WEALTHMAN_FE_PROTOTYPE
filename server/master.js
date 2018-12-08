@@ -24,7 +24,7 @@ const addSpaces = (str) => {
 console.log('\n\n')
 console.log('  ╔════════════════════════════════════╗')
 if (configs.productionMode)
-  console.log('  ║           !!! WARNING !!!          ║')
+console.log('  ║           !!! WARNING !!!          ║')
 console.log(`  ║Server confgirurated as: ${configs.productionMode ? 'production' : 'developer '} ║`)
 console.log('  ╠════════════════════════════════════╣')
 console.log('  ║' + addSpaces(`Configurated port: ${configs.workerPort}`) + '║')

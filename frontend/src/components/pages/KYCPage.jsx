@@ -3,11 +3,13 @@ import { setReduxState } from '../../redux';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { api, setPage, setCurrency, previousPage, getCookie, setCookie } from '../helpers';
+import Input from '../inputs/Input'
+import Cards from '../dashboards/Cards'
 
 const services = ['Robo-advisor', 'Discretionary', 'Advisory'];
 
-import ProgressBar2 from '../ProgressBar2';
-import QuestionsForm from '../QuestionsForm';
+// import ProgressBar2 from '../ProgressBar2';
+// import QuestionsForm from '../QuestionsForm';
 
 class KYCPage extends Component {
   constructor(props) {
@@ -42,6 +44,7 @@ class KYCPage extends Component {
           managerData: res.data
         })
       })
+    console.log(window.filledKYCanswers)
   }
   componentDidMount() {
     window.onbeforeunload = () => 'Data will not be stored, continue?'
@@ -93,6 +96,11 @@ class KYCPage extends Component {
           <div className="row"><b>Front fee</b>: {currentService.front_fee} %</div>
           <div className="row"><b>Max recalculations</b>: {currentService.recalculation} days</div>
         </div>
+      }
+      let splitedQuestions = []
+      if (window.filledKYCanswers) {
+        for (let i = 0; i < window.filledKYCanswers.length; i += 2)
+          splitedQuestions.push(window.filledKYCanswers.slice(i, i + 2))
       }
       pageContent = 
         <div>
@@ -155,6 +163,128 @@ Minimal investment is 1000$</p>
             <button className="continue" onClick={() => this.send()}>Send to {this.state.manager}</button>
           </div>
         </div>
+      pageContent =
+        <React.Fragment>
+          <div className="row-padding">
+            <h3>Before you continue, please fill information below:</h3>
+          </div>
+          <div className="row-padding">
+            <small className="blue">Investment size</small>
+            <Input type="number" value={this.state.value} min="0" step="0.1" onChange={(event) => this.setState({value: event.target.value})} /> ETH
+            <small>Notice, that investment size field is the actual amount of money, that you are going to invest. You will not have an opportunity to change this number. Minimum investment is {currentService.min}$</small>
+          </div>
+          <div className="row-padding">
+            <small className="blue">Investment period</small>
+            <Input type="number" value={this.state.period} min="1" step="7" onChange={(event) => this.setState({period: event.target.value})} /> Days
+          </div>
+
+          {this.state.service === 'Robo-advisor' || this.state.service === '-' ? '' : <div>
+            <div className="row-padding">
+              <small className="blue">Allowed revisions amount</small>
+              <Input type="number" value={this.state.revisionsAmount} min="0" step="1" onChange={(event) => this.setState({revisionsAmount: event.target.value})} />
+            </div>
+          </div>}
+          <div className="row-padding">
+            <small className="blue">Comment for manager</small>
+            <Input type="textarea" value={this.state.comment} onChange={(event) => this.setState({comment: event.target.value})} />
+            <small>If you want recieve special conditions (e.g. lower fees), please, contact adviser in the field above.</small>
+          </div>
+          {/*<div className="row-padding">
+            <label><Input type="switcher" checked={this.state.analysis} onChange={(event) => this.setState({analysis: event.target.checked})} /> Analysis Neccesity</label>
+          </div>
+          <div className="row-padding">
+            <label><Input type="switcher" checked={this.state.manager_comment} onChange={(event) => this.setState({manager_comment: event.target.checked})} /> Comment Neccesity</label>
+          </div>*/}
+          <div className="row-padding">
+            <h3>Normal manager conditions:</h3>
+          </div>
+          <Cards
+            cards={[{
+              title: currentService.exit_fee + ' %',
+              subtitle: 'Exit fee'
+            }, {
+              title: currentService.managment_fee + ' %',
+              subtitle: 'Management fee'
+            }, {
+              title: currentService.perfomance_fee + ' %',
+              subtitle: 'Performance fee'
+            }, {
+              title: currentService.front_fee + ' %',
+              subtitle: 'Front fee'
+            }, {
+              title: currentService.recalculation + ' days',
+              subtitle: 'Max recalculations'
+            }]}
+          />
+          <hr />
+          <div className="row-padding">
+            <h3>By clicking “Send to {this.state.manager}” button you send</h3>
+          </div>
+          <div className="row-padding">
+            Request for portfolio balance to {this.state.manager} <b>{this.state.managerName}</b> and selected service: <b>{this.state.service}</b>
+          </div>
+          <div className="row-padding">
+            Answers from form the questionnaire:
+          </div>
+          <div className="row-padding">
+            {splitedQuestions.map(questionsSet =>
+              <Cards
+                cards={questionsSet.map(question => ({
+                  subtitle: question.question,
+                  title: (answer => {
+                    if (answer[0] === '{' && answer[answer.length - 1] === '}') {
+                      try {
+                        const answerObject = JSON.parse(answer)
+                        let resultSubAnswers = []
+                        for (let subQuestion in answerObject) {
+                          resultSubAnswers.push(subQuestion + ': ' + answerObject[subQuestion])
+                        }
+                        return resultSubAnswers.join('; ')
+                      } catch(e) {
+                        console.log(e)
+                        return answer
+                      }
+                    } else {
+                      return answer
+                    }
+                  })(question.answer)
+              }))}/>)
+            }
+          </div>
+          <div className="row-padding">
+            Data, specified above:
+          </div>
+          <div className="row-padding">
+            <small>Investment size</small>
+            <p>{this.state.value} ETH</p>
+          </div>
+          <div className="row-padding">
+            <small>Investment period</small>
+            <p>{this.state.period} {this.state.period == 1 ? 'day' : 'days'}</p>
+          </div>
+          {this.state.service === 'Robo-advisor' || this.state.service === '-' ? '' : <div className="row-padding">
+            <small>Allowed revisions amount</small>
+            <p>{this.state.revisionsAmount}</p>
+          </div>}
+          <div className="row-padding">
+            <small>Comment for manager</small>
+            <p>{this.state.comment || 'no comment'}</p>
+          </div>
+          {/*<div className="row-padding">
+            <small>Analysis Neccesity</small>
+            <p>{this.state.analysis ? 'yes' : 'no'}</p>
+          </div>
+          <div className="row-padding">
+            <small>Comment Neccesity</small>
+            <p>{this.state.manager_comment ? 'yes' : 'no'}</p>
+          </div>*/}
+          <div className="row-padding">
+            <Link to={"/managers"}>
+              <button className="back" onClick={() => previousPage()}>Back</button>
+            </Link>
+            <button className="continue" onClick={() => this.send()}>Send to {this.state.manager}</button>
+          </div>
+        </React.Fragment>
     }
     return(
       <div>
@@ -162,9 +292,9 @@ Minimal investment is 1000$</p>
           <ProgressBar2 step="1" total="1" /> :
           <ProgressBar2 step={questions[this.state.question].step} total={questions[this.state.question].total} />*/}
         <div className="container">
-          <div className="box">
+          <div className="box kyc-page">
             <div className="row">
-              <h2>Final step</h2>
+              <h1>Final step</h1>
             </div>
             {pageContent}
           </div>

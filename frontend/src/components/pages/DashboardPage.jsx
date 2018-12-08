@@ -50,7 +50,7 @@ class DashboardPage extends Component {
     if (usertype === 'manager' || usertype === 'investor') {
       api.get('my-dashboard')
         .then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           this.setState(res.data)
         }).catch(console.log)
     } 
@@ -231,7 +231,7 @@ class DashboardPage extends Component {
             }
           }, {
             type: 'line',
-            title: 'AUM Dynamics',
+            title: 'Remuneration',
             lines: [{
               title: 'Total remuneration accrued',
               data: this.state.commisions.map((chunk, i) => {
@@ -243,7 +243,7 @@ class DashboardPage extends Component {
             }, {
               title: 'Total remuneration paid',
               data: this.state.commisions.map((chunk, i) => {
-                console.log(chunk)
+                // console.log(chunk)
                 return {
                   value: chunk.paid,
                   title: this.state.dates[i]

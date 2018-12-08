@@ -48,10 +48,10 @@ class RequestPage extends Component {
         switch(this.state.request.status) {
           case 'proposed':
             Page = InvestorPortfolioProposed;
-          break;
+            break;
           case 'revision':
             Page = InvestorPortfolioRevision;
-          break;
+            break;
           // case 'pending':
           //   Page = InvestorPortfolioRevision;
           // break;
@@ -60,16 +60,16 @@ class RequestPage extends Component {
             break;
           case 'waiting for withdraw':
             Page = InvestorPortfolioActive; // update it !
-          break;
+            break;
           case 'active':
             Page = InvestorPortfolioActive;
-          break;
+            break;
           // case 'review':
           //   Page = InvestorPortfolioRevision;
           // break;
           case 'recalculated':
             Page = InvestorPortfolioRecalculated;
-          break;
+            break;
         }
       break;
       case 1:

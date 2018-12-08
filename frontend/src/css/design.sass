@@ -220,6 +220,19 @@ article.long-text-input
 
 .services-block input
   margin-left: 20px !important
+.row, .row-padding
+  & > small
+    display: block
+    width: 100%
+    float: none
+    margin-bottom: 11px
+    line-height: 1
+    &.blue
+      text-transform: uppercase
+      // margin-bottom: 38px
+      margin-bottom: 11px
+    &.error
+      color: #b15151
   
 /* FORMS */
 .account-box
@@ -244,17 +257,6 @@ article.long-text-input
     margin-top: 15px
     *
       color: #79828f
-  small
-    display: block
-    width: 100%
-    float: none
-    margin-bottom: 11px
-    line-height: 1
-    &.blue
-      text-transform: uppercase
-      margin-bottom: 38px
-    &.error
-      color: #b15151
   .switch-container + small
     display: inline-block
     width: calc(100% - 80px)
@@ -882,3 +884,6 @@ h3.button-bordered
   color: width !important
   & *
     color: white !important
+.kyc-page
+  .switch-container
+    margin-left: 0

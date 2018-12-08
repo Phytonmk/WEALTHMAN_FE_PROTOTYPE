@@ -60,24 +60,32 @@ class PasswordResetPage extends Component {
     return <div className="container">
       <div className="account-box">
         <div className="row-padding">
+          <h1>Password reset</h1>
+        </div>
+        {/*<div className="row-padding">
           <small className="blue">Your email address</small>
           <Input error={this.state.unknownError} value={this.state.email} setValue={email => this.setState({email, unknownError: false})} placeholder="user@example.com" />
         </div>
         <div className="row-padding">
           <small className="blue">Password reset code</small>
           <Input error={this.state.unknownError} value={this.state.code} setValue={code => this.setState({code, unknownError: false})} placeholder="xxx-xxx-xxx" />
-        </div>
-        <div className="row-padding">
-          <small className="blue">New Password</small>
-          <Input error={this.state.passwordError} value={this.state.password} setValue={password => this.setState({password, passwordError: false})} placeholder="****" type="password" />
-        </div>
-        <div className="row-padding">
-          <small className="blue">Repeat new password</small>
-          <Input error={this.state.passwordError} value={this.state.passwordRepeat} setValue={passwordRepeat => this.setState({passwordRepeat, passwordError: false})} placeholder="****" type="password" />
-        </div>
-        <div className="row">
-          <button className="big-blue-button" onClick={() => this.resetPassword()}>Reset Password</button>
-        </div>
+        </div>*/}
+        {(!this.state.email || !this.state.code) ?
+          <div className="row-padding">Invalid password reset link</div> : 
+          <React.Fragment>
+            <div className="row-padding">
+              <small className="blue">New Password</small>
+              <Input error={this.state.passwordError} value={this.state.password} setValue={password => this.setState({password, passwordError: false})} placeholder="****" type="password" />
+            </div>
+            <div className="row-padding">
+              <small className="blue">Repeat new password</small>
+              <Input error={this.state.passwordError} value={this.state.passwordRepeat} setValue={passwordRepeat => this.setState({passwordRepeat, passwordError: false})} placeholder="****" type="password" />
+            </div>
+            <div className="row">
+              <button className="big-blue-button" onClick={() => this.resetPassword()}>Reset Password</button>
+            </div>
+          </React.Fragment>
+        }
       </div>
     </div>
   }
